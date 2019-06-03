@@ -1,0 +1,330 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5b94f4c5-7f82-4a44-904d-b2d587f6e9da}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>gurux_dlms</Name>
+    <RootNamespace>gurux_dlms</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>-h localhost -p 1000 -t Verbose</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="gurux_dlms\ActionRequestType.py" />
+    <Compile Include="gurux_dlms\ActionResponseType.py" />
+    <Compile Include="gurux_dlms\AesGcmParameter.py" />
+    <Compile Include="gurux_dlms\ConfirmedServiceError.py" />
+    <Compile Include="gurux_dlms\ConnectionState.py" />
+    <Compile Include="gurux_dlms\CountType.py" />
+    <Compile Include="gurux_dlms\enums\Access.py" />
+    <Compile Include="gurux_dlms\enums\AccessMode.py" />
+    <Compile Include="gurux_dlms\enums\AccessServiceCommandType.py" />
+    <Compile Include="gurux_dlms\enums\ApplicationReference.py" />
+    <Compile Include="gurux_dlms\enums\AssociationResult.py" />
+    <Compile Include="gurux_dlms\enums\Authentication.py" />
+    <Compile Include="gurux_dlms\enums\BerType.py" />
+    <Compile Include="gurux_dlms\enums\ClockStatus.py" />
+    <Compile Include="gurux_dlms\enums\Command.py" />
+    <Compile Include="gurux_dlms\enums\Conformance.py" />
+    <Compile Include="gurux_dlms\enums\DataType.py" />
+    <Compile Include="gurux_dlms\enums\DateTimeSkips.py" />
+    <Compile Include="gurux_dlms\enums\Definition.py" />
+    <Compile Include="gurux_dlms\enums\ErrorCode.py" />
+    <Compile Include="gurux_dlms\enums\ExceptionServiceError.py" />
+    <Compile Include="gurux_dlms\enums\HardwareResource.py" />
+    <Compile Include="gurux_dlms\enums\HdlcFrameType.py" />
+    <Compile Include="gurux_dlms\enums\Initiate.py" />
+    <Compile Include="gurux_dlms\enums\InterfaceType.py" />
+    <Compile Include="gurux_dlms\enums\KeyAgreement.py" />
+    <Compile Include="gurux_dlms\enums\LoadDataSet.py" />
+    <Compile Include="gurux_dlms\enums\MethodAccessMode.py" />
+    <Compile Include="gurux_dlms\enums\ObjectType.py" />
+    <Compile Include="gurux_dlms\enums\PduType.py" />
+    <Compile Include="gurux_dlms\enums\Priority.py" />
+    <Compile Include="gurux_dlms\enums\RequestTypes.py" />
+    <Compile Include="gurux_dlms\enums\Security.py" />
+    <Compile Include="gurux_dlms\enums\Service.py" />
+    <Compile Include="gurux_dlms\enums\ServiceClass.py" />
+    <Compile Include="gurux_dlms\enums\ServiceError.py" />
+    <Compile Include="gurux_dlms\enums\SourceDiagnostic.py" />
+    <Compile Include="gurux_dlms\enums\Standard.py" />
+    <Compile Include="gurux_dlms\enums\StateError.py" />
+    <Compile Include="gurux_dlms\enums\Task.py" />
+    <Compile Include="gurux_dlms\enums\Unit.py" />
+    <Compile Include="gurux_dlms\enums\VdeStateError.py" />
+    <Compile Include="gurux_dlms\enums\__init__.py" />
+    <Compile Include="gurux_dlms\GetCommandType.py" />
+    <Compile Include="gurux_dlms\GXCiphering.py" />
+    <Compile Include="gurux_dlms\GXDLMSChippering.py" />
+    <Compile Include="gurux_dlms\GXDLMSChipperingStream.py" />
+    <Compile Include="gurux_dlms\GXSecure.py" />
+    <Compile Include="gurux_dlms\GXStandardObisCodeCollection.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttributeSettings.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSAttributeSettings.py" />
+    <Compile Include="gurux_dlms\secure\GXDLMSSecureClient.py" />
+    <Compile Include="gurux_dlms\secure\GXDLMSSecureNotify.py" />
+    <Compile Include="gurux_dlms\secure\GXDLMSSecureServer.py" />
+    <Compile Include="gurux_dlms\secure\__init__.py" />
+    <Compile Include="gurux_dlms\_GXAPDU.py" />
+    <Compile Include="gurux_dlms\GXBitString.py" />
+    <Compile Include="gurux_dlms\GXByteBuffer.py" />
+    <Compile Include="gurux_dlms\GXDate.py" />
+    <Compile Include="gurux_dlms\GXDateTime.py" />
+    <Compile Include="gurux_dlms\GXDLMS.py" />
+    <Compile Include="gurux_dlms\GXDLMSAccessItem.py" />
+    <Compile Include="gurux_dlms\GXDLMSClient.py" />
+    <Compile Include="gurux_dlms\GXDLMSConfirmedServiceError.py" />
+    <Compile Include="gurux_dlms\GXDLMSConnectionEventArgs.py" />
+    <Compile Include="gurux_dlms\GXDLMSConverter.py" />
+    <Compile Include="gurux_dlms\GXDLMSException.py" />
+    <Compile Include="gurux_dlms\GXDLMSGateway.py" />
+    <Compile Include="gurux_dlms\GXDLMSLimits.py" />
+    <Compile Include="gurux_dlms\GXDLMSLNCommandHandler.py" />
+    <Compile Include="gurux_dlms\GXDLMSLNParameters.py" />
+    <Compile Include="gurux_dlms\GXDLMSLongTransaction.py" />
+    <Compile Include="gurux_dlms\GXDLMSNotify.py" />
+    <Compile Include="gurux_dlms\GXDLMSServer.py" />
+    <Compile Include="gurux_dlms\GXDLMSSettings.py" />
+    <Compile Include="gurux_dlms\GXDLMSSNCommandHandler.py" />
+    <Compile Include="gurux_dlms\GXDLMSSNParameters.py" />
+    <Compile Include="gurux_dlms\GXDLMSTranslator.py" />
+    <Compile Include="gurux_dlms\GXDLMSTranslatorStructure.py" />
+    <Compile Include="gurux_dlms\GXDLMSXmlClient.py" />
+    <Compile Include="gurux_dlms\GXDLMSXmlPdu.py" />
+    <Compile Include="gurux_dlms\GXDLMSXmlSettings.py" />
+    <Compile Include="gurux_dlms\_GXFCS16.py" />
+    <Compile Include="gurux_dlms\GXICipher.py" />
+    <Compile Include="gurux_dlms\GXReplyData.py" />
+    <Compile Include="gurux_dlms\GXServerReply.py" />
+    <Compile Include="gurux_dlms\GXSNInfo.py" />
+    <Compile Include="gurux_dlms\GXStandardObisCode.py" />
+    <Compile Include="gurux_dlms\GXTime.py" />
+    <Compile Include="gurux_dlms\GXWriteItem.py" />
+    <Compile Include="gurux_dlms\GXXmlLoadSettings.py" />
+    <Compile Include="gurux_dlms\HdlcControlFrame.py" />
+    <Compile Include="gurux_dlms\_GXObjectFactory.py" />
+    <Compile Include="gurux_dlms\_HDLCInfo.py" />
+    <Compile Include="gurux_dlms\internal\_GXCommon.py" />
+    <Compile Include="gurux_dlms\internal\_GXDataInfo.py" />
+    <Compile Include="gurux_dlms\internal\__init__.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXAttributeCollection.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXAuthentication.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttribute.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXManufacturer.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXManufacturerCollection.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXObisCode.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXObisCodeCollection.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXObisValueItem.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXObisValueItemCollection.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\GXServerAddress.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\HDLCAddressType.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\InactivityMode.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\StartProtocolType.py" />
+    <Compile Include="gurux_dlms\manufacturersettings\__init__.py" />
+    <Compile Include="gurux_dlms\MBusCommand.py" />
+    <Compile Include="gurux_dlms\MBusControlInfo.py" />
+    <Compile Include="gurux_dlms\MBusEncryptionMode.py" />
+    <Compile Include="gurux_dlms\MBusMeterType.py" />
+    <Compile Include="gurux_dlms\objects\enums\AccountCreditStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\AccountStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\AddressConfigMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\AddressState.py" />
+    <Compile Include="gurux_dlms\objects\enums\ApplicationContextName.py" />
+    <Compile Include="gurux_dlms\objects\enums\AssociationStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\AutoAnswerMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\AutoAnswerStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\AutoConnectMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\BaudRate.py" />
+    <Compile Include="gurux_dlms\objects\enums\CertificateEntity.py" />
+    <Compile Include="gurux_dlms\objects\enums\CertificateIdentificationType.py" />
+    <Compile Include="gurux_dlms\objects\enums\CertificateType.py" />
+    <Compile Include="gurux_dlms\objects\enums\ChargeType.py" />
+    <Compile Include="gurux_dlms\objects\enums\ClockBase.py" />
+    <Compile Include="gurux_dlms\objects\enums\ControlMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\ControlState.py" />
+    <Compile Include="gurux_dlms\objects\enums\CreditCollectionConfiguration.py" />
+    <Compile Include="gurux_dlms\objects\enums\CreditConfiguration.py" />
+    <Compile Include="gurux_dlms\objects\enums\CreditStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\CreditType.py" />
+    <Compile Include="gurux_dlms\objects\enums\Currency.py" />
+    <Compile Include="gurux_dlms\objects\enums\GlobalKeyType.py" />
+    <Compile Include="gurux_dlms\objects\enums\GsmCircuitSwitchStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\GsmPacketSwitchStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\GsmStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\IecTwistedPairSetupMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\ImageTransferredBlocksStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\ImageTransferStatus.py" />
+    <Compile Include="gurux_dlms\objects\enums\Ip4SetupIpOptionType.py" />
+    <Compile Include="gurux_dlms\objects\enums\LocalPortResponseTime.py" />
+    <Compile Include="gurux_dlms\objects\enums\MessageType.py" />
+    <Compile Include="gurux_dlms\objects\enums\OpticalProtocolMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\PaymentMode.py" />
+    <Compile Include="gurux_dlms\objects\enums\PppAuthenticationType.py" />
+    <Compile Include="gurux_dlms\objects\enums\PppSetupIPCPOptionType.py" />
+    <Compile Include="gurux_dlms\objects\enums\PppSetupLcpOptionType.py" />
+    <Compile Include="gurux_dlms\objects\enums\ScriptActionType.py" />
+    <Compile Include="gurux_dlms\objects\enums\SecurityPolicy.py" />
+    <Compile Include="gurux_dlms\objects\enums\SecurityPolicy0.py" />
+    <Compile Include="gurux_dlms\objects\enums\SecuritySuite.py" />
+    <Compile Include="gurux_dlms\objects\enums\ServiceType.py" />
+    <Compile Include="gurux_dlms\objects\enums\SingleActionScheduleType.py" />
+    <Compile Include="gurux_dlms\objects\enums\SortMethod.py" />
+    <Compile Include="gurux_dlms\objects\enums\TokenDelivery.py" />
+    <Compile Include="gurux_dlms\objects\enums\TokenStatusCode.py" />
+    <Compile Include="gurux_dlms\objects\enums\__init__.py" />
+    <Compile Include="gurux_dlms\objects\GXAdjacentCell.py" />
+    <Compile Include="gurux_dlms\objects\GXApplicationContextName.py" />
+    <Compile Include="gurux_dlms\objects\GXAuthenticationMechanismName.py" />
+    <Compile Include="gurux_dlms\objects\GXChargePerUnitScaling.py" />
+    <Compile Include="gurux_dlms\objects\GXChargeTable.py" />
+    <Compile Include="gurux_dlms\objects\GXCommodity.py" />
+    <Compile Include="gurux_dlms\objects\GXCreditChargeConfiguration.py" />
+    <Compile Include="gurux_dlms\objects\GXCurrency.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSAccount.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSActionItem.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSActionSchedule.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSActionSet.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSActivityCalendar.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSAssociationLogicalName.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSAssociationShortName.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSAutoAnswer.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSAutoConnect.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSCaptureObject.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSCertificateInfo.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSCharge.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSClock.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSCredit.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSData.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSDayProfile.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSDayProfileAction.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSDemandRegister.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSDisconnectControl.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSEmergencyProfile.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSExtendedRegister.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSGprsSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSGSMCellInfo.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSGSMDiagnostic.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSHdlcSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSIECOpticalPortSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSIecTwistedPairSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSImageActivateInfo.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSImageTransfer.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSIp4Setup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSIp4SetupIpOption.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSIp6Setup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSLimiter.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSMacAddressSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSMBusClient.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSMBusMasterPortSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSMBusSlavePortSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSModemConfiguration.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSModemInitialisation.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSMonitoredValue.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSObject.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSObjectCollection.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSObjectDefinition.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSParameterMonitor.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSPppSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSPppSetupIPCPOption.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSPppSetupLcpOption.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSProfileGeneric.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSPushSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSQualityOfService.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSRegister.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSRegisterActivation.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSRegisterMonitor.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSSapAssignment.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSSchedule.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSScheduleEntry.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSScript.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSScriptAction.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSScriptTable.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSSeasonProfile.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSSecuritySetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSSpecialDay.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSSpecialDaysTable.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSTarget.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSTcpUdpSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSTokenGateway.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSWeekProfile.py" />
+    <Compile Include="gurux_dlms\objects\GXNeighborDiscoverySetup.py" />
+    <Compile Include="gurux_dlms\objects\GXSendDestinationAndMethod.py" />
+    <Compile Include="gurux_dlms\objects\GXTokenGatewayConfiguration.py" />
+    <Compile Include="gurux_dlms\objects\GXUnitCharge.py" />
+    <Compile Include="gurux_dlms\objects\GXxDLMSContextType.py" />
+    <Compile Include="gurux_dlms\objects\GXXmlReader.py" />
+    <Compile Include="gurux_dlms\objects\GXXmlWriter.py" />
+    <Compile Include="gurux_dlms\objects\GXXmlWriterSettings.py" />
+    <Compile Include="gurux_dlms\objects\IGXDLMSBase.py" />
+    <Compile Include="gurux_dlms\objects\__init__.py" />
+    <Compile Include="gurux_dlms\ReleaseRequestReason.py" />
+    <Compile Include="gurux_dlms\ReleaseResponseReason.py" />
+    <Compile Include="gurux_dlms\SerialnumberCounter.py" />
+    <Compile Include="gurux_dlms\ServiceError.py" />
+    <Compile Include="gurux_dlms\SetRequestType.py" />
+    <Compile Include="gurux_dlms\SetResponseType.py" />
+    <Compile Include="gurux_dlms\setup.py" />
+    <Compile Include="gurux_dlms\SingleReadResponse.py" />
+    <Compile Include="gurux_dlms\SingleWriteResponse.py" />
+    <Compile Include="gurux_dlms\TranslatorGeneralTags.py" />
+    <Compile Include="gurux_dlms\TranslatorOutputType.py" />
+    <Compile Include="gurux_dlms\TranslatorSimpleTags.py" />
+    <Compile Include="gurux_dlms\TranslatorStandardTags.py" />
+    <Compile Include="gurux_dlms\TranslatorTags.py" />
+    <Compile Include="gurux_dlms\ValueEventArgs.py" />
+    <Compile Include="gurux_dlms\VariableAccessSpecification.py" />
+    <Compile Include="gurux_dlms\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".pylintrc" />
+    <Content Include="gurux_dlms.sln" />
+    <Content Include="LICENSE" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="gurux_dlms\" />
+    <Folder Include="gurux_dlms\" />
+    <Folder Include="gurux_dlms\enums\" />
+    <Folder Include="gurux_dlms\internal\" />
+    <Folder Include="gurux_dlms\manufacturersettings\" />
+    <Folder Include="gurux_dlms\secure\" />
+    <Folder Include="gurux_dlms\objects\" />
+    <Folder Include="gurux_dlms\objects\enums\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.6" />
+    <InterpreterReference Include="Global|PythonCore|3.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.7</Version>
+      <Description>env (Python 3.7 (32-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X86</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

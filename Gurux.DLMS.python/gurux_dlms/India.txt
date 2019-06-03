@@ -1,0 +1,98 @@
+# IC | OBIS | VERSION | DESCRIPTION
+1;0.0.0.1.0.255;0;Cumulative Billing count
+1;0.0.94.91.0.255;0;Cumulative Tamper Count
+1;0.0.94.91.9.255;0;Meter Type
+1;0.0.94.91.11.255;0;Meter Category
+1;0.0.94.91.12.255;0;Meter Current Rating
+1;0.0.94.91.18.255;0;Event Status Word 1 (ESW-1)
+1;0.0.94.91.26.255;0;ESWF
+1;0.0.94.96.19.255;0;Metering Mode
+1;0.0.94.96.20.255;0;Payment Mode
+1;0.0.94.96.21.255;0;Last Token Recharge Amount
+1;0.0.94.96.22.255;0;Last Token Recharge Time
+1;0.0.94.96.23.255;0;Total Amount At Last Recharge
+1;0.0.94.96.24.255;0;Current Prepayment Mode Balance Amount
+1;0.0.94.96.25.255;0;Current Prepayment Balance Time
+1;0.0.96.1.0.255;0;Meter Serial Number
+1;0.0.96.1.1.255;0;Manufacturer Name
+1;0.0.96.1.2.255;0;Device ID
+1;0.0.96.1.4.255;0;Meter Year Of Manufacture
+1;0.0.96.2.0.255;0;Cumulative Programming Count
+1;0.0.96.11.1.255;0;Event:Current Related
+1;0.0.96.11.2.255;0;Event:Power Related
+1;0.0.96.11.3.255;0;Event:Transaction Related
+1;0.0.96.11.4.255;0;Event:Others
+1;0.0.96.11.5.255;0;Event:Non Roll Over Events
+1;0.0.96.11.6.255;0;Event:Load Switch Status
+1;1.0.0.2.0.255;0;Firmware Version For Meter
+1;1.0.0.8.0.255;0;Demand Integration Period
+1;1.0.0.8.4.255;0;Profile Capture Period
+3;0.0.0.1.2.255;0;Billing Date Import Mode
+3;0.0.94.91.13.255;0;Billing Power ON duration in Minutes (During Billing Period)
+3;0.0.94.91.14.255;0;Cumulative power ON Duration in Minutes
+3;1.0.1.7.0.255;0;Active Power-kW
+3;1.0.1.29.0.255;0;Block Energy-kWh - Import
+3;1.0.1.8.0.255;0;Cumulative Energy-kWh
+3;1.0.1.8.1.255;0;Cumulative Energy-kWh for TZ1
+3;1.0.1.8.2.255;0;Cumulative Energy-kWh for TZ2
+3;1.0.1.8.3.255;0;Cumulative Energy-kWh for TZ3
+3;1.0.1.8.4.255;0;Cumulative Energy-kWh for TZ4
+3;1.0.10.8.0.255;0;Cumulative Energy-kVAh - Export
+3;1.0.10.29.0.255;0;Block Energy-kVAh - Export
+3;1.0.11.7.0.255;0;Phase Current
+3;1.0.11.27.0.255;0;Average Current
+3;1.0.12.7.0.255;0;Voltage
+3;1.0.12.27.0.255;0;Average Voltage
+3;1.0.13.0.0.255;0;Average Power Factor for Billing Period
+3;1.0.13.7.0.255;0;Signed Power Factor
+3;1.0.14.7.0.255;0;Frequency-Hz
+3;1.0.2.8.0.255;0;Cumulative Energy-kWh - Export
+3;1.0.2.29.0.255;0;Block Energy-kWh - Export
+3;1.0.9.7.0.255;0;Apparent Power-KVA
+3;1.0.9.8.0.255;0;Cumulative Energy-kVAh - Import
+3;1.0.9.8.1.255;0;Cumulative Energy-kVAH for TZ1
+3;1.0.9.8.2.255;0;Cumulative Energy-kVAH for TZ2
+3;1.0.9.8.3.255;0;Cumulative Energy-kVAH for TZ3
+3;1.0.9.8.4.255;0;Cumulative Energy-kVAH for TZ4
+3;1.0.9.29.0.255;0;Block Energy-kVAh - Import
+3;1.0.91.7.0.255;0;Neutral Current
+3;1.0.94.91.14.255;0;Current
+4;1.0.1.6.0.255;0;Maximum Demand-kW
+4;1.0.9.6.0.255;0;Maximum Demand-kVA
+7;0.0.94.91.10.255;1;Nameplate Profile
+7;0.0.99.98.0.255;1;Voltage Related Events Profile
+7;0.0.99.98.1.255;1;Current Related Events Profile
+7;0.0.99.98.2.255;1;Power Related Events Profile
+7;0.0.99.98.3.255;1;Transaction Events Profile
+7;0.0.99.98.4.255;1;Other Tamper Events Profile
+7;0.0.99.98.5.255;1;Non Roll Over Events Profile
+7;0.0.99.98.6.255;1;Control Events Profile
+7;1.0.94.91.0.255;1;Instantaneous Profile
+7;1.0.94.91.3.255;0;Scaler: Instantaneous Profile
+7;1.0.94.91.4.255;0;Scaler: Block Load Profile
+7;1.0.94.91.5.255;0;Scaler: Daily Load Profile
+7;1.0.94.91.6.255;0;Scaler: Billing Profile
+7;1.0.94.91.7.255;0;Scaler: Events Profile
+7;1.0.94.91.10.255;0;Name Plate Details
+7;1.0.98.1.0.255;1;Billing Profile
+7;1.0.99.1.0.255;1;Load Profile
+7;1.0.99.2.0.255;1;Daily Load Profile
+8;0.0.1.0.0.255;0;Clock
+9;0.0.10.0.1.255;0;MD Reset Action
+15;0.0.40.0.2.255;1;LLS Secret Key
+15;0.0.40.0.3.255;1;HLS Secret key - Association 3 (HLS)
+15;0.0.40.0.5.255;1;HLS Secret key - Association 4 (Firmware Upgrade)
+18;0.0.44.0.0.255;0;Image Activation Info
+20;0.0.13.0.0.255;0;Activity Calendar Active Time
+20;0.0.13.0.0.255;0;Activity Calendar For Time Zones
+22;0.0.15.0.0.255;0;Single-action Schedule for Billing Dates
+22;0.0.15.0.2.255;0;Single Action Schedule for Image Activation
+22;0.0.15.0.4.255;0;Single Action Schedule for PUSH (SM to HES)
+40;0.0.25.9.0.255;1;Push Setup (SM->HES) Data
+40;0.4.25.9.0.255;1;Push Setup (SM-HES) Event
+64;0.0.43.0.3.255;0;Global Key Change - Association 3 (HLS)
+64;0.0.43.0.5.255;0;Global Key Change - Association 4 (Firmware Upgrade)
+70;0.0.96.3.10.255;0;Load Limit Function Status
+71;0.0.17.0.0.255;0;Load Limit Threshold (kW)
+71;0.0.17.0.0.255;0;Load Limit Value (kW)
+3;0.0.94.91.8.255;0;Cumulative power — OFF duration in min

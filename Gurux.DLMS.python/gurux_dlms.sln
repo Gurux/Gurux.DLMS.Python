@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "gurux_dlms", "gurux_dlms.pyproj", "{5B94F4C5-7F82-4A44-904D-B2D587F6E9DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B94F4C5-7F82-4A44-904D-B2D587F6E9DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B94F4C5-7F82-4A44-904D-B2D587F6E9DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBE9CA28-2A36-4093-BBF6-881BDF1EFBB5}
+	EndGlobalSection
+EndGlobal

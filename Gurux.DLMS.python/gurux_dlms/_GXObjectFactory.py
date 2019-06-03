@@ -1,0 +1,151 @@
+#
+#  --------------------------------------------------------------------------
+#   Gurux Ltd
+#
+#
+#
+#  Filename:        $HeadURL$
+#
+#  Version:         $Revision$,
+#                   $Date$
+#                   $Author$
+#
+#  Copyright (c) Gurux Ltd
+#
+# ---------------------------------------------------------------------------
+#
+#   DESCRIPTION
+#
+#  This file is a part of Gurux Device Framework.
+#
+#  Gurux Device Framework is Open Source software; you can redistribute it
+#  and/or modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; version 2 of the License.
+#  Gurux Device Framework is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  More information of Gurux products: http://www.gurux.org
+#
+#  This code is licensed under the GNU General Public License v2.
+#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+# ---------------------------------------------------------------------------
+from .enums import ObjectType
+#pylint: disable=too-many-locals, cyclic-import
+class _GXObjectFactory:
+    #Reserved for internal use.
+
+    @classmethod
+    def createObject(cls, ot):
+        from .objects import GXDLMSObject, GXDLMSActionSchedule, GXDLMSActivityCalendar, GXDLMSAssociationLogicalName,\
+            GXDLMSAssociationShortName, GXDLMSAutoAnswer, GXDLMSAutoConnect, GXDLMSClock, GXDLMSData, GXDLMSDemandRegister,\
+            GXDLMSMacAddressSetup, GXDLMSRegister, GXDLMSExtendedRegister, GXDLMSGprsSetup, GXDLMSHdlcSetup, GXDLMSIECOpticalPortSetup,\
+            GXDLMSIecTwistedPairSetup, GXDLMSIp4Setup, GXDLMSIp6Setup, GXDLMSMBusSlavePortSetup, GXDLMSImageTransfer, GXDLMSSecuritySetup,\
+            GXDLMSDisconnectControl, GXDLMSLimiter, GXDLMSMBusClient, GXDLMSModemConfiguration, GXDLMSPppSetup, GXDLMSProfileGeneric,\
+            GXDLMSRegisterMonitor, GXDLMSRegisterActivation, GXDLMSSapAssignment, GXDLMSSchedule, GXDLMSScriptTable, GXDLMSSpecialDaysTable,\
+            GXDLMSTcpUdpSetup, GXDLMSPushSetup, GXDLMSMBusMasterPortSetup, GXDLMSGSMDiagnostic, GXDLMSAccount, GXDLMSCredit, GXDLMSCharge, \
+            GXDLMSTokenGateway, GXDLMSParameterMonitor
+        #  If IC is manufacturer specific or unknown.
+        if ot is None:
+            raise ValueError("Invalid object type.")
+
+        if ot == ObjectType.ACTION_SCHEDULE:
+            ret = GXDLMSActionSchedule()
+        elif ot == ObjectType.ACTIVITY_CALENDAR:
+            ret = GXDLMSActivityCalendar()
+        elif ot == ObjectType.ASSOCIATION_LOGICAL_NAME:
+            ret = GXDLMSAssociationLogicalName()
+        elif ot == ObjectType.ASSOCIATION_SHORT_NAME:
+            ret = GXDLMSAssociationShortName()
+        elif ot == ObjectType.AUTO_ANSWER:
+            ret = GXDLMSAutoAnswer()
+        elif ot == ObjectType.AUTO_CONNECT:
+            ret = GXDLMSAutoConnect()
+        elif ot == ObjectType.CLOCK:
+            ret = GXDLMSClock()
+        elif ot == ObjectType.DATA:
+            ret = GXDLMSData()
+        elif ot == ObjectType.DEMAND_REGISTER:
+            ret = GXDLMSDemandRegister()
+        elif ot == ObjectType.MAC_ADDRESS_SETUP:
+            ret = GXDLMSMacAddressSetup()
+        elif ot == ObjectType.REGISTER:
+            ret = GXDLMSRegister()
+        elif ot == ObjectType.EXTENDED_REGISTER:
+            ret = GXDLMSExtendedRegister()
+        elif ot == ObjectType.GPRS_SETUP:
+            ret = GXDLMSGprsSetup()
+        elif ot == ObjectType.IEC_HDLC_SETUP:
+            ret = GXDLMSHdlcSetup()
+        elif ot == ObjectType.IEC_LOCAL_PORT_SETUP:
+            ret = GXDLMSIECOpticalPortSetup()
+        elif ot == ObjectType.IEC_TWISTED_PAIR_SETUP:
+            ret = GXDLMSIecTwistedPairSetup()
+        elif ot == ObjectType.IP4_SETUP:
+            ret = GXDLMSIp4Setup()
+        elif ot == ObjectType.IP6_SETUP:
+            ret = GXDLMSIp6Setup()
+        elif ot == ObjectType.MBUS_SLAVE_PORT_SETUP:
+            ret = GXDLMSMBusSlavePortSetup()
+        elif ot == ObjectType.IMAGE_TRANSFER:
+            ret = GXDLMSImageTransfer()
+        elif ot == ObjectType.SECURITY_SETUP:
+            ret = GXDLMSSecuritySetup()
+        elif ot == ObjectType.DISCONNECT_CONTROL:
+            ret = GXDLMSDisconnectControl()
+        elif ot == ObjectType.LIMITER:
+            ret = GXDLMSLimiter()
+        elif ot == ObjectType.MBUS_CLIENT:
+            ret = GXDLMSMBusClient()
+        elif ot == ObjectType.MODEM_CONFIGURATION:
+            ret = GXDLMSModemConfiguration()
+        elif ot == ObjectType.PPP_SETUP:
+            ret = GXDLMSPppSetup()
+        elif ot == ObjectType.PROFILE_GENERIC:
+            ret = GXDLMSProfileGeneric()
+        elif ot == ObjectType.REGISTER_MONITOR:
+            ret = GXDLMSRegisterMonitor()
+        elif ot == ObjectType.REGISTER_ACTIVATION:
+            ret = GXDLMSRegisterActivation()
+        elif ot == ObjectType.REGISTER_TABLE:
+            ret = GXDLMSObject(ot)
+        elif ot == ObjectType.ZIG_BEE_SAS_STARTUP:
+            ret = GXDLMSObject(ot)
+        elif ot == ObjectType.ZIG_BEE_SAS_JOIN:
+            ret = GXDLMSObject(ot)
+        elif ot == ObjectType.SAP_ASSIGNMENT:
+            ret = GXDLMSSapAssignment()
+        elif ot == ObjectType.SCHEDULE:
+            ret = GXDLMSSchedule()
+        elif ot == ObjectType.SCRIPT_TABLE:
+            ret = GXDLMSScriptTable()
+        elif ot == ObjectType.SPECIAL_DAYS_TABLE:
+            ret = GXDLMSSpecialDaysTable()
+        elif ot == ObjectType.STATUS_MAPPING:
+            ret = GXDLMSObject(ot)
+        elif ot == ObjectType.TCP_UDP_SETUP:
+            ret = GXDLMSTcpUdpSetup()
+        elif ot == ObjectType.ZIG_BEE_SAS_APS_FRAGMENTATION:
+            ret = GXDLMSObject(ot)
+        elif ot == ObjectType.UTILITY_TABLES:
+            ret = GXDLMSObject(ot)
+        elif ot == ObjectType.PUSH_SETUP:
+            ret = GXDLMSPushSetup()
+        elif ot == ObjectType.MBUS_MASTER_PORT_SETUP:
+            ret = GXDLMSMBusMasterPortSetup()
+        elif ot == ObjectType.GSM_DIAGNOSTIC:
+            ret = GXDLMSGSMDiagnostic()
+        elif ot == ObjectType.ACCOUNT:
+            ret = GXDLMSAccount()
+        elif ot == ObjectType.CREDIT:
+            ret = GXDLMSCredit()
+        elif ot == ObjectType.CHARGE:
+            ret = GXDLMSCharge()
+        elif ot == ObjectType.TOKEN_GATEWAY:
+            ret = GXDLMSTokenGateway()
+        elif ot == ObjectType.PARAMETER_MONITOR:
+            ret = GXDLMSParameterMonitor()
+        else:
+            ret = GXDLMSObject(ot)
+        return ret

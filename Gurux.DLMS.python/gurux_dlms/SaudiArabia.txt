@@ -1,0 +1,96 @@
+1;0.1.94.96.2.255;0;Storage Device Failure Date/Time
+1;0.1.94.96.22.255;0;LCD time-to-return to default screen
+1;0.1.94.96.23.255;0;LCD auto scroll time
+1;0.1.94.96.24.255;0;LCD night off option
+1;0.1.94.96.25.255;0;Start-stop time setting of LCD night off
+9;0.1.94.96.10.255;0;Meter Program Configuration
+9;0.1.94.96.11.255;0;Meter Program Configuration Status
+1;0.96.94.96.8.255;0;Remote output relay control Selection of the input control signals
+1;0.96.94.96.9.255;0;Auto recovery operation times of current over limit
+1;0.96.94.96.10.255;0;Auto recovery times setting of current over limit
+1;0.96.94.96.11.255;0;Release times of current over limit setting
+1;0.96.94.96.12.255;0;Data Transport Security Mode
+1;0.96.94.96.15.255;0;Number of Global Meter Reset
+1;0.96.94.96.16.255;0;Number of wrong cable connection
+1;1.96.12.33.0.255;0;Sag setting value
+1;0.1.94.96.3.255;0;Number of power restore (in all three phases)
+1;0.1.94.96.4.255;0;Number of power restore (phases L1)
+1;0.1.94.96.5.255;0;Number of power restore (phases L2)
+1;0.1.94.96.6.255;0;Number of power restore (phases L3)
+3;1.0.32.128.0.255;0;R-Y Phase average voltage
+3;1.0.52.128.0.255;0;Y-B Phase average voltage
+3;1.0.72.128.0.255;0;B-R Phase average voltage
+3;1.0.130.7.0.255;0;L1-L2 Instantaneous voltage
+3;1.0.131.7.0.255;0;L2-L3 Instantaneous voltage
+3;1.0.132.7.0.255;0;L3-L1 Instantaneous voltage
+1;0.0.94.96.22.255;0;LCD time-to-return to default screen
+1;0.0.94.96.23.255;0;LCD auto scroll time
+1;0.0.94.96.24.255;0;LCD night off option
+1;0.0.94.96.25.255;0;Start-stop time setting of LCD night off
+1;0.1.94.96.3.255;0;Number of power restore (in all three phases)
+1;0.1.94.96.4.255;0;Number of power restore (Phase L1)
+1;0.1.94.96.5.255;0;Number of power restore (Phase L2)
+1;0.1.94.96.6.255;0;Number of power restore (Phase L3)
+1;0.0.96.11.1.255;0;Number of clock change
+1;0.0.96.11.2.255;0;Number of EOB reset
+1;0.0.96.11.3.255;0;Number of manual reset
+1;0.0.96.11.4.255;0;Number of auto-reset
+1;0.0.96.11.5.255;0;Number of Current Missing
+1;0.0.96.11.6.255;0;Number of top cover open
+1;0.0.96.11.7.255;0;Number of terminal cover open
+1;0.0.96.11.8.255;0;Number of phase-neutral swap
+1;0.0.96.11.9.255;0;Number of reverse current
+1;0.0.96.11.10.255;0;Number of magnetic interference tampering
+1;0.0.96.15.0.255;0;Number of phase-neutral bypassing
+1;0.0.96.15.1.255;0;Number of phase sequence reversal
+1;1.0.91.40.0.255;0;Number of neutral line missing
+1;1.0.12.40.0.255;0;Number of voltage cut
+1;0.0.96.15.2.255;0;Number of password changes
+1;0.96.96.4.1.255;0;Number of state change of output relay control signals
+1;0.96.96.4.2.255;0;Number of selection of the input control signals
+1;0.96.96.4.3.255;0;Number of auto recovery operation times of current over limit
+1;0.96.96.4.4.255;0;Number of auto recovery times setting of current over limit
+1;0.96.96.4.5.255;0;Number of current over limit release
+1;0.96.96.4.6.255;0;Number of abnormal temperature
+1;0.96.96.4.7.255;0;Number of maximum current
+1;0.96.96.4.8.255;0;Number of harmonics (THD) limit
+1;0.96.12.32.0.255;0;Number of Sag limit
+1;0.96.12.36.0.255;0;Number of Swell limit
+1;0.96.94.96.15.255;0;Number of Global Meter Reset
+1;0.96.94.96.16.255;0;Number of wrong cable connection
+1;0.96.99.98.19.255;0;Security association Event
+1;0.96.15.128.0.255;0;Meter reading parameter
+7;1.0.99.97.0.255;1;Event log (Power failure)
+7;1.0.99.98.2.255;1;Event log (Power restore)
+7;1.0.99.98.3.255;1;Event log (Time change: from time)
+7;1.0.99.98.4.255;1;Event log (Time change: to time)
+7;1.0.99.98.5.255;1;Event log (EOB reset)
+7;1.0.99.98.6.255;1;Event log (Manual reset)
+7;1.0.99.98.7.255;1;Event log (Auto-reset)
+7;1.0.99.98.8.255;1;Event log (Meter configuration change)
+7;1.0.99.98.9.255;1;Event Log (Communication port log)
+7;1.0.99.98.10.255;1;Event log (Storage Device /Memory)
+7;1.0.99.98.11.255;1;Event log (Power line cut)
+7;1.0.99.98.12.255;1;Event log (Tamper 1)
+7;1.0.99.98.13.255;1;Event log (Tamper 2)
+7;1.0.99.98.14.255;1;Event log (Current/voltage limit violation)
+7;1.0.99.98.15.255;1;Event Log (Output relay control)
+7;1.0.99.98.16.255;1;Event Log (Password changes)
+7;1.96.99.98.12.255;1;State of output relay control signals (ON/OFF)
+7;1.96.99.98.2.255;1;Selection of the input control signals
+7;1.96.99.98.3.255;1;Auto recovery operation times of current over limit
+7;1.96.99.98.4.255;1;Auto recovery times setting of current over limit
+7;1.96.99.98.13.255;1;Current over limit release
+7;1.96.99.98.6.255;1;Temperature over limit
+7;1.96.99.98.7.255;1;Maximum current
+7;1.96.99.98.8.255;1;Harmonics (THD) limit 
+7;1.96.99.10.1.255;1;Sag limit
+7;1.96.99.10.2.255;1;Swell limit
+7;1.96.99.98.19.255;1;Security association Event
+7;1.96.99.98.20.255;1;Display Roll-Over to Zero Event
+1;0.1.94.96.11.255;0;Meter Program Configuration Status
+1;0.1.94.96.12.255;0;Data Transport Security Mode
+1;0.1.94.96.22.255;0;LCD time-to-return to default screen
+1;0.1.94.96.23.255;0;LCD auto scroll time
+1;0.1.94.96.24.255;0;LCD night off option
+1;0.1.94.96.25.255;0;Start-stop time setting of LCD night off

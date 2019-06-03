@@ -1,0 +1,175 @@
+1;0.0.96.1.0.255;0;Manufacturing number
+1;0.0.96.1.10.255;0;Metering Point Identifier
+1;0.0.96.1.3.255;0;Equipment Class Identifier
+1;0.0.96.1.5.255;0;UNI/TS Reference version
+17;0.0.41.0.0.255;0;SAP assigment
+1;0.0.42.0.0.255;0;Logical Device Name
+15;0.0.40.0.1.255;2;Management Association
+15;0.0.40.0.16.255;2;Public Association
+15;0.0.40.0.3.255;2;Installer/Maintainer Association
+15;0.0.40.0.48.255;2;Guarantor Authority Association
+15;0.0.40.0.64.255;2;Gateway Association
+15;0.0.40.0.32.255;2;Broadcasting Association
+1;0.0.94.39.33.255;0;Global Frame Counter Thresholds
+1;0.0.43.1.1.255;0;Management Frame Counter (On-line)
+1;0.1.43.1.1.255;0;Management Frame Counter (Off-line)
+1;0.0.43.1.48.255;0;Guarantor Authority Frame Counter
+1;0.0.43.1.3.255;0;Installer/Maintainer Frame Counter
+1;0.0.43.1.64.255;0;Gateway Frame Counter
+1;0.0.43.1.32.255;0;Broadcast Frame Counter
+8;0.0.1.0.0.255;0;Clock
+1;0.0.1.1.0.255;0;UNIX Time
+1;0.0.1.1.0.101;0;UNIX Time, Daily historical value, previous gas day
+1;0.0.94.39.44.255;0;Synchronization Algorithm
+1;0.0.94.39.20.255;0;Synchronization Registers
+1;0.0.96.14.0.255;0;Currently Active Tariff
+8192;0.0.94.39.21.255;0;Active UNI/TS Tariff Plan
+8192;0.0.94.39.22.255;0;Passive UNI/TS Tariff Plan
+9;0.0.10.0.0.255;0;Global Script
+1;7.0.96.5.0.255;0;UNI/TS Device Status
+3;0.0.94.39.31.255;0;Installer/Maintainer Remaining Time
+21;0.0.94.39.32.255;0;Installer/Maintainer Monitor
+1;0.0.94.39.30.255;0;Installer/Maintainer Setup
+70;0.0.96.3.10.255;0;Disconnect Control
+9;0.0.10.0.106.255;0;Disconnect Control Script Table 
+22;0.0.15.0.1.255;0;Disconnect control Single action schedule 
+1;0.0.94.39.3.255;0;Valve Configuration PGV 
+1;0.0.94.39.1.255;0;Valve Enable Password 
+1;0.0.94.39.2.255;0;Maximum Password Attempts 
+1;0.0.94.39.6.255;0;Opening Command Duration Validity 
+21;0.0.94.39.5.255;0;Number of days without Comms Threshold 
+21;0.0.94.39.25.255;0;Tampering Attempts Threshold 
+1;0.1.96.20.25.255;0;Internal tampering attempt counter
+1;0.0.94.39.26.255;0;Leakage Test Parameters 
+1;0.0.94.39.7.255;0;Valve Closure Cause
+1;0.0.94.39.46.255;0;User Message
+3;7.0.96.5.1.255;0;Current Diagnostic
+1;7.1.96.5.1.255;0;Daily diagnostic
+1;7.2.96.5.1.255;0;Snapshot Period Diagnostic
+1;0.0.96.20.25.255;0;Anti-fraud totalizer
+1;0.0.96.20.30.255;0;Communication tamper event counter
+1;0.0.96.11.2.255;0;Event Code
+1;0.0.96.15.2.255;0;Event Counter
+7;7.0.99.98.0.255;0;Event Logbook
+7;7.0.96.11.1.255;0;Metrological Event Code
+7;7.0.96.98.1.255;0;Metrological Logbook
+1;0.0.96.15.1.255;0;Metrological Event Counter
+7;7.0.99.16.0.255;0;Parameter Monitor Logbook
+65;0.0.16.2.0.255;0;Parameter Monitor
+1;0.0.94.39.42.255;0;Session Error Reason Code
+1;0.0.94.39.43.255;0;Invoke Id of Erroneous APDU
+3;7.0.13.2.0.255;0;Current Index of Converted Volume
+3;7.0.13.2.1.255;0;Current Index of Converted Volume in F1 rate
+3;7.0.13.2.2.255;0;Current Index of Converted Volume in F2 rate
+3;7.0.13.2.3.255;0;Current Index of Converted Volume in F3 rate
+3;7.0.12.2.0.255;0;Current Index of Converted Volume Under Alarm
+4;7.0.43.45.0.255;0;Maximum Convertional Converted Gas Flow
+3;0.0.96.8.0.255;0;Total operating time
+9;0.0.10.0.1.255;0;Snapshot Script 
+9;0.0.10.0.8.255;0;Push Script 
+3;7.0.13.26.0.101;0;Index Converted Volume, Daily historical value, previous gas day
+3;7.0.12.26.0.101;0;Index Converted Volume under Alarm, Daily historical value, previous gas day
+1;7.0.0.9.3.255;0;Start of Conventional Gas Day
+1;7.1.96.5.1.101;0;Daily diagnostic, Daily historical value, previous gas day
+1;0.0.1.1.0.255;0;UNIX Time, Daily historical value, previous gas day
+22;0.1.15.0.4.255;0;Push Scheduler 1
+40;0.1.25.9.0.255;0;Push Setup 1
+1;7.0.0.8.23.255;0;EOB Snapshot Period
+1;0.0.94.39.11.255;0;EOB Snapshot Starting Date
+1;0.0.94.39.8.255;0;On Demand Snapshot Time
+1;0.0.96.10.2.255;0;Snapshot Reason Code
+1;7.0.0.1.0.255;0;Billing/Snapshot Period Counter
+7;7.0.98.11.0.255;0;Snapshot Period Data
+22;0.2.15.0.4.255;0;Push Scheduler 2
+40;0.2.25.9.0.255;0;Push Setup 2
+22;0.3.15.0.4.255;0;Push Scheduler 3
+40;0.3.25.9.0.255;0;Push Setup 3
+22;0.4.15.0.4.255;0;Push Scheduler 4
+40;0.4.25.9.0.255;0;Push Setup 4
+7;7.0.99.99.3.255;0;Daily Load Profile
+18;0.0.44.0.0.255;0;Image transfer
+1;7.0.0.2.1.255;0;Metrological firmware version
+1;7.0.0.2.8.255;0;Metrological firmware signature
+1;7.1.0.2.1.255;0;Non Metrological firmware version
+1;7.1.0.2.8.255;0;Non Metrological firmware signature
+1;0.0.94.39.41.255;0;Block transfer status
+3;0.0.96.6.0.255;0;Battery Use Time Counter 0
+3;0.1.96.6.0.255;0;Battery Use Time Counter 1
+3;0.0.96.6.6.255;0;Battery estimated remaining use time 0
+3;0.1.96.6.6.255;0;Battery estimated remaining use time 1
+3;0.0.96.6.4.255;0;Battery Initial Capacity 0
+3;0.1.96.6.4.255;0;Battery Initial Capacity 1 
+3;0.0.94.39.14.255;0;Battery Change Authorization 
+3;7.0.41.0.0.255;0;Current Temperature
+3;7.0.41.2.0.255;0;Base Temperature
+3;7.0.41.3.0.255;0;Temperature, backup value
+43;0.0.25.2.0.255;0;RF module MAC address
+73;0.0.31.0.0.255;0;RF module Secondary Address
+1;0.0.94.39.13.255;0;PhyTransmittingERPower 
+1;0.0.94.39.15.255;0;Physical channel Information Plan
+1;0.0.94.39.16.255;0;PIB
+1;0.0.94.39.34.255;0;Detected Transmission Frequency Offset
+1;0.0.94.39.18.255;0;MIB
+1;0.0.94.39.18.254;0;MIB
+1;0.0.94.39.9.255;0;Synchronous Access
+9;0.0.94.39.17.255;0;Power Level Selection Script
+1;0.0.94.39.12.255;0;Maintenance Window
+1;0.1.94.39.12.255;0;Synchronization Window
+3;0.0.94.39.4.255;0;Number of days without Comms
+21;0.0.94.39.10.255;0;PM1 Orphaned Threshold
+1;0.0.94.39.19.255;0;PM1 Affiliation Parameters
+1;0.0.94.39.23.255;0;PM1 Datalink Frame Information
+1;0.0.94.39.24.255;0;PM1 Received RSSI
+1;0.1.25.2.0.255;0;PM1 Peer MAC Address
+1;0.0.96.5.4.255;0;PM1 Network Status
+7;7.0.99.98.6.255;0;PM1 Logbook
+1;0.0.96.15.3.255;0;PM1 Event Counter
+19;0.0.20.0.0.255;0;IEC Local Port Setup
+23;0.0.22.0.0.255;1;IEC HDLC Setup
+1;0.0.94.39.40.255;0;Spare Object
+62;0.0.66.0.1.255;0;CF1 
+62;0.0.66.0.2.255;0;CF2 
+62;0.0.66.0.10.255;0;CF10 
+62;0.0.66.0.11.255;0;CF11
+62;0.0.66.0.4.255;0;CF4
+62;0.0.66.0.6.255;0;CF6
+62;0.0.66.0.7.255;0;CF7
+62;0.0.66.0.9.255;0;CF9
+1;0.0.96.15.4.255;0;Directory event counter
+1;0.0.96.11.4.255;0;Directory event code
+7;7.0.99.98.1.255;0;Metrological logbook
+8192;0.0.94.39.22.255;0;Passive UNI/TS Tariff Plan
+28;0.0.2.2.0.255;0;Auto Answer
+29;0.0.2.1.0.255;0;Auto Connect
+1;7.0.96.5.1.101;0;Current Diagnostic
+1;0.0.96.10.2.101;0;Snapshot Reason Code (end-of-billing-period)
+1;7.0.0.1.0.101;0;Snapshot/Billing Period Counter (end-of-billing-period)
+3;7.0.13.2.0.101;0;Current Index of Converted Volume (end-of-billing-period)
+3;7.0.13.83.1.101;0;Current Index of Converted Volume in F1 rate (end-of-billing-period)
+1;7.2.96.5.1.101;0;Snapshot Period Diagnostic (end-of-billing-period)
+43;0.1.25.2.0.255;0;PM1 Peer MAC address
+7;0.0.21.0.1.255;1;Not Enrolled Detected List
+7;0.1.21.0.1.255;1;Enrolled Detected List
+1;0.0.94.39.36.255;0;PM1 first detected UNIX Time
+1;0.0.94.39.35.255;0;PM1 RSSI Statistic
+1;0.0.94.39.38.255;0;Detected Entry Status
+1;0.0.94.39.48.255;0;White Listed Devices
+1;0.0.94.39.47.255;0;Black Listed Devices
+7;0.0.21.0.2.255;1;White List
+7;0.0.21.0.3.255;1;Black List
+7;7.0.99.98.3.255;0;Directory Event Logbook
+7;7.0.21.0.10.255;0;Command Queue
+7;7.0.21.0.11.255;0;Response Queue
+7;7.0.21.0.12.255;0;Broadcast Command Queue
+1;0.0.94.39.44.255;0;Synchronization Algorithm 
+1;0.0.21.0.14.255;0;Command Buffer
+1;0.0.94.39.39.255;0;White List Control Information
+1;0.0.94.39.45.255;0;PM1 Request Priority
+1;0.0.94.39.27.255;0;PM1 Request Identifier
+1;0.0.94.39.29.255;0;PM1 Response Status
+
+1;0.0.94.39.50.255;0;PM1 DataLink Payload
+1;0.0.94.39.28.255;0;PM1 Request Time-To-Live
+7;0.0.21.0.10.255;0;Command Queue
+7;0.0.98.1.0.255;0;Push Data Queue
+7;0.0.21.0.11.255;0;Response Queue
