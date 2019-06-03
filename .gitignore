@@ -24,6 +24,10 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+Gurux.DLMS.Client.Example.python/.vs
+Gurux.DLMS.python/.vs
+Gurux.DLMS.Client.Example.python/.vscode
+Gurux.DLMS.python/.vscode
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
