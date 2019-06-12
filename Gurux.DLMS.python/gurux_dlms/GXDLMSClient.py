@@ -580,6 +580,10 @@ class GXDLMSClient:
         buff.setUInt8(0x80)
         buff.setUInt8(1)
         buff.setUInt8(00)
+        #Increase IC.
+        if self.settings.cipher and self.settings.cipher.isCiphered:
+            self.settings.cipher.invocationCounter = self.settings.cipher.invocationCounter + 1
+
         _GXAPDU.generateUserInformation(self.settings, self.settings.cipher, None, buff)
         buff.setUInt8(0, int((len(buff) - 1)))
         reply = None
