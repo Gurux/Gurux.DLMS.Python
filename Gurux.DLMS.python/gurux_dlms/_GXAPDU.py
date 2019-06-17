@@ -68,19 +68,19 @@ class _GXAPDU:
     #
     @classmethod
     def getAuthenticationString(cls, settings, data):
+        #  Add sender ACSE-requirements field component.
+        data.setUInt8(BerType.CONTEXT.value | PduType.SENDER_ACSE_REQUIREMENTS.value)
+        data.setUInt8(2)
+        data.setUInt8(BerType.BIT_STRING.value | BerType.OCTET_STRING.value)
+        data.setUInt8(0x80)
+        data.setUInt8(BerType.CONTEXT.value | PduType.MECHANISM_NAME.value)
+        #  Len
+        data.setUInt8(7)
+        #  OBJECT IDENTIFIER
+        p = [int(0x60), int(0x85), int(0x74), 0x05, 0x08, 0x02, settings.authentication.value]
+        data.set(p)
         #  If authentication is used.
         if settings.authentication != Authentication.NONE:
-            #  Add sender ACSE-requirements field component.
-            data.setUInt8(BerType.CONTEXT.value | PduType.SENDER_ACSE_REQUIREMENTS.value)
-            data.setUInt8(2)
-            data.setUInt8(BerType.BIT_STRING.value | BerType.OCTET_STRING.value)
-            data.setUInt8(0x80)
-            data.setUInt8(BerType.CONTEXT.value | PduType.MECHANISM_NAME.value)
-            #  Len
-            data.setUInt8(7)
-            #  OBJECT IDENTIFIER
-            p = [int(0x60), int(0x85), int(0x74), 0x05, 0x08, 0x02, settings.authentication.value]
-            data.set(p)
             #  Add Calling authentication information.
             len_ = 0
             callingAuthenticationValue = None
