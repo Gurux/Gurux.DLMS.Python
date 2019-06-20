@@ -458,7 +458,7 @@ class GXDLMSTranslator:
     #
     def pduToXml(self, pdu):
         if isinstance(pdu, str):
-            pdu = GXByteBuffer.hexToBytes(pdu)
+            pdu = GXByteBuffer(GXByteBuffer.hexToBytes(pdu))
         return self.__pduToXml(pdu, self.omitXmlDeclaration, self.omitXmlNameSpace)
 
     @classmethod
