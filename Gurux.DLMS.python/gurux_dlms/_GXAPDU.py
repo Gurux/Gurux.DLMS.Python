@@ -145,7 +145,7 @@ class _GXAPDU:
             #  Add calling-AP-title
             data.setUInt8((BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AP_TITLE.value))
             #  LEN
-            data.setUInt8((len(cipher.systemTitle)))
+            data.setUInt8(2 + len(cipher.systemTitle))
             data.setUInt8(BerType.OCTET_STRING.value)
             #  LEN
             data.setUInt8(len(cipher.systemTitle))
@@ -249,7 +249,7 @@ class _GXAPDU:
                 p.authenticationKey = cipher.authenticationKey
                 crypted = GXCiphering.encrypt(p, tmp.array())
                 #  Length for AARQ user field
-                data.setUInt8((len(crypted)))
+                data.setUInt8(2 + len(crypted))
                 #  Coding the choice for user-information (Octet string,
                 #  universal)
                 data.setUInt8(BerType.OCTET_STRING.value)
