@@ -583,7 +583,7 @@ class _GXCommon:
         if len(buff) - buff.position < 8:
             info.complete = (False)
             return None
-        value = float(buff.getDouble())
+        value = buff.getDouble()
         if info.xml:
             if info.xml.comments:
                 info.xml.appendComment("{:.2f}".format(value))
@@ -608,7 +608,7 @@ class _GXCommon:
         if len(buff) - buff.position < 4:
             info.complete = (False)
             return None
-        value = float(buff.getFloat())
+        value = buff.getFloat()
         if info.xml:
             if info.xml.comments:
                 info.xml.appendComment("{:.2f}".format(value))
@@ -633,7 +633,7 @@ class _GXCommon:
         if len(buff) - buff.position < 1:
             info.complete = (False)
             return None
-        value = int(buff.getUInt8())
+        value = buff.getUInt8()
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
         return value

@@ -346,15 +346,47 @@ class GXByteBuffer(Sequence):
         return value
 
     def getFloat(self, index=None):
-        # pylint:disable=unused-argument
+        if index is None:
+            index = self.position
+            if index + 4 > self.size:
+                raise ValueError("getFloat")
+            self.position += 4
+        if index + 4 > self.size:
+            raise ValueError("getFloat")
         tmp = bytearray(4)
         self.get(tmp)
+        # Swap bytes.
+        tmp2 = tmp[0]
+        tmp[0] = tmp[3]
+        tmp[3] = tmp2
+        tmp2 = tmp[1]
+        tmp[1] = tmp[2]
+        tmp[2] = tmp2
         return struct.unpack("f", tmp)
 
     def getDouble(self, index=None):
-        # pylint:disable=unused-argument
+        if index is None:
+            index = self.position
+            if index + 8 > self.size:
+                raise ValueError("getFloat")
+            self.position += 8
+        if index + 8 > self.size:
+            raise ValueError("getFloat")
         tmp = bytearray(8)
         self.get(tmp)
+        # Swap bytes.
+        tmp2 = tmp[0]
+        tmp[0] = tmp[7]
+        tmp[7] = tmp2
+        tmp2 = tmp[1]
+        tmp[1] = tmp[6]
+        tmp[6] = tmp2
+        tmp2 = tmp[2]
+        tmp[2] = tmp[5]
+        tmp[5] = tmp2
+        tmp2 = tmp[3]
+        tmp[3] = tmp[4]
+        tmp[4] = tmp2
         return struct.unpack("d", tmp)
 
     def getInt64(self, index=None):

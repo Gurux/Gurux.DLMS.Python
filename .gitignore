@@ -116,3 +116,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Gurux.DLMS.Client.Example.python/logFile.txt
