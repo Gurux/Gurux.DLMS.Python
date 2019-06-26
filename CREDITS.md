@@ -1,4 +1,7 @@
 Credits
 =======
   - HLS AARQ Generation issue.
-    * [alyainfo](http://www.gurux.fi/user/155959)
+    * [alyainfo](https://www.gurux.fi/user/155959)
+
+  - Reading float value issue.
+    * [Captain America](https://www.gurux.fi/user/182156)
