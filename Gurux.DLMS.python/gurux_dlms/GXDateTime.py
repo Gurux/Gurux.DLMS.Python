@@ -201,22 +201,22 @@ class GXDateTime:
             #  Separate date and time parts.
             str_ = self.__get_pattern(True)
             str_ = self._remove(str_)
-            if self.skip & DateTimeSkips.YEAR != 0:
+            if self.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%y")
                 str_ = self._replace(str_, "%-y")
-            if self.skip & DateTimeSkips.MONTH != 0:
+            if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%m")
                 str_ = self._replace(str_, "%-m")
-            if self.skip & DateTimeSkips.DAY != 0:
+            if self.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%d")
                 str_ = self._replace(str_, "%-d")
-            if self.skip & DateTimeSkips.HOUR != 0:
+            if self.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%H")
                 str_ = self._replace(str_, "%-H")
                 str_ = self._replace(str_, "%I")
                 str_ = self._replace(str_, "%-I")
                 str_ = self._remove_(str_, "p", False)
-            if self.skip & DateTimeSkips.MILLISECOND != 0:
+            if self.skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%f")
             else:
                 index = str_.find("%S")
@@ -228,7 +228,7 @@ class GXDateTime:
                     if index != -1:
                         sep = str_[index - 1]
                         str_.replace("%-S", "%-S" + sep + "%f")
-            if self.skip & DateTimeSkips.SECOND != 0:
+            if self.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%S")
                 str_ = self._replace(str_, "%-S")
             else:
@@ -236,7 +236,7 @@ class GXDateTime:
                 if index != -1:
                     sep = str_[index - 1]
                     str_.replace("%M", "%M" + sep + "%S")
-            if self.skip & DateTimeSkips.MINUTE != 0:
+            if self.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%M")
                 str_ = self._replace(str_, "%-M")
             return self.value.strftime(str_)
@@ -267,21 +267,21 @@ class GXDateTime:
             #  Separate date and time parts.
             str_ = self.__get_pattern(False)
             str_ = self._remove(str_)
-            if self.skip & DateTimeSkips.YEAR != 0:
+            if self.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%Y", True)
                 str_ = self._remove_(str_, "%y", True)
                 str_ = self._remove_(str_, "%-y", True)
-            if self.skip & DateTimeSkips.MONTH != 0:
+            if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%m", True)
                 str_ = self._remove_(str_, "%-m", True)
-            if self.skip & DateTimeSkips.DAY != 0:
+            if self.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%d", True)
                 str_ = self._remove_(str_, "%-d", True)
-            if self.skip & DateTimeSkips.HOUR != 0:
+            if self.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%H", True)
                 str_ = self._remove_(str_, "%-H", True)
                 str_ = self._remove_(str_, "%p", True)
-            if self.skip & DateTimeSkips.MILLISECOND != 0:
+            if self.skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%f", True)
             else:
                 index = str_.find("%S")
@@ -293,7 +293,7 @@ class GXDateTime:
                     if index != -1:
                         sep = str_[index - 1]
                         str_ = str_.replace("%-S", "%-S" + sep + "%f")
-            if self.skip & DateTimeSkips.SECOND != 0:
+            if self.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%S", True)
                 str_ = self._remove_(str_, "%-S", True)
             else:
@@ -306,7 +306,7 @@ class GXDateTime:
                     else:
                         sep = str_[index - 1]
                         str_.replace("%M", "%M" + sep + "S")
-            if self.skip & DateTimeSkips.MINUTE != 0:
+            if self.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%M", True)
                 str_ = self._remove_(str_, "%-M", True)
             return self.value.strftime(str_.strip())
@@ -326,7 +326,7 @@ class GXDateTime:
         diff = 0
         cal = to.getLocalCalendar()
         #  Compare seconds.
-        if not to.skip & DateTimeSkips.SECOND != 0:
+        if not to.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
             if start.second < cal.second:
                 diff += (cal.second - start.second) * 1000
             else:
@@ -334,7 +334,7 @@ class GXDateTime:
         elif diff < 0:
             diff = 60000 + diff
         #  Compare minutes.
-        if not to.skip & DateTimeSkips.MINUTE != 0:
+        if not to.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
             if start.minute < cal.minute:
                 diff += (cal.minute - start.minute) * 60000
             else:
@@ -342,7 +342,7 @@ class GXDateTime:
         elif diff < 0:
             diff = 60 * 60000 + diff
         #  Compare hours.
-        if not to.skip & DateTimeSkips.HOUR != 0:
+        if not to.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
             if start.hour < cal.hour:
                 diff += (cal.hour - start.hour) * 60 * 60000
             else:
@@ -350,18 +350,18 @@ class GXDateTime:
         elif diff < 0:
             diff = 60 * 60000 + diff
         #  Compare days.
-        if not to.skip & DateTimeSkips.DAY != 0:
+        if not to.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
             if start.day < cal.day:
                 diff += (cal.month - start.month) * 24 * 60 * 60000
             elif start.month != cal.month:
-                if not to.skip & DateTimeSkips.DAY != 0:
+                if not to.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
                     diff += (cal.month - start.month) * 24 * 60 * 60000
                 else:
                     diff = ((cls.daysInMonth(start.year, start.month) - start.day + cal.day) * 24 * 60 * 60000) + diff
         elif diff < 0:
             diff = 24 * 60 * 60000 + diff
         #  Compare months.
-        if not to.skip & DateTimeSkips.MONTH != 0:
+        if not to.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
             if start.month < cal.month:
                 m = start.day
                 while m != cal.day:

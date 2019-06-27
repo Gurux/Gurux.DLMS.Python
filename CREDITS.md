@@ -5,3 +5,5 @@ Credits
 
   - Reading float value issue.
     * [Captain America](https://www.gurux.fi/user/182156)
+  - Converting GXDateTime toString issue.
+    * [Captain America](https://www.gurux.fi/user/182156)
