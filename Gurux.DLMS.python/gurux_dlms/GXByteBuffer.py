@@ -348,11 +348,6 @@ class GXByteBuffer(Sequence):
     def getFloat(self, index=None):
         if index is None:
             index = self.position
-            if index + 4 > self.size:
-                raise ValueError("getFloat")
-            self.position += 4
-        if index + 4 > self.size:
-            raise ValueError("getFloat")
         tmp = bytearray(4)
         self.get(tmp)
         # Swap bytes.
@@ -367,11 +362,6 @@ class GXByteBuffer(Sequence):
     def getDouble(self, index=None):
         if index is None:
             index = self.position
-            if index + 8 > self.size:
-                raise ValueError("getFloat")
-            self.position += 8
-        if index + 8 > self.size:
-            raise ValueError("getFloat")
         tmp = bytearray(8)
         self.get(tmp)
         # Swap bytes.
