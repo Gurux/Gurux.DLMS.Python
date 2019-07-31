@@ -119,7 +119,7 @@ class GXSettings:
         port = 0
         for it in parameters:
             if it.tag == 'w':
-                self.client.setInterfaceType(InterfaceType.WRAPPER)
+                self.client.interfaceType = InterfaceType.WRAPPER
             elif it.tag == 'r':
                 if it.value == "sn":
                     self.client.setUseLogicalNameReferencing(False)
