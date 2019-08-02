@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename:        $HeadURL$
+#  Filename: $HeadURL$
 #
-#  Version:         $Revision$,
+#  Version: $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -43,3 +43,6 @@ class GXChargePerUnitScaling:
     def __init__(self):
         self.commodityScale = 0
         self.priceScale = 0
+
+    def __str__(self):
+        return str(self.commodityScale) + ", " + str(self.priceScale)

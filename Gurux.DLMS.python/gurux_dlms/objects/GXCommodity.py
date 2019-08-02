@@ -43,3 +43,6 @@ class GXCommodity:
     def __init__(self):
         self.target = None
         self.index = 0
+
+    def __str__(self):
+        return str(self.target) + ", " + str(self.index)

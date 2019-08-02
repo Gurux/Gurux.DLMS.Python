@@ -276,7 +276,6 @@
     <Compile Include="gurux_dlms\ServiceError.py" />
     <Compile Include="gurux_dlms\SetRequestType.py" />
     <Compile Include="gurux_dlms\SetResponseType.py" />
-    <Compile Include="gurux_dlms\setup.py" />
     <Compile Include="gurux_dlms\SingleReadResponse.py" />
     <Compile Include="gurux_dlms\SingleWriteResponse.py" />
     <Compile Include="gurux_dlms\TranslatorGeneralTags.py" />

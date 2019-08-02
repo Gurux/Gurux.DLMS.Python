@@ -197,8 +197,12 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
                     it.data = item[2]
                     self.ipcpOptions.append(it)
         elif e.index == 5:
-            self.userName = e.value[0]
-            self.password = e.value[1]
+            if e.value:
+                self.userName = e.value[0]
+                self.password = e.value[1]
+            else:
+                self.userName = None
+                self.password = None
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 

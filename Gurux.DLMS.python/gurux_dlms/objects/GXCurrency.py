@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename:        $HeadURL$
+#  Filename: $HeadURL$
 #
-#  Version:         $Revision$,
+#  Version: $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -49,3 +49,6 @@ class GXCurrency:
         self.name = None
         # Currency scale.
         self.scale = 0
+
+    def __str__(self):
+        return str(self.unit) + " " + str(self.name) + " " + str(self.scale)

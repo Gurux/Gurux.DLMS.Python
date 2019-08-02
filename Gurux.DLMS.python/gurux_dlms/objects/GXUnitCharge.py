@@ -50,3 +50,6 @@ class GXUnitCharge():
         self.commodity = GXCommodity()
         # Charge tables.
         self.chargeTables = list()
+
+    def __str__(self):
+        return str(self.chargePerUnitScaling) + str(self.commodity) + str(self.chargeTables)

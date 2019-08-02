@@ -90,27 +90,6 @@ class GXDLMSReader:
                 reply.clear()
                 self.readDLMSPacket2(it, reply)
 
-    #
-    #      * Handle received notify messages.
-    #      *
-    #      * @param reply
-    #      * Received data.
-    #
-    def handleNotifyMessages(self, reply):
-        items = list()
-        value = self.client.parseReport(reply, items)
-        #  If Event notification or Information report.
-        if value == None:
-            for it in items:
-                print(it.getKey().__str__() + " Value:" + it.getKey().getValues()[it.getValue() - 1])
-        else:
-            if isinstance(value, (object,)):
-                for it in value:
-                    print("Value:" + str(it))
-            else:
-                print("Value:" + str(value))
-        reply.clear()
-
     def readDLMSPacket2(self, data, reply):
         if data == None or len(data) == 0:
             return
@@ -288,20 +267,17 @@ class GXDLMSReader:
                     self.writeTrace(ex.__str__(), TraceLevel.ERROR)
 
     def showValue(self, pos, val):
-        if isinstance(val, bytes):
-            val = GXByteBuffer.hex(int(val))
+        if isinstance(val, (bytes, bytearray)):
+            val = GXByteBuffer(val)
         elif isinstance(val, list):
             str_ = ""
-            pos2 = 0
-            while pos2 != len(val):
+            for tmp in val:
                 if not str_ == "":
                     str_ += ", "
-                tmp = val[pos2]
                 if isinstance(tmp, bytes):
-                    str_ += GXByteBuffer.hex(int(tmp))
+                    str_ += GXByteBuffer.hex(tmp)
                 else:
                     str_ += str(tmp)
-                pos2 += 1
             val = str_
         self.writeTrace("Index: " + str(pos) + " Value: " + str(val), TraceLevel.INFO)
 
