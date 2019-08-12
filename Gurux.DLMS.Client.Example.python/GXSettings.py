@@ -31,12 +31,13 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-# ignore serial for now.  import serial
-import socket
-import sys
 from gurux_dlms import InterfaceType, Authentication
 from gurux_dlms.secure import GXDLMSSecureClient
-from TraceLevel import TraceLevel
+from gurux_common.enums import TraceLevel
+from gurux_common.io import Parity
+from gurux_net.enums import NetworkType
+from gurux_net import GXNet
+from gurux_serial import GXSerial
 from GXCmdParameter import GXCmdParameter
 
 class GXSettings:
@@ -55,7 +56,7 @@ class GXSettings:
     # Show help.
     #
     @classmethod
-    def showHelp(self):
+    def showHelp(cls):
         print("GuruxDlmsSample reads data from the DLMS/COSEM device.")
         print("GuruxDlmsSample -h [Meter IP Address] -p [Meter Port No] -c 16 -s 1 -r SN")
         print(" -h \t host name or IP address.")
@@ -88,7 +89,7 @@ class GXSettings:
     # @return List of command line parameters
     #
     @classmethod
-    def __getParameters(self,args, optstring):
+    def __getParameters(cls, args, optstring):
         list_ = list()
         skipNext = False
         for index in range(1, len(args)):
@@ -108,15 +109,13 @@ class GXSettings:
                 if pos < len(optstring) - 1 and optstring[1 + pos] == ':':
                     skipNext = True
                     if len(args) <= index:
-                        c.missing(True)
+                        c.missing = True
                     c.value = args[1 + index]
         return list_
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:")
-        hostName = None
-        port = 0
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:S:")
         for it in parameters:
             if it.tag == 'w':
                 self.client.interfaceType = InterfaceType.WRAPPER
@@ -129,13 +128,19 @@ class GXSettings:
                     raise ValueError("Invalid reference option.")
             elif it.tag == 'h':
                 #  Host address.
-                hostName = it.value
+                if not self.media:
+                    self.media = GXNet(NetworkType.TCP, it.value, 0)
+                else:
+                    self.media.hostName = it.value
             elif it.tag == 't':
                 #  Trace.
                 self.trace = TraceLevel[it.value.upper()]
             elif it.tag == 'p':
                 #  Port.
-                port = int(it.value)
+                if not self.media:
+                    self.media = GXNet(NetworkType.TCP, None, int(it.value))
+                else:
+                    self.media.port = int(it.value)
             elif it.tag == 'P':
                 #  Password
                 self.client.password = it.value
@@ -146,19 +151,28 @@ class GXSettings:
                 #  Get (read) selected objects.
                 for o in it.value.split(";,"):
                     tmp = o.split(":")
-                    if len(tmp):
+                    if len(tmp) != 6:
                         raise ValueError("Invalid Logical name or attribute index.")
                     self.readObjects.append((tmp[0].strip(), int(tmp[1].strip())))
-            elif it.tag == 'S':
-                self.media = serial.Serial(it.value)
+            elif it.tag == 'S':#Serial Port
+                self.media = GXSerial(None)
+                tmp = it.value.split(':')
+                self.media.portName = tmp[0]
+                if len(tmp) > 1:
+                    self.media.baudRate = int(tmp[1])
+                    self.media.dataBits = int(tmp[2][0: 1])
+                    self.media.parity = Parity(tmp[2][1: len(tmp[2]) - 2] .Substring(1, tmp[2].Length - 2))
+                    self.media.stopBits = int(tmp[2][len(tmp[2]) - 1:])
             elif it.tag == 'a':
                 try:
                     it.value = it.value.upper()
                     if it.value.startswith("HIGH"):
-                        it.value ="HIGH_" + it.value[4:]
+                        it.value = "HIGH_" + it.value[4:]
                     self.client.authentication = Authentication[it.value]
-                except Exception as e:
-                    #raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighMd5, HighSha1, HighGmac, HighSha256)")
+                except Exception:
+                    #raise ValueError("Invalid Authentication option: '" +
+                    #it.value + "'.  (None, Low, High, HighMd5, HighSha1,
+                    #HighGmac, HighSha256)")
                     raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, HighGmac)")
             elif it.tag == 'o':
                 pass
@@ -169,33 +183,27 @@ class GXSettings:
             elif it.tag == '?':
                 if it.tag == 'c':
                     raise ValueError("Missing mandatory client option.")
-                elif it.tag == 's':
+                if it.tag == 's':
                     raise ValueError("Missing mandatory server option.")
-                elif it.tag == 'h':
+                if it.tag == 'h':
                     raise ValueError("Missing mandatory host name option.")
-                elif it.tag == 'p':
+                if it.tag == 'p':
                     raise ValueError("Missing mandatory port option.")
-                elif it.tag == 'r':
+                if it.tag == 'r':
                     raise ValueError("Missing mandatory reference option.")
-                elif it.tag == 'a':
+                if it.tag == 'a':
                     raise ValueError("Missing mandatory authentication option.")
-                elif it.tag == 'S':
+                if it.tag == 'S':
                     raise ValueError("Missing mandatory Serial port option.\n")
-                elif it.tag == 't':
+                if it.tag == 't':
                     raise ValueError("Missing mandatory trace option.\n")
-                else:
-                    self.showHelp()
-                    return 1
+                self.showHelp()
+                return 1
             else:
                 self.showHelp()
                 return 1
 
-        if hostName != None and port != 0:
-            self.media = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_address = (hostName, port)
-            self.media.connect(server_address)
-
-        if self.media == None:
+        if not self.media:
             GXSettings.showHelp()
             return 1
         return 0

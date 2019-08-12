@@ -31,57 +31,54 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import os
-import socket
-import sys
 import datetime
-from TraceLevel import TraceLevel
+from gurux_common.enums import TraceLevel
+from gurux_common import ReceiveParameters
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, InterfaceType, GXDLMSException
 from gurux_dlms.enums import ObjectType, Authentication, Conformance, DataType
 from gurux_dlms.GXDLMSConverter import GXDLMSConverter
-from gurux_dlms.objects import *
+from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric
+from gurux_net import GXNet
 
 class GXDLMSReader:
     def __init__(self, client, media, trace):
         self.iec = False
-        self.replyBuff = None
-        self.WaitTime = 60000
+        self.replyBuff = bytearray(8 + 1024)
+        self.waitTime = 5000
         self.logFile = open("logFile.txt", "a")
-        self.Trace = trace
+        self.trace = trace
         self.media = media
         self.client = client
-        if trace.value > TraceLevel.WARNING.value:
+        if self.trace > TraceLevel.WARNING:
             print("Authentication: " + str(self.client.authentication))
             print("ClientAddress: " + hex(self.client.clientAddress))
             print("ServerAddress: " + hex(self.client.serverAddress))
-        if self.client.interfaceType == InterfaceType.WRAPPER:
-            self.replyBuff = bytearray(8 + 1024)
-        else:
-            self.replyBuff = bytearray(100)
 
     def close(self):
-        if self.media and self.media._closed:
+        #pylint: disable=broad-except
+        if self.media and self.media.isOpen():
             print("DisconnectRequest")
             reply = GXReplyData()
             try:
                 self.readDataBlock(self.client.releaseRequest(), reply)
-            except Exception as e:
+            except Exception:
                 pass
                 #  All meters don't support release.
             reply.clear()
             self.readDLMSPacket(self.client.disconnectRequest(), reply)
             self.media.close()
 
-    def now(self):
-        return str(datetime.datetime.now().time())
+    @classmethod
+    def now(cls):        
+        return datetime.datetime.now().strftime("%H:%M:%S")
 
     def writeTrace(self, line, level):
-        if self.Trace.value >= level.value:
+        if self.trace >= level:
             print(line)
         self.logFile.write(line)
 
     def readDLMSPacket(self, data, reply=None):
-        if reply == None:
+        if not reply:
             reply = GXReplyData()
         if isinstance(data, bytearray):
             self.readDLMSPacket2(data, reply)
@@ -91,59 +88,80 @@ class GXDLMSReader:
                 self.readDLMSPacket2(it, reply)
 
     def readDLMSPacket2(self, data, reply):
-        if data == None or len(data) == 0:
+        if not data:
             return
         notify = GXReplyData()
         reply.error = 0
-        succeeded = False
+        eop = 0x7E
+        #In network connection terminator is not used.
+        if self.client.interfaceType == InterfaceType.WRAPPER and isinstance(self.media, GXNet):
+            eop = None
+        p = ReceiveParameters()
+        p.eop = eop
+        p.waitTime = self.waitTime
+        if eop is None:
+            p.Count = 8
+        else:
+            p.Count = 5
+        self.media.eop = eop
         rd = GXByteBuffer()
-        if not reply.isStreaming():
-            self.writeTrace("TX: " + self.now() + "\t" + GXByteBuffer.hex(data), TraceLevel.VERBOSE)
-            self.media.sendall(data)
-        msgPos = 0
-        count = 100
-        pos = 0
-        try:
-            while not self.client.getData(rd, reply, notify):
-                if notify.data.size != 0:
-                    if not notify.isMoreData():
-                        t = GXDLMSTranslator()
-                        xml = t.dataToXml(notify.data)
-                        print(xml)
-                        notify.clear()
-                        msgPos = rd.position
-                    continue
-                rd.position = msgPos
-                rd.set(self.media.recv(100))
-            if pos == 3:
-                raise ValueError("Failed to receive reply from the device in given time.")
-            if pos != 0:
-                print("Data send failed.  Try to resend " + str(pos) + "/3")
-            ++pos
-        except Exception as e:
-            self.writeTrace("RX: " + self.now() + "\t" + rd.__str__(), TraceLevel.ERROR)
-            raise e
-        self.writeTrace("RX: " + self.now() + "\t" + rd.__str__(), TraceLevel.VERBOSE)
-        if reply.error != 0:
-            raise GXDLMSException(reply.error)
+        with self.media.getSynchronous():
+            if not reply.isStreaming():
+                self.writeTrace("TX: " + self.now() + "\t" + GXByteBuffer.hex(data), TraceLevel.VERBOSE)
+                self.media.send(data)
+            pos = 0
+            try:
+                while not self.client.getData(rd, reply, notify):
+                    if notify.data.size != 0:
+                        if not notify.isMoreData():
+                            t = GXDLMSTranslator()
+                            xml = t.dataToXml(notify.data)
+                            print(xml)
+                            notify.clear()
+                        continue
+                    elif not p.eop:
+                        p.count = self.client.getFrameSize(rd)
+                    while not self.media.receive(p):
+                        pos += 1
+                        if pos == 3:
+                            raise ValueError("Failed to receive reply from the device in given time.")
+                        #If echo.
+                        if not rd or len(rd) == len(data):
+                            self.media.send(data, None)
+                        #Try to read again...
+                        print("Data send failed. Try to resend " + str(pos) + "/3")
+
+                    rd.set(p.reply)
+                    p.reply = None
+                if pos == 3:
+                    raise ValueError("Failed to receive reply from the device in given time.")
+                if pos != 0:
+                    print("Data send failed.  Try to resend " + str(pos) + "/3")
+                pos += 1
+            except Exception as e:
+                self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.ERROR)
+                raise e
+            self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.VERBOSE)
+            if reply.error != 0:
+                raise GXDLMSException(reply.error)
 
     def readDataBlock(self, data, reply):
-        if data != None:
-            for it in data:
-                reply.clear()
-                self.readDataBlock(it, reply)
-
-    def readDataBlock(self, data, reply):
-        if data != None and len(data):
-            self.readDLMSPacket(data, reply)
-            while reply.isMoreData():
-                if reply.isStreaming():
-                    data = None
-                else:
-                    data = self.client.receiverReady(reply.moreData)
+        if data:
+            if isinstance(data, (list)):
+                for it in data:
+                    reply.clear()
+                    self.readDataBlock(it, reply)
+            else:
                 self.readDLMSPacket(data, reply)
+                while reply.isMoreData():
+                    if reply.isStreaming():
+                        data = None
+                    else:
+                        data = self.client.receiverReady(reply.moreData)
+                    self.readDLMSPacket(data, reply)
 
     def initializeConnection(self):
+        self.media.open()
         reply = GXReplyData()
         data = self.client.snrmRequest()
         if data:
@@ -207,6 +225,7 @@ class GXDLMSReader:
         return self.client.updateValue(pg, 2, reply.value)
 
     def readScalerAndUnits(self):
+        #pylint: disable=broad-except
         objs = self.client.objects.getObjects([ObjectType.REGISTER, ObjectType.EXTENDED_REGISTER, ObjectType.DEMAND_REGISTER])
         try:
             if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES != 0:
@@ -217,7 +236,7 @@ class GXDLMSReader:
                     elif isinstance(it, (GXDLMSDemandRegister,)):
                         list_.append((it, 4))
                 self.readList(list_)
-        except Exception as e:
+        except Exception:
             self.client.negotiatedConformance &= ~Conformance.MULTIPLE_REFERENCES
         if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES == 0:
             for it in objs:
@@ -226,37 +245,39 @@ class GXDLMSReader:
                         self.read(it, 3)
                     elif isinstance(it, (GXDLMSDemandRegister,)):
                         self.read(it, 4)
-                except Exception as e:
+                except Exception:
                     pass
 
     def getProfileGenericColumns(self):
+        #pylint: disable=broad-except
         profileGenerics = self.client.objects.getObjects(ObjectType.PROFILE_GENERIC)
-        for it in profileGenerics:
-            self.writeTrace("Profile Generic " + str(it.name) + "Columns:", TraceLevel.INFO)
-            pg = it
+        for pg in profileGenerics:
+            self.writeTrace("Profile Generic " + str(pg.name) + "Columns:", TraceLevel.INFO)
             try:
                 self.read(pg, 3)
-                if self.Trace.value > TraceLevel.WARNING.value:
+                if self.trace > TraceLevel.WARNING:
                     sb = ""
-                    for it, v in pg.captureObjects:
+                    for k, v in pg.captureObjects:
                         if sb:
                             sb += " | "
-                        sb += str(it.name)
+                        sb += str(k.name)
                         sb += " "
-                        desc = it.description
-                        if desc != None:
+                        desc = k.description
+                        if desc:
                             sb += desc
                     self.writeTrace(sb, TraceLevel.INFO)
             except Exception as ex:
-                self.writeTrace("Err! Failed to read columns:" + ex.getMessage(), TraceLevel.ERROR)
+                self.writeTrace("Err! Failed to read columns:" + str(ex), TraceLevel.ERROR)
 
     def getReadOut(self):
+        #pylint: disable=unidiomatic-typecheck, broad-except
         for it in self.client.objects:
             if type(it) == GXDLMSObject:
                 print("Unknown Interface: " + it.objectType.__str__())
                 continue
             if isinstance(it, GXDLMSProfileGeneric):
                 continue
+
             self.writeTrace("-------- Reading " + str(it.objectType) + " " + str(it.name) + " " + it.description, TraceLevel.INFO)
             for pos in (it).getAttributeIndexToRead(True):
                 try:
@@ -264,7 +285,7 @@ class GXDLMSReader:
                     self.showValue(pos, val)
                 except Exception as ex:
                     self.writeTrace("Error! Index: " + str(pos) + " " + str(ex), TraceLevel.ERROR)
-                    self.writeTrace(ex.__str__(), TraceLevel.ERROR)
+                    self.writeTrace(str(ex), TraceLevel.ERROR)
 
     def showValue(self, pos, val):
         if isinstance(val, (bytes, bytearray)):
@@ -272,7 +293,7 @@ class GXDLMSReader:
         elif isinstance(val, list):
             str_ = ""
             for tmp in val:
-                if not str_ == "":
+                if str_:
                     str_ += ", "
                 if isinstance(tmp, bytes):
                     str_ += GXByteBuffer.hex(tmp)
@@ -282,6 +303,7 @@ class GXDLMSReader:
         self.writeTrace("Index: " + str(pos) + " Value: " + str(val), TraceLevel.INFO)
 
     def getProfileGenerics(self):
+        #pylint: disable=broad-except,too-many-nested-blocks
         cells = []
         profileGenerics = self.client.objects.getObjects(ObjectType.PROFILE_GENERIC)
         for it in profileGenerics:
@@ -290,11 +312,11 @@ class GXDLMSReader:
             entries = self.read(it, 8)
             self.writeTrace("Entries: " + str(entriesInUse) + "/" + str(entries), TraceLevel.INFO)
             pg = it
-            if entriesInUse == 0 or len(pg.captureObjects) == 0:
+            if entriesInUse == 0 or not pg.captureObjects:
                 continue
             try:
                 cells = self.readRowsByEntry(pg, 1, 1)
-                if self.Trace.value > TraceLevel.WARNING.value:
+                if self.trace > TraceLevel.WARNING:
                     for rows in cells:
                         for cell in rows:
                             if isinstance(cell, bytearray):
@@ -303,12 +325,12 @@ class GXDLMSReader:
                                 self.writeTrace(str(cell) + " | ", TraceLevel.INFO)
                         self.writeTrace("", TraceLevel.INFO)
             except Exception as ex:
-                self.writeTrace("Error! Failed to read first row: " + ex.getMessage(), TraceLevel.ERROR)
+                self.writeTrace("Error! Failed to read first row: " + str(ex), TraceLevel.ERROR)
             try:
                 start = datetime.datetime.now()
                 end = start
-                start.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
-                end.replace(minute = 0, second = 0, microsecond = 0)
+                start.replace(hour=0, minute=0, second=0, microsecond=0)
+                end.replace(minute=0, second=0, microsecond=0)
                 cells = self.readRowsByRange(it, start, end)
                 for rows in cells:
                     for cell in rows:
@@ -318,7 +340,7 @@ class GXDLMSReader:
                             self.writeTrace(str(cell) + " | ", TraceLevel.INFO)
                     self.writeTrace("", TraceLevel.INFO)
             except Exception as ex:
-                self.writeTrace("Error! Failed to read last day: " + ex.getMessage(), TraceLevel.ERROR)
+                self.writeTrace("Error! Failed to read last day: " + str(ex), TraceLevel.ERROR)
 
     def getAssociationView(self):
         reply = GXReplyData()

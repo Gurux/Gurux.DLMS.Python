@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Gurux.DLMS.Client.Example.python", "Gurux.DLMS.Client.Example.python.pyproj", "{1670445F-1A07-481D-A479-EE7C6F617EFE}"
 EndProject

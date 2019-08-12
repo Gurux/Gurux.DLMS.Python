@@ -37,12 +37,12 @@ import socket
 import locale
 import re
 import calendar
-from GXSettings import GXSettings
-from GXDLMSReader import GXDLMSReader
 from gurux_dlms import *
 from gurux_dlms.manufacturersettings import *
 from gurux_dlms.enums import *
 from gurux_dlms.objects import *
+from GXSettings import GXSettings
+from GXDLMSReader import GXDLMSReader
 
 class sampleclient(object):
     @classmethod
@@ -71,8 +71,8 @@ class sampleclient(object):
             #         settings.media.bytesize = 8
             #         settings.media.parity = 'N'
             #         settings.media.stopbits = 1
-            if not isinstance(settings.media, socket.socket):
-                raise Exception("Unknown media type.")
+            #if not isinstance(settings.media, GXNet):
+            #    raise Exception("Unknown media type.")
             # //////////////////////////////////////
             reader = GXDLMSReader(settings.client, settings.media, settings.trace)
             if len(settings.readObjects) != 0:

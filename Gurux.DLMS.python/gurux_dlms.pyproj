@@ -286,6 +286,7 @@
     <Compile Include="gurux_dlms\ValueEventArgs.py" />
     <Compile Include="gurux_dlms\VariableAccessSpecification.py" />
     <Compile Include="gurux_dlms\__init__.py" />
+    <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".pylintrc" />
