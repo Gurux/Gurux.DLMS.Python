@@ -685,11 +685,11 @@ class GXDLMS:
     def getAddressBytes(cls, value, size):
         tmp = cls.getAddress(value, size)
         bb = GXByteBuffer()
-        if size == 1:
+        if size == 1 or tmp < 0x100:
             bb.setUInt8(tmp)
-        elif size == 2:
+        elif size == 2 or tmp < 0x10000:
             bb.setUInt16(tmp)
-        elif size == 4:
+        elif size == 4 or tmp < 0x100000000:
             bb.setUInt32(tmp)
         else:
             raise ValueError("Invalid address type.")

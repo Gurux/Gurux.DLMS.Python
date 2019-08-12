@@ -88,7 +88,7 @@ class GXDLMSSettings:
         self.serviceClass = ServiceClass.CONFIRMED
         self.clientAddress = 16
         self.serverAddress = 1
-        self.serverAddressSize = 1
+        self.serverAddressSize = 0
         self.useLogicalNameReferencing = True
         self.interfaceType = InterfaceType.HDLC
         self.authentication = Authentication.NONE

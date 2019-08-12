@@ -8,3 +8,5 @@ Credits
     * [Captain America](https://www.gurux.fi/user/182156)
   - Fix interfaceType set in sample client
     * [Ionut Cotoi](https://github.com/icotoi)
+  - logical address greater than 0
+    * [frato](https://www.gurux.fi/user/169642)
