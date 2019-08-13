@@ -1,0 +1,6 @@
+pytz==2019.2
+six==1.12.0
+gurux-common==1.0.2
+gurux-dlms==1.0.9
+gurux-net==1.0.2
+gurux-serial==1.0.3

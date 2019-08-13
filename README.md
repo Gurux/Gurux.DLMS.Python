@@ -13,6 +13,14 @@ DLMS/COSEM [meter/simulator/proxy](http://www.gurux.org/index.php?q=OwnDLMSMeter
 
 If you have problems you can ask your questions in Gurux [Forum](http://www.gurux.org/forum).
 
+Note!
+Minimum requirements for Gurux project is Python 3.6. This is because projects are depending on Flag and IntFlag.
+
+Before start the client example go Gurux.DLMS.Client.Example.python directory and run
+```Python
+pip install -r requirements.txt
+```
+
 You can use any connection (TCP, serial, PLC) library you want to.
 Gurux.DLMS classes only parse the data.
 
@@ -28,7 +36,10 @@ Simple example
 First you need to install the library:
 
 ```Python
-pip install gurux_dlms
+pip install gurux-common
+pip install gurux-serial
+pip install gurux-net
+pip install gurux-dlms
 ```
 
 Before use you must set following device parameters. 
