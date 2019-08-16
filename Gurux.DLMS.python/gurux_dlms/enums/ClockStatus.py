@@ -35,6 +35,7 @@ from enum import Enum
 
 class ClockStatus(Enum):
     """Defines Clock status."""
+    #pylint: disable=too-few-public-methods
 
     # OK.
     OK = 0

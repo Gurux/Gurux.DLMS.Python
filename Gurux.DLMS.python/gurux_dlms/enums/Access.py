@@ -37,6 +37,7 @@ class Access(Enum):
     """
     Access describes access errors.
     """
+    #pylint: disable=too-few-public-methods
 
     OTHER = 0
 

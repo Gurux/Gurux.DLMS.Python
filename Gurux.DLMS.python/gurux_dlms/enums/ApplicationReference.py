@@ -37,6 +37,7 @@ class ApplicationReference(Enum):
     """
     Application reference describes application errors.
     """
+    #pylint: disable=too-few-public-methods
 
     # Other error is occurred.
     OTHER = 0

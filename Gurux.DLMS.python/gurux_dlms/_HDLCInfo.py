@@ -31,10 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#
+
 #  Reserved for internal use.
-#
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class _HDLCInfo:
+    # Constructor.
+    def __init__(self):
+        pass
+
     MAX_INFO_TX = 0x5
     MAX_INFO_RX = 0x6
     WINDOW_SIZE_TX = 0x7

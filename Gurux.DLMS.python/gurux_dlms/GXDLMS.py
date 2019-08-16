@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .GXByteBuffer import GXByteBuffer
 from .internal._GXCommon import _GXCommon
 from .internal._GXDataInfo import _GXDataInfo
@@ -115,7 +116,7 @@ class GXDLMS:
         if type_ == RequestTypes.NONE:
             raise ValueError("Invalid receiverReady RequestTypes parameter.")
         #  Get next frame.
-        if (type_.value & RequestTypes.FRAME.value) != 0:
+        if (type_.value & RequestTypes.FRAME) != 0:
             id_ = settings.getReceiverReady()
             return GXDLMS.getHdlcFrame(settings, id_, None)
         cmd = int()
@@ -322,7 +323,7 @@ class GXDLMS:
                     else:
                         reply.setUInt32(cls.getLongInvokeIDPriority(p.settings))
                 if p.time is None:
-                    reply.setUInt8(DataType.NONE.value)
+                    reply.setUInt8(DataType.NONE)
                 else:
                     pos = len(reply)
                     _GXCommon.setData(reply, DataType.OCTET_STRING, p.getTime())
@@ -592,7 +593,7 @@ class GXDLMS:
         if p.command == Command.WRITE_REQUEST:
             p.setBlockIndex(p.blockIndex + 1)
             _GXCommon.setObjectCount(p.getCount(), reply)
-            reply.setUInt8(DataType.OCTET_STRING.value)
+            reply.setUInt8(DataType.OCTET_STRING)
         elif p.command == Command.READ_REQUEST:
             p.setBlockIndex(p.blockIndex + 1)
         _GXCommon.setObjectCount(maxSize, reply)
@@ -870,18 +871,18 @@ class GXDLMS:
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
             if frame_ == 0x97:
-                data.error = ErrorCode.UNACCEPTABLE_FRAME.value
+                data.error = ErrorCode.UNACCEPTABLE_FRAME
             elif frame_ == 0x1f:
-                data.error = ErrorCode.DISCONNECT_MODE.value
+                data.error = ErrorCode.DISCONNECT_MODE
             data.command = (frame_)
         elif frame_ != 0x13 and (frame_ & HdlcFrameType.S_FRAME.value) == HdlcFrameType.S_FRAME.value:
             tmp = (frame_ >> 2) & 0x3
-            if tmp == HdlcControlFrame.REJECT.value:
-                data.error = ErrorCode.REJECTED.value
-            elif tmp == HdlcControlFrame.RECEIVE_NOT_READY.value:
-                data.error = ErrorCode.RECEIVE_NOT_READY.value
-            elif tmp == HdlcControlFrame.RECEIVE_READY.value:
-                data.error = ErrorCode.OK.value
+            if tmp == HdlcControlFrame.REJECT:
+                data.error = ErrorCode.REJECTED
+            elif tmp == HdlcControlFrame.RECEIVE_NOT_READY:
+                data.error = ErrorCode.RECEIVE_NOT_READY
+            elif tmp == HdlcControlFrame.RECEIVE_READY:
+                data.error = ErrorCode.OK
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
         else:
@@ -1074,15 +1075,15 @@ class GXDLMS:
         number = data.getUInt16()
         blockLength = _GXCommon.getObjectCount(data)
         if lastBlock == 0:
-            reply.moreData = (RequestTypes(reply.moreData.value | RequestTypes.DATABLOCK.value))
+            reply.moreData = (RequestTypes(reply.moreData.value | RequestTypes.DATABLOCK))
         else:
-            reply.moreData = (RequestTypes(reply.moreData.value & ~RequestTypes.DATABLOCK.value))
+            reply.moreData = (RequestTypes(reply.moreData.value & ~RequestTypes.DATABLOCK))
         if number != 1 and settings.blockIndex == 1:
             settings.setBlockIndex(number)
         expectedIndex = settings.blockIndex
         if number != expectedIndex:
             raise Exception("Invalid Block number. It is " + number + " and it should be " + expectedIndex + ".")
-        if (reply.moreData.value & RequestTypes.FRAME.value) != 0:
+        if (reply.moreData.value & RequestTypes.FRAME) != 0:
             cls.getDataFromBlock(data, index)
             return False
         if blockLength != data.size - data.position:
@@ -1182,7 +1183,7 @@ class GXDLMS:
                 if number != settings.blockIndex:
                     raise Exception("Invalid Block number. It is " + number + " and it should be " + settings.blockIndex + ".")
                 settings.increaseBlockIndex()
-                reply.moreData = (RequestTypes(reply.moreData.value | RequestTypes.DATABLOCK.value))
+                reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
             else:
                 raise Exception("HandleReadResponse failed. Invalid tag.")
             pos += 1
@@ -1264,9 +1265,9 @@ class GXDLMS:
         index = data.position - 1
         last = data.getUInt8()
         if (last & 0x80) == 0:
-            reply.moreData = (RequestTypes(reply.moreData.value | RequestTypes.DATABLOCK.value))
+            reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
         else:
-            reply.moreData = (RequestTypes(reply.moreData.value & ~RequestTypes.DATABLOCK.value))
+            reply.moreData = (RequestTypes(reply.moreData & ~RequestTypes.DATABLOCK))
         data.getUInt8()
         data.getUInt8()
         data.getUInt8()
@@ -1466,9 +1467,9 @@ class GXDLMS:
                 reply.xml.appendStartTag(TranslatorTags.RESULT)
                 reply.xml.appendLine(TranslatorTags.LAST_BLOCK, "Value", reply.xml.integerToHex(ch, 2))
             if ch == 0:
-                reply.moreData = (RequestTypes(reply.moreData.value | RequestTypes.DATABLOCK.value))
+                reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
             else:
-                reply.moreData = (RequestTypes(reply.moreData.value & ~RequestTypes.DATABLOCK.value))
+                reply.moreData = (RequestTypes(reply.moreData & ~RequestTypes.DATABLOCK))
             number = data.getUInt32()
             if reply.xml:
                 reply.xml.appendLine(TranslatorTags.BLOCK_NUMBER, "Value", reply.xml.integerToHex(number, 8))
@@ -1487,14 +1488,14 @@ class GXDLMS:
                     reply.xml.appendLine(TranslatorTags.DATA_ACCESS_RESULT, "Value", GXDLMS.errorCodeToString(reply.xml.outputType, reply.error))
                 elif data.available() != 0:
                     blockLength = _GXCommon.getObjectCount(data)
-                    if (reply.moreData.value & RequestTypes.FRAME.value) == 0:
+                    if (reply.moreData.value & RequestTypes.FRAME) == 0:
                         if blockLength > len(data) - data.position:
                             reply.xml.appendComment("Block is not complete." + str(len(data) - data.position) + "/" + str(blockLength) + ".")
                     reply.xml.appendLine(TranslatorTags.RAW_DATA, "Value", data.toHex(False, data.position, data.available()))
                 reply.xml.appendEndTag(TranslatorTags.RESULT)
             elif data.position != len(data):
                 blockLength = _GXCommon.getObjectCount(data)
-                if (reply.moreData.value & RequestTypes.FRAME.value) == 0:
+                if (reply.moreData.value & RequestTypes.FRAME) == 0:
                     if blockLength > len(data) - data.position:
                         raise ValueError("Invalid block length.")
                     reply.command = (Command.NONE)
@@ -1586,9 +1587,9 @@ class GXDLMS:
             return
         cls.getDataFromBlock(data.data, index)
         if (bc & 0x80) == 0:
-            data.moreData = (RequestTypes(data.moreData.value | RequestTypes.DATABLOCK.value))
+            data.moreData = (RequestTypes(data.moreData | RequestTypes.DATABLOCK))
         else:
-            data.moreData = (RequestTypes(data.moreData.value & ~RequestTypes.DATABLOCK.value))
+            data.moreData = (RequestTypes(data.moreData & ~RequestTypes.DATABLOCK))
             if data.data.size != 0:
                 data.data.position = 0
                 cls.getPdu(settings, data)
@@ -1620,7 +1621,7 @@ class GXDLMS:
             elif cmd == Command.ACCESS_RESPONSE:
                 cls.handleAccessResponse(data)
             elif cmd == Command.GENERAL_BLOCK_TRANSFER:
-                if data.xml or (not settings.isServer and (data.moreData.value & RequestTypes.FRAME.value) == 0):
+                if data.xml or (not settings.isServer and (data.moreData & RequestTypes.FRAME) == 0):
                     cls.handleGbt(settings, data)
             elif cmd in (Command.AARQ, Command.AARE):
                 # This is parsed later.
@@ -1660,7 +1661,7 @@ class GXDLMS:
                 cls.getPdu(settings, data)
             else:
                 raise ValueError("Invalid Command.")
-        elif (data.moreData.value & RequestTypes.FRAME.value) == 0:
+        elif (data.moreData.value & RequestTypes.FRAME) == 0:
             if not data.peek and data.moreData == RequestTypes.NONE:
                 if data.command == Command.AARE or data.command == Command.AARQ:
                     data.data.position = 0
@@ -1684,7 +1685,7 @@ class GXDLMS:
                     data.data.position = data.cipherIndex
                     cls.getPdu(settings, data)
         if cmd == Command.READ_RESPONSE and data.commandType == SingleReadResponse.DATA_BLOCK_RESULT and \
-            (data.moreData.value & RequestTypes.FRAME.value) != 0:
+            (data.moreData.value & RequestTypes.FRAME) != 0:
             return
         if data.xml is None and data.data.position != data.data.size and \
             cmd in (Command.READ_RESPONSE, Command.GET_RESPONSE, Command.METHOD_RESPONSE, Command.DATA_NOTIFICATION) and (data.moreData == RequestTypes.NONE or data.peek):
@@ -1722,7 +1723,7 @@ class GXDLMS:
     def handleGloDedRequest(cls, settings, data):
         if settings.cipher is None:
             raise ValueError("Secure connection is not supported.")
-        if (data.moreData.value & RequestTypes.FRAME.value) == 0:
+        if (data.moreData.value & RequestTypes.FRAME) == 0:
             data.data.position = data.data.position - 1
             p = None
             if settings.cipher.dedicatedKey and (settings.connected & ConnectionState.DLMS) != 0:
@@ -1744,7 +1745,7 @@ class GXDLMS:
     def handleGloDedResponse(cls, settings, data, index):
         if settings.cipher is None:
             raise ValueError("Secure connection is not supported.")
-        if (data.moreData.value & RequestTypes.FRAME.value) == 0:
+        if (data.moreData.value & RequestTypes.FRAME) == 0:
             data.data.position = data.data.position - 1
             bb = GXByteBuffer(data.data)
             data.data.size = data.data.position = index
@@ -1769,7 +1770,7 @@ class GXDLMS:
         # pylint: disable=broad-except
         if settings.cipher is None:
             raise ValueError("Secure connection is not supported.")
-        if (data.moreData.value & RequestTypes.FRAME.value) == 0:
+        if (data.moreData.value & RequestTypes.FRAME) == 0:
             data.data.position = data.data.position - 1
             p = AesGcmParameter(settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
             tmp = GXCiphering.decrypt(settings.cipher, p, data.data)

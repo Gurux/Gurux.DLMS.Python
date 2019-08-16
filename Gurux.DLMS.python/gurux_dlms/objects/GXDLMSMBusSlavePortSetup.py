@@ -38,12 +38,13 @@ from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import BaudRate, AddressState
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSMBusSlavePortSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSMBusSlavePortSetup
+    """
+
     #
     # Constructor.
     #
@@ -52,7 +53,6 @@ class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
     # @param sn
     # Short Name of the object.
     #
-
     def __init__(self, ln=None, sn=0):
         super(GXDLMSMBusSlavePortSetup, self).__init__(ObjectType.MBUS_SLAVE_PORT_SETUP, ln, sn)
         # Defines the baud rate for the opening sequence.
@@ -139,6 +139,7 @@ class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
     # Set value of given attribute.
     #
     def setValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:

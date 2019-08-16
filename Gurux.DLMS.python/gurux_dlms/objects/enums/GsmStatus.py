@@ -37,6 +37,8 @@ class GsmStatus(Enum):
     """
     Defines the GSM status.
     """
+    #pylint: disable=too-few-public-methods
+
     #
     #
     NONE = 0

@@ -38,6 +38,7 @@ class InactivityMode(Enum):
     Enumerates inactivity modes that are used, when communicating with IEC
     using serial port connection.
     """
+    #pylint: disable=too-few-public-methods
 
     NONE = 0
     KEEPALIVE = 1

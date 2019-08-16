@@ -32,10 +32,10 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from enum import Enum
-#
-# Service describes service errors.
-#
+
 class Service(Enum):
+    """Service describes service errors."""
+    #pylint: disable=too-few-public-methods
     # Other error.
     OTHER = 0
     # PDU size is wrong.

@@ -34,6 +34,8 @@
 from enum import Enum
 
 class PppSetupIPCPOptionType(Enum):
+    #pylint: disable=too-few-public-methods
+
     IP_COMPRESSION_PROTOCOL = 2
     PREF_LOCAL_IP = 3
     PREF_PEER_IP = 20

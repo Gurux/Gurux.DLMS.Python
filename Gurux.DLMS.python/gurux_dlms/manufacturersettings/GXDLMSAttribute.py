@@ -35,20 +35,17 @@ from .GXDLMSAttributeSettings import GXDLMSAttributeSettings
 from ..enums import DataType
 
 class GXDLMSAttribute(GXDLMSAttributeSettings):
-    #
-    # Constructor.
-    #
-    # @param index
-    #            Attribute index.
-    # @param type
-    #            Data type.
-    # @param uiType
-    #            UI data type.
-    # @param order
-    #            Order.
-    #
+    #pylint: disable=too-few-public-methods
     def __init__(self, index=0, type_=DataType.NONE, uiType=DataType.NONE, order=0):
-        super(GXDLMSAttribute, self).__init__()
+        """
+        Constructor.
+
+        index : Attribute index.
+        type : Data type.
+        uiType : UI data type.
+        order : Order.
+        """
+        GXDLMSAttributeSettings.__init__(self)
         self.index = index
         self.type_ = type_
         self.UIType = uiType

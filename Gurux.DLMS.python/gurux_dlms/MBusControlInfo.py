@@ -36,6 +36,8 @@ from enum import Enum
 #  M-Bus control info.
 #
 class MBusControlInfo(Enum):
+    #pylint: disable=too-few-public-methods
+
     # Long M-Bus data header present, direction master to slave
     LONG_HEADER_MASTER = 0x60
 

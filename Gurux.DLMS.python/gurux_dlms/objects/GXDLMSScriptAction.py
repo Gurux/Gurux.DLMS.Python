@@ -34,7 +34,7 @@
 from .enums import ScriptActionType
 from ..enums import ObjectType
 from ..enums import DataType
-#pylint: disable=too-many-instance-attributes
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods,too-many-instance-attributes
 class GXDLMSScriptAction:
     #
     # Constructor.

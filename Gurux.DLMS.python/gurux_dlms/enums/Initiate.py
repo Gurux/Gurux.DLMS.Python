@@ -35,6 +35,7 @@ from enum import Enum
 
 class Initiate(Enum):
     """Initiate describes onitiate errors."""
+    #pylint: disable=too-few-public-methods
 
     OTHER = 0
 

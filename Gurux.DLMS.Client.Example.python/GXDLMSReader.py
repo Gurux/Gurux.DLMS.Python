@@ -34,8 +34,8 @@
 import datetime
 from gurux_common.enums import TraceLevel
 from gurux_common import ReceiveParameters
-from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, InterfaceType, GXDLMSException
-from gurux_dlms.enums import ObjectType, Authentication, Conformance, DataType
+from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
+from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType
 from gurux_dlms.GXDLMSConverter import GXDLMSConverter
 from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric
 from gurux_net import GXNet
@@ -69,7 +69,7 @@ class GXDLMSReader:
             self.media.close()
 
     @classmethod
-    def now(cls):        
+    def now(cls):
         return datetime.datetime.now().strftime("%H:%M:%S")
 
     def writeTrace(self, line, level):

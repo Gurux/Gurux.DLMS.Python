@@ -34,6 +34,8 @@
 from enum import Enum
 
 class SingleActionScheduleType(Enum):
+    #pylint: disable=too-few-public-methods
+
     #
     # Size of execution_time = 1.  Wildcard in date allowed.
     #

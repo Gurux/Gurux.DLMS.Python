@@ -33,6 +33,8 @@
 # ---------------------------------------------------------------------------
 from .enums import CertificateEntity, CertificateType
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXDLMSCertificateInfo:
     #
     # Constructor.

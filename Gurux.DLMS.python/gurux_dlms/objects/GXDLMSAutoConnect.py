@@ -40,22 +40,21 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import AutoConnectMode
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAutoConnect
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAutoConnect
+    """
+
     def __init__(self, ln="0.0.2.1.0.255", sn=0):
-        super(GXDLMSAutoConnect, self).__init__(ObjectType.AUTO_CONNECT, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.AUTO_CONNECT, ln, sn)
         self.mode = AutoConnectMode.NO_AUTO_DIALLING
         self.repetitions = 0
         self.repetitionDelay = 0
@@ -142,6 +141,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -152,11 +152,11 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
             ret = self.repetitionDelay
         elif e.index == 5:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             #  Add count
             _GXCommon.setObjectCount(len(self.callingWindow), data)
             for k, v in self.callingWindow:
-                data.setUInt8(DataType.STRUCTURE.value)
+                data.setUInt8(DataType.STRUCTURE)
                 #  Count
                 data.setUInt8(2)
                 #  Start time
@@ -166,7 +166,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
             ret = data.array()
         elif e.index == 6:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             if not self.destinations:
                 #  Add count
                 _GXCommon.setObjectCount(0, data)
@@ -194,14 +194,14 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         elif e.index == 4:
             self.repetitionDelay = e.value
         elif e.index == 5:
-            self.callingWindow.clear()
+            self.callingWindow = []
             if e.value:
                 for item in e.value:
                     start = _GXCommon.changeType(item[0], DataType.DATETIME)
                     end = _GXCommon.changeType(item[1], DataType.DATETIME)
                     self.callingWindow.append((start, end))
         elif e.index == 6:
-            self.destinations.clear()
+            self.destinations = []
             if e.value:
                 for item in e.value:
                     it = _GXCommon.changeType(item, DataType.STRING)
@@ -213,7 +213,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         self.mode = AutoConnectMode(reader.readElementContentAsInt("Mode"))
         self.repetitions = reader.readElementContentAsInt("Repetitions")
         self.repetitionDelay = reader.readElementContentAsInt("RepetitionDelay")
-        self.callingWindow.clear()
+        self.callingWindow = []
         if reader.isStartElement("CallingWindow", True):
             while reader.isStartElement("Item", True):
                 start = GXDateTime(reader.readElementContentAsString("Start"))

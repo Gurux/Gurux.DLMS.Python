@@ -33,18 +33,20 @@
 # ---------------------------------------------------------------------------
 from ..GXByteBuffer import GXByteBuffer
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXDLMSImageActivateInfo:
-    #
-    # Constructor.
-    #
-    # forSize: §Size.
-    # forIdentification: Identification.
-    # forSignature: Signature.
-    #
-    def __init__(self, forSize=0, forIdentification=None, forSignature=None):
-        self.size = forSize
-        self.identification = forIdentification
-        self.signature = forSignature
+    def __init__(self, size=0, identification=None, signature=None):
+        """
+        Constructor.
+
+        size: Size.
+        identification: Identification.
+        signature: Signature.
+        """
+        self.size = size
+        self.identification = identification
+        self.signature = signature
 
     def __str__(self):
         sb = ""

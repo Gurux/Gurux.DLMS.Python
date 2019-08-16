@@ -34,6 +34,8 @@
 from enum import Enum
 
 class AutoAnswerMode(Enum):
+    #pylint: disable=too-few-public-methods
+
     #
     # Line dedicated to the device.
     #

@@ -40,13 +40,13 @@ class GXDLMSException(Exception):
     """
     def __init__(self, errCode, serviceErr=None):
         if isinstance(errCode, StateError) and isinstance(serviceErr, ServiceError):
-            super(GXDLMSException, self).__init__("Meter returns " + self.getStateError(errCode) + " exception. " + self.getServiceError(serviceErr))
+            Exception.__init__(self, "Meter returns " + self.getStateError(errCode) + " exception. " + self.getServiceError(serviceErr))
         elif isinstance(errCode, AssociationResult):
-            super(GXDLMSException, self).__init__("Connection is " + self.getResult(errCode) + "\r\n" + self.getDiagnostic(serviceErr))
+            Exception.__init__(self, "Connection is " + self.getResult(errCode) + "\r\n" + self.getDiagnostic(serviceErr))
             self.result = errCode
             self.diagnostic = serviceErr
         else:
-            super(GXDLMSException, self).__init__(self.getDescription(ErrorCode(errCode)))
+            Exception.__init__(self, self.getDescription(ErrorCode(errCode)))
         self.errorCode = errCode
         self.stateError = None
         self.exceptionServiceError = None

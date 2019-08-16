@@ -34,6 +34,7 @@ class GXDLMSDayProfileAction:
     """
     Activity Calendar's Day Profile Action is defined on the standard.
     """
+    #pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 
     def __init__(self, startTime=None, scriptLogicalName=None, scriptSelector=0):
         """

@@ -37,6 +37,7 @@ class CreditType(Enum):
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCredit
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Token credit.

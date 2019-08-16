@@ -35,6 +35,8 @@ import datetime
 import calendar
 from .enums import DateTimeSkips, ClockStatus
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class GXDateTime:
     #
     # Constructor.

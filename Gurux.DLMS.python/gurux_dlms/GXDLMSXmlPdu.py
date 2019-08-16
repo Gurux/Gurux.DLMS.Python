@@ -32,7 +32,9 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums.Command import Command
+# pylint: disable=bad-option-value,old-style-class
 class GXDLMSXmlPdu:
+    #pylint: disable=too-many-instance-attributes
     def __init__(self, command=0, xml=None, pdu=None):
         # XML Node.
         self.xmlNode = xml

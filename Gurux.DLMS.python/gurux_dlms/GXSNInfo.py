@@ -31,14 +31,13 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
- #
-#  * Server uses this class to find Short Name object and attribute index. This
-#  * class is reserved for internal use.
-#
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXSNInfo:
-    #
+    #Server uses this class to find Short Name object and attribute index.
+    #This class is reserved for internal use.
+
     # Constructor.
-    #
     def __init__(self):
         # Is attribute index or action index
         self.action = False

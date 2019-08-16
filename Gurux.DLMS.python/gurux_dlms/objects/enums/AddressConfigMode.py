@@ -37,6 +37,7 @@ class AddressConfigMode(Enum):
     """
     Enumerated Address config modes.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Auto Configuration.

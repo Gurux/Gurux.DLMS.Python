@@ -40,22 +40,20 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import TokenDelivery, TokenStatusCode
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTokenGateway
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTokenGateway
+    """
 
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
     def __init__(self, ln="0.0.19.40.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSTokenGateway, self).__init__(ObjectType.TOKEN_GATEWAY, ln, sn)
         # Descriptions.
         self.descriptions = list()
@@ -139,6 +137,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         bb = None
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
@@ -148,23 +147,23 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
             ret = self.time
         elif e.index == 4:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if not self.descriptions:
                 bb.setUInt8(0)
             else:
                 bb.setUInt8(len(self.descriptions))
                 for it in self.descriptions:
-                    bb.setUInt8(DataType.OCTET_STRING.value)
+                    bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(int(len(it)))
                     bb.set(it.encode())
             ret = bb
         elif e.index == 5:
-            ret = self.deliveryMethod.value
+            ret = self.deliveryMethod
         elif e.index == 6:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.ENUM, self.statusCode.value)
+            _GXCommon.setData(bb, DataType.ENUM, self.statusCode)
             _GXCommon.setData(bb, DataType.BITSTRING, self.dataValue)
             ret = bb
         else:
@@ -182,7 +181,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             self.time = _GXCommon.changeType(e.value, DataType.DATETIME)
         elif e.index == 4:
-            self.descriptions.clear()
+            self.descriptions = []
             if e.value:
                 for it in e.value:
                     self.descriptions.append(it)
@@ -199,7 +198,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
         tmp = reader.readElementContentAsString("Time")
         if tmp:
             self.time = GXDateTime(tmp)
-        self.descriptions.clear()
+        self.descriptions = []
         if reader.isStartElement("Descriptions", True):
             while reader.isStartElement("Item", True):
                 self.descriptions.append(reader.readElementContentAsString("Name"))
@@ -218,6 +217,6 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("Name", it)
                 writer.writeEndElement()
             writer.writeEndElement()
-        writer.writeElementString("DeliveryMethod", self.deliveryMethod.value)
-        writer.writeElementString("Status", self.statusCode.value)
+        writer.writeElementString("DeliveryMethod", self.deliveryMethod)
+        writer.writeElementString("Status", self.statusCode)
         writer.writeElementString("Data", self.dataValue)

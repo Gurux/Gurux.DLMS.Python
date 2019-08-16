@@ -32,11 +32,14 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
-#
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXChargeTable:
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
+    """
+
     #
     # Constructor.
     #

@@ -36,22 +36,22 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode, ObjectType, DataType
 from ..internal._GXCommon import _GXCommon
 from .enums import BaudRate
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSHdlcSetup
-#
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSHdlcSetup
+    """
+
     def __init__(self, ln="0.0.22.0.0.255", sn=0):
-        super(GXDLMSHdlcSetup, self).__init__(ObjectType.IEC_HDLC_SETUP, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.IEC_HDLC_SETUP, ln, sn)
         self.communicationSpeed = BaudRate.BAUDRATE_9600
         self.windowSizeTransmit = 1
         self.windowSizeReceive = 1
@@ -151,6 +151,7 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:

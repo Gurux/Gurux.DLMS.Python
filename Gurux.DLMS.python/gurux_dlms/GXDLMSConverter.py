@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 import pkg_resources
 from .enums import Standard, ObjectType, DataType
 from .GXStandardObisCodeCollection import GXStandardObisCodeCollection
@@ -42,6 +43,8 @@ from .GXTime import GXTime
 from .GXByteBuffer import GXByteBuffer
 from .manufacturersettings.GXObisCode import GXObisCode
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class GXDLMSConverter:
     #
     # Constructor.

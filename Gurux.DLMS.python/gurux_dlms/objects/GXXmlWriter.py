@@ -31,15 +31,18 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
+
 import xml.etree.cElementTree as ET
+from enum import Enum
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..GXDLMSConverter import GXDLMSConverter
 from ..internal._GXCommon import _GXCommon
 from ..enums import DataType
 
-class GXXmlWriter():
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
+class GXXmlWriter:
     """
     Save COSEM object to the file.
     """
@@ -98,7 +101,7 @@ class GXXmlWriter():
                 if isinstance(tmp, bytearray):
                     self.writeElementObject("Item", tmp, False)
                 elif isinstance(tmp, (object,)):
-                    self.writeStartElement("Item", "Type", str(DataType.ARRAY.value), True)
+                    self.writeStartElement("Item", "Type", str(DataType.ARRAY), True)
                     self.writeArray(tmp)
                     self.writeEndElement()
                 else:
@@ -139,7 +142,7 @@ class GXXmlWriter():
                 value = GXDLMSConverter.changeType(value, type_)
 
             dt = _GXCommon.getDLMSDataType(value)
-            target = self.writeStartElement(name, "Type", str(dt.value), False)
+            target = self.writeStartElement(name, "Type", str(dt), False)
             if dt == DataType.ARRAY:
                 self.writeArray(value)
             else:

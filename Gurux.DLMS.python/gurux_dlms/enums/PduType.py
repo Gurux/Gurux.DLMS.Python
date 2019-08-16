@@ -35,6 +35,7 @@ from enum import Enum
 
 class PduType(Enum):
     """APDU types."""
+    #pylint: disable=too-few-public-methods
 
     # IMPLICIT BIT STRING {version1 = 0)} DEFAULT {version1}
     PROTOCOL_VERSION = 0

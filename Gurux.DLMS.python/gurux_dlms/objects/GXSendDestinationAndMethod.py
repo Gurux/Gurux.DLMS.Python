@@ -33,8 +33,9 @@
 # ---------------------------------------------------------------------------
 from .enums import MessageType, ServiceType
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXSendDestinationAndMethod:
-
     def __init__(self):
         """Constructor"""
         self.service = ServiceType.TCP

@@ -38,5 +38,7 @@ class ImageTransferredBlocksStatus(Enum):
     Provides information about the transfer status of each ImageBlock.
     Each bit in the bit-string provides information about one individual ImageBlock:
     """
+    #pylint: disable=too-few-public-methods
+
     NOT_TRANSFERRED = 0
     TRANSFERRED = 1

@@ -37,6 +37,7 @@ class BaudRate(Enum):
     """
     Defines the baud rates.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Baudrate is 300.

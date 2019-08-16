@@ -38,21 +38,19 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSapAssignment
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSapAssignment
+    """
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSSapAssignment, self).__init__(ObjectType.SAP_ASSIGNMENT, ln, sn)
         self.sapAssignmentList = list()
 
@@ -102,12 +100,12 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
         if e.index == 2:
             cnt = len(self.sapAssignmentList)
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             #  Add count
             _GXCommon.setObjectCount(cnt, data)
             if cnt != 0:
                 for k, v in self.sapAssignmentList:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(2)
                     #  Count
                     _GXCommon.setData(data, DataType.UINT16, k)
@@ -123,7 +121,7 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.sapAssignmentList.clear()
+            self.sapAssignmentList = []
             if e.value:
                 for item in e.value:
                     str_ = None
@@ -136,7 +134,7 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.sapAssignmentList.clear()
+        self.sapAssignmentList = []
         if reader.isStartElement("SapAssignmentList", True):
             while reader.isStartElement("Item", True):
                 sap = reader.readElementContentAsInt("SAP")

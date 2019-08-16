@@ -37,6 +37,7 @@ class ConfirmedServiceError(Enum):
     """
     Confirmed service error tells when error has occurred.
     """
+    #pylint: disable=too-few-public-methods
 
     INITIATE_ERROR = 1
     READ = 5

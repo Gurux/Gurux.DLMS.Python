@@ -37,8 +37,8 @@ from ..enums.DataType import DataType
 from ..enums.AccessMode import AccessMode
 from ..enums.MethodAccessMode import MethodAccessMode
 #
-# pylint: disable=too-many-public-methods,too-many-instance-attributes
-class GXDLMSObject:
+# pylint: disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
+class GXDLMSObject(object):
     #
     # Constructor,
     #
@@ -267,6 +267,7 @@ class GXDLMSObject:
     # @param e Value event parameters.
     # pylint: disable=no-self-use
     def invoke(self, settings, e):
+        #pylint: disable=unused-argument
         raise ValueError("invoke")
 
     def setDataType(self, index, type_):

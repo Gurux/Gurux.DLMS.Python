@@ -36,5 +36,6 @@ from enum import Enum
 #  * Enumerates Translator output types.
 #
 class TranslatorOutputType(Enum):
+    #pylint: disable=too-few-public-methods
     SIMPLE_XML = 0
     STANDARD_XML = 1

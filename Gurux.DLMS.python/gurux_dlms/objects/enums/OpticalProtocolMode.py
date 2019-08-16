@@ -36,9 +36,10 @@ class OpticalProtocolMode(Enum):
     """
     Defines the protocol used by the meter on the port.
     """
+    #pylint: disable=too-few-public-methods
 
     #
-    # Protocol according to IEC 62056-21 (modes A…E),
+    # Protocol according to IEC 62056-21 (modes A-E)
     #
     DEFAULT = 0
     #

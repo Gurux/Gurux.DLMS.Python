@@ -38,6 +38,8 @@ class AutoConnectMode(Enum):
     Defines the mode controlling the auto dial functionality concerning the
     timing.
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # No auto dialing,
     #

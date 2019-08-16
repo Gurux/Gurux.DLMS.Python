@@ -32,9 +32,11 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from abc import ABCMeta, abstractmethod
+
+ABC = ABCMeta('ABC', (object,), {'__slots__': ()})
+
 # pylint: disable=too-many-public-methods
-class GXICipher:
-    __metaclass__ = ABCMeta
+class GXICipher(ABC):
     #
     # Reset encrypt settings.
     #

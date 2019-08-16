@@ -37,6 +37,7 @@ class Authentication(Enum):
     """
     Authentication enumerates the authentication levels.
     """
+    #pylint: disable=too-few-public-methods
 
     #No authentication is used.
     NONE = 0

@@ -34,8 +34,8 @@
 from ..enums  import Conformance
 from ..GXByteBuffer import GXByteBuffer
 
-#pylint: disable=too-many-instance-attributes
-class GXxDLMSContextType:
+#pylint: disable=too-many-instance-attributes,too-few-public-methods, useless-object-inheritance
+class GXxDLMSContextType(object):
     #
     # Constructor.
     #
@@ -97,8 +97,11 @@ class GXxDLMSContextType:
 
     #Conformance
     conformance = property(__getConformance, __setConformance)
+
     maxReceivePduSize = property(__getMaxReceivePduSize, __setMaxReceivePduSize)
+
     maxSendPduSize = property(__getMaxSendPduSize, __setMaxSendPduSize)
+
     dlmsVersionNumber = property(__getDlmsVersionNumber, __setDlmsVersionNumber)
 
     def __str__(self):

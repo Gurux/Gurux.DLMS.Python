@@ -40,7 +40,7 @@ class GXAttributeCollection(list):
     # forParent: Parent object.
     #
     def __init__(self, forParent=None):
-        super(GXAttributeCollection, self).__init__()
+        list.__init__(self)
         # Parent object.
         self.parent = forParent
 

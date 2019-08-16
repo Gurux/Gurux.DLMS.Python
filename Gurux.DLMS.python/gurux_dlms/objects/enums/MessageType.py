@@ -36,6 +36,7 @@ class MessageType(Enum):
     """
     Enumerated message types.
     """
+    #pylint: disable=too-few-public-methods
 
     COSEM_APDU = 0
     COSEM_APDU_XML = 1

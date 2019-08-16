@@ -15,8 +15,12 @@ from .enums.Service import Service
 from .ReleaseResponseReason import ReleaseResponseReason
 from .ReleaseRequestReason import ReleaseRequestReason
 
-# pylint: disable=too-many-public-methods
+#pylint: disable=bad-option-value,old-style-class,too-many-public-methods
 class TranslatorSimpleTags:
+    # Constructor.
+    def __init__(self):
+        pass
+
     #
     # Get general tags.
     #
@@ -266,30 +270,30 @@ class TranslatorSimpleTags:
 
     @classmethod
     def getDataTypeTags(cls, list_):
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.NONE.value] = "None"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.ARRAY.value] = "Array"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.BCD.value] = "BCD"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.BITSTRING.value] = "BitString"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.BOOLEAN.value] = "Boolean"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.COMPACT_ARRAY.value] = "CompactArray"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.DATE.value] = "Date"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.DATETIME.value] = "DateTime"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.ENUM.value] = "Enum"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.FLOAT32.value] = "Float32"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.FLOAT64.value] = "Float64"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT16.value] = "Int16"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT32.value] = "Int32"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT64.value] = "Int64"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT8.value] = "Int8"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.OCTET_STRING.value] = "OctetString"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.STRING.value] = "String"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.STRING_UTF8.value] = "StringUTF8"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.STRUCTURE.value] = "Structure"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.TIME.value] = "Time"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT16.value] = "UInt16"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT32.value] = "UInt32"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT64.value] = "UInt64"
-        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT8.value] = "UInt8"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.NONE] = "None"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.ARRAY] = "Array"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.BCD] = "BCD"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.BITSTRING] = "BitString"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.BOOLEAN] = "Boolean"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.COMPACT_ARRAY] = "CompactArray"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.DATE] = "Date"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.DATETIME] = "DateTime"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.ENUM] = "Enum"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.FLOAT32] = "Float32"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.FLOAT64] = "Float64"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT16] = "Int16"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT32] = "Int32"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT64] = "Int64"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.INT8] = "Int8"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.OCTET_STRING] = "OctetString"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.STRING] = "String"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.STRING_UTF8] = "StringUTF8"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.STRUCTURE] = "Structure"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.TIME] = "Time"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT16] = "UInt16"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT32] = "UInt32"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT64] = "UInt64"
+        list_[_GXCommon.DATA_TYPE_OFFSET + DataType.UINT8] = "UInt8"
 
     @classmethod
     def errorCodeToString(cls, value):
@@ -653,7 +657,6 @@ class TranslatorSimpleTags:
 
     @classmethod
     def conformancetoString(cls, value):
-        value = Conformance(value)
         str_ = None
         if value == Conformance.ACCESS:
             str_ = "Access"

@@ -40,21 +40,19 @@ from ..enums import ObjectType, DataType
 from .GXDLMSMonitoredValue import GXDLMSMonitoredValue
 from .GXDLMSActionSet import GXDLMSActionSet
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegisterMonitor
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegisterMonitor
+    """
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSRegisterMonitor, self).__init__(ObjectType.REGISTER_MONITOR, ln, sn)
         self.thresholds = list()
         self.monitoredValue = GXDLMSMonitoredValue()
@@ -120,7 +118,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             return self.thresholds
         if e.index == 3:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
             #  ClassID
             _GXCommon.setData(bb, DataType.UINT16, self.monitoredValue.objectType.value)
@@ -131,21 +129,21 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             return bb
         if e.index == 4:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             if not self.actions:
                 bb.setUInt8(0)
             else:
                 bb.setUInt8(len(self.actions))
                 for it in self.actions:
-                    bb.setUInt8(DataType.STRUCTURE.value)
+                    bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
-                    bb.setUInt8(DataType.STRUCTURE.value)
+                    bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
                     #  LN
                     _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionUp.logicalName))
                     #  ScriptSelector
                     _GXCommon.setData(bb, DataType.UINT16, it.actionUp.scriptSelector)
-                    bb.setUInt8(int(DataType.STRUCTURE.value))
+                    bb.setUInt8(int(DataType.STRUCTURE))
                     bb.setUInt8(2)
                     #  LN
                     _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionDown.logicalName))
@@ -170,7 +168,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             self.monitoredValue.logicalName = _GXCommon.toLogicalName(e.value[1])
             self.monitoredValue.attributeIndex = e.value[2]
         elif e.index == 4:
-            self.actions.clear()
+            self.actions = []
             if e.value:
                 for as_ in e.value:
                     set_ = GXDLMSActionSet()
@@ -185,7 +183,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.thresholds.clear()
+        self.thresholds = []
         if reader.isStartElement("Thresholds", True):
             while reader.isStartElement("Value", False):
                 it = reader.readElementContentAsObject("Value", None)
@@ -196,7 +194,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             self.monitoredValue.logicalName = reader.readElementContentAsString("LN")
             self.monitoredValue.attributeIndex = reader.readElementContentAsInt("Index")
             reader.readEndElement("MonitoredValue")
-        self.actions.clear()
+        self.actions = []
         if reader.isStartElement("Actions", True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSActionSet()

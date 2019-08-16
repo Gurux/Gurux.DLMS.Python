@@ -31,13 +31,21 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
+import sys
 
-class AssociationStatus(Enum):
+#pylint: disable=no-name-in-module
+if sys.version_info < (3, 0):
+    __base = object
+else:
+    from enum import IntEnum
+    __base = IntEnum
+
+class AssociationStatus(__base):
     """
     Association Status tells is association =connection) made to Association
     object.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Association is not made.

@@ -37,6 +37,8 @@ class GsmPacketSwitchStatus(Enum):
     """
     Packet switched status of the modem.
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # Inactive
     #

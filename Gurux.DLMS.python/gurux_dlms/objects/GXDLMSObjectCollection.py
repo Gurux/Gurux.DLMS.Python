@@ -106,12 +106,12 @@ class GXDLMSObjectCollection(list):
         return None
 
     @classmethod
-    def load(cls, file):
+    def load(cls, file_):
         from .._GXObjectFactory import _GXObjectFactory
         obj = None
         target = None
         type_ = None
-        reader = GXXmlReader(file, GXDLMSObjectCollection())
+        reader = GXXmlReader(file_, GXDLMSObjectCollection())
         reader.getNext()
         while not reader.isEOF():
             if reader.isStartElement():
@@ -151,7 +151,7 @@ class GXDLMSObjectCollection(list):
             pos += 1
         return name
 
-    def save(self, file, settings=None):
+    def save(self, name, settings=None):
         writer = GXXmlWriter()
         objects = ET.Element("objects")
         for it in self:
@@ -162,9 +162,9 @@ class GXDLMSObjectCollection(list):
             if it.description:
                 ET.SubElement(node, "Description").text = it.description
             if not settings or settings.values:
-                writer.objects.clear()
+                writer.objects = []
                 writer.objects.append(node)
                 it.save(writer)
         str_ = minidom.parseString(ET.tostring(objects, encoding='utf-8', method='xml')).toprettyxml(indent="  ")
-        with open(file, "w") as f:
+        with open(name, "w") as f:
             f.write(str_)

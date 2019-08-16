@@ -37,6 +37,7 @@ class GsmCircuitSwitchStatus(Enum):
     """
     GSM circuit switced status.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Inactive.

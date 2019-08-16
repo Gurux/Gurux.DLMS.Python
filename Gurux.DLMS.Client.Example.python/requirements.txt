@@ -1,6 +1,6 @@
 pytz==2019.2
 python-dateutil==2.8.0
-gurux-common==1.0.2
+gurux-common==1.0.8
 gurux-dlms==1.0.9
-gurux-net==1.0.2
-gurux-serial==1.0.3
+gurux-net==1.0.5
+gurux-serial==1.0.5

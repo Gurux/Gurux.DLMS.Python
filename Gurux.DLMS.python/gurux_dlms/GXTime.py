@@ -41,18 +41,18 @@ class GXTime(GXDateTime):
 
         value: Time value.
         """
-        super(GXTime, self).__init__(value)
+        GXDateTime.__init__(self, value)
         self.skip |= DateTimeSkips.YEAR
         self.skip |= DateTimeSkips.MONTH
         self.skip |= DateTimeSkips.DAY
         self.skip |= DateTimeSkips.DAY_OF_WEEK
 
     def _remove(self, format_):
-        format_ = super(GXTime, self)._remove_(format_, "%Y", True)
-        format_ = super(GXTime, self)._remove_(format_, "%-y", True)
-        format_ = super(GXTime, self)._remove_(format_, "%y", True)
-        format_ = super(GXTime, self)._remove_(format_, "%m", True)
-        format_ = super(GXTime, self)._remove_(format_, "%-m", True)
-        format_ = super(GXTime, self)._remove_(format_, "%d", True)
-        format_ = super(GXTime, self)._remove_(format_, "%-d", True)
+        format_ = GXDateTime._remove_(format_, "%Y", True)
+        format_ = GXDateTime._remove_(format_, "%-y", True)
+        format_ = GXDateTime._remove_(format_, "%y", True)
+        format_ = GXDateTime._remove_(format_, "%m", True)
+        format_ = GXDateTime._remove_(format_, "%-m", True)
+        format_ = GXDateTime._remove_(format_, "%d", True)
+        format_ = GXDateTime._remove_(format_, "%-d", True)
         return format_

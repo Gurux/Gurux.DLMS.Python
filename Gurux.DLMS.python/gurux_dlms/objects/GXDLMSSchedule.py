@@ -39,21 +39,19 @@ from ..enums import ObjectType, DataType
 from .GXDLMSScheduleEntry import GXDLMSScheduleEntry
 from ..GXDateTime import GXDateTime
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSchedule
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSchedule
+    """
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSSchedule, self).__init__(ObjectType.SCHEDULE, ln, sn)
         # Specifies the scripts to be executed at given times.
         self.entries = list()
@@ -114,7 +112,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.entries.clear()
+            self.entries = []
             for it in e.value:
                 item = GXDLMSScheduleEntry()
                 item.index = it[0]
@@ -132,7 +130,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.entries.clear()
+        self.entries = []
         if reader.isStartElement("Entries", True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSScheduleEntry()

@@ -31,8 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import IntEnum
-class TranslatorTags(IntEnum):
+import sys
+if sys.version_info < (3, 0):
+    __base = object
+else:
+    from enum import IntEnum
+    __base = IntEnum
+
+class TranslatorTags(__base):
     WRAPPER = 0xFF01
     HDLC = 0xFF02
     PDU_DLMS = 0xFF03

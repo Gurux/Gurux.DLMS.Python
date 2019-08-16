@@ -35,7 +35,7 @@ from .GXByteBuffer import GXByteBuffer
 from .enums import DataType, RequestTypes, Command
 from .GXDLMSException import GXDLMSException
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=bad-option-value,old-style-class,too-few-public-methods,too-many-instance-attributes
 class GXReplyData:
     #
     #      Constructor.

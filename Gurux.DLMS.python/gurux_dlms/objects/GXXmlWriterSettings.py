@@ -32,46 +32,11 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
-"""XML write settings."""
+# pylint: disable=bad-option-value,old-style-class
 class GXXmlWriterSettings:
-    #
-    # Are attribute values also serialized.
-    #
-    values = bool()
-
-    #
-    # Are values saved in old way.
-    #
-    old = bool()
-
-    #
-    # Constructor.
-    #
+    """XML write settings."""
     def __init__(self):
+        # Are attribute values also serialized.
         self.values = True
-
-    #
-    # Are attribute values also serialized.
-    #
-    def getValues(self):
-        return self.values
-
-    #
-    # @param value
-    #            Are attribute values also serialized.
-    #
-    def setValues(self, value):
-        self.values = value
-
-    #
-    # Are values saved in old way.
-    #
-    def getOld(self):
-        return self.old
-
-    #
-    # @param value
-    #            Are Are values saved in old way.
-    #
-    def setOld(self, value):
-        self.old = value
+        # Are values saved in old way.
+        self.old = False

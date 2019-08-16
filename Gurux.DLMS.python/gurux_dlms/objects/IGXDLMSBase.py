@@ -31,11 +31,11 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-
 from abc import ABCMeta, abstractmethod
 
-class IGXDLMSBase:
-    __metaclass__ = ABCMeta
+ABC = ABCMeta('ABC', (object,), {'__slots__': ()})
+
+class IGXDLMSBase(ABC):
 
     # Returns collection of attributes to read.  If attribute is static and
     # already read or device is returned HW error it is not returned.

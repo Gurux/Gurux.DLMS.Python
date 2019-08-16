@@ -37,6 +37,7 @@ class KeyUsage(Enum):
     """
     The internal states of the disconnect control object.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # The output_state is set to false and the consumer is disconnected.

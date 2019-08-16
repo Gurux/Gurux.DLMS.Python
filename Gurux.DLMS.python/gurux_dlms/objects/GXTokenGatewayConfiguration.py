@@ -31,59 +31,18 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
- #
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-#
+
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXTokenGatewayConfiguration:
-    #
-    # Credit reference.
-    # Online help:
-    # http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-    #
-    creditReference = None
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
+    """
 
-    #
-    # Token proportion.
-    # Online help:
-    # http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-    #
-    tokenProportion = int()
-
-    #
-    # Online help:
-    # http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-    #
-    # Credit reference.
-    #
-    def getCreditReference(self):
-        return self.creditReference
-
-    #
-    # Online help:
-    # http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-    #
-    # @param value
-    #            Credit reference.
-    #
-    def setCreditReference(self, value):
-        self.creditReference = value
-
-    #
-    # Online help:
-    # http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-    #
-    # Token proportion.
-    #
-    def getTokenProportion(self):
-        return self.tokenProportion
-
-    #
-    # Online help:
-    # http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-    #
-    # @param value
-    #            Token proportion.
-    #
-    def setTokenProportion(self, value):
-        self.tokenProportion = value
+    # Constructor.
+    def __init__(self):
+        # Credit reference.
+        self.creditReference = None
+        # Token proportion.
+        self.tokenProportion = 0

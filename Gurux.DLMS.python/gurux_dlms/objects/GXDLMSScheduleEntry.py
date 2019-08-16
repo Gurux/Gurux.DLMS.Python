@@ -32,9 +32,13 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #
-# pylint: disable=too-many-instance-attributes
+
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class GXDLMSScheduleEntry:
     """Executed scripts."""
+    #pylint: disable=too-few-public-methods,too-many-instance-attributes
+
     def __init__(self):
         """#Constructor."""
         # Schedule entry index.

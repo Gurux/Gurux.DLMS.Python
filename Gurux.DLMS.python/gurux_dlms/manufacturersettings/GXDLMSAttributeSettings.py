@@ -33,6 +33,8 @@
 # ---------------------------------------------------------------------------
 from ..enums import DataType
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class GXDLMSAttributeSettings:
     # pylint: disable=too-many-instance-attributes
 

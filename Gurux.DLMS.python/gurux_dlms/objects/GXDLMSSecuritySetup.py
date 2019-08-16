@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..internal._GXCommon import _GXCommon
@@ -41,21 +42,19 @@ from .GXDLMSCertificateInfo import GXDLMSCertificateInfo
 from ..enums.Security import Security
 from .enums.GlobalKeyType import GlobalKeyType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSecuritySetup
-#
 # pylint: disable=too-many-public-methods,too-many-instance-attributes
 class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSecuritySetup
+    """
     def __init__(self, ln="0.0.43.0.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSSecuritySetup, self).__init__(ObjectType.SECURITY_SETUP, ln, sn)
         self.securityPolicy = SecurityPolicy0.NOTHING
         # Security policy for version 1.
@@ -98,11 +97,10 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         if not list_:
             raise ValueError("Invalid list. It is empty.")
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.ARRAY.value)
+        bb.setUInt8(DataType.ARRAY)
         bb.setUInt8(int(len(list_)))
-        tmp = []
         for it in list_:
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
             _GXCommon.setData(bb, DataType.ENUM, it.getKey())
             tmp = GXDLMSSecureClient.encrypt(kek, it.value)
@@ -123,10 +121,10 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         if not list_:
             raise ValueError("Invalid list. It is empty.")
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.ARRAY.value)
+        bb.setUInt8(DataType.ARRAY)
         bb.setUInt8(int(len(list_)))
         for it in list_:
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
             _GXCommon.setData(bb, DataType.ENUM, it.getKey())
             _GXCommon.setData(bb, DataType.OCTET_STRING, it.value)
@@ -173,26 +171,26 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         if not systemTitle:
             raise ValueError("Invalid system title.")
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(0)
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(entity.value)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(type_.value)
         _GXCommon.setData(bb, DataType.OCTET_STRING, systemTitle)
         return client.method(self, 7, bb.array(), DataType.STRUCTURE)
 
     def exportCertificateBySerial(self, client, serialNumber, issuer):
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(1)
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
         _GXCommon.setData(bb, DataType.OCTET_STRING, serialNumber.encode())
         _GXCommon.setData(bb, DataType.OCTET_STRING, issuer.encode())
@@ -200,26 +198,26 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
 
     def removeCertificateByEntity(self, client, entity, type_, systemTitle):
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(0)
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(entity.value)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(type_.value)
         _GXCommon.setData(bb, DataType.OCTET_STRING, systemTitle)
         return client.method(self, 8, bb.array(), DataType.STRUCTURE)
 
     def removeCertificateBySerial(self, client, serialNumber, issuer):
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        bb.setUInt8(DataType.ENUM.value)
+        bb.setUInt8(DataType.ENUM)
         bb.setUInt8(1)
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
         _GXCommon.setData(bb, DataType.OCTET_STRING, serialNumber.encode())
         _GXCommon.setData(bb, DataType.OCTET_STRING, issuer.encode())
@@ -236,6 +234,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return subject
 
     def invoke(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             if self.version == 0:
                 self.securityPolicy = SecurityPolicy0(e.parameters)
@@ -330,14 +329,14 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getCertificatesByteArray(cls, settings):
         bb = GXByteBuffer()
-        bb.setUInt8(int(DataType.ARRAY.value))
+        bb.setUInt8(int(DataType.ARRAY))
         _GXCommon.setObjectCount(settings.cipher.certificates.size(), bb)
         for it in settings.cipher.certificates:
-            bb.setUInt8(int(DataType.STRUCTURE.value))
+            bb.setUInt8(int(DataType.STRUCTURE))
             _GXCommon.setObjectCount(6, bb)
-            bb.setUInt8(int(DataType.ENUM.value))
+            bb.setUInt8(int(DataType.ENUM))
             bb.setUInt8(int(CertificateEntity.SERVER.value))
-            bb.setUInt8(int(DataType.ENUM.value))
+            bb.setUInt8(int(DataType.ENUM))
             bb.setUInt8(int(CertificateType.DIGITAL_SIGNATURE.value))
             _GXCommon.addString(it.serialNumber, bb)
             _GXCommon.addString(it.issuer, bb)
@@ -346,6 +345,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return bb.array()
 
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -363,7 +363,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def updateSertificates(self, list_):
-        self.certificates.clear()
+        self.certificates = []
         if list_:
             for it in list_:
                 info = GXDLMSCertificateInfo()
@@ -376,6 +376,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                 self.certificates.append(info)
 
     def setValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
@@ -419,7 +420,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             self.serverSystemTitle = None
         else:
             self.serverSystemTitle = GXByteBuffer.hexToBytes(str_)
-        self.certificates.clear()
+        self.certificates = []
         if reader.isStartElement("Certificates", True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSCertificateInfo()

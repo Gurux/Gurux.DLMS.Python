@@ -31,23 +31,25 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#
+from __future__ import print_function
+import xml.etree.cElementTree as ET
 import datetime
+import sys
 from os import listdir
 from os.path import isfile, join
 import os.path
-import urllib.request
-import xml.etree.cElementTree as ET
 from tempfile import NamedTemporaryFile
 from .GXManufacturer import GXManufacturer
 from .GXObisCode import GXObisCode
 from .GXAuthentication import GXAuthentication
 from .GXServerAddress import GXServerAddress
 from .GXDLMSAttribute import GXDLMSAttribute
-from ..enums import Authentication, DataType, ObjectType
 from .InactivityMode import InactivityMode
 from .StartProtocolType import StartProtocolType
 from .HDLCAddressType import HDLCAddressType
+from ..enums import Authentication, DataType, ObjectType
+if sys.version_info >= (3, 0):
+    import urllib.request
 
 #
 class GXManufacturerCollection(list):
@@ -87,6 +89,8 @@ class GXManufacturerCollection(list):
     #
     @classmethod
     def isUpdatesAvailable(cls, path):
+        if sys.version_info < (3, 0):
+            return False
         # pylint: disable=broad-except
         if not os.path.isfile(os.path.join(path, "files.xml")):
             return True
@@ -116,6 +120,8 @@ class GXManufacturerCollection(list):
         #
         # directory: Target directory.
         #
+        if sys.version_info >= (3, 0):
+            return
         if not os.path.isdir(directory):
             os.mkdir(directory)
             if not os.path.isdir(directory):
@@ -130,7 +136,7 @@ class GXManufacturerCollection(list):
     @classmethod
     def readManufacturerSettings(cls, manufacturers, path):
         # pylint: disable=broad-except
-        manufacturers.clear()
+        manufacturers = []
         files = [f for f in listdir(path) if isfile(join(path, f))]
         if files:
             for it in files:

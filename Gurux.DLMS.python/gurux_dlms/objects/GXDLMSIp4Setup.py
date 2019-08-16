@@ -42,31 +42,29 @@ from ..enums import ObjectType, DataType
 from .GXDLMSIp4SetupIpOption import GXDLMSIp4SetupIpOption
 from .enums.Ip4SetupIpOptionType import Ip4SetupIpOptionType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp4Setup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp4Setup
+    """
     def __init__(self, ln="0.0.25.1.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSIp4Setup, self).__init__(ObjectType.IP4_SETUP, ln, sn)
         self.dataLinkLayerReference = None
         self.ipAddress = None
         self.multicastIPAddress = list()
         self.ipOptions = list()
-        self.subnetMask = None
-        self.gatewayIPAddress = None
+        self.subnetMask = ""
+        self.gatewayIPAddress = ""
         self.useDHCP = False
-        self.primaryDNSAddress = None
-        self.secondaryDNSAddress = None
+        self.primaryDNSAddress = ""
+        self.secondaryDNSAddress = ""
 
     def getValues(self):
         return [self.logicalName,
@@ -159,6 +157,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -167,7 +166,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             ret = struct.unpack("!I", socket.inet_aton(self.ipAddress))[0]
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             if not self.multicastIPAddress:
                 _GXCommon.setObjectCount(0, data)
             else:
@@ -177,13 +176,13 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             if not self.ipOptions:
                 data.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(self.ipOptions), data)
                 for it in self.ipOptions:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     _GXCommon.setData(data, DataType.UINT8, it.type_)
                     _GXCommon.setData(data, DataType.UINT8, it.length)
@@ -217,12 +216,12 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             self.ipAddress = socket.inet_ntoa(struct.pack("!I", e.value))
         elif e.index == 4:
-            self.multicastIPAddress.clear()
+            self.multicastIPAddress = []
             if e.value:
                 for it in e.value:
                     self.multicastIPAddress.append(socket.inet_ntoa(struct.pack("!I", it)))
         elif e.index == 5:
-            self.ipOptions.clear()
+            self.ipOptions = []
             if e.value:
                 for it in e.value:
                     item = GXDLMSIp4SetupIpOption()
@@ -246,12 +245,12 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
     def load(self, reader):
         self.dataLinkLayerReference = reader.readElementContentAsString("DataLinkLayerReference")
         self.ipAddress = reader.readElementContentAsString("IPAddress")
-        self.multicastIPAddress.clear()
+        self.multicastIPAddress = []
         if reader.isStartElement("MulticastIPAddress", True):
             while reader.isStartElement("Value", False):
                 self.multicastIPAddress.append(reader.readElementContentAsInt("Value"))
             reader.readEndElement("MulticastIPAddress")
-        self.ipOptions.clear()
+        self.ipOptions = []
         if reader.isStartElement("IPOptions", True):
             while reader.isStartElement("IPOptions", True):
                 it = GXDLMSIp4SetupIpOption()

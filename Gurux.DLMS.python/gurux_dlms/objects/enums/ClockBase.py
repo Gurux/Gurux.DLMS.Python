@@ -37,6 +37,8 @@ class ClockBase(Enum):
     """
     Clock base enumerated values.
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # Not defined
     #

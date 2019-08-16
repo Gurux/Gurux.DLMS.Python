@@ -34,6 +34,7 @@
 from enum import Enum
 class Unit(Enum):
     """Enumerated units."""
+    #pylint: disable=too-few-public-methods
 
     #No Unit.
     NONE = 0

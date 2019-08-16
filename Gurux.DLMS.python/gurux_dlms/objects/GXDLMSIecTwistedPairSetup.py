@@ -40,22 +40,21 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import IecTwistedPairSetupMode, BaudRate
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIecTwistedPairSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIecTwistedPairSetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIecTwistedPairSetup
+    """
+
     def __init__(self, ln=None, sn=0):
-        super(GXDLMSIecTwistedPairSetup, self).__init__(ObjectType.IEC_HDLC_SETUP, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.IEC_HDLC_SETUP, ln, sn)
         # Working mode.
         self.mode = IecTwistedPairSetupMode.INACTIVE
         # Communication speed.
@@ -141,11 +140,11 @@ class GXDLMSIecTwistedPairSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             self.speed = BaudRate(e.value)
         elif e.index == 4:
-            self.primaryAddresses.clear()
+            self.primaryAddresses = []
             for it in e.value:
                 self.primaryAddresses.append(it)
         elif e.index == 5:
-            self.tabis.clear()
+            self.tabis = []
             for it in e.value:
                 self.tabis.append(it)
         else:

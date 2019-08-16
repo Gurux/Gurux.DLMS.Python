@@ -37,21 +37,19 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTcpUdpSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTcpUdpSetup
+    """
     def __init__(self, ln="0.0.25.0.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSTcpUdpSetup, self).__init__(ObjectType.TCP_UDP_SETUP, ln, sn)
         self.port = 4059
         self.inactivityTimeout = 180

@@ -44,16 +44,14 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSData
     """
 
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
     def __init__(self, ln=None, sn=0):
-        super(GXDLMSData, self).__init__(ObjectType.DATA, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.DATA, ln, sn)
         self.value = None
 
     def getValues(self):

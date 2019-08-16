@@ -38,7 +38,7 @@ from .enums.AssociationResult import AssociationResult
 from .enums.SourceDiagnostic import SourceDiagnostic
 from .GXByteBuffer import GXByteBuffer
 from .GXDLMSSettings import GXDLMSSettings
-#
+# pylint:disable=bad-option-value,old-style-class
 class GXDLMSXmlSettings:
     #
     # Constructor.

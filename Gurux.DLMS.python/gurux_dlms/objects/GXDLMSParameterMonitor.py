@@ -40,20 +40,19 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .GXDLMSTarget import GXDLMSTarget
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSParameterMonitor
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSParameterMonitor
+    """
     def __init__(self, ln="0.0.16.2.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSParameterMonitor, self).__init__(ObjectType.PARAMETER_MONITOR, ln, sn)
         self.parameters = list()
         self.captureTime = None
@@ -79,7 +78,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
     #
     def insert(self, client, entry):
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         _GXCommon.setData(bb, DataType.UINT16, entry.target.objectType.value)
         _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
@@ -88,7 +87,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
 
     def delete(self, client, entry):
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         _GXCommon.setData(bb, DataType.UINT16, entry.target.objectType)
         _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
@@ -160,11 +159,12 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(4)
             if self.changedParameter is None:
                 _GXCommon.setData(data, DataType.UINT16, 0)
@@ -181,13 +181,13 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             ret = self.captureTime
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             if self.parameters is None:
                 data.setUInt8(0)
             else:
                 data.setUInt8(len(self.parameters))
                 for it in self.parameters:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     _GXCommon.setData(data, DataType.UINT16, it.target.objectType.value)
                     _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.target.logicalName))
@@ -222,7 +222,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
                 else:
                     self.captureTime = e.value
         elif e.index == 4:
-            self.parameters.clear()
+            self.parameters = []
             if e.value:
                 for i in e.value:
                     if len(i) != 3:
@@ -256,7 +256,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             self.captureTime = GXDateTime(reader.readElementContentAsString("Time"))
         else:
             self.captureTime = None
-        self.parameters.clear()
+        self.parameters = []
         if reader.isStartElement("Parameters", True):
             while reader.isStartElement("Item", True):
                 obj = GXDLMSTarget()

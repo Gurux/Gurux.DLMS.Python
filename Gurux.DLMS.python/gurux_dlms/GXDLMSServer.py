@@ -375,7 +375,6 @@ class GXDLMSServer:
     # Generated data notification message(s).
     #
     def generateDataNotificationMessages(self, time, data):
-        reply = None
         if self.useLogicalNameReferencing:
             p = GXDLMSLNParameters(self.settings, 0, Command.DATA_NOTIFICATION, 0, None, data, 0xff)
             if time is None:
@@ -384,8 +383,8 @@ class GXDLMSServer:
                 p.time = GXDateTime(time)
             reply = GXDLMS.getLnMessages(p)
         else:
-            p = GXDLMSSNParameters(self.settings, Command.DATA_NOTIFICATION, 1, 0, data, None)
-            reply = GXDLMS.getSnMessages(p)
+            p2 = GXDLMSSNParameters(self.settings, Command.DATA_NOTIFICATION, 1, 0, data, None)
+            reply = GXDLMS.getSnMessages(p2)
         if (self.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0 and len(reply) != 1:
             raise ValueError("Data is not fit to one PDU. Use general block transfer.")
         return reply
@@ -394,7 +393,7 @@ class GXDLMSServer:
         if push is None:
             raise ValueError("push")
         buff = GXByteBuffer()
-        buff.setUInt8(int(DataType.STRUCTURE.value))
+        buff.setUInt8(int(DataType.STRUCTURE))
         _GXCommon.setObjectCount(push.getPushObjectList().size(), buff)
         for it in push.getPushObjectList():
             self.addData(it.getKey(), it.value.getAttributeIndex(), buff)
@@ -498,9 +497,9 @@ class GXDLMSServer:
                 self.items.append(it)
                 it.objectList.append(self.items)
             else:
-                it = GXDLMSAssociationShortName()
-                self.items.append(it)
-                it.objectList.append(self.items)
+                it2 = GXDLMSAssociationShortName()
+                self.items.append(it2)
+                it2.objectList.append(self.items)
         if not self.useLogicalNameReferencing:
             self.updateShortNames(False)
 
@@ -538,7 +537,7 @@ class GXDLMSServer:
                 error = GXByteBuffer()
                 error.setUInt8(0xE)
                 error.setUInt8(ConfirmedServiceError.INITIATE_ERROR.value)
-                error.setUInt8(ServiceError.INITIATE.value)
+                error.setUInt8(ServiceError.INITIATE)
                 error.setUInt8(Initiate.INCOMPATIBLE_CONFORMANCE.value)
             elif self.settings.maxPduSize < 64:
                 result = AssociationResult.PERMANENT_REJECTED
@@ -546,7 +545,7 @@ class GXDLMSServer:
                 error = GXByteBuffer()
                 error.setUInt8(0xE)
                 error.setUInt8(ConfirmedServiceError.INITIATE_ERROR.value)
-                error.setUInt8(ServiceError.INITIATE.value)
+                error.setUInt8(ServiceError.INITIATE)
                 error.setUInt8(Initiate.PDU_SIZE_TOO_SHORT.value)
             elif self.settings.dlmsVersion != 6:
                 self.settings.dlmsVersion = 6
@@ -555,7 +554,7 @@ class GXDLMSServer:
                 error = GXByteBuffer()
                 error.setUInt8(0xE)
                 error.setUInt8(ConfirmedServiceError.INITIATE_ERROR.value)
-                error.setUInt8(ServiceError.INITIATE.value)
+                error.setUInt8(ServiceError.INITIATE)
                 error.setUInt8(Initiate.DLMS_VERSION_TOO_LOW.value)
             elif diagnostic != SourceDiagnostic.NONE:
                 result = AssociationResult.PERMANENT_REJECTED
@@ -723,7 +722,7 @@ class GXDLMSServer:
                     if not self.isTarget(self.settings.serverAddress, self.settings.clientAddress):
                         self.info.clear()
                         return
-                if (self.info.moreData.value & RequestTypes.FRAME.value) == RequestTypes.FRAME.value:
+                if (self.info.moreData & RequestTypes.FRAME) == RequestTypes.FRAME:
                     self.dataReceived = datetime.datetime.now()
                     sr.setReply(GXDLMS.getHdlcFrame(self.settings, self.settings.getReceiverReady(), self.replyData))
                     return
@@ -809,8 +808,8 @@ class GXDLMSServer:
         else:
             bb = GXByteBuffer()
             bb.setUInt8(error.value)
-            p = GXDLMSSNParameters(self.settings, cmd, 1, 1, None, bb)
-            GXDLMS.getSNPdu(p, self.replyData)
+            p2 = GXDLMSSNParameters(self.settings, cmd, 1, 1, None, bb)
+            GXDLMS.getSNPdu(p2, self.replyData)
         if self.settings.interfaceType == InterfaceType.WRAPPER:
             return GXDLMS.getWrapperFrame(self.settings, self.replyData)
         return GXDLMS.getHdlcFrame(self.settings, int(0), self.replyData)
@@ -858,7 +857,6 @@ class GXDLMSServer:
             pass
         else:
             raise Exception("Invalid command: " + str(cmd))
-        reply = []
         if self.settings.interfaceType == InterfaceType.WRAPPER:
             reply = GXDLMS.getWrapperFrame(self.settings, self.replyData)
         else:

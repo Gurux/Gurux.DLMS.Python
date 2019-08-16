@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .TranslatorOutputType import TranslatorOutputType
 from .TranslatorTags import TranslatorTags
 from .ConfirmedServiceError import ConfirmedServiceError
@@ -48,8 +49,12 @@ from .ValueEventArgs import ValueEventArgs
 from .GXDLMSLongTransaction import GXDLMSLongTransaction
 from .SingleWriteResponse import SingleWriteResponse
 
-# pylint: disable=too-many-locals,too-many-arguments
+# pylint: disable=bad-option-value,too-many-locals,too-many-arguments,old-style-class
 class GXDLMSSNCommandHandler:
+    #Constructor.
+    def __init__(self):
+        pass
+
     @classmethod
     def handleRead(cls, settings, server, type_, data, list_, reads, actions, replyData, xml):
         #  GetRequest normal
@@ -113,7 +118,7 @@ class GXDLMSSNCommandHandler:
             return
         bb = GXByteBuffer()
         if blockNumber != settings.blockIndex:
-            bb.setUInt8(ErrorCode.DATA_BLOCK_NUMBER_INVALID.value)
+            bb.setUInt8(ErrorCode.DATA_BLOCK_NUMBER_INVALID)
             GXDLMS.getSNPdu(GXDLMSSNParameters(settings, Command.READ_RESPONSE, 1, SingleReadResponse.DATA_ACCESS_ERROR, bb, None), replyData)
             settings.resetBlockIndex()
             return
@@ -190,19 +195,19 @@ class GXDLMSSNCommandHandler:
                 xml.appendEndTag(TranslatorTags.READ_DATA_BLOCK_ACCESS)
             return
         if blockNumber != settings.blockIndex:
-            bb.setUInt8(ErrorCode.DATA_BLOCK_NUMBER_INVALID.value)
+            bb.setUInt8(ErrorCode.DATA_BLOCK_NUMBER_INVALID)
             GXDLMS.getSNPdu(GXDLMSSNParameters(settings, command, 1, SingleReadResponse.DATA_ACCESS_ERROR, bb, None), replyData)
             settings.resetBlockIndex()
             return
         count = 1
-        type_ = DataType.OCTET_STRING.value
+        type1 = DataType.OCTET_STRING
         if command == Command.WRITE_RESPONSE:
             count = data.getUInt8()
-            type_ = data.getUInt8()
+            type1 = data.getUInt8()
         size = _GXCommon.getObjectCount(data)
         realSize = len(data) - data.position
-        if count != 1 or type_ != DataType.OCTET_STRING.value or size != realSize:
-            bb.setUInt8(ErrorCode.DATA_BLOCK_UNAVAILABLE.value)
+        if count != 1 or type1 != DataType.OCTET_STRING or size != realSize:
+            bb.setUInt8(ErrorCode.DATA_BLOCK_UNAVAILABLE)
             GXDLMS.getSNPdu(GXDLMSSNParameters(settings, command, cnt, SingleReadResponse.DATA_ACCESS_ERROR, bb, None), replyData)
             settings.resetBlockIndex()
             return
@@ -211,13 +216,14 @@ class GXDLMSSNCommandHandler:
         else:
             server.transaction.data.set(data)
         if lastBlock == 0:
+            #pylint: disable=bad-option-value,redefined-variable-type
             bb.setUInt16(blockNumber)
             settings.increaseBlockIndex()
             if command == Command.READ_RESPONSE:
-                type_ = SingleReadResponse.BLOCK_NUMBER
+                type2 = SingleReadResponse.BLOCK_NUMBER
             else:
-                type_ = SingleWriteResponse.BLOCK_NUMBER
-            GXDLMS.getSNPdu(GXDLMSSNParameters(settings, command, cnt, type_, None, bb), replyData)
+                type2 = SingleWriteResponse.BLOCK_NUMBER
+            GXDLMS.getSNPdu(GXDLMSSNParameters(settings, command, cnt, type2, None, bb), replyData)
             return
         if server.transaction:
             data.size(0)
@@ -233,7 +239,6 @@ class GXDLMSSNCommandHandler:
     def handleReadRequest(cls, settings, server, data, replyData, xml):
         bb = GXByteBuffer()
         cnt = 0xFF
-        type_ = int()
         list_ = list()
         if xml is None and not data:
             if server.transaction:
@@ -344,15 +349,15 @@ class GXDLMSSNCommandHandler:
                     i = cls.findSNObject(server, server.settings, sn)
                     targets.append(i)
                     if i is None:
-                        results.setUInt8(ErrorCode.UNDEFINED_OBJECT.value)
+                        results.setUInt8(ErrorCode.UNDEFINED_OBJECT)
                     else:
-                        results.setUInt8(ErrorCode.OK.value)
+                        results.setUInt8(ErrorCode.OK)
             elif type_ == VariableAccessSpecification.WRITE_DATA_BLOCK_ACCESS:
                 cls.handleReadDataBlockAccess(settings, server, Command.WRITE_RESPONSE, data, cnt, replyData, xml)
                 if xml is None:
                     return
             else:
-                results.setUInt8(ErrorCode.HARDWARE_FAULT.value)
+                results.setUInt8(ErrorCode.HARDWARE_FAULT)
             pos += 1
         if xml:
             if xml.outputType == TranslatorOutputType.STANDARD_XML:
@@ -385,12 +390,12 @@ class GXDLMSSNCommandHandler:
                 e = ValueEventArgs(server, target.getItem(), target.index, 0, None)
                 am = server.onGetAttributeAccess(e)
                 if am not in (AccessMode.WRITE, AccessMode.READ_WRITE):
-                    results.setUInt8(pos, ErrorCode.READ_WRITE_DENIED.value)
+                    results.setUInt8(pos, ErrorCode.READ_WRITE_DENIED)
                 else:
                     e.value = value
                     server.onPreWrite(list(e))
                     if e.error != ErrorCode.OK:
-                        results.setUInt8(pos, e.error.value)
+                        results.setUInt8(pos, e.error)
                     elif not e.handled:
                         target.item.setValue(settings, e)
                     server.onPostWrite((e))

@@ -40,7 +40,9 @@ from ..GXDate import GXDate
 from ..GXTime import GXTime
 from ..GXDLMSConverter import GXDLMSConverter
 
-class GXXmlReader():
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
+class GXXmlReader:
     """Read serialized COSEM object from the file."""
 
     def __init__(self, filename, objects):
@@ -121,6 +123,7 @@ class GXXmlReader():
         return list_
 
     def readElementContentAsObject(self, name, defaultValue):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if name == self.name():
             ret = None
             str_ = self.getAttribute(0)

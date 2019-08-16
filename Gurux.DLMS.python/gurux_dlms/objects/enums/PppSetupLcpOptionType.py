@@ -34,6 +34,8 @@
 from enum import Enum
 
 class PppSetupLcpOptionType(Enum):
+    #pylint: disable=too-few-public-methods
+
     MAX_REC_UNIT = 1
     ASYNC_CONTROL_CHAR_MAP = 2
     AUTH_PROTOCOL = 3

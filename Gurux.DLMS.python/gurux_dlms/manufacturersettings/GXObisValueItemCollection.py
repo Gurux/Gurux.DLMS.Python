@@ -40,7 +40,7 @@ class GXObisValueItemCollection(list):
     # forParent: Parent object.
     #
     def __init__(self, forParent=None):
-        super(GXObisValueItemCollection, self).__init__()
+        list.__init__(self)
         # Parent object.
         self.parent = forParent
 

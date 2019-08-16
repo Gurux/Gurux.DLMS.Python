@@ -31,7 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from gurux_dlms import InterfaceType, Authentication
+from gurux_dlms.enums import InterfaceType, Authentication
 from gurux_dlms.secure import GXDLMSSecureClient
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity
@@ -134,7 +134,18 @@ class GXSettings:
                     self.media.hostName = it.value
             elif it.tag == 't':
                 #  Trace.
-                self.trace = TraceLevel[it.value.upper()]
+                if it.value == "Off":
+                    self.trace = TraceLevel.OFF
+                elif it.value == "Error":
+                    self.trace = TraceLevel.ERROR
+                elif it.value == "Warning":
+                    self.trace = TraceLevel.WARNING
+                elif it.value == "Info":
+                    self.trace = TraceLevel.INFO
+                elif it.value == "Verbose":
+                    self.trace = TraceLevel.VERBOSE
+                else:
+                    raise ValueError("Invalid trace level(Off, Error, Warning, Info, Verbose).")
             elif it.tag == 'p':
                 #  Port.
                 if not self.media:

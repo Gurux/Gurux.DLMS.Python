@@ -41,21 +41,19 @@ from ..enums import ObjectType, DataType
 from .enums import AddressConfigMode
 from .GXNeighborDiscoverySetup import GXNeighborDiscoverySetup
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp6Setup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp6Setup
+    """
     def __init__(self, ln="0.0.25.7.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSIp6Setup, self).__init__(ObjectType.IP6_SETUP, ln, sn)
         self.addressConfigMode = AddressConfigMode.AUTO
         self.dataLinkLayerReference = None
@@ -159,6 +157,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -167,56 +166,56 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             ret = self.addressConfigMode
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
-            if self.unicastIPAddress is None:
+            data.setUInt8(DataType.ARRAY)
+            if not self.unicastIPAddress:
                 _GXCommon.setObjectCount(0, data)
             else:
                 _GXCommon.setObjectCount(len(self.unicastIPAddress), data)
                 for it in self.unicastIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it.address)
+                    _GXCommon.setData(data, DataType.OCTET_STRING, it)
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
-            if self.multicastIPAddress is None:
+            data.setUInt8(DataType.ARRAY)
+            if not self.multicastIPAddress:
                 _GXCommon.setObjectCount(0, data)
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it.getAddress())
+                    _GXCommon.setData(data, DataType.OCTET_STRING, it)
             ret = data
         elif e.index == 6:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
-            if self.gatewayIPAddress is None:
+            data.setUInt8(DataType.ARRAY)
+            if not self.gatewayIPAddress:
                 _GXCommon.setObjectCount(0, data)
             else:
                 _GXCommon.setObjectCount(len(self.gatewayIPAddress), data)
                 for it in self.gatewayIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it.address)
+                    _GXCommon.setData(data, DataType.OCTET_STRING, it)
             ret = data
         elif e.index == 7:
-            if self.primaryDNSAddress is None:
+            if not self.primaryDNSAddress:
                 ret = None
             else:
-                ret = self.primaryDNSAddress.address
+                ret = self.primaryDNSAddress
         elif e.index == 8:
-            if self.secondaryDNSAddress is None:
+            if not self.secondaryDNSAddress:
                 ret = None
             else:
-                ret = self.secondaryDNSAddress.address
+                ret = self.secondaryDNSAddress
         elif e.index == 9:
             ret = self.trafficClass
         elif e.index == 10:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             if self.neighborDiscoverySetup is None:
                 #  Object count is zero.
                 data.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(self.neighborDiscoverySetup), data)
                 for it in self.neighborDiscoverySetup:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     _GXCommon.setData(data, DataType.UINT8, it.maxRetry)
                     _GXCommon.setData(data, DataType.UINT16, it.retryWaitTime)
@@ -240,17 +239,17 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             self.addressConfigMode = AddressConfigMode(e.value)
         elif e.index == 4:
-            self.unicastIPAddress.clear()
+            self.unicastIPAddress = []
             if e.value:
                 for it in e.value:
                     self.unicastIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
         elif e.index == 5:
-            self.multicastIPAddress.clear()
+            self.multicastIPAddress = []
             if e.value:
                 for it in e.value:
                     self.multicastIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
         elif e.index == 6:
-            self.gatewayIPAddress.clear()
+            self.gatewayIPAddress = []
             if e.value:
                 for it in e.value:
                     self.gatewayIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
@@ -267,7 +266,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 9:
             self.trafficClass = e.value
         elif e.index == 10:
-            self.neighborDiscoverySetup.clear()
+            self.neighborDiscoverySetup = []
             if e.value:
                 for it in e.value:
                     v = GXNeighborDiscoverySetup()

@@ -36,6 +36,8 @@ from enum import Enum
 #  * Enumerates single write response types.
 #
 class SingleWriteResponse(Enum):
+    #pylint: disable=too-few-public-methods
+
     #
     # Write succeeded.
     #

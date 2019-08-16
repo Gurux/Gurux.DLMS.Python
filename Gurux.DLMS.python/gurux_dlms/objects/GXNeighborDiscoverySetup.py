@@ -31,17 +31,17 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
- #
-#  * Contains the configuration to be used for both routers and hosts to
-#  support the Neighbor Discovery protocol for IPv6.
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp6Setup
-#
-class GXNeighborDiscoverySetup:
 
-    #
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
+class GXNeighborDiscoverySetup:
+    """
+    Contains the configuration to be used for both routers and hosts to
+    support the Neighbor Discovery protocol for IPv6.
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp6Setup
+    """
     # Constructor.
-    #
     def __init__(self):
         self.maxRetry = 3
         self.retryWaitTime = 10000

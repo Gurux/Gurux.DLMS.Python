@@ -31,11 +31,15 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import IntEnum
-#
-#  * Enumerates Set response types.
-#
-class SetResponseType(IntEnum):
+import sys
+if sys.version_info < (3, 0):
+    __base = object
+else:
+    from enum import IntEnum
+    __base = IntEnum
+
+class SetResponseType(__base):
+    """Enumerates Set response types."""
     #
     # Normal set response.
     #

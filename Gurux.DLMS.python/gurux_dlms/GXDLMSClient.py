@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .GXDLMSSettings import GXDLMSSettings
 from .enums import Authentication, InterfaceType, SourceDiagnostic, DataType, AccessMode, MethodAccessMode
 from .ConnectionState import ConnectionState
@@ -61,8 +62,8 @@ from .GXDLMSTranslatorStructure import GXDLMSTranslatorStructure
 from .enums.RequestTypes import RequestTypes
 from .SerialnumberCounter import SerialNumberCounter
 
-# pylint:disable=too-many-instance-attributes,too-many-arguments,too-many-public-methods
-class GXDLMSClient:
+#pylint: disable=bad-option-value,too-many-instance-attributes,too-many-arguments,too-many-public-methods,useless-object-inheritance
+class GXDLMSClient(object):
     """
     GXDLMS implements methods to communicate with DLMS/COSEM metering devices.
     """
@@ -437,7 +438,7 @@ class GXDLMSClient:
             data.setUInt8(len(data) - 3, 2)
         else:
             data = None
-        return GXDLMS.getHdlcFrame(self.settings, Command.SNRM.value, data)
+        return GXDLMS.getHdlcFrame(self.settings, Command.SNRM, data)
 
     #
     # Parses UAResponse from byte array.
@@ -463,7 +464,8 @@ class GXDLMSClient:
     # @see GXDLMSClient#parseAareResponse
     #
     def aarqRequest(self):
-        self.settings.connected = ConnectionState(self.settings.connected & ~ConnectionState.DLMS)
+        #pylint: disable=bad-option-value,redefined-variable-type
+        self.settings.connected = self.settings.connected & ~ConnectionState.DLMS
         buff = GXByteBuffer(20)
         self.settings.resetBlockIndex()
         GXDLMS.checkInit(self.settings)
@@ -592,7 +594,7 @@ class GXDLMSClient:
             reply = GXDLMS.getLnMessages(p)
         else:
             reply = GXDLMS.getSnMessages(GXDLMSSNParameters(self.settings, Command.RELEASE_REQUEST, 0xFF, 0xFF, None, buff))
-        self.settings.connected = ConnectionState(self.settings.connected & ~ConnectionState.DLMS)
+        self.settings.connected = self.settings.connected & ~ConnectionState.DLMS
         return reply
 
     def disconnectRequest(self, force=False):
@@ -741,7 +743,7 @@ class GXDLMSClient:
         return _GXCommon.changeType(value, type_)
 
     def getObjectsRequest(self):
-        name = None
+        #pylint: disable=bad-option-value,redefined-variable-type
         self.settings.resetBlockIndex()
         if self.useLogicalNameReferencing:
             name = "0.0.40.0.0.255"
@@ -754,7 +756,7 @@ class GXDLMSClient:
         return self.__method(item.name, item.objectType, index, data, type_)
 
     def __method(self, name, objectType, methodIndex, value, dataType=DataType.NONE):
-         # pylint: disable=too-many-locals
+        #pylint: disable=bad-option-value,redefined-variable-type,too-many-locals
         if not name or methodIndex < 1:
             raise ValueError("Invalid parameter")
         self.settings.resetBlockIndex()
@@ -813,6 +815,7 @@ class GXDLMSClient:
         return self.__write(item.name, value, type_, item.objectType, index)
 
     def __write(self, name, value, dataType, objectType, index):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if index < 1:
             raise Exception("Invalid parameter")
         self.settings.resetBlockIndex()
@@ -879,8 +882,8 @@ class GXDLMSClient:
             p = GXDLMSLNParameters(self.settings, 0, Command.SET_REQUEST, SetRequestType.WITH_LIST, bb, data, 0xff)
             reply = GXDLMS.getLnMessages(p)
         else:
-            p = GXDLMSSNParameters(self.settings, Command.WRITE_REQUEST, len(list_), 4, bb, data)
-            reply = GXDLMS.getSnMessages(p)
+            p2 = GXDLMSSNParameters(self.settings, Command.WRITE_REQUEST, len(list_), 4, bb, data)
+            reply = GXDLMS.getSnMessages(p2)
         return reply
 
 
@@ -903,7 +906,7 @@ class GXDLMSClient:
             p = GXDLMSLNParameters(self.settings, 0, Command.GET_REQUEST, GetCommandType.NORMAL, attributeDescriptor, data, 0xFF)
             reply = GXDLMS.getLnMessages(p)
         else:
-            requestType = 0
+            #pylint: disable=bad-option-value,redefined-variable-type
             sn = name
             sn += (attributeOrdinal - 1) * 8
             attributeDescriptor.setUInt16(sn)
@@ -948,13 +951,13 @@ class GXDLMSClient:
                         _GXCommon.setObjectCount(count, data)
             messages.append(GXDLMS.getLnMessages(p))
         else:
-            p = GXDLMSSNParameters(self.settings, Command.READ_REQUEST, len(list_), 0xFF, data, None)
+            p2 = GXDLMSSNParameters(self.settings, Command.READ_REQUEST, len(list_), 0xFF, data, None)
             for k, v in list_:
                 data.setUInt8(VariableAccessSpecification.VARIABLE_NAME)
                 sn = k.shortName
                 sn += (v - 1) * 8
                 data.setUInt16(sn)
-            messages.append(GXDLMS.getSnMessages(p))
+            messages.append(GXDLMS.getSnMessages(p2))
         return messages
 
     def keepAlive(self):
@@ -970,7 +973,7 @@ class GXDLMSClient:
             raise ValueError("count")
         buff = GXByteBuffer(19)
         buff.setUInt8(0x02)
-        buff.setUInt8(DataType.STRUCTURE.value)
+        buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
         _GXCommon.setData(buff, DataType.UINT32, index)
         if count == 0:
@@ -1018,9 +1021,9 @@ class GXDLMSClient:
             return self.read(pg, 2)
         buff = GXByteBuffer(51)
         buff.setUInt8(0x01)
-        buff.setUInt8(DataType.STRUCTURE.value)
+        buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
-        buff.setUInt8(DataType.STRUCTURE.value)
+        buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
         _GXCommon.setData(buff, DataType.UINT16, sort.objectType.value)
         _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
@@ -1032,13 +1035,13 @@ class GXDLMSClient:
         else:
             _GXCommon.setData(buff, DataType.OCTET_STRING, start)
             _GXCommon.setData(buff, DataType.OCTET_STRING, end)
-        buff.setUInt8(DataType.ARRAY.value)
+        buff.setUInt8(DataType.ARRAY)
         if not columns:
             buff.setUInt8(0x00)
         else:
             _GXCommon.setObjectCount(len(columns), buff)
             for it in columns:
-                buff.setUInt8(DataType.STRUCTURE.value)
+                buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(4)
                 _GXCommon.setData(buff, DataType.UINT16, it[0].objectType.value)
                 _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it[0].logicalName))

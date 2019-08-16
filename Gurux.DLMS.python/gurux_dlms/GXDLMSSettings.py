@@ -31,15 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .enums import Priority, ServiceClass, InterfaceType, Authentication, Standard, HdlcFrameType, Conformance
 from .ConnectionState import ConnectionState
 from .objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXDLMSLimits import GXDLMSLimits
 
-#
 # This class includes DLMS communication settings.
-# pylint: disable=too-many-public-methods,too-many-instance-attributes
-#
+# pylint: disable=bad-option-value,too-many-public-methods,too-many-instance-attributes,old-style-class
 class GXDLMSSettings:
     #
     # Server sender frame sequence starting number.
@@ -336,6 +335,7 @@ class GXDLMSSettings:
     # update invoke ID.
     #
     def updateInvokeId(self, value):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if (value & 0x80) != 0:
             self.priority = Priority.HIGH
         else:

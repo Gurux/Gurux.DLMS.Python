@@ -41,21 +41,19 @@ from .GXDLMSScript import GXDLMSScript
 from .GXDLMSScriptAction import GXDLMSScriptAction
 from .enums import ScriptActionType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSScriptTable
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSScriptTable
+    """
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSScriptTable, self).__init__(ObjectType.SCRIPT_TABLE, ln, sn)
         self.scripts = list()
 
@@ -106,20 +104,20 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
         if e.index == 2:
             cnt = len(self.scripts)
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             #  Add count
             _GXCommon.setObjectCount(cnt, data)
             for it in self.scripts:
-                data.setUInt8(DataType.STRUCTURE.value)
+                data.setUInt8(DataType.STRUCTURE)
                 #  Count
                 data.setUInt8(2)
                 #  Script_identifier:
                 _GXCommon.setData(data, DataType.UINT16, it.id)
-                data.setUInt8(DataType.ARRAY.value)
+                data.setUInt8(DataType.ARRAY)
                 #  Count
                 data.setUInt8(len(it.actions))
                 for a in it.getActions:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(5)
                     #  service_id
                     _GXCommon.setData(data, DataType.ENUM, a.type_)
@@ -139,12 +137,12 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
         return None
 
     def setValue(self, settings, e):
-        # pylint: disable=too-many-nested-blocks
+        # pylint: disable=bad-option-value,too-many-nested-blocks,redefined-variable-type
         from .._GXObjectFactory import _GXObjectFactory
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.scripts.clear()
+            self.scripts = []
             if isinstance(e.value, list) and e.value:
                 if isinstance(e.value[0], list):
                     for item in e.value:
@@ -195,7 +193,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         from .._GXObjectFactory import _GXObjectFactory
-        self.scripts.clear()
+        self.scripts = []
         if reader.isStartElement("Scripts", True):
             while reader.isStartElement("Script", True):
                 it = GXDLMSScript()

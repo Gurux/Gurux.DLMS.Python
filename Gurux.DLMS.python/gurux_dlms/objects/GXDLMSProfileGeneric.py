@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from datetime import timedelta
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
@@ -178,11 +179,11 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     def __getColumns(self):
         cnt = len(self.captureObjects)
         data = GXByteBuffer()
-        data.setUInt8(DataType.ARRAY.value)
+        data.setUInt8(DataType.ARRAY)
         #  Add count
         _GXCommon.setObjectCount(cnt, data)
         for k, v in self.captureObjects:
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             #  Count
             data.setUInt8(4)
             #  ClassID
@@ -195,7 +196,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     def getData(self, settings, e, table, columns):
         data = GXByteBuffer()
         if settings.index == 0:
-            data.setUInt8(int(DataType.ARRAY.value))
+            data.setUInt8(int(DataType.ARRAY))
             if e.rowEndIndex != 0:
                 _GXCommon.setObjectCount(e.rowEndIndex - e.rowBeginIndex, data)
             else:
@@ -208,7 +209,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         tp = None
         for row in table:
             items = row
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             if not columns:
                 _GXCommon.setObjectCount(0, data)
             else:
@@ -272,8 +273,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             raise ValueError("Invalid selector.")
         return ret
 
-    #pylint: disable=chained-comparison
     def __getProfileGenericData(self, settings, e):
+        #pylint: disable=bad-option-value,chained-comparison
         columns = None
         if e.selector == 0 or e.parameters is None or e.getRowEndIndex() != 0:
             return self.getData(settings, e, self.buffer, columns)
@@ -337,6 +338,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -349,7 +351,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             ret = self.sortMethod.value
         elif e.index == 6:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.STRUCTURE.value))
+            data.setUInt8(int(DataType.STRUCTURE))
             data.setUInt8(int(4))
             if self.sortObject is None:
                 _GXCommon.setData(data, DataType.UINT16, 0)
@@ -377,8 +379,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.setBuffer(e)
         elif e.index == 3:
-            self.captureObjects.clear()
-            self.buffer.clear()
+            self.captureObjects = []
+            self.buffer = []
             self.entriesInUse = 0
             if e.value:
                 for it in e.value:
@@ -403,6 +405,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             else:
                 self.capturePeriod = e.value
         elif e.index == 5:
+            #pylint: disable=bad-option-value,redefined-variable-type
             if settings and settings.isServer:
                 self.__reset()
             if e.value is None:
@@ -443,8 +446,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
-    #pylint: disable=broad-except,too-many-nested-blocks,consider-using-enumerate
     def setBuffer(self, e):
+        #pylint: disable=broad-except,too-many-nested-blocks,consider-using-enumerate
         cols = e.parameters
         colIndex = 0
         if cols is None:
@@ -485,20 +488,20 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                             try:
                                 row[colIndex] = data * scaler_
                             except Exception:
-                                print("Scalar failed for: " + item[0].logicalName)
+                                print("Scalar failed for: {}".format(item[0].logicalName))
                     elif isinstance(item[0], GXDLMSDemandRegister) and (item[1].attributeIndex == 2 or item[1].attributeIndex == 3):
                         scaler_ = item[0].scaler
                         if scaler_ != 1 and data:
                             try:
                                 row[colIndex] = data * scaler_
                             except Exception:
-                                print("Scalar failed for: " + item[0].logicalName)
+                                print("Scalar failed for: {}".format(item[0].logicalName))
                     colIndex += 1
                 self.buffer.append(row)
             self.entriesInUse = len(self.buffer)
 
     def __reset(self):
-        self.buffer.clear()
+        self.buffer = []
         self.entriesInUse = 0
 
     def __capture(self, server):
@@ -522,7 +525,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         from .._GXObjectFactory import _GXObjectFactory
-        self.buffer.clear()
+        self.buffer = []
         if reader.isStartElement("Buffer", True):
             while reader.isStartElement("Row", True):
                 row = list()
@@ -530,7 +533,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                     row.append(reader.readElementContentAsObject("Cell", None))
                 self.buffer.append(row)
             reader.readEndElement("Buffer")
-        self.captureObjects.clear()
+        self.captureObjects = []
         if reader.isStartElement("CaptureObjects", True):
             while reader.isStartElement("Item", True):
                 ot = ObjectType(reader.readElementContentAsInt("ObjectType"))

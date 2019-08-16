@@ -144,7 +144,7 @@ class _GXCommon:
     #
     @classmethod
     def addString(cls, value, bb):
-        bb.setUInt8(int(DataType.OCTET_STRING.value))
+        bb.setUInt8(int(DataType.OCTET_STRING))
         if not value:
             _GXCommon.setObjectCount(0, bb)
         else:
@@ -768,13 +768,13 @@ class _GXCommon:
             if isinstance(it, (DataType,)):
                 info.xml.appendEmptyTag(info.xml.getDataType(it))
             elif isinstance(it, object):
-                info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE.value, None, None)
+                info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE, None, None)
                 cls.appendDataTypeAsXml(it, info)
-                info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE.value)
+                info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE)
             elif isinstance(it, list):
-                info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY.value, None, None)
+                info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY, None, None)
                 cls.appendDataTypeAsXml(it, info)
-                info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY.value)
+                info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY)
 
     #
     # Get compact array value from DLMS data.

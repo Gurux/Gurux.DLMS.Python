@@ -34,6 +34,8 @@
 from enum import Enum
 
 class ScriptActionType(Enum):
+    #pylint: disable=too-few-public-methods
+
     #
     # Nothing is executed.
     #

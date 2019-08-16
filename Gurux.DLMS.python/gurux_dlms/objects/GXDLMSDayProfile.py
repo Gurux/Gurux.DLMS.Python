@@ -35,6 +35,7 @@ class GXDLMSDayProfile:
     """
     Activity Calendar's Day profile is defined on the standard.
     """
+    #pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 
     def __init__(self, day=0, schedules=None):
         """

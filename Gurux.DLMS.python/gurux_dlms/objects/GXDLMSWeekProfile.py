@@ -33,8 +33,10 @@
 # ---------------------------------------------------------------------------
 from ..GXByteBuffer import GXByteBuffer
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class GXDLMSWeekProfile:
-    # pylint: disable=too-many-instance-attributes
+    #pylint: disable=too-many-instance-attributes,too-few-public-methods
     def __init__(self):
         """Constructor."""
         self.name = bytes
@@ -47,7 +49,6 @@ class GXDLMSWeekProfile:
         self.sunday = 0
 
     def __str__(self):
-
         if not self.name:
             return None
         if isinstance(self.name, str):

@@ -34,7 +34,7 @@
 from .enums import ErrorCode, DataType
 from .GXDLMSSettings import GXDLMSSettings
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=bad-option-value,old-style-class,too-few-public-methods,too-many-instance-attributes
 class ValueEventArgs:
     #
     # Constructor.

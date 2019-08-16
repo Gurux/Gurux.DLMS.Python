@@ -42,21 +42,21 @@ class GXDate(GXDateTime):
 
         value: Date value.
         """
-        super(GXDate, self).__init__(value)
+        GXDateTime.__init__(self, value)
         self.skip |= DateTimeSkips.HOUR
         self.skip |= DateTimeSkips.MINUTE
         self.skip |= DateTimeSkips.SECOND
         self.skip |= DateTimeSkips.MILLISECOND
 
     def _remove(self, format_):
-        format_ = super(GXDate, self)._remove_(format_, "%H", True)
-        format_ = super(GXDate, self)._remove_(format_, "%-H", True)
-        format_ = super(GXDate, self)._remove_(format_, "%I", True)
-        format_ = super(GXDate, self)._remove_(format_, "%-I", True)
-        format_ = super(GXDate, self)._remove_(format_, "%M", True)
-        format_ = super(GXDate, self)._remove_(format_, "%-M", True)
-        format_ = super(GXDate, self)._remove_(format_, "%S", True)
-        format_ = super(GXDate, self)._remove_(format_, "%-S", True)
+        format_ = GXDateTime._remove_(format_, "%H", True)
+        format_ = GXDateTime._remove_(format_, "%-H", True)
+        format_ = GXDateTime._remove_(format_, "%I", True)
+        format_ = GXDateTime._remove_(format_, "%-I", True)
+        format_ = GXDateTime._remove_(format_, "%M", True)
+        format_ = GXDateTime._remove_(format_, "%-M", True)
+        format_ = GXDateTime._remove_(format_, "%S", True)
+        format_ = GXDateTime._remove_(format_, "%-S", True)
         str_ = datetime.datetime.now().strftime('%p')
-        format_ = super(GXDate, self)._remove_(format_, str_, True)
+        format_ = GXDateTime._remove_(format_, str_, True)
         return format_

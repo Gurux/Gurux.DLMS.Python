@@ -37,6 +37,7 @@ class BerType(Enum):
     """
     BER encoding enumeration values.
     """
+    #pylint: disable=too-few-public-methods
 
     # End of Content.
     EOC = 0x00

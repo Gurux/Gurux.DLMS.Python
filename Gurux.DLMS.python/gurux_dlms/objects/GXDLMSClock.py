@@ -40,22 +40,21 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType, ClockStatus
 from .enums import ClockBase
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSClock
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSClock
+    """
+
     def __init__(self, ln="0.0.1.0.0.255", sn=0):
-        super(GXDLMSClock, self).__init__(ObjectType.CLOCK, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.CLOCK, ln, sn)
         self.time = None
         self.timeZone = 0
         self.status = ClockStatus.OK
@@ -103,7 +102,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
 
     def presetAdjustingTime(self, client, presetTime, validityIntervalStart, validityIntervalEnd):
         buff = GXByteBuffer(44)
-        buff.setUInt8(DataType.STRUCTURE.value)
+        buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(3)
         _GXCommon.setData(buff, DataType.OCTET_STRING, presetTime)
         _GXCommon.setData(buff, DataType.OCTET_STRING, validityIntervalStart)
@@ -193,6 +192,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -219,6 +219,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
     # Set value of given attribute.
     #
     def setValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:

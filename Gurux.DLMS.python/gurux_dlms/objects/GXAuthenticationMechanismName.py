@@ -33,8 +33,10 @@
 # ---------------------------------------------------------------------------
 from ..enums import Authentication
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class GXAuthenticationMechanismName:
-# pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes,too-few-public-methods
 
     def __init__(self):
         # Constructor.

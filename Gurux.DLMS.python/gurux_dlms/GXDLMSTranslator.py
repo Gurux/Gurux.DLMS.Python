@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 import xml.etree.cElementTree as ET
 from .internal._GXCommon import _GXCommon
 from .GXByteBuffer import GXByteBuffer
@@ -80,7 +81,7 @@ from .enums.Conformance import Conformance
 from .AesGcmParameter import AesGcmParameter
 from .GXDLMSException import GXDLMSException
 
-# pylint:disable=too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes
+# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes, old-style-class
 class GXDLMSTranslator:
     """
     This class is used to translate DLMS frame or PDU to xml.
@@ -510,8 +511,8 @@ class GXDLMSTranslator:
     #            Bytes to convert.
     # Converted XML.
     #
-    # pylint:disable=too-many-arguments,too-many-locals,too-many-nested-blocks
     def __pduToXml_(self, xml, value, omitDeclaration, omitNameSpace, allowUnknownCommand=True):
+        #pylint: disable=bad-option-value,too-many-arguments,too-many-locals,too-many-nested-blocks,redefined-variable-type
         if not value:
             raise ValueError("value")
         settings = GXDLMSSettings(True)
@@ -793,6 +794,7 @@ class GXDLMSTranslator:
 
     @classmethod
     def handleAarqAare(cls, node, s, tag):
+        #pylint: disable=bad-option-value,redefined-variable-type
         tmp = []
         list_ = None
         value = int()
@@ -837,7 +839,7 @@ class GXDLMSTranslator:
                 tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
                 bb.set(tmp)
                 if s.settings.isServer:
-                    s.settings.setProposedConformance(Conformance(0xFFFFFF))
+                    s.settings.setProposedConformance(0xFFFFFF)
                 _GXAPDU.parseInitiate(False, s.settings, s.settings.getCipher(), bb, None)
                 if not s.settings.isServer:
                     s.settings.proposedConformance = s.settings.negotiatedConformance
@@ -992,6 +994,7 @@ class GXDLMSTranslator:
 
     @classmethod
     def readNode(cls, node, s):
+        #pylint: disable=bad-option-value,redefined-variable-type
         value = 0
         tmp = []
         preData = None
@@ -1013,7 +1016,7 @@ class GXDLMSTranslator:
         elif s.command in (Command.AARQ, Command.AARE, Command.INITIATE_REQUEST, Command.INITIATE_RESPONSE, Command.RELEASE_REQUEST, Command.RELEASE_RESPONSE):
             cls.handleAarqAare(node, s, tag)
         elif tag >= _GXCommon.DATA_TYPE_OFFSET:
-            if tag == DataType.DATETIME.value + _GXCommon.DATA_TYPE_OFFSET or (s.command == Command.EVENT_NOTIFICATION and not s.attributeDescriptor):
+            if tag == DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET or (s.command == Command.EVENT_NOTIFICATION and not s.attributeDescriptor):
                 preData = cls.updateDateTime(node, s, preData)
                 if preData is None and s.command == Command.GENERAL_CIPHERING:
                     s.data.setUInt8(0)
@@ -1078,11 +1081,11 @@ class GXDLMSTranslator:
                     s.data.setUInt8(0)
             elif tag == TranslatorTags.SUCCESS:
                 s.count = s.count + 1
-                s.attributeDescriptor.setUInt8(ErrorCode.OK.value)
+                s.attributeDescriptor.setUInt8(ErrorCode.OK)
             elif tag == TranslatorTags.DATA_ACCESS_ERROR:
                 s.count = s.count + 1
                 s.attributeDescriptor.setUInt8(1)
-                s.attributeDescriptor.setUInt8(cls.value_ofErrorCode(s.outputType, cls.getValue(node, s)).value)
+                s.attributeDescriptor.setUInt8(cls.value_ofErrorCode(s.outputType, cls.getValue(node, s)))
             elif tag == TranslatorTags.LIST_OF_VARIABLE_ACCESS_SPECIFICATION:
                 if s.command == Command.WRITE_REQUEST:
                     _GXCommon.setObjectCount(cls.getNodeCount(node), s.data)
@@ -1168,22 +1171,22 @@ class GXDLMSTranslator:
                 elif s.command == Command.METHOD_RESPONSE or s.command == Command.SET_RESPONSE:
                     str_ = cls.getValue(node, s)
                     if str_:
-                        s.attributeDescriptor.setUInt8(cls.value_ofErrorCode(s.outputType, str_).value)
+                        s.attributeDescriptor.setUInt8(cls.value_ofErrorCode(s.outputType, str_))
                 elif s.command == Command.ACCESS_RESPONSE:
                     str_ = cls.getValue(node, s)
                     if str_:
-                        s.data.setUInt8(cls.value_ofErrorCode(s.outputType, str_).value)
+                        s.data.setUInt8(cls.value_ofErrorCode(s.outputType, str_))
             elif tag == TranslatorTags.REASON:
                 if s.command == Command.RELEASE_REQUEST:
                     if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                        s.reason = int(TranslatorSimpleTags.value_ofReleaseRequestReason(cls.getValue(node, s)).value)
+                        s.reason = int(TranslatorSimpleTags.value_ofReleaseRequestReason(cls.getValue(node, s)))
                     else:
-                        s.reason = int(TranslatorStandardTags.value_ofReleaseRequestReason(cls.getValue(node, s)).value)
+                        s.reason = int(TranslatorStandardTags.value_ofReleaseRequestReason(cls.getValue(node, s)))
                 else:
                     if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                        s.reason = int(TranslatorSimpleTags.value_ofReleaseResponseReason(cls.getValue(node, s)).value)
+                        s.reason = int(TranslatorSimpleTags.value_ofReleaseResponseReason(cls.getValue(node, s)))
                     else:
-                        s.reason = int(TranslatorStandardTags.value_ofReleaseResponseReason(cls.getValue(node, s)).value)
+                        s.reason = int(TranslatorStandardTags.value_ofReleaseResponseReason(cls.getValue(node, s)))
             elif tag == TranslatorTags.RETURN_PARAMETERS:
                 s.attributeDescriptor.setUInt8(1)
             elif tag == TranslatorTags.ACCESS_SELECTION:
@@ -1194,7 +1197,7 @@ class GXDLMSTranslator:
                 if s.attributeDescriptor.size() == 0:
                     s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
                 else:
-                    s.attributeDescriptor.setUInt8(ServiceError.SERVICE.value)
+                    s.attributeDescriptor.setUInt8(ServiceError.SERVICE)
                     s.attributeDescriptor.setUInt8(Service.valueofString(cls.getValue(node, s)).value)
             elif tag == TranslatorTags.ACCESS_SELECTOR:
                 s.data.setUInt8(s.parseShort(cls.getValue(node, s)))
@@ -1233,7 +1236,7 @@ class GXDLMSTranslator:
                 err = cls.value_ofErrorCode(s.outputType, cls.getValue(node, s))
                 s.setCount(s.getCount() + 1)
                 s.data.setUInt8(1)
-                s.data.setUInt8(err.value)
+                s.data.setUInt8(err)
             elif tag == TranslatorTags.NOTIFICATION_BODY:
                 pass
             elif tag == TranslatorTags.DATA_VALUE:
@@ -1343,7 +1346,7 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.VALUE_LIST:
                 _GXCommon.setObjectCount(cls.getNodeCount(node), s.data)
             elif tag == TranslatorTags.DATA_ACCESS_RESULT:
-                s.data.setUInt8(cls.value_ofErrorCode(s.outputType, cls.getValue(node, s)).value)
+                s.data.setUInt8(cls.value_ofErrorCode(s.outputType, cls.getValue(node, s)))
             elif tag == TranslatorTags.WRITE_DATA_BLOCK_ACCESS:
                 pass
             elif tag == TranslatorTags.FRAME_TYPE:
@@ -1417,7 +1420,7 @@ class GXDLMSTranslator:
     def getNodeTypes(cls, s, node):
         len1 = cls.getNodeCount(node)
         if len1 > 1:
-            s.data.setUInt8(DataType.STRUCTURE.value)
+            s.data.setUInt8(DataType.STRUCTURE)
             _GXCommon.setObjectCount(len, s.data)
         for node2 in node:
             if s.outputType == TranslatorOutputType.SIMPLE_XML:
@@ -1429,10 +1432,9 @@ class GXDLMSTranslator:
 
     @classmethod
     def updateDateTime(cls, node, s, preData):
-        tmp = []
         bb = preData
         if s.requestType != 0xFF:
-            bb = cls.updateDataType(node, s, DataType.DATETIME.value + _GXCommon.DATA_TYPE_OFFSET)
+            bb = cls.updateDataType(node, s, DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET)
         else:
             dt = DataType.DATETIME
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
@@ -1446,6 +1448,7 @@ class GXDLMSTranslator:
 
     @classmethod
     def updateDataType(cls, node, s, tag):
+        #pylint: disable=bad-option-value,redefined-variable-type
         preData = None
         v = cls.getValue(node, s)
         if s.template or v == "*":
@@ -1453,7 +1456,7 @@ class GXDLMSTranslator:
             return preData
         dt = DataType(tag - _GXCommon.DATA_TYPE_OFFSET)
         if dt == DataType.ARRAY:
-            s.data.setUInt8(DataType.ARRAY.value)
+            s.data.setUInt8(DataType.ARRAY)
             preData = GXByteBuffer(s.data)
             s.data.size = 0
         elif dt == DataType.BCD:
@@ -1500,7 +1503,7 @@ class GXDLMSTranslator:
             else:
                 _GXCommon.setData(s.data, DataType.STRING_UTF8, cls.getValue(node, s))
         elif dt == DataType.STRUCTURE:
-            s.data.setUInt8(DataType.STRUCTURE.value)
+            s.data.setUInt8(DataType.STRUCTURE)
             preData = GXByteBuffer(s.data)
             s.data.size = 0
         elif dt == DataType.TIME:
@@ -1557,9 +1560,9 @@ class GXDLMSTranslator:
         if s.command == Command.INITIATE_REQUEST:
             _GXAPDU.getInitiateRequest(s.settings, bb)
         elif s.command == Command.INITIATE_RESPONSE:
-            bb.set(_GXAPDU.getUserInformation(s.settings, s.settings.getCipher()))
+            bb.set(_GXAPDU.getUserInformation(s.settings, s.settings.cipher))
         elif s.command in (Command.READ_REQUEST, Command.WRITE_REQUEST, Command.READ_RESPONSE, Command.WRITE_RESPONSE):
-            sn = GXDLMSSNParameters(s.settings, s.command, s.getCount(), s.requestType, s.attributeDescriptor, s.data)
+            sn = GXDLMSSNParameters(s.settings, s.command, s.count, s.requestType, s.attributeDescriptor, s.data)
             GXDLMS.getSNPdu(sn, bb)
         elif s.command in (Command.GET_REQUEST, Command.GET_RESPONSE, Command.SET_REQUEST, Command.SET_RESPONSE, Command.METHOD_REQUEST, Command.METHOD_RESPONSE):
             ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff)
@@ -1593,19 +1596,19 @@ class GXDLMSTranslator:
                 s.data.clear()
                 s.data.set(bb)
                 bb.clear()
-            bb.set(GXDLMS.getHdlcFrame(s.settings, int(s.command), s.data))
+            bb.set(GXDLMS.getHdlcFrame(s.settings, s.command, s.data))
         elif s.command in (Command.AARQ, Command.GLO_INITIATE_REQUEST):
-            _GXAPDU.generateAarq(s.settings, s.settings.getCipher(), s.data, bb)
+            _GXAPDU.generateAarq(s.settings, s.settings.cipher, s.data, bb)
         elif s.command in (Command.AARE, Command.GLO_INITIATE_RESPONSE):
-            _GXAPDU.generateAARE(s.settings, bb, s.result, s.getDiagnostic(), s.settings.getCipher(), s.attributeDescriptor, s.data)
+            _GXAPDU.generateAARE(s.settings, bb, s.result, s.diagnostic, s.settings.cipher, s.attributeDescriptor, s.data)
         elif s.command == Command.DISCONNECT_REQUEST:
             pass
         elif s.command == Command.RELEASE_REQUEST:
             bb.setUInt8(s.command)
-            bb.setUInt8(3 + s.data.size())
+            bb.setUInt8(3 + len(s.data))
             bb.setUInt8(BerType.CONTEXT)
             bb.setUInt8(1)
-            bb.setUInt8(s.getReason())
+            bb.setUInt8(s.reason)
             if s.data.size() == 0:
                 bb.setUInt8(0)
             else:
@@ -1615,7 +1618,7 @@ class GXDLMSTranslator:
             bb.setUInt8(3)
             bb.setUInt8(BerType.CONTEXT)
             bb.setUInt8(1)
-            bb.setUInt8(s.getReason())
+            bb.setUInt8(s.reason)
         elif s.command == Command.CONFIRMED_SERVICE_ERROR:
             bb.setUInt8(s.command)
             bb.set(s.attributeDescriptor)
@@ -1635,7 +1638,7 @@ class GXDLMSTranslator:
             ln.time = s.time
             GXDLMS.getLNPdu(ln, bb)
         elif s.command == Command.INFORMATION_REPORT:
-            sn = GXDLMSSNParameters(s.settings, s.command, s.getCount(), s.requestType, s.attributeDescriptor, s.data)
+            sn = GXDLMSSNParameters(s.settings, s.command, s.count, s.requestType, s.attributeDescriptor, s.data)
             sn.time = s.time
             GXDLMS.getSNPdu(sn, bb)
         elif s.command == Command.EVENT_NOTIFICATION:
@@ -1657,7 +1660,7 @@ class GXDLMSTranslator:
             raise ValueError("Invalid command.")
         if s.physicalDeviceAddress:
             bb2 = GXByteBuffer()
-            bb2.setUInt8(s.GwCommand)
+            bb2.setUInt8(s.gwCommand)
             bb2.setUInt8(s.networkId)
             _GXCommon.setObjectCount(len(s.physicalDeviceAddress), bb2)
             bb2.set(s.physicalDeviceAddress)

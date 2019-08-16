@@ -32,10 +32,18 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #
-from enum import Flag
+import sys
 
-class DateTimeSkips(Flag):
+#pylint: disable=no-name-in-module
+if sys.version_info < (3, 6):
+    __base = object
+else:
+    from enum import IntFlag
+    __base = IntFlag
+
+class DateTimeSkips(__base):
     """Enumerated date time skipped fields."""
+    #pylint: disable=too-few-public-methods
 
      # Nothing is skipped from date time.
     NONE = 0

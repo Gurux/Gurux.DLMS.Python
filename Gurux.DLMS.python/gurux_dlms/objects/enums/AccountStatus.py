@@ -34,10 +34,13 @@
 from enum import Enum
 
 class AccountStatus(Enum):
-    """Enumerates account status modes.
+    """
+    Enumerates account status modes.
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # New =inactive) account.
     #

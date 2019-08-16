@@ -38,6 +38,8 @@ class TokenDelivery(Enum):
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTokenGateway
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # Via remote communications.
     #

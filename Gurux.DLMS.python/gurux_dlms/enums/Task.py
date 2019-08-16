@@ -35,6 +35,7 @@ from enum import Enum
 
 class Task(Enum):
     """Task describes load task errors."""
+    #pylint: disable=too-few-public-methods
 
     OTHER = 0
 

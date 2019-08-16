@@ -31,10 +31,11 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXDLMSIp4SetupIpOption:
-    #
     #Constructor.
-    #
     def __init__(self):
         self.type_ = None
         self.length = 0

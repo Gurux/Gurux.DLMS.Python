@@ -38,22 +38,21 @@ from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import ControlState, ControlMode
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSDisconnectControl
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSDisconnectControl
+    """
+
     def __init__(self, ln=None, sn=0):
-        super(GXDLMSDisconnectControl, self).__init__(ObjectType.DISCONNECT_CONTROL, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.DISCONNECT_CONTROL, ln, sn)
         self.controlState = ControlState.DISCONNECTED
         self.controlMode = ControlMode.NONE
         self.outputState = False
@@ -136,11 +135,13 @@ class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
             else:
                 self.outputState = e.value
         elif e.index == 3:
+            #pylint: disable=bad-option-value,redefined-variable-type
             if e.value is None:
                 self.controlState = ControlState.DISCONNECTED
             else:
                 self.controlState = ControlState(e.value)
         elif e.index == 4:
+            #pylint: disable=bad-option-value,redefined-variable-type
             if e.value is None:
                 self.controlMode = ControlMode.NONE
             else:

@@ -41,21 +41,20 @@ from ..enums import ObjectType, DataType
 from .GXDLMSEmergencyProfile import GXDLMSEmergencyProfile
 from .GXDLMSActionItem import GXDLMSActionItem
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSLimiter
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSLimiter
+
+    """
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSLimiter, self).__init__(ObjectType.LIMITER, ln, sn)
         self.monitoredValue = None
         self.monitoredAttributeIndex = 0
@@ -162,11 +161,12 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
             if self.monitoredValue is None:
                 _GXCommon.setData(data, DataType.INT16, int(0))
@@ -189,7 +189,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             ret = self.minUnderThresholdDuration
         elif e.index == 8:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
             _GXCommon.setData(data, DataType.UINT16, self.emergencyProfile.id)
             _GXCommon.setData(data, DataType.OCTET_STRING, self.emergencyProfile.activationTime)
@@ -197,7 +197,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             ret = data
         elif e.index == 9:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             data.setUInt8(len(self.emergencyProfileGroupIDs))
             for it in self.emergencyProfileGroupIDs:
                 _GXCommon.setData(data, DataType.UINT16, it)
@@ -206,13 +206,13 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             ret = self.emergencyProfileActive
         elif e.index == 11:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionOverThreshold.logicalName))
             _GXCommon.setData(data, DataType.UINT16, self.actionOverThreshold.scriptSelector)
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionUnderThreshold.logicalName))
             _GXCommon.setData(data, DataType.UINT16, self.actionUnderThreshold.scriptSelector)
@@ -247,7 +247,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             self.emergencyProfile.activationTime = _GXCommon.changeType(e.value[1], DataType.DATETIME)
             self.emergencyProfile.duration = e.value[2]
         elif e.index == 9:
-            self.emergencyProfileGroupIDs.clear()
+            self.emergencyProfileGroupIDs = []
             if e.value:
                 for it in e.value:
                     self.emergencyProfileGroupIDs.append(it)
@@ -283,7 +283,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             self.emergencyProfile.activationTime = reader.readElementContentAsObject("Time", GXDateTime())
             self.emergencyProfile.duration = reader.readElementContentAsInt("Duration")
             reader.readEndElement("EmergencyProfile")
-        self.emergencyProfileGroupIDs.clear()
+        self.emergencyProfileGroupIDs = []
         if reader.isStartElement("EmergencyProfileGroupIDs", True):
             while reader.isStartElement("Value", False):
                 self.emergencyProfileGroupIDs.append(reader.readElementContentAsInt("Value"))

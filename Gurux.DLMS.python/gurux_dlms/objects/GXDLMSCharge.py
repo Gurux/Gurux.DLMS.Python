@@ -42,22 +42,21 @@ from .enums import ChargeType
 from .GXUnitCharge import GXUnitCharge
 from .GXChargeTable import GXChargeTable
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
-#
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes,too-few-public-methods
 class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
+    """
+
     def __init__(self, ln="0.0.19.20.0.255", sn=0):
-        super(GXDLMSCharge, self).__init__(ObjectType.CHARGE, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.CHARGE, ln, sn)
         self.totalAmountPaid = 0
         self.priority = 0
         self.unitChargeActivationTime = None
@@ -180,17 +179,17 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getUnitCharge(cls, charge):
         bb = GXByteBuffer()
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
         _GXCommon.setData(bb, DataType.INT8, charge.chargePerUnitScaling.commodityScale)
         _GXCommon.setData(bb, DataType.INT8, charge.chargePerUnitScaling.priceScale)
-        bb.setUInt8(DataType.STRUCTURE.value)
+        bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         if charge.commodity.target is None:
             _GXCommon.setData(bb, DataType.UINT16, 0)
-            bb.setUInt8(DataType.OCTET_STRING.value)
+            bb.setUInt8(DataType.OCTET_STRING)
             bb.setUInt8(6)
             bb.setUInt8(0)
             bb.setUInt8(0)
@@ -203,19 +202,20 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setData(bb, DataType.UINT16, charge.commodity.target.objectType)
             _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(charge.commodity.target.logicalName))
             _GXCommon.setData(bb, DataType.INT8, charge.commodity.index)
-        bb.setUInt8(DataType.ARRAY.value)
+        bb.setUInt8(DataType.ARRAY)
         if charge.chargeTables is None:
             bb.setUInt8(0)
         else:
             _GXCommon.setObjectCount(len(charge.chargeTables), bb)
             for it in charge.chargeTables:
-                bb.setUInt8(DataType.STRUCTURE.value)
+                bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(2)
                 _GXCommon.setData(bb, DataType.OCTET_STRING, it.index)
                 _GXCommon.setData(bb, DataType.INT16, it.chargePerUnit)
         return bb.array()
 
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -257,7 +257,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         ln = _GXCommon.toLogicalName(tmp2[1])
         charge.commodity.target = settings.objects.findByLN(ot, ln)
         charge.commodity.index = tmp2[2]
-        charge.chargeTables.clear()
+        charge.chargeTables = []
         tmp2 = tmp[2]
         for tmp3 in tmp2:
             it = tmp3

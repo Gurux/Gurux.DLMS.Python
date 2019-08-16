@@ -37,6 +37,7 @@ class AccessMode(Enum):
     """
     Enumerates access modes.
     """
+    #pylint: disable=too-few-public-methods
 
     #No access.
     NO_ACCESS = 0

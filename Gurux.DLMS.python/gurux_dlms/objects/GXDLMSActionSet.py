@@ -34,6 +34,8 @@
 
 from .GXDLMSActionItem import GXDLMSActionItem
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXDLMSActionSet:
     #
     # Constructor.

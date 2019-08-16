@@ -9,7 +9,7 @@
     <Name>gurux_dlms</Name>
     <RootNamespace>gurux_dlms</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.7</InterpreterId>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <CommandLineArguments>-h localhost -p 1000 -t Verbose</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
@@ -73,7 +73,7 @@
     <Compile Include="gurux_dlms\GXSecure.py" />
     <Compile Include="gurux_dlms\GXStandardObisCodeCollection.py" />
     <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttributeSettings.py" />
-    <Compile Include="gurux_dlms\objects\GXDLMSAttributeSettings.py" />
+    <Compile Include="gurux_dlms\objects\enums\KeyUsage.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureClient.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureNotify.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureServer.py" />
@@ -292,6 +292,7 @@
     <Content Include=".pylintrc" />
     <Content Include="gurux_dlms.sln" />
     <Content Include="LICENSE" />
+    <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="gurux_dlms\" />

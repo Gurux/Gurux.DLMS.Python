@@ -37,6 +37,7 @@ class GlobalKeyType(Enum):
     """
     Global key types.
     """
+    #pylint: disable=too-few-public-methods
 
      #
      # Global unicast encryption key.

@@ -50,16 +50,14 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSActionSchedule
     """
 
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
     def __init__(self, ln="0.0.15.0.0.255", sn=0):
-        super(GXDLMSActionSchedule, self).__init__(ObjectType.ACTION_SCHEDULE, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.ACTION_SCHEDULE, ln, sn)
         self.type_ = SingleActionScheduleType.SingleActionScheduleType1
         # Script to execute.
         self.target = None
@@ -126,7 +124,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             return _GXCommon.logicalNameToBytes(self.logicalName)
         if e.index == 2:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
             _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.executedScriptLogicalName))
             _GXCommon.setData(bb, DataType.UINT16, int(self.executedScriptSelector))
@@ -135,13 +133,13 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             return int(self.type_.value)
         if e.index == 4:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if not self.executionTime:
                 _GXCommon.setObjectCount(0, bb)
             else:
                 _GXCommon.setObjectCount(len(self.executionTime), bb)
                 for it in self.executionTime:
-                    bb.setUInt8(DataType.STRUCTURE.value)
+                    bb.setUInt8(DataType.STRUCTURE)
                     #  Count
                     bb.setUInt8(2)
                     #  Time
@@ -164,7 +162,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             self.type_ = SingleActionScheduleType(e.value)
         elif e.index == 4:
-            self.executionTime.clear()
+            self.executionTime = []
             if e.value:
                 for it in e.value:
                     time = _GXCommon.changeType(it[0], DataType.TIME)
@@ -187,7 +185,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
                 self.target = GXDLMSScriptTable(ln)
         self.executedScriptSelector = reader.readElementContentAsInt("ExecutedScriptSelector")
         self.type_ = SingleActionScheduleType(reader.readElementContentAsInt("Type"))
-        self.executionTime.clear()
+        self.executionTime = []
         if reader.isStartElement("ExecutionTime", True):
             while reader.isStartElement("Time", False):
                 it = GXDateTime(reader.readElementContentAsString("Time"))

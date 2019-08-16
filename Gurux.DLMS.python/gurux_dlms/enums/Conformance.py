@@ -31,16 +31,23 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import sys
 
-from enum import Flag
+#pylint: disable=no-name-in-module
+if sys.version_info < (3, 6):
+    __base = object
+else:
+    from enum import IntFlag
+    __base = IntFlag
 
-class Conformance(Flag):
+class Conformance(__base):
     """Enumerates all conformance bits.
     Client is using conformance to tell what kind of services it's interested
     and server is using conformance to tell what kind of services it can offer.
 
-    All #services enumerated here are not necessary supported by the client or the
+    All services enumerated here are not necessary supported by the client or the
     server."""
+    #pylint: disable=too-few-public-methods
 
     #Reserved zero conformance bit.
     #Not used at the moment.

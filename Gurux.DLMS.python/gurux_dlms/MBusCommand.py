@@ -31,11 +31,16 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import IntEnum
-#
-# M-Bus command.
-#
-class MBusCommand(IntEnum):
+import sys
+
+if sys.version_info < (3, 0):
+    __base = object
+else:
+    from enum import IntEnum
+    __base = IntEnum
+
+class MBusCommand(__base):
+    """M-Bus command."""
     SND_NR = 0x44
     SND_UD2 = 0x43
     RSP_UD = 0x08

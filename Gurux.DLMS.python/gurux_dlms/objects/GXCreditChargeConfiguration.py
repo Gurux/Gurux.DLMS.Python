@@ -32,11 +32,12 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums import CreditCollectionConfiguration
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
-#
 class GXCreditChargeConfiguration:
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
+    """
+    #pylint: disable=bad-option-value,old-style-class,too-few-public-methods
     #
     # Constructor.
     #

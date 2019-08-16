@@ -37,6 +37,7 @@ class CertificateType(Enum):
     """
     Certificate type.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Certificate type is digital signature.

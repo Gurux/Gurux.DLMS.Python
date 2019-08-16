@@ -37,6 +37,7 @@ class ServiceType(Enum):
     """
     Type of service used to push the data.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Transport service type is TCP/IP.

@@ -35,6 +35,7 @@ from enum import Enum
 
 class StateError(Enum):
     """DLMS state errors."""
+    #pylint: disable=too-few-public-methods
 
     SERVICE_NOT_ALLOWED = 1
 

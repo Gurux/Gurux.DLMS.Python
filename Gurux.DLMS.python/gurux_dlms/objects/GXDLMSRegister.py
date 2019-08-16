@@ -39,21 +39,19 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, Unit
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegister
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegister
+    """
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSRegister, self).__init__(ObjectType.REGISTER, ln, sn)
         self.value = None
         self.scaler = 1
@@ -133,7 +131,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
             return self.value
         if e.index == 3:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.INT8, int(self.scaler))
             _GXCommon.setData(data, DataType.ENUM, int(self.unit))

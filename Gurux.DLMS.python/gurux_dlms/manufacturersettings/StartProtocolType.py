@@ -37,6 +37,8 @@ class StartProtocolType(Enum):
     """
     What protocol meter uses when connection is started.
     """
+    #pylint: disable=too-few-public-methods
+
     # IEC protocol is start protocol.
     IEC = 0
     # DLMS is start protocol.

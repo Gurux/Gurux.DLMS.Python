@@ -38,21 +38,19 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSMacAddressSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMacAddressSetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSMacAddressSetup
+    """
     def __init__(self, ln="0.0.25.2.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSMacAddressSetup, self).__init__(ObjectType.MAC_ADDRESS_SETUP, ln, sn)
         self.macAddress = None
 

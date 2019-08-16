@@ -127,7 +127,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             return self.communicationSpeed
         if e.index == 3:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             #  Add count
             cnt = 0
             if self.initialisationStrings:
@@ -135,7 +135,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setObjectCount(cnt, data)
             if cnt != 0:
                 for it in self.initialisationStrings:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     #  Count
                     _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.getBytes(it.request))
@@ -144,7 +144,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             return data
         if e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             #  Add count
             cnt = len(self.modemProfile)
             _GXCommon.setObjectCount(cnt, data)
@@ -164,7 +164,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.communicationSpeed = BaudRate(e.value)
         elif e.index == 3:
-            self.initialisationStrings.clear()
+            self.initialisationStrings = []
             if e.value:
                 for it in e.value:
                     item = GXDLMSModemInitialisation()
@@ -174,7 +174,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
                         item.delay = it[2]
                     self.initialisationStrings.append(item)
         elif e.index == 4:
-            self.modemProfile.clear()
+            self.modemProfile = []
             if e.value:
                 for it in e.value:
                     self.modemProfile.append(it.decode("utf-8"))

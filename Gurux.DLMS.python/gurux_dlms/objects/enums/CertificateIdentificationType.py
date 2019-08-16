@@ -38,6 +38,7 @@ class CertificateIdentificationType(Enum):
     Certificate is identified with entity identification or the serial number
     of the certificate.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Certificate is identified with entity identification.

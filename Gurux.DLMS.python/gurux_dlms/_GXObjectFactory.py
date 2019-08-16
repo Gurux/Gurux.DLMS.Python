@@ -32,12 +32,18 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums import ObjectType
-#pylint: disable=too-many-locals, cyclic-import
+#pylint: disable=bad-option-value,too-many-locals, cyclic-import,old-style-class,too-few-public-methods
 class _GXObjectFactory:
     #Reserved for internal use.
 
+    #
+    # Constructor.
+    def __init__(self):
+        pass
+
     @classmethod
     def createObject(cls, ot):
+        #pylint: disable=bad-option-value,redefined-variable-type
         from .objects import GXDLMSObject, GXDLMSActionSchedule, GXDLMSActivityCalendar, GXDLMSAssociationLogicalName,\
             GXDLMSAssociationShortName, GXDLMSAutoAnswer, GXDLMSAutoConnect, GXDLMSClock, GXDLMSData, GXDLMSDemandRegister,\
             GXDLMSMacAddressSetup, GXDLMSRegister, GXDLMSExtendedRegister, GXDLMSGprsSetup, GXDLMSHdlcSetup, GXDLMSIECOpticalPortSetup,\

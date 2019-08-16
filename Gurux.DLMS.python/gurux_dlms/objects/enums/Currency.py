@@ -38,6 +38,7 @@ class Currency(Enum):
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Time.

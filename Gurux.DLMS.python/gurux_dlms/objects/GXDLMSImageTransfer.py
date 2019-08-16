@@ -40,22 +40,21 @@ from ..enums import ObjectType, DataType
 from .enums import ImageTransferStatus
 from .GXDLMSImageActivateInfo import GXDLMSImageActivateInfo
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSImageTransfer
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSImageTransfer
+    """
+
     def __init__(self, ln="0.0.44.0.0.255", sn=0):
-        super(GXDLMSImageTransfer, self).__init__(ObjectType.IMAGE_TRANSFER, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.IMAGE_TRANSFER, ln, sn)
         self.imageBlockSize = 200
         self.imageTransferredBlocksStatus = ""
         self.imageFirstNotTransferredBlockNumber = 0
@@ -124,8 +123,8 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             if item is None:
                 item = GXDLMSImageActivateInfo()
                 list_.append(item)
-            item.setSize(self.imageSize)
-            item.setIdentification(imageIdentifier)
+            item.size = self.imageSize
+            item.identification = imageIdentifier
             self.imageActivateInfo = list_
             cnt = int((self.imageSize / self.imageBlockSize))
             if self.imageSize % self.imageBlockSize != 0:
@@ -178,6 +177,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -192,11 +192,11 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             ret = self.imageTransferStatus
         elif e.index == 7:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.ARRAY.value))
+            data.setUInt8(int(DataType.ARRAY))
             #  Count
             data.setUInt8(len(self.imageActivateInfo))
             for it in self.imageActivateInfo:
-                data.setUInt8(int(DataType.STRUCTURE.value))
+                data.setUInt8(int(DataType.STRUCTURE))
                 #  Item count.
                 data.setUInt8(int(3))
                 _GXCommon.setData(data, DataType.UINT32, it.size)
@@ -231,12 +231,13 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             else:
                 self.imageTransferEnabled = e.value
         elif e.index == 6:
+            #pylint: disable=bad-option-value,redefined-variable-type
             if e.value is None:
                 self.imageTransferStatus = ImageTransferStatus.IMAGE_TRANSFER_NOT_INITIATED
             else:
                 self.imageTransferStatus = ImageTransferStatus(e.value)
         elif e.index == 7:
-            self.imageActivateInfo.clear()
+            self.imageActivateInfo = []
             if e.value:
                 for it in e.value:
                     item = GXDLMSImageActivateInfo()
@@ -251,7 +252,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         if self.imageBlockSize == 0:
             raise ValueError("Invalid image block size")
         data = GXByteBuffer()
-        data.setUInt8(DataType.STRUCTURE.value)
+        data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(2)
         _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.getBytes(imageIdentifier))
         _GXCommon.setData(data, DataType.UINT32, forImageSize)
@@ -267,7 +268,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         pos = 0
         while pos != cnt:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.UINT32, pos)
             tmp = None
@@ -294,7 +295,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         self.imageFirstNotTransferredBlockNumber = reader.readElementContentAsLong("ImageFirstNotTransferredBlockNumber")
         self.imageTransferEnabled = reader.readElementContentAsInt("ImageTransferEnabled") != 0
         self.imageTransferStatus = ImageTransferStatus(reader.readElementContentAsInt("ImageTransferStatus"))
-        self.imageActivateInfo.clear()
+        self.imageActivateInfo = []
         if reader.isStartElement("ImageActivateInfo", True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSImageActivateInfo()

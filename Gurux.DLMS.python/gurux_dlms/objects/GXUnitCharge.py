@@ -34,7 +34,9 @@
 from .GXChargePerUnitScaling import GXChargePerUnitScaling
 from .GXCommodity import GXCommodity
 
-class GXUnitCharge():
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
+class GXUnitCharge:
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge

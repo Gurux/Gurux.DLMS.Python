@@ -35,6 +35,7 @@ from enum import Enum
 
 class Priority(Enum):
     """Used priority."""
+    #pylint: disable=too-few-public-methods
 
     NORMAL = 0
     HIGH = 1

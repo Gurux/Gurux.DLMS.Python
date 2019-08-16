@@ -60,7 +60,7 @@ class GXDLMSSecureClient(GXDLMSClient):
     #            Object type.
     #
     def __init__(self, useLogicalNameReferencing=False, clientAddress=16, serverAddress=1, forAuthentication=Authentication.NONE, password=None, interfaceType=InterfaceType.HDLC):
-        super(GXDLMSSecureClient, self).__init__(useLogicalNameReferencing, clientAddress, serverAddress, forAuthentication, password, interfaceType)
+        GXDLMSClient.__init__(self, useLogicalNameReferencing, clientAddress, serverAddress, forAuthentication, password, interfaceType)
         # Ciphering settings.
         self.settings.cipher = GXCiphering("ABCDEFGH".encode())
 

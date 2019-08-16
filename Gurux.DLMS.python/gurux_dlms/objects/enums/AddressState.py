@@ -38,6 +38,7 @@ class AddressState(Enum):
     Defines whether or not the device has been assigned an address
     since last power up of the device.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Not assigned an address yet-

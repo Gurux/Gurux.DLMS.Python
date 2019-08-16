@@ -32,11 +32,13 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
-#
 class GXCommodity:
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
+    """
+    #pylint: disable=bad-option-value,old-style-class,too-few-public-methods
+
     #
     # Constructor.
     #

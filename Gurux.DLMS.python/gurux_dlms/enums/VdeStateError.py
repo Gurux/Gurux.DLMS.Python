@@ -35,6 +35,7 @@
 from enum import Enum
 class VdeStateError(Enum):
     """VdeState error describes Vde state errors."""
+    #pylint: disable=too-few-public-methods
 
     OTHER = 0
 

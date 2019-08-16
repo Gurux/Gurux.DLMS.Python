@@ -37,6 +37,7 @@ class CertificateEntity(Enum):
     """
     Certificate entity.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Certificate entity is server

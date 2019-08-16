@@ -37,6 +37,8 @@ class ImageTransferStatus(Enum):
     """
     Holds the status of the Image transfer process.
     """
+    #pylint: disable=too-few-public-methods
+
     IMAGE_TRANSFER_NOT_INITIATED = 0
     IMAGE_TRANSFER_INITIATED = 1
     IMAGE_VERIFICATION_INITIATED = 2

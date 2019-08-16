@@ -40,22 +40,21 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import AutoAnswerMode, AutoAnswerStatus
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAutoAnswer
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAutoAnswer
+    """
+
     def __init__(self, ln="0.0.2.2.0.255", sn=0):
-        super(GXDLMSAutoAnswer, self).__init__(ObjectType.AUTO_ANSWER, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.AUTO_ANSWER, ln, sn)
         self.listeningWindow = list()
         self.mode = AutoAnswerMode.NONE
         self.status = AutoAnswerStatus.INACTIVE
@@ -130,6 +129,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -137,12 +137,12 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             cnt = len(self.listeningWindow)
             buff = GXByteBuffer()
-            buff.setUInt8(DataType.ARRAY.value)
+            buff.setUInt8(DataType.ARRAY)
             #  Add count
             _GXCommon.setObjectCount(cnt, buff)
             if cnt != 0:
                 for it in self.listeningWindow:
-                    buff.setUInt8(DataType.STRUCTURE.value)
+                    buff.setUInt8(DataType.STRUCTURE)
                     #  Count
                     buff.setUInt8(2)
                     #  Start time
@@ -156,7 +156,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
             ret = self.numberOfCalls
         elif e.index == 6:
             buff = GXByteBuffer()
-            buff.setUInt8(DataType.STRUCTURE.value)
+            buff.setUInt8(DataType.STRUCTURE)
             _GXCommon.setObjectCount(2, buff)
             _GXCommon.setData(buff, DataType.UINT8, self.numberOfRingsInListeningWindow)
             _GXCommon.setData(buff, DataType.UINT8, self.numberOfRingsOutListeningWindow)
@@ -174,7 +174,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.mode = AutoAnswerMode(e.value)
         elif e.index == 3:
-            self.listeningWindow.clear()
+            self.listeningWindow = []
             if e.value:
                 for item in e.value:
                     start = _GXCommon.changeType(item[0], DataType.DATETIME)
@@ -195,7 +195,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.mode = AutoAnswerMode(reader.readElementContentAsInt("Mode"))
-        self.listeningWindow.clear()
+        self.listeningWindow = []
         if reader.isStartElement("ListeningWindow", True):
             while reader.isStartElement("Item", True):
                 start = GXDateTime(reader.readElementContentAsString("Start"))

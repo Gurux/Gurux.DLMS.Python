@@ -35,6 +35,7 @@ from enum import Enum
 
 class MethodAccessMode(Enum):
     """Enumerated method access types."""
+    #pylint: disable=too-few-public-methods
 
     #No access.
     NO_ACCESS = 0

@@ -39,22 +39,21 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSQualityOfService import GXDLMSQualityOfService
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSGprsSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSGprsSetup
+    """
+
     def __init__(self, ln="0.0.25.4.0.255", sn=0):
-        super(GXDLMSGprsSetup, self).__init__(ObjectType.GPRS_SETUP, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.GPRS_SETUP, ln, sn)
         self.apn = ""
         self.pinCode = 0
         self.defaultQualityOfService = GXDLMSQualityOfService()
@@ -117,6 +116,7 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -128,16 +128,16 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
             ret = self.pinCode
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(5)
             _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.precedence)
             _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.delay)
             _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.reliability)
             _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.peakThroughput)
             _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.meanThroughput)
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(5)
             _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.precedence)
             _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.delay)

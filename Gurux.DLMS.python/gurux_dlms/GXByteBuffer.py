@@ -31,12 +31,24 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import sys
 import struct
 from enum import Enum
-from collections.abc import Sequence
+#Maximum size of byte.
+_MAX_BYTE_SIZE = 0xFF
+_NIBBLE = 4
+#Value of Hex A in decimal.
+_HEX_A_DECIMAL_VALUE = 10
+
+#pylint: disable=import-error, no-name-in-module
+if sys.version_info < (3, 0):
+    __base = object
+else:
+    from collections.abc import Sequence
+    __base = Sequence
 
 # pylint: disable=too-many-public-methods
-class GXByteBuffer(Sequence):
+class GXByteBuffer(__base):
     """
     Byte array class is used to save received bytes.
     """
@@ -564,12 +576,20 @@ class GXByteBuffer(Sequence):
         """
         Convert byte array to hex string.
         """
+        #Return empty string if array is empty.
         if not value:
             return ""
-        if count is None:
+        __hexArray = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+        LOW_BYTE_PART = 0x0F
+        hexChars = ""
+        #Python 2.7 handles bytes as a string array. It's changed to bytearray.
+        if sys.version_info < (3, 0) and not isinstance(value, bytearray):
+            value = bytearray(value)
+        if count == 0:
             count = len(value)
-        tmp = bytearray.hex(value[index:index + count])
-        if addSpace:
-            t = iter(tmp)
-            tmp = ' '.join(a + b for a, b in zip(t, t))
-        return tmp.upper()
+        for it in value[index:count]:
+            hexChars += __hexArray[it >> _NIBBLE]
+            hexChars += __hexArray[it & LOW_BYTE_PART]
+            if addSpace:
+                hexChars += ' '
+        return hexChars

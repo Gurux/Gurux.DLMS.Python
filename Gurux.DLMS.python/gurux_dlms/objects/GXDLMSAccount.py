@@ -53,10 +53,11 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
     def __init__(self, ln="0.0.19.0.0.255", sn=0):
         """
         Constructor.
-        ln: Logical Name of the object.
-        sn: Short Name of the object.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
         """
-        super(GXDLMSAccount, self).__init__(ObjectType.ACCOUNT, ln, sn)
+        GXDLMSObject.__init__(self, ObjectType.ACCOUNT, ln, sn)
         self.paymentMode = PaymentMode.CREDIT
         self.accountStatus = AccountStatus.NEW_INACTIVE_ACCOUNT
         self.creditReferences = list()
@@ -223,22 +224,22 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        bb = None
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            bb.setUInt8(DataType.ENUM.value)
-            bb.setUInt8(self.accountStatus.value)
-            bb.setUInt8(DataType.ENUM.value)
-            bb.setUInt8(self.paymentMode.value)
+            bb.setUInt8(DataType.ENUM)
+            bb.setUInt8(self.accountStatus)
+            bb.setUInt8(DataType.ENUM)
+            bb.setUInt8(self.paymentMode)
             ret = bb.array()
         elif e.index == 3:
             ret = self.currentCreditInUse
         elif e.index == 4:
-            ret = self.currentCreditStatus.value
+            ret = self.currentCreditStatus
         elif e.index == 5:
             ret = self.availableCredit
         elif e.index == 6:
@@ -249,60 +250,60 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             ret = self.aggregatedDebt
         elif e.index == 9:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if not self.creditReferences:
                 bb.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(self.creditReferences), bb)
                 for it in self.creditReferences:
-                    bb.setUInt8(DataType.OCTET_STRING.value)
+                    bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it))
             ret = bb.array()
         elif e.index == 10:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if not self.chargeReferences:
                 bb.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(self.chargeReferences), bb)
                 for it in self.chargeReferences:
-                    bb.setUInt8(DataType.OCTET_STRING.value)
+                    bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it))
             ret = bb.array()
         elif e.index == 11:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if not self.creditChargeConfigurations:
                 bb.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(self.creditChargeConfigurations), bb)
                 for it in self.creditChargeConfigurations:
-                    bb.setUInt8(DataType.STRUCTURE.value)
+                    bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(3)
-                    bb.setUInt8(DataType.OCTET_STRING.value)
+                    bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.creditReference))
-                    bb.setUInt8(DataType.OCTET_STRING.value)
+                    bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.chargeReference))
                     _GXCommon.setData(bb, DataType.BITSTRING, it.collectionConfiguration)
             ret = bb.array()
         elif e.index == 12:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if not self.tokenGatewayConfigurations:
                 bb.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(self.tokenGatewayConfigurations), bb)
                 for it in self.tokenGatewayConfigurations:
-                    bb.setUInt8(DataType.STRUCTURE.value)
+                    bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
-                    bb.setUInt8(DataType.OCTET_STRING.value)
+                    bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.getCreditReference()))
-                    bb.setUInt8(DataType.UINT8.value)
+                    bb.setUInt8(DataType.UINT8)
                     bb.setUInt8(it.getTokenProportion())
             ret = bb.array()
         elif e.index == 13:
@@ -311,11 +312,11 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             ret = self.accountClosureTime
         elif e.index == 15:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
             _GXCommon.setData(bb, DataType.STRING_UTF8, self.currency.name)
             _GXCommon.setData(bb, DataType.INT8, self.currency.scale)
-            _GXCommon.setData(bb, DataType.ENUM, self.currency.unit.value)
+            _GXCommon.setData(bb, DataType.ENUM, self.currency.unit)
             ret = bb.array()
         elif e.index == 16:
             ret = self.lowCreditThreshold
@@ -353,20 +354,20 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         elif e.index == 8:
             self.aggregatedDebt = e.value
         elif e.index == 9:
-            self.creditReferences.clear()
+            self.creditReferences = []
             if e.value:
                 for it in e.value:
                     self.creditReferences.append(_GXCommon.toLogicalName(it))
         elif e.index == 10:
-            self.chargeReferences.clear()
+            self.chargeReferences = []
             if e.value:
                 for it in e.value:
                     self.chargeReferences.append(_GXCommon.toLogicalName(it))
         elif e.index == 11:
-            self.creditChargeConfigurations.clear()
+            #pylint: disable=bad-option-value,redefined-variable-type
+            self.creditChargeConfigurations = []
             if e.value:
-                for it2 in e.value:
-                    it = it2
+                for it in e.value:
                     item = GXCreditChargeConfiguration()
                     item.creditReference = _GXCommon.toLogicalName(it[0])
                     item.chargeReference = _GXCommon.toLogicalName(it[1])
@@ -375,10 +376,10 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     item.collectionConfiguration = bb.getUInt8(0)
                     self.creditChargeConfigurations.append(item)
         elif e.index == 12:
-            self.tokenGatewayConfigurations.clear()
+            #pylint: disable=bad-option-value,redefined-variable-type
+            self.tokenGatewayConfigurations = []
             if e.value:
-                for it2 in e.value:
-                    it = it2
+                for it in e.value:
                     item = GXTokenGatewayConfiguration()
                     item.creditReference = _GXCommon.toLogicalName(it[0])
                     item.tokenProportion = it[1]
@@ -421,7 +422,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadReferences(cls, reader, name, list_):
-        list_.clear()
+        list_ = []
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 list_.append(reader.readElementContentAsString("Name"))
@@ -429,7 +430,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadCreditChargeConfigurations(cls, reader, list_):
-        list_.clear()
+        list_ = []
         if reader.isStartElement("CreditChargeConfigurations", True):
             while reader.isStartElement("Item", True):
                 it = GXCreditChargeConfiguration()
@@ -441,7 +442,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadTokenGatewayConfigurations(cls, reader, list_):
-        list_.clear()
+        list_ = []
         if reader.isStartElement("TokenGatewayConfigurations", True):
             while reader.isStartElement("Item", True):
                 it = GXTokenGatewayConfiguration()
@@ -511,11 +512,11 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             writer.writeEndElement()
 
     def save(self, writer):
-        writer.writeElementString("PaymentMode", self.paymentMode.value)
-        writer.writeElementString("AccountStatus", self.accountStatus.value)
+        writer.writeElementString("PaymentMode", self.paymentMode)
+        writer.writeElementString("AccountStatus", self.accountStatus)
         writer.writeElementString("CurrentCreditInUse", self.currentCreditInUse)
         if self.currentCreditStatus:
-            writer.writeElementString("CurrentCreditStatus", self.currentCreditStatus.value)
+            writer.writeElementString("CurrentCreditStatus", self.currentCreditStatus)
         writer.writeElementString("AvailableCredit", self.availableCredit)
         writer.writeElementString("AmountToClear", self.amountToClear)
         writer.writeElementString("ClearanceThreshold", self.clearanceThreshold)
@@ -530,7 +531,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("AccountClosureTime", self.accountClosureTime.toFormatString())
         writer.writeElementString("CurrencyName", self.currency.name)
         writer.writeElementString("CurrencyScale", self.currency.scale)
-        writer.writeElementString("CurrencyUnit", self.currency.unit.value)
+        writer.writeElementString("CurrencyUnit", self.currency.unit)
         writer.writeElementString("LowCreditThreshold", self.lowCreditThreshold)
         writer.writeElementString("NextCreditAvailableThreshold", self.nextCreditAvailableThreshold)
         writer.writeElementString("MaxProvision", self.maxProvision)

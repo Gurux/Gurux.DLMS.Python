@@ -38,6 +38,7 @@ class CreditStatus(Enum):
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCredit
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Enabled state.

@@ -38,22 +38,21 @@ from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import OpticalProtocolMode, BaudRate, LocalPortResponseTime
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIECOpticalPortSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIECOpticalPortSetup(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIECOpticalPortSetup
+    """
+
     def __init__(self, ln="0.0.20.0.0.255", sn=0):
-        super(GXDLMSIECOpticalPortSetup, self).__init__(ObjectType.IEC_LOCAL_PORT_SETUP, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.IEC_LOCAL_PORT_SETUP, ln, sn)
         self.defaultMode = OpticalProtocolMode.DEFAULT
         self.defaultBaudrate = BaudRate.BAUDRATE_300
         self.proposedBaudrate = BaudRate.BAUDRATE_300

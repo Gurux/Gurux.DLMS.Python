@@ -37,6 +37,7 @@ class PppAuthenticationType(Enum):
     """
     PPP Authentication Type
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # No authentication.

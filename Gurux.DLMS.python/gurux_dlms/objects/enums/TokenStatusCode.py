@@ -38,6 +38,8 @@ class TokenStatusCode(Enum):
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTokenGateway
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # Token format result OK.
     #

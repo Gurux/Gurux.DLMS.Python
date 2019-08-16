@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .enums import BerType, PduType, Authentication, Command, AssociationResult, SourceDiagnostic, Conformance, Service
 from .ConfirmedServiceError import ConfirmedServiceError
 from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
@@ -173,7 +174,7 @@ class _GXAPDU:
     @classmethod
     def getInitiateRequest(cls, settings, data):
         #  Tag for xDLMS-Initiate request
-        data.setUInt8(Command.INITIATE_REQUEST.value)
+        data.setUInt8(Command.INITIATE_REQUEST)
         #  Usage field for the response allowed component.
         #  Usage field for dedicated-key component.
         if not settings.cipher or not settings.cipher.dedicatedKey:
@@ -202,7 +203,7 @@ class _GXAPDU:
         #  encoding the number of unused bits in the bit string
         data.setUInt8(0x00)
         bb = GXByteBuffer(4)
-        bb.setUInt32(settings.proposedConformance.value)
+        bb.setUInt32(settings.proposedConformance)
         data.set(bb.subArray(1, 3))
         data.setUInt16(settings.maxPduSize)
 
@@ -237,7 +238,7 @@ class _GXAPDU:
                 data.setUInt8(int((2 + len(encryptedData))))
                 #  Coding the choice for user-information (Octet STRING,
                 #  universal)
-                data.setUInt8(int(Command.GLO_INITIATE_REQUEST.value))
+                data.setUInt8(int(Command.GLO_INITIATE_REQUEST))
                 data.setUInt8(len(encryptedData))
                 data.set(encryptedData)
             else:
@@ -321,7 +322,7 @@ class _GXAPDU:
         len_ = 0
         tmp2 = GXByteBuffer()
         tmp2.setUInt8(0)
-        response = tag2 == Command.INITIATE_RESPONSE.value
+        response = tag2 == Command.INITIATE_RESPONSE
         if response:
             if xml:
                 #  <InitiateResponse>
@@ -335,7 +336,7 @@ class _GXAPDU:
                 if len_ == 0 and xml and xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     #  NegotiatedQualityOfService
                     xml.appendLine(TranslatorGeneralTags.NEGOTIATED_QUALITY_OF_SERVICE, "Value", "00")
-        elif tag2 == Command.INITIATE_REQUEST.value:
+        elif tag2 == Command.INITIATE_REQUEST:
             if xml:
                 xml.appendStartTag(Command.INITIATE_REQUEST)
             #  Optional usage field of the negotiated quality of service
@@ -425,7 +426,7 @@ class _GXAPDU:
         bb.set(tmp)
         v = bb.getInt32()
         if settings.isServer:
-            settings.negotiatedConformance = Conformance(v & settings.proposedConformance.value)
+            settings.negotiatedConformance = v & settings.proposedConformance.value
             if xml:
                 xml.appendStartTag(TranslatorGeneralTags.PROPOSED_CONFORMANCE)
                 cls.getConformance(v, xml)
@@ -433,7 +434,7 @@ class _GXAPDU:
             if xml:
                 xml.appendStartTag(TranslatorGeneralTags.NEGOTIATED_CONFORMANCE)
                 cls.getConformance(v, xml)
-            settings.negotiatedConformance = Conformance(v)
+            settings.negotiatedConformance = v
         if not response:
             #  Proposed max PDU size.
             pdu = data.getUInt16()
@@ -498,7 +499,7 @@ class _GXAPDU:
         #  Tag for xDLMS-Initate.response
         tag = data.getUInt8()
         originalPos = 0
-        if tag in (Command.GLO_INITIATE_RESPONSE.value, Command.GLO_INITIATE_REQUEST.value,
+        if tag in (Command.GLO_INITIATE_RESPONSE, Command.GLO_INITIATE_REQUEST,
                    Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
             if xml:
                 originalPos = data.position

@@ -40,25 +40,21 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, Unit
 from ..GXDateTime import GXDateTime
 
-#
-#  * Online help:
-#
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSDemandRegister
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSDemandRegister
+    """
+
     def __init__(self, ln=None, sn=0):
-        super(GXDLMSDemandRegister, self).__init__(ObjectType.DEMAND_REGISTER, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.DEMAND_REGISTER, ln, sn)
         self.currentAverageValue = None
         self.lastAverageValue = None
         self.scaler = 1
@@ -167,7 +163,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             ret = self.lastAverageValue
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.INT8, int(self.scaler))
             _GXCommon.setData(data, DataType.ENUM, int(self.unit))

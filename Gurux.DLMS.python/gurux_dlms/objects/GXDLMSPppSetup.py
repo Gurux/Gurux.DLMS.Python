@@ -133,13 +133,13 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             ret = _GXCommon.logicalNameToBytes(self.phyReference)
         elif e.index == 3:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.ARRAY.value))
+            data.setUInt8(int(DataType.ARRAY))
             if not self.lcpOptions:
                 data.setUInt8(0)
             else:
                 data.setUInt8(len(self.lcpOptions))
                 for it in self.lcpOptions:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     _GXCommon.setData(data, DataType.UINT8, it.type_.value)
                     _GXCommon.setData(data, DataType.UINT8, it.length)
@@ -147,13 +147,13 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             ret = data.array()
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.ARRAY.value))
+            data.setUInt8(int(DataType.ARRAY))
             if not self.ipcpOptions:
                 data.setUInt8(0)
             else:
                 data.setUInt8(len(self.ipcpOptions))
                 for it in self.ipcpOptions:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     _GXCommon.setData(data, DataType.UINT8, it.type_.value)
                     _GXCommon.setData(data, DataType.UINT8, it.length)
@@ -161,7 +161,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             ret = data.array()
         elif e.index == 5:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.STRUCTURE.value))
+            data.setUInt8(int(DataType.STRUCTURE))
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.OCTET_STRING, self.userName)
             _GXCommon.setData(data, DataType.OCTET_STRING, self.password)
@@ -179,23 +179,23 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.phyReference = _GXCommon.toLogicalName(e.value)
         elif e.index == 3:
-            self.lcpOptions.clear()
+            self.lcpOptions = []
             if e.value:
                 for item in e.value:
-                    it = GXDLMSPppSetupLcpOption()
-                    it.type_ = PppSetupLcpOptionType(item[0])
-                    it.length = item[1]
-                    it.data = item[2]
-                    self.lcpOptions.append(it)
+                    it1 = GXDLMSPppSetupLcpOption()
+                    it1.type_ = PppSetupLcpOptionType(item[0])
+                    it1.length = item[1]
+                    it1.data = item[2]
+                    self.lcpOptions.append(it1)
         elif e.index == 4:
-            self.ipcpOptions.clear()
+            self.ipcpOptions = []
             if e.value:
                 for item in e.value:
-                    it = GXDLMSPppSetupIPCPOption()
-                    it.type_ = PppSetupIPCPOptionType(item[0])
-                    it.length = item[1]
-                    it.data = item[2]
-                    self.ipcpOptions.append(it)
+                    it2 = GXDLMSPppSetupIPCPOption()
+                    it2.type_ = PppSetupIPCPOptionType(item[0])
+                    it2.length = item[1]
+                    it2.data = item[2]
+                    self.ipcpOptions.append(it2)
         elif e.index == 5:
             if e.value:
                 self.userName = e.value[0]
@@ -208,24 +208,24 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.phyReference = reader.readElementContentAsString("PHYReference")
-        self.lcpOptions.clear()
+        self.lcpOptions = []
         if reader.isStartElement("LCPOptions", True):
             while reader.isStartElement("Item", True):
-                it = GXDLMSPppSetupLcpOption()
-                it.type_ = PppSetupLcpOptionType(reader.readElementContentAsInt("Type"))
-                it.length = reader.readElementContentAsInt("Length")
-                it.data = reader.readElementContentAsObject("Data", None)
-                self.lcpOptions.append(it)
+                it1 = GXDLMSPppSetupLcpOption()
+                it1.type_ = PppSetupLcpOptionType(reader.readElementContentAsInt("Type"))
+                it1.length = reader.readElementContentAsInt("Length")
+                it1.data = reader.readElementContentAsObject("Data", None)
+                self.lcpOptions.append(it1)
             reader.readEndElement("LCPOptions")
 
-        self.ipcpOptions.clear()
+        self.ipcpOptions = []
         if reader.isStartElement("IPCPOptions", True):
             while reader.isStartElement("Item", True):
-                it = GXDLMSPppSetupIPCPOption()
-                it.type_ = PppSetupIPCPOptionType(reader.readElementContentAsInt("Type"))
-                it.length = reader.readElementContentAsInt("Length")
-                it.data = reader.readElementContentAsObject("Data", None)
-                self.ipcpOptions.append(it)
+                it2 = GXDLMSPppSetupIPCPOption()
+                it2.type_ = PppSetupIPCPOptionType(reader.readElementContentAsInt("Type"))
+                it2.length = reader.readElementContentAsInt("Length")
+                it2.data = reader.readElementContentAsObject("Data", None)
+                self.ipcpOptions.append(it2)
             reader.readEndElement("IPCPOptions")
         self.userName = GXByteBuffer.hexToBytes(reader.readElementContentAsString("UserName"))
         self.password = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Password"))

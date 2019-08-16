@@ -35,6 +35,7 @@ from enum import Enum
 
 class Security(Enum):
     """Used security model."""
+    #pylint: disable=too-few-public-methods
 
     NONE = 0
 

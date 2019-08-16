@@ -31,10 +31,16 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import sys
 
-from enum import Flag
+#pylint: disable=no-name-in-module,too-few-public-methods
+if sys.version_info < (3, 6):
+    __base = object
+else:
+    from enum import IntFlag
+    __base = IntFlag
 
-class ConnectionState(Flag):
+class ConnectionState(__base):
     """
     Enumerates connection state types.
     """

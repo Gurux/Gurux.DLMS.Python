@@ -31,12 +31,12 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-# ignore serial for now.  import serial
 import sys
 import socket
 import locale
 import re
 import calendar
+import traceback
 from gurux_dlms import *
 from gurux_dlms.manufacturersettings import *
 from gurux_dlms.enums import *
@@ -84,13 +84,13 @@ class sampleclient(object):
             else:
                 reader.readAll()
         except Exception as ex:
-            print(ex)
+            traceback.print_exc()
         finally:
             if reader != None:
                 try:
                     reader.close()
                 except Exception as e:
-                    print(e)
+                    traceback.print_exc()
             print("Ended. Press any key to continue.")
 
 if __name__ == '__main__':

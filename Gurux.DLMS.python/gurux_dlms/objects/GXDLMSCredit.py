@@ -40,22 +40,21 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import CreditConfiguration, CreditType, CreditStatus
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCredit
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCredit
+    """
+
     def __init__(self, ln="0.0.19.10.0.255", sn=0):
-        super(GXDLMSCredit, self).__init__(ObjectType.CREDIT, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.CREDIT, ln, sn)
         self.creditConfiguration = CreditConfiguration.TOKENS
         self.type_ = CreditType.TOKEN
         self.status = CreditStatus.ENABLED
@@ -166,6 +165,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:

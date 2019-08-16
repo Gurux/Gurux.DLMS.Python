@@ -35,6 +35,7 @@ from enum import Enum
 
 class LoadDataSet(Enum):
     """LoadDataSet describes load dataset errors."""
+    #pylint: disable=too-few-public-methods
 
     #Other error.
     OTHER = 0

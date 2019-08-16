@@ -44,16 +44,9 @@ from .VariableAccessSpecification import VariableAccessSpecification
 from .enums.DataType import DataType
 from .enums.Conformance import Conformance
 
-#
-#  * This class is used to send data notify and push messages to the clients.
-#  *
-#  * @author Gurux Ltd.
-#
-class GXDLMSNotify:
-    #
-    # DLMS settings.
-    #
-    settings = GXDLMSSettings(True)
+#pylint: disable=bad-option-value,useless-object-inheritance
+class GXDLMSNotify(object):
+    """This class is used to send data notify and push messages to the clients."""
 
     #
     # Constructor.
@@ -68,6 +61,8 @@ class GXDLMSNotify:
     #            Object type.
     #
     def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
+        # DLMS settings.
+        self.settings = GXDLMSSettings(True)
         self.useLogicalNameReferencing = useLogicalNameReferencing
         self.settings.clientAddress = clientAddress
         self.settings.serverAddress = serverAddress
@@ -226,8 +221,8 @@ class GXDLMSNotify:
                 p.time = GXDateTime(time)
             reply = GXDLMS.getLnMessages(p)
         else:
-            p = GXDLMSSNParameters(self.settings, Command.DATA_NOTIFICATION, 1, 0, data, None)
-            reply = GXDLMS.getSnMessages(p)
+            p2 = GXDLMSSNParameters(self.settings, Command.DATA_NOTIFICATION, 1, 0, data, None)
+            reply = GXDLMS.getSnMessages(p2)
         if self.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER == 0 and len(reply) != 1:
             raise ValueError("Data is not fit to one PDU. Use general block transfer.")
         return reply
@@ -245,13 +240,14 @@ class GXDLMSNotify:
         if push is None:
             raise ValueError("push")
         buff = GXByteBuffer()
-        buff.setUInt8(int(DataType.STRUCTURE.value))
+        buff.setUInt8(int(DataType.STRUCTURE))
         _GXCommon.setObjectCount(push.getPushObjectList().size(), buff)
         for it in push.getPushObjectList():
             self.addData(it.getKey(), it.value.getAttributeIndex(), buff)
         return self.generateDataNotificationMessages(date, buff)
 
     def generateReport(self, time, list_):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if not list_:
             raise ValueError("list")
         if self.useLogicalNameReferencing and len(list_) != 1:

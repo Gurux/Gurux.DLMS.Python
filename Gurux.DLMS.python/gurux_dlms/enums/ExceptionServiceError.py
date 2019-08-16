@@ -35,6 +35,7 @@ from enum import Enum
 
 class ExceptionServiceError(Enum):
     """DLMS service errors."""
+    #pylint: disable=too-few-public-methods
 
     OPERATION_NOT_POSSIBLE = 1
 

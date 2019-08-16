@@ -36,6 +36,7 @@ from enum import Enum
 
 class Standard(Enum):
     """Used DLMS standard."""
+    #pylint: disable=too-few-public-methods
 
     #e.valueDLMS standard.
     DLMS = 0

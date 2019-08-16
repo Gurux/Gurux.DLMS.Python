@@ -37,6 +37,7 @@ class SecuritySuite(Enum):
     """
     Security suite Specifies authentication, encryption and key wrapping algorithm.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # AES-GCM-128 for authenticated encryption and AES-128 for key wrapping.

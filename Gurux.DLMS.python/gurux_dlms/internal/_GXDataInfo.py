@@ -32,6 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from ..enums import DataType
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class
 class _GXDataInfo:
     """This class is used in DLMS data parsing."""
 

@@ -38,21 +38,20 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSMBusClient
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSMBusClient
+    """
+
     def __init__(self, ln=None, sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSMBusClient, self).__init__(ObjectType.MBUS_CLIENT, ln, sn)
         self.captureDefinition = list()
         self.mBusPortReference = None
@@ -167,16 +166,17 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
             ret = _GXCommon.logicalNameToBytes(self.mBusPortReference)
         elif e.index == 3:
             buff = GXByteBuffer()
-            buff.setUInt8(DataType.ARRAY.value)
+            buff.setUInt8(DataType.ARRAY)
             _GXCommon.setObjectCount(len(self.captureDefinition), buff)
             for k, v in self.captureDefinition:
-                buff.setUInt8(DataType.STRUCTURE.value)
+                buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(2)
                 _GXCommon.setData(buff, DataType.UINT8, k)
                 if not v:
@@ -215,7 +215,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.mBusPortReference = _GXCommon.toLogicalName(e.value)
         elif e.index == 3:
-            self.captureDefinition.clear()
+            self.captureDefinition = []
             if e.value:
                 for it in e.value:
                     self.captureDefinition.append((_GXCommon.changeType(it[0], DataType.OCTET_STRING), _GXCommon.changeType(it[1], DataType.OCTET_STRING)))
@@ -242,7 +242,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.mBusPortReference = reader.readElementContentAsString("MBusPortReference")
-        self.captureDefinition.clear()
+        self.captureDefinition = []
         if reader.isStartElement("CaptureDefinition", True):
             while reader.isStartElement("Item", True):
                 d = reader.readElementContentAsString("Data")

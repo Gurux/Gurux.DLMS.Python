@@ -51,16 +51,14 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSActivityCalendar
     """
 
-    #
-    # Constructor.
-    #
-    # @param ln
-    # Logical Name of the object.
-    # @param sn
-    # Short Name of the object.
-    #
     def __init__(self, ln="0.0.13.0.0.255", sn=0):
-        super(GXDLMSActivityCalendar, self).__init__(ObjectType.ACTIVITY_CALENDAR, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.ACTIVITY_CALENDAR, ln, sn)
         self.calendarNameActive = None
         self.seasonProfileActive = None
         self.weekProfileTableActive = None
@@ -166,7 +164,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getSeasonProfile(cls, target):
         data = GXByteBuffer()
-        data.setUInt8(DataType.ARRAY.value)
+        data.setUInt8(DataType.ARRAY)
         if target is None:
             #  Add count
             _GXCommon.setObjectCount(0, data)
@@ -174,7 +172,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             #  Add count
             _GXCommon.setObjectCount(len(target), data)
             for it in target:
-                data.setUInt8(DataType.STRUCTURE.value)
+                data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(3)
                 _GXCommon.setData(data, DataType.OCTET_STRING, it.name)
                 _GXCommon.setData(data, DataType.OCTET_STRING, it.start)
@@ -184,7 +182,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getWeekProfileTable(cls, target):
         data = GXByteBuffer()
-        data.setUInt8(DataType.ARRAY.value)
+        data.setUInt8(DataType.ARRAY)
         if target is None:
             #  Add count
             _GXCommon.setObjectCount(0, data)
@@ -192,7 +190,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             #  Add count
             _GXCommon.setObjectCount(len(target), data)
             for it in target:
-                data.setUInt8(DataType.STRUCTURE.value)
+                data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(8)
                 _GXCommon.setData(data, DataType.OCTET_STRING, it.name)
                 _GXCommon.setData(data, DataType.UINT8, it.monday)
@@ -207,7 +205,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getDayProfileTable(cls, target):
         data = GXByteBuffer()
-        data.setUInt8(DataType.ARRAY.value)
+        data.setUInt8(DataType.ARRAY)
         if target is None:
             #  Add count
             _GXCommon.setObjectCount(0, data)
@@ -215,14 +213,14 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             #  Add count
             _GXCommon.setObjectCount(len(target), data)
             for it in target:
-                data.setUInt8(DataType.STRUCTURE.value)
+                data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
                 _GXCommon.setData(data, DataType.UINT8, it.dayId)
-                data.setUInt8(DataType.ARRAY.value)
+                data.setUInt8(DataType.ARRAY)
                 #  Add count
                 _GXCommon.setObjectCount(len(it.daySchedules), data)
                 for action in it.daySchedules:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     _GXCommon.setData(data, DataType.OCTET_STRING, action.startTime)
                     _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(action.scriptLogicalName))
@@ -236,6 +234,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
+            #pylint: disable=bad-option-value,redefined-variable-type
             if not self.calendarNameActive:
                 ret = None
             elif self.isSec:

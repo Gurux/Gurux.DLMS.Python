@@ -36,6 +36,7 @@ from enum import Enum
 
 class KeyAgreement(Enum):
     """Key agreement."""
+    #pylint: disable=too-few-public-methods
 
     # The Ephemeral Unified Model C(2e, 0s, ECC CDH) scheme.
     EPHEMERAL_UNIFIED_MODEL = 0

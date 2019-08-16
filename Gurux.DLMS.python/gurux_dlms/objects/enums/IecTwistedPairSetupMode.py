@@ -37,6 +37,7 @@ class IecTwistedPairSetupMode(Enum):
     """
     IEC Twisted pair setup working mode.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # The interface ignores all received frames.

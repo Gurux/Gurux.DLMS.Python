@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 from enum import Enum
 class AutoAnswerStatus(Enum):
+    #pylint: disable=too-few-public-methods
     INACTIVE = 0
 
     ACTIVE = 1

@@ -34,10 +34,12 @@
 from enum import Enum
 
 class ChargeType(Enum):
-    """Enumerates account credit status modes.
+    """
+    Enumerates account credit status modes.
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCharge
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Consumption based collection.

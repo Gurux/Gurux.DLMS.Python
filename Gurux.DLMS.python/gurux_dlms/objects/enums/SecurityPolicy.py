@@ -38,6 +38,7 @@ class SecurityPolicy(Enum):
     Security policy Enforces authentication and/or encryption algorithm
     provided with security suite.  This enumeration is used for version 1.
     """
+    #pylint: disable=too-few-public-methods
 
     #
     # Security is not used.

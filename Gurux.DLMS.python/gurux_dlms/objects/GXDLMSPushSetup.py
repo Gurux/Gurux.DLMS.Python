@@ -42,23 +42,20 @@ from .enums import ServiceType, MessageType
 from .GXDLMSCaptureObject import GXDLMSCaptureObject
 from ..GXDateTime import GXDateTime
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSPushSetup
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
-
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSPushSetup
+    """
 
     def __init__(self, ln="0.7.25.9.0.255", sn=0):
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
         super(GXDLMSPushSetup, self).__init__(ObjectType.PUSH_SETUP, ln, sn)
         self.pushObjectList = list()
         self.sendDestinationAndMethod = GXSendDestinationAndMethod()
@@ -148,14 +145,15 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
         buff = GXByteBuffer()
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            buff.setUInt8(DataType.ARRAY.value)
+            buff.setUInt8(DataType.ARRAY)
             _GXCommon.setObjectCount(len(self.pushObjectList), buff)
             for k, v in self.pushObjectList:
-                buff.setUInt8(DataType.STRUCTURE.value)
+                buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(4)
                 _GXCommon.setData(buff, DataType.UINT16, k.objectType.value)
                 _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
@@ -163,7 +161,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(buff, DataType.UINT16, v.dataIndex)
             ret = buff
         elif e.index == 3:
-            buff.setUInt8(DataType.STRUCTURE.value)
+            buff.setUInt8(DataType.STRUCTURE)
             buff.setUInt8(3)
             _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.service.value)
             if self.sendDestinationAndMethod.destination:
@@ -173,10 +171,10 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.message.value)
             ret = buff
         elif e.index == 4:
-            buff.setUInt8(DataType.ARRAY.value)
+            buff.setUInt8(DataType.ARRAY)
             _GXCommon.setObjectCount(len(self.communicationWindow), buff)
             for k, v in self.communicationWindow:
-                buff.setUInt8(DataType.STRUCTURE.value)
+                buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(2)
                 _GXCommon.setData(buff, DataType.OCTET_STRING, k)
                 _GXCommon.setData(buff, DataType.OCTET_STRING, v)
@@ -195,7 +193,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.pushObjectList.clear()
+            self.pushObjectList = []
             from .._GXObjectFactory import _GXObjectFactory
             if e.value:
                 for it in e.value:
@@ -215,7 +213,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 self.sendDestinationAndMethod.destination = e.value[1].decode("utf-8")
                 self.sendDestinationAndMethod.message = MessageType(e.value[2])
         elif e.index == 4:
-            self.communicationWindow.clear()
+            self.communicationWindow = []
             if e.value:
                 for it in e.value:
                     start = _GXCommon.changeType(it[0], DataType.DATETIME)
@@ -231,7 +229,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.pushObjectList.clear()
+        self.pushObjectList = []
         if reader.isStartElement("ObjectList", True):
             while reader.isStartElement("Item", True):
                 ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
@@ -246,7 +244,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         self.service = ServiceType(reader.readElementContentAsInt("Service"))
         self.destination = reader.readElementContentAsString("Destination")
         self.message = MessageType(reader.readElementContentAsInt("Message"))
-        self.communicationWindow.clear()
+        self.communicationWindow = []
         if reader.isStartElement("CommunicationWindow", True):
             while reader.isStartElement("Item", True):
                 start = GXDateTime(reader.readElementContentAsString("Start"))

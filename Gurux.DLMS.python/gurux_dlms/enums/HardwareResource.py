@@ -35,6 +35,7 @@ from enum import Enum
 
 class HardwareResource(Enum):
     """Hardware resource describes hardware errors."""
+    #pylint: disable=too-few-public-methods
 
     OTHER = 0
 

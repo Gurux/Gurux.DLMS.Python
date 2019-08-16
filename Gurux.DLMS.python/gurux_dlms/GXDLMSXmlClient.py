@@ -55,7 +55,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
     #            XML type.
     #
     def __init__(self, type_):
-        super(GXDLMSXmlClient, self).__init__()
+        GXDLMSSecureClient.__init__(self)
         # XML client don't throw exceptions. It serializes them as a default. Set
         # value to true, if exceptions are thrown.
         #

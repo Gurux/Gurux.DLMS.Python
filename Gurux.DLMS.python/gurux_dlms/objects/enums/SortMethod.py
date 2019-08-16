@@ -37,6 +37,8 @@ class SortMethod(Enum):
     """
     Sort methods.
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # First in first out When circle buffer is full first item is removed.
     #

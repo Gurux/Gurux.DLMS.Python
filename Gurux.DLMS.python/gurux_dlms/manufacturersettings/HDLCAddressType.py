@@ -34,6 +34,7 @@
 from enum import Enum
 
 class HDLCAddressType(Enum):
+    #pylint: disable=too-few-public-methods
     DEFAULT = 0
     SERIAL_NUMBER = 1
     CUSTOM = 2

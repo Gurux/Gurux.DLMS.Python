@@ -38,6 +38,8 @@ class ControlMode(Enum):
     Configures the behaviour of the disconnect control object for all
     triggers, i.e.  the possible state transitions.
     """
+    #pylint: disable=too-few-public-methods
+
     #
     # The disconnect control object is always in 'connected' state,
     #

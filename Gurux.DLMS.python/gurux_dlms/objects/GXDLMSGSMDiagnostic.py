@@ -49,16 +49,14 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSGSMDiagnostic
     """
 
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
     def __init__(self, ln="0.0.25.6.0.255", sn=0):
-        super(GXDLMSGSMDiagnostic, self).__init__(ObjectType.GSM_DIAGNOSTIC, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.GSM_DIAGNOSTIC, ln, sn)
         self.version = 1
         self.cellInfo = GXDLMSGSMCellInfo()
         self.adjacentCells = list()
@@ -150,6 +148,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
+            #pylint: disable=bad-option-value,redefined-variable-type
             if self.operator is None:
                 ret = None
             else:
@@ -165,7 +164,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
             ret = self.packetSwitchStatus
         elif e.index == 6:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.STRUCTURE.value)
+            bb.setUInt8(DataType.STRUCTURE)
             if self.version == 0:
                 bb.setUInt8(4)
                 _GXCommon.setData(bb, DataType.UINT16, self.cellInfo.cellId)
@@ -182,13 +181,13 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
             ret = bb
         elif e.index == 7:
             bb = GXByteBuffer()
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             if self.adjacentCells is None:
                 bb.setUInt8(0)
             else:
                 bb.setUInt8(len(self.adjacentCells))
             for it in self.adjacentCells:
-                bb.setUInt8(DataType.STRUCTURE.value)
+                bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(2)
                 if self.version == 0:
                     _GXCommon.setData(bb, DataType.UINT16, it.cellId)
@@ -234,7 +233,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                     self.cellInfo.mobileNetworkCode = e.value[5]
                     self.cellInfo.channelNumber = e.value[6]
         elif e.index == 7:
-            self.adjacentCells.clear()
+            self.adjacentCells = []
             if e.value:
                 for it in e.value:
                     ac = GXAdjacentCell()
@@ -260,7 +259,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
             self.cellInfo.signalQuality = reader.readElementContentAsInt("SignalQuality")
             self.cellInfo.ber = reader.readElementContentAsInt("Ber")
             reader.readEndElement("CellInfo")
-        self.adjacentCells.clear()
+        self.adjacentCells = []
         if reader.isStartElement("AdjacentCells", True):
             while reader.isStartElement("Item", True):
                 it = GXAdjacentCell()

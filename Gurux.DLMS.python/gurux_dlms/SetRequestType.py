@@ -31,11 +31,16 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import IntEnum
-#
-#  * Enumerates Set request types.
-#
-class SetRequestType(IntEnum):
+import sys
+if sys.version_info < (3, 0):
+    __base = object
+else:
+    from enum import IntEnum
+    __base = IntEnum
+
+class SetRequestType(__base):
+    """Enumerates Set request types."""
+
     # Normal Set.
     NORMAL = 1
 

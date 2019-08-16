@@ -33,6 +33,8 @@
 # ---------------------------------------------------------------------------
 from enum import Enum
 class Ip4SetupIpOptionType(Enum):
+    #pylint: disable=too-few-public-methods
+
     # If this option is present, the device shall be allowed to send security,
     # compartmentation, handling restrictions and TCC =closed user group)
     # parameters within its IP Datagrams.  The value of the IP-Option- Length

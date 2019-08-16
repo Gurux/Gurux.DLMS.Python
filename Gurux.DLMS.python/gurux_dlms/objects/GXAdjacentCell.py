@@ -32,12 +32,14 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
+###Python 2 requires this
+#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXAdjacentCell:
     #
     # Constructor.
     #
     def __init__(self):
-        # @return Four-byte cell ID.
+        # Four-byte cell ID.
         self.cellId = 0
-        # @param value Signal quality.
+        # Signal quality.
         self.signalQuality = 0

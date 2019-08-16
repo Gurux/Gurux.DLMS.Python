@@ -41,22 +41,21 @@ from .GXDLMSObjectCollection import GXDLMSObjectCollection
 from ..GXSecure import GXSecure
 from ..ConnectionState import ConnectionState
 
-#
-#  * Online help:
-#  * http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAssociationShortName
-#
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
-    #
-    # Constructor.
-    #
-    # @param ln
-    #            Logical Name of the object.
-    # @param sn
-    #            Short Name of the object.
-    #
+    """
+    Online help:
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAssociationShortName
+    """
+
     def __init__(self, ln="0.0.40.0.0.255", sn=0xFA00):
-        super(GXDLMSAssociationShortName, self).__init__(ObjectType.ASSOCIATION_SHORT_NAME, ln, sn)
+        """
+        Constructor.
+
+        ln : Logical Name of the object.
+        sn : Short Name of the object.
+        """
+        GXDLMSObject.__init__(self, ObjectType.ASSOCIATION_SHORT_NAME, ln, sn)
         self.secret = bytes()
         self.objectList = GXDLMSObjectCollection(self)
         self.version = 2
@@ -129,21 +128,21 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def __getAccessRights_(cls, item, data):
-        data.setUInt8(DataType.STRUCTURE.value)
+        data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(3)
         _GXCommon.setData(data, DataType.UINT16, item.shortName)
-        data.setUInt8(int(DataType.ARRAY.value))
+        data.setUInt8(int(DataType.ARRAY))
         data.setUInt8(len(item.attributes))
         for att in item.attributes:
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
             _GXCommon.setData(data, DataType.INT8, att.index)
             _GXCommon.setData(data, DataType.ENUM, att.access.value)
             _GXCommon.setData(data, DataType.NONE, None)
-        data.setUInt8(DataType.ARRAY.value)
+        data.setUInt8(DataType.ARRAY)
         data.setUInt8(len(item.methodAttributes))
         for it in item.methodAttributes:
-            data.setUInt8(DataType.STRUCTURE.value)
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             _GXCommon.setData(data, DataType.INT8, it.index)
             _GXCommon.setData(data, DataType.ENUM, it.getMethodAccess().value)
@@ -166,14 +165,14 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         cnt = len(self.objectList)
         if settings.index == 0:
             settings.setCount(cnt)
-            bb.setUInt8(int(DataType.ARRAY.value))
+            bb.setUInt8(int(DataType.ARRAY))
             _GXCommon.setObjectCount(cnt, bb)
         pos = 0
         if cnt != 0:
             for it in self.objectList:
                 pos += 1
                 if not pos <= settings.index:
-                    bb.setUInt8(DataType.STRUCTURE.value)
+                    bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(4)
                     _GXCommon.setData(bb, DataType.INT16, it.shortName)
                     _GXCommon.setData(bb, DataType.UINT16, it.objectType.value)
@@ -197,7 +196,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
             cnt = len(self.objectList)
             if not lnExists:
                 cnt += 1
-            bb.setUInt8(DataType.ARRAY.value)
+            bb.setUInt8(DataType.ARRAY)
             _GXCommon.setObjectCount(cnt, bb)
             for it in self.objectList:
                 self.__getAccessRights_(it, bb)
@@ -215,20 +214,20 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
             obj = self.objectList.findBySN(sn)
             if obj:
                 for attributeAccess in access[1]:
-                    id_ = attributeAccess[0]
-                    mode = AccessMode(attributeAccess[1])
-                    obj.setAccess(id_, mode)
+                    id1 = attributeAccess[0]
+                    mode1 = AccessMode(attributeAccess[1])
+                    obj.setAccess(id1, mode1)
                 for methodAccess in access[2]:
-                    id_ = methodAccess[0]
-                    mode = MethodAccessMode(methodAccess[1])
-                    obj.setMethodAccess(id_, mode)
+                    id2 = methodAccess[0]
+                    mode2 = MethodAccessMode(methodAccess[1])
+                    obj.setMethodAccess(id2, mode2)
 
     def setValue(self, settings, e):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             from .._GXObjectFactory import _GXObjectFactory
-            self.objectList.clear()
+            self.objectList = []
             if e.value:
                 for item in e.value:
                     sn = item[0]

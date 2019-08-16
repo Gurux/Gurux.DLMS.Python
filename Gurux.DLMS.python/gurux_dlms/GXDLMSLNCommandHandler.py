@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from __future__ import print_function
 from .ActionRequestType import ActionRequestType
 from .internal._GXCommon import _GXCommon
 from .enums import Command, ErrorCode, ObjectType
@@ -57,8 +58,12 @@ from .enums.AccessMode import AccessMode
 from .enums.MethodAccessMode import MethodAccessMode
 from .objects.GXDLMSProfileGeneric import GXDLMSProfileGeneric
 
-# pylint: disable=too-many-locals,too-many-arguments,broad-except,too-many-nested-blocks
+# pylint: disable=bad-option-value,too-many-locals,too-many-arguments,broad-except,too-many-nested-blocks,old-style-class
 class GXDLMSLNCommandHandler:
+    #Constructor.
+    def __init__(self):
+        pass
+
     @classmethod
     def handleGetRequest(cls, settings, server, data, replyData, xml):
         #  Return error if connection is not established.
@@ -87,8 +92,8 @@ class GXDLMSLNCommandHandler:
             bb = GXByteBuffer()
             settings.resetBlockIndex()
             #  Access Error : Device reports a hardware fault.
-            bb.setUInt8(ErrorCode.HARDWARE_FAULT.value)
-            GXDLMS.getLNPdu(GXDLMSLNParameters(settings, invokeID, Command.GET_RESPONSE, type_, None, bb, ErrorCode.OK.value), replyData)
+            bb.setUInt8(ErrorCode.HARDWARE_FAULT)
+            GXDLMS.getLNPdu(GXDLMSLNParameters(settings, invokeID, Command.GET_RESPONSE, type_, None, bb, ErrorCode.OK), replyData)
         if xml:
             xml.appendEndTag(Command.GET_REQUEST, type_)
             xml.appendEndTag(Command.GET_REQUEST)
@@ -245,7 +250,7 @@ class GXDLMSLNCommandHandler:
                 else:
                     GXDLMS.appendData(obj, attributeIndex, bb, value)
                 status = e.error
-        GXDLMS.getLNPdu(GXDLMSLNParameters(settings, e.invokeId, Command.GET_RESPONSE, 1, None, bb, status.value), replyData)
+        GXDLMS.getLNPdu(GXDLMSLNParameters(settings, e.invokeId, Command.GET_RESPONSE, 1, None, bb, status), replyData)
         if settings.count != settings.index or len(bb) != bb.position:
             server.setTransaction(GXDLMSLongTransaction(e, Command.GET_REQUEST, bb))
 
@@ -265,10 +270,10 @@ class GXDLMSLNCommandHandler:
                 xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, xml.integerToHex(index, 8))
                 return
             if index != settings.blockIndex:
-                GXDLMS.getLNPdu(GXDLMSLNParameters(settings, invokeID, Command.GET_RESPONSE, 2, None, bb, ErrorCode.DATA_BLOCK_NUMBER_INVALID.value), replyData)
+                GXDLMS.getLNPdu(GXDLMSLNParameters(settings, invokeID, Command.GET_RESPONSE, 2, None, bb, ErrorCode.DATA_BLOCK_NUMBER_INVALID), replyData)
                 return
         settings.increaseBlockIndex()
-        p = GXDLMSLNParameters(settings, invokeID, Command.GENERAL_BLOCK_TRANSFER if streaming else Command.GET_RESPONSE, 2, None, bb, ErrorCode.OK.value)
+        p = GXDLMSLNParameters(settings, invokeID, Command.GENERAL_BLOCK_TRANSFER if streaming else Command.GET_RESPONSE, 2, None, bb, ErrorCode.OK)
         p.streaming = streaming
         p.windowSize = settings.getWindowSize()
         #  If transaction is not in progress.
@@ -350,12 +355,12 @@ class GXDLMSLNCommandHandler:
                 arg = ValueEventArgs(server, obj, attributeIndex, selector, parameters)
                 arg.invokeId = (invokeID)
                 if obj is None:
-                    arg.error = ErrorCode.UNDEFINED_OBJECT.value
+                    arg.error = ErrorCode.UNDEFINED_OBJECT
                     list_.append(arg)
                 else:
                     if server.onGetAttributeAccess(arg) == AccessMode.NO_ACCESS:
                         #  Read Write denied.
-                        arg.error = ErrorCode.READ_WRITE_DENIED.value
+                        arg.error = ErrorCode.READ_WRITE_DENIED
                         list_.append(arg)
                     else:
                         list_.append(arg)
@@ -405,13 +410,13 @@ class GXDLMSLNCommandHandler:
             p.multipleBlocks = lastBlock == 0
             blockNumber = data.getUInt32()
             if blockNumber != settings.blockIndex:
-                p.status = ErrorCode.DATA_BLOCK_NUMBER_INVALID.value
+                p.status = ErrorCode.DATA_BLOCK_NUMBER_INVALID
                 return
             settings.increaseBlockIndex()
             size = _GXCommon.getObjectCount(data)
             realSize = len(data) - data.position
             if size != realSize:
-                p.status = ErrorCode.DATA_BLOCK_UNAVAILABLE.value
+                p.status = ErrorCode.DATA_BLOCK_UNAVAILABLE
                 return
             if xml:
                 cls.appendAttributeDescriptor(xml, ci, ln, index)
@@ -442,7 +447,7 @@ class GXDLMSLNCommandHandler:
         #  If target is unknown.
         if obj is None:
             #  Device reports a undefined object.
-            p.setStatus(ErrorCode.UNDEFINED_OBJECT.value)
+            p.setStatus(ErrorCode.UNDEFINED_OBJECT)
         else:
             e = ValueEventArgs(server, obj, index, 0, None)
             e.invokeId = (p.invokeId)
@@ -469,7 +474,7 @@ class GXDLMSLNCommandHandler:
                     server.onPostWrite(list_)
                     p.invokeId = e.invokeId
                 except Exception:
-                    p.setStatus(ErrorCode.HARDWARE_FAULT.value)
+                    p.setStatus(ErrorCode.HARDWARE_FAULT)
 
     @classmethod
     def hanleSetRequestWithDataBlock(cls, settings, server, data, p, xml):
@@ -478,13 +483,13 @@ class GXDLMSLNCommandHandler:
         p.multipleBlocks = lastBlock == 0
         blockNumber = data.getUInt32()
         if xml is None and blockNumber != settings.blockIndex:
-            p.status = ErrorCode.DATA_BLOCK_NUMBER_INVALID.value
+            p.status = ErrorCode.DATA_BLOCK_NUMBER_INVALID
         else:
             settings.increaseBlockIndex()
             size = _GXCommon.getObjectCount(data)
             realSize = len(data) - data.position
             if size != realSize:
-                p.status = ErrorCode.DATA_BLOCK_UNAVAILABLE.value
+                p.status = ErrorCode.DATA_BLOCK_UNAVAILABLE
             if xml:
                 xml.appendStartTag(TranslatorTags.DATA_BLOCK)
                 xml.appendLine(TranslatorTags.LAST_BLOCK, "Value", xml.integerToHex(lastBlock, 2))
@@ -506,7 +511,7 @@ class GXDLMSLNCommandHandler:
                         server.transaction.targets[0].target.setValue(settings, server.transaction.targets[0])
                     server.onPostWrite(server.transaction.targets)
                 except Exception:
-                    p.setStatus(ErrorCode.HARDWARE_FAULT.value)
+                    p.setStatus(ErrorCode.HARDWARE_FAULT)
                 finally:
                     server.setTransaction(None)
                 settings.resetBlockIndex()
@@ -549,13 +554,13 @@ class GXDLMSLNCommandHandler:
                         obj = server.onFindObject(ci, 0, _GXCommon.toLogicalName(ln))
                     if obj is None:
                         e = ValueEventArgs(server, obj, attributeIndex, 0, 0)
-                        e.error = ErrorCode.UNDEFINED_OBJECT.value
+                        e.error = ErrorCode.UNDEFINED_OBJECT
                         list_.append(e)
                     else:
                         arg = ValueEventArgs(server, obj, attributeIndex, selector, parameters)
                         arg.invokeId = (invokeID)
                         if server.onGetAttributeAccess(arg) == AccessMode.NO_ACCESS:
-                            arg.error = ErrorCode.READ_WRITE_DENIED.value
+                            arg.error = ErrorCode.READ_WRITE_DENIED
                             list_.append(arg)
                         else:
                             list_.append(arg)
@@ -631,7 +636,6 @@ class GXDLMSLNCommandHandler:
                 error = ErrorCode.READ_WRITE_DENIED
             else:
                 server.onPreAction(list(e))
-                actionReply = []
                 if e.handled:
                     actionReply = int(e.value)
                 else:
@@ -648,7 +652,7 @@ class GXDLMSLNCommandHandler:
                     error = e.error
                     bb.setUInt8(0)
                 invokeId = int(e.invokeId)
-        p = GXDLMSLNParameters(settings, invokeId, Command.METHOD_RESPONSE, 1, None, bb, error.value)
+        p = GXDLMSLNParameters(settings, invokeId, Command.METHOD_RESPONSE, 1, None, bb, error)
         GXDLMS.getLNPdu(p, replyData)
         if isinstance(obj, (GXDLMSAssociationLogicalName,)) and id_ == 1:
             if (obj).getAssociationStatus() == AssociationStatus.ASSOCIATED:
@@ -660,6 +664,7 @@ class GXDLMSLNCommandHandler:
 
     @classmethod
     def handleAccessRequest(cls, settings, server, data, reply, xml):
+        #pylint: disable=bad-option-value,redefined-variable-type
         if xml is None and not settings.acceptConnection():
             reply.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED.value))
             return
@@ -690,7 +695,7 @@ class GXDLMSLNCommandHandler:
         pos = 0
         while pos != cnt:
             type_ = AccessServiceCommandType(data.getUInt8())
-            if not type_ in (AccessServiceCommandType.GET, AccessServiceCommandType.SET, AccessServiceCommandType.ACTION):
+            if type_ not in (AccessServiceCommandType.GET, AccessServiceCommandType.SET, AccessServiceCommandType.ACTION):
                 raise ValueError("Invalid access service command type.")
             ci = data.getUInt16()
             ln = bytearray(6)

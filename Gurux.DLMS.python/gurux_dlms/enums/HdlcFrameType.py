@@ -35,6 +35,7 @@ from enum import Enum
 
 class HdlcFrameType(Enum):
     """HDLC frame types."""
+    #pylint: disable=too-few-public-methods
 
     I_FRAME = 0
     S_FRAME = 1

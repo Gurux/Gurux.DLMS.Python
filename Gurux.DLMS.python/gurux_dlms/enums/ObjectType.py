@@ -35,6 +35,7 @@ from enum import Enum
 
 class ObjectType(Enum):
     """ObjectType enumerates the usable types of DLMS objects in GuruxDLMS."""
+    #pylint: disable=too-few-public-methods
 
     # When communicating with a meter, the application may demand periodical
     # actions.  If these actions are not linked to tariffication =
@@ -176,9 +177,7 @@ class ObjectType(Enum):
     REGISTER_MONITOR = 21
 
     # Instances of the Disconnect control IC manage an internal or external
-    # disconnect unit of the meter =e.g.  electricity breaker, gas valve) in
-    # order to connect or disconnect – partly or entirely – the premises of the
-    # consumer to / from the supply.
+    # disconnect unit of the meter.
     DISCONNECT_CONTROL = 70
 
     LIMITER = 71

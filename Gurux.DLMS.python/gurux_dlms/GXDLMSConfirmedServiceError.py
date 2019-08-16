@@ -56,7 +56,7 @@ class GXDLMSConfirmedServiceError(Exception):
     # @param value
     #
     def __init__(self, service=None, type_=None, value=0):
-        super(GXDLMSConfirmedServiceError, self).__init__("ServiceError " + self.__getConfirmedServiceError(service) + " exception. " + self.__getServiceError(type_) + " " + self.__getServiceErrorValue(type_, value))
+        Exception.__init__(self, "ServiceError " + self.__getConfirmedServiceError(service) + " exception. " + self.__getServiceError(type_) + " " + self.__getServiceErrorValue(type_, value))
         self.confirmedServiceError = service
         self.serviceError = type_
         self.serviceErrorValue = value

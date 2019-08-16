@@ -119,26 +119,26 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
             return _GXCommon.logicalNameToBytes(self.logicalName)
         if e.index == 2:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             if not self.registerAssignment:
                 data.setUInt8(0)
             else:
                 data.setUInt8(len(self.registerAssignment))
                 for it in self.registerAssignment:
-                    data.setUInt8(DataType.STRUCTURE.value)
+                    data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(2)
                     _GXCommon.setData(data, DataType.UINT16, it.objectType.value)
                     _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
             return data
         if e.index == 3:
             data = GXByteBuffer()
-            data.setUInt8(DataType.ARRAY.value)
+            data.setUInt8(DataType.ARRAY)
             data.setUInt8(len(self.maskList))
             for k, v in self.maskList:
-                data.setUInt8(DataType.STRUCTURE.value)
+                data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
                 _GXCommon.setData(data, DataType.OCTET_STRING, k)
-                data.setUInt8(DataType.ARRAY.value)
+                data.setUInt8(DataType.ARRAY)
                 data.setUInt8(len(v))
                 for b in v:
                     _GXCommon.setData(data, DataType.UINT8, b)
@@ -155,7 +155,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.registerAssignment.clear()
+            self.registerAssignment = []
             if e.value:
                 for it in e.value:
                     item = GXDLMSObjectDefinition()
@@ -163,7 +163,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
                     item.logicalName = _GXCommon.toLogicalName(it[1])
                     self.registerAssignment.append(item)
         elif e.index == 3:
-            self.maskList.clear()
+            self.maskList = []
             if e.value:
                 for it in e.value:
                     self.maskList.append((it[0], it[0]))
@@ -176,14 +176,14 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.registerAssignment.clear()
+        self.registerAssignment = []
         if reader.isStartElement("RegisterAssignment", True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSObjectDefinition()
                 it.objectType = ObjectType(reader.readElementContentAsInt("ObjectType"))
                 it.logicalName = reader.readElementContentAsString("LN")
                 self.registerAssignment.append(it)
-        self.maskList.clear()
+        self.maskList = []
         if reader.isStartElement("MaskList", True):
             while reader.isStartElement("Item", True):
                 mask = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Mask"))

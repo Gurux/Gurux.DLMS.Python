@@ -38,12 +38,13 @@ class LocalPortResponseTime(Enum):
     Defines the minimum time between the reception of a request (end of request telegram)
     and the transmission of the response =begin of response telegram).
     """
+    #pylint: disable=too-few-public-methods
 
-     #
-     # Minimum time is 20 ms.
-     #
+    #
+    # Minimum time is 20 ms.
+    #
     ms20 = 0
     #
-     # Minimum time is 200 ms.
-     #
+    # Minimum time is 200 ms.
+    #
     ms200 = 1

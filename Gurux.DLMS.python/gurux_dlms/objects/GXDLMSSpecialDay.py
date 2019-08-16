@@ -32,6 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 class GXDLMSSpecialDay:
+    #pylint: disable=bad-option-value,old-style-class,too-few-public-methods
+
     #
     # Constructor.
     #
