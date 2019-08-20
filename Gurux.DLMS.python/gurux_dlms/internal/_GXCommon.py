@@ -31,7 +31,12 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+except Exception:
+    pass
+
 import time
 import calendar
 from datetime import datetime
@@ -56,8 +61,8 @@ class _GXCommon:
 
     #      HDLC frame start and end character.
     HDLC_FRAME_START_END = 0x7E
-    LLC_SEND_BYTES = bytes([0xE6, 0xE6, 0x00])
-    LLC_REPLY_BYTES = bytes([0xE6, 0xE7, 0x00])
+    LLC_SEND_BYTES = bytearray([0xE6, 0xE6, 0x00])
+    LLC_REPLY_BYTES = bytearray([0xE6, 0xE7, 0x00])
     DATA_TYPE_OFFSET = 0xFF0000
     zeroes = "00000000000000000000000000000000"
 
@@ -241,7 +246,7 @@ class _GXCommon:
         knownType = info.type_ != DataType.NONE
         #  Get data type if it is unknown.
         if not knownType:
-            info.type_ = DataType(data.getUInt8())
+            info.type_ = data.getUInt8()
         if info.type_ == DataType.NONE:
             if info.xml:
                 info.xml.appendLine("<" + info.xml.getDataType(info.type_) + " />")
@@ -1221,14 +1226,19 @@ class _GXCommon:
         from ..GXDate import GXDate
         from ..GXTime import GXTime
         #  If value is enum get integer value.
-        if isinstance(value, Enum):
-            value = value.value
+        try:
+            if isinstance(value, IntEnum):
+                value = value.value
+        except Exception:
+            #Enum is not supported.
+            pass
+
         if dataType in (DataType.ARRAY, DataType.STRUCTURE) and isinstance(value, (GXByteBuffer, bytearray, bytes)):
             #  If byte array is added do not add type.
             buff.set(value)
             return
 
-        buff.setUInt8(dataType.value)
+        buff.setUInt8(dataType)
         if dataType == DataType.NONE:
             pass
         elif dataType == DataType.BOOLEAN:
@@ -1446,10 +1456,10 @@ class _GXCommon:
 
         #  Add clock_status
         if dt.skip & DateTimeSkips.STATUS == DateTimeSkips.NONE:
-            if dt.value.dst() or dt.status.value & ClockStatus.DAYLIGHT_SAVE_ACTIVE.value != ClockStatus.OK.value:
-                buff.setUInt8(dt.status.value | ClockStatus.DAYLIGHT_SAVE_ACTIVE.value)
+            if dt.value.dst() or dt.status & ClockStatus.DAYLIGHT_SAVE_ACTIVE != ClockStatus.OK:
+                buff.setUInt8(dt.status | ClockStatus.DAYLIGHT_SAVE_ACTIVE)
             else:
-                buff.setUInt8(dt.status.value)
+                buff.setUInt8(dt.status)
         else:
             buff.setUInt8(0xFF)
 

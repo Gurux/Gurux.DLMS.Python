@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import datetime
+import traceback
 from gurux_common.enums import TraceLevel
 from gurux_common import ReceiveParameters
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
@@ -140,7 +141,7 @@ class GXDLMSReader:
                 pos += 1
             except Exception as e:
                 self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.ERROR)
-                raise e
+                raise
             self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.VERBOSE)
             if reply.error != 0:
                 raise GXDLMSException(reply.error)
@@ -173,7 +174,7 @@ class GXDLMSReader:
         self.readDataBlock(self.client.aarqRequest(), reply)
         self.client.parseAareResponse(reply.data)
         reply.clear()
-        if self.client.authentication.value > Authentication.LOW.value:
+        if self.client.authentication > Authentication.LOW:
             for it in self.client.getApplicationAssociationRequest():
                 self.readDLMSPacket(it, reply)
             self.client.parseApplicationAssociationResponse(reply.data)
@@ -326,6 +327,7 @@ class GXDLMSReader:
                         self.writeTrace("", TraceLevel.INFO)
             except Exception as ex:
                 self.writeTrace("Error! Failed to read first row: " + str(ex), TraceLevel.ERROR)
+                traceback.print_exc()
             try:
                 start = datetime.datetime.now()
                 end = start

@@ -187,7 +187,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             #  Count
             data.setUInt8(4)
             #  ClassID
-            _GXCommon.setData(data, DataType.UINT16, k.objectType.value)
+            _GXCommon.setData(data, DataType.UINT16, k.objectType)
             _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
             _GXCommon.setData(data, DataType.INT8, v.attributeIndex)
             _GXCommon.setData(data, DataType.UINT16, v.dataIndex)
@@ -359,7 +359,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(data, DataType.INT8, 0)
                 _GXCommon.setData(data, DataType.UINT16, 0)
             else:
-                _GXCommon.setData(data, DataType.UINT16, self.sortObject.objectType.value)
+                _GXCommon.setData(data, DataType.UINT16, self.sortObject.objectType)
                 _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.sortObject.logicalName))
                 _GXCommon.setData(data, DataType.INT8, self.sortObjectAttributeIndex)
                 _GXCommon.setData(data, DataType.UINT16, self.sortObjectDataIndex)

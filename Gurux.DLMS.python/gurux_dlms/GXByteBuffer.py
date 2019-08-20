@@ -33,7 +33,7 @@
 # ---------------------------------------------------------------------------
 import sys
 import struct
-from enum import Enum
+
 #Maximum size of byte.
 _MAX_BYTE_SIZE = 0xFF
 _NIBBLE = 4
@@ -169,7 +169,9 @@ class GXByteBuffer(__base):
     #
     def subArray(self, index, count):
         if count != 0:
-            return self._data[index:index + count]
+            tmp = bytearray (count)
+            tmp[0:count] = self._data[index:index + count]
+            return tmp
         return bytearray(0)
 
     #
@@ -212,8 +214,6 @@ class GXByteBuffer(__base):
     #                 The byte to be added.
     #
     def setUInt8(self, item, index=None):
-        if isinstance(item, Enum):
-            item = item.value
         if index is None:
             self.setUInt8(item, self.size)
             self.size += 1

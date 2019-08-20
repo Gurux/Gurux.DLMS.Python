@@ -123,12 +123,12 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(data, DataType.ENUM, a.type_)
                     if not a.target:
                         #  class_id
-                        _GXCommon.setData(data, DataType.UINT16, a.objectType.value)
+                        _GXCommon.setData(data, DataType.UINT16, a.objectType)
                         #  logical_name
                         _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.logicalName))
                     else:
                         #  class_id
-                        _GXCommon.setData(data, DataType.UINT16, a.target.objectType.value)
+                        _GXCommon.setData(data, DataType.UINT16, a.target.objectType)
                         _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.target.logicalName))
                     _GXCommon.setData(data, DataType.INT8, a.index)
                     _GXCommon.setData(data, a.parameterType, a.parameter)

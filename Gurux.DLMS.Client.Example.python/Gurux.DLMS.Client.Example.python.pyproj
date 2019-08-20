@@ -11,12 +11,6 @@
     <OutputPath>.</OutputPath>
     <Name>Gurux.DLMS.Client.Example.python</Name>
     <RootNamespace>Gurux.DLMS.Client.Example.python</RootNamespace>
-    <IsWindowsApplication>False</IsWindowsApplication>
-    <InterpreterId>Global|PythonCore|3.7-32</InterpreterId>
-    <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-h localhost -p 4061</CommandLineArguments>
-    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
-    <PublishUrl>C:\Projects\GXCom\Protocols\Gurux.DLMS.Python\Gurux.DLMS.Client.Example.python\app</PublishUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,25 +35,6 @@
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|PythonCore|3.6" />
-    <InterpreterReference Include="Global|PythonCore|3.7-32" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Python\GXCom\Gurux.Common.Python\Development\Gurux.Common.pyproj">
-      <Name>Gurux.Common</Name>
-      <Project>{f83a0ab9-c6f0-45b7-a284-3cf82ebe019f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Python\GXCom\GXMedias\Gurux.Net.Python\Development\Gurux.Net.Python.pyproj">
-      <Name>Gurux.Net.Python</Name>
-      <Project>{e65f2477-e675-4852-a321-3abe709825c8}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Python\GXCom\GXMedias\Gurux.Serial.Python\Development\Gurux.Serial.Python.pyproj">
-      <Name>Gurux.Serial.Python</Name>
-      <Project>{ab7f2b01-befd-4f68-8bdc-36d2475fcd62}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Gurux.DLMS.python\gurux_dlms.pyproj">
       <Name>gurux_dlms</Name>
       <Project>{5b94f4c5-7f82-4a44-904d-b2d587f6e9da}</Project>

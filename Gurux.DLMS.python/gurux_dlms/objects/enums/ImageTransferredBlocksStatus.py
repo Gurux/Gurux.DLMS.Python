@@ -31,9 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+    __base = IntEnum
+except Exception:
+    __base = object
 
-class ImageTransferredBlocksStatus(Enum):
+class ImageTransferredBlocksStatus(__base):
     """
     Provides information about the transfer status of each ImageBlock.
     Each bit in the bit-string provides information about one individual ImageBlock:

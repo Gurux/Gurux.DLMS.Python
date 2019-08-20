@@ -32,7 +32,12 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #
-from enum import Enum
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+except Exception:
+    pass
+
 from .TranslatorOutputType import TranslatorOutputType
 from .internal._GXCommon import _GXCommon
 # pylint: disable=too-many-arguments, too-many-instance-attributes
@@ -103,7 +108,7 @@ class GXDLMSTranslatorStructure:
             self.sb += '<'
             if isinstance(tag, int):
                 tag = self.__getTag(tag)
-            if isinstance(tag, Enum):
+            elif isinstance(tag, Enum):
                 tag = self.__getTag(tag)
             self.sb += tag
             if self.outputType == TranslatorOutputType.SIMPLE_XML:
@@ -182,7 +187,7 @@ class GXDLMSTranslatorStructure:
         if isinstance(name, int):
             tag = self.__getTag(tag << 8 | name)
             name = None
-        elif isinstance(tag, (int, Enum)):
+        elif isinstance(tag, Enum):
             tag = self.__getTag(tag)
         self.appendSpaces(2 * self.offset)
         self.sb += '<'
@@ -201,8 +206,12 @@ class GXDLMSTranslatorStructure:
         self.offset += 1
 
     def appendEndTag(self, tag, plain=False):
-        if isinstance(tag, (int, Enum)):
-            if not isinstance(plain, bool) and isinstance(plain, (int, Enum)):
+        try:
+            isEnum = isinstance(tag, Enum)
+        except Exception:
+            isEnum = False
+        if isinstance(tag, int) or isEnum:
+            if not isinstance(plain, bool) and (isinstance(plain, int) or isEnum):
                 tag = self.__getTag(tag << 8 | plain)
             else:
                 tag = self.__getTag(tag)

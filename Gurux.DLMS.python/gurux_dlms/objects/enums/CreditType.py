@@ -31,8 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
-class CreditType(Enum):
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+    __base = IntEnum
+except Exception:
+    __base = object
+
+class CreditType(__base):
     """Enumerates credit types.
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSCredit

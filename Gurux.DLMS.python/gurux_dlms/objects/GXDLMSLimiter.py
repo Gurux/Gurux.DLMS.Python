@@ -173,7 +173,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(None))
                 _GXCommon.setData(data, DataType.INT8, 0)
             else:
-                _GXCommon.setData(data, DataType.INT16, int(self.monitoredValue.objectType.value))
+                _GXCommon.setData(data, DataType.INT16, int(self.monitoredValue.objectType))
                 _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
                 _GXCommon.setData(data, DataType.INT8, self.monitoredAttributeIndex)
             ret = data
@@ -301,7 +301,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         if self.monitoredValue:
             writer.writeStartElement("MonitoredValue")
-            writer.writeElementString("ObjectType", self.monitoredValue.objectType.value)
+            writer.writeElementString("ObjectType", self.monitoredValue.objectType)
             writer.writeElementString("LN", self.monitoredValue.logicalName)
             writer.writeEndElement()
         writer.writeElementObject("ThresholdActive", self.thresholdActive)

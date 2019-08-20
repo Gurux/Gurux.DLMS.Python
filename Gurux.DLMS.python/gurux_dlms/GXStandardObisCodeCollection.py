@@ -357,8 +357,6 @@ class GXStandardObisCodeCollection(list):
     # Find Standard OBIS Code description.
     # pylint: disable=too-many-nested-blocks
     def find2(self, obisCode, ic):
-        if not isinstance(ic, int):
-            ic = ic.value
         if isinstance(obisCode, str):
             obisCode = self.getBytes(obisCode)
         tmp = None

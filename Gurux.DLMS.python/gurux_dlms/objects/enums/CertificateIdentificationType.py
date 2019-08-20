@@ -31,9 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+    __base = IntEnum
+except Exception:
+    __base = object
 
-class CertificateIdentificationType(Enum):
+class CertificateIdentificationType(__base):
     """
     Certificate is identified with entity identification or the serial number
     of the certificate.

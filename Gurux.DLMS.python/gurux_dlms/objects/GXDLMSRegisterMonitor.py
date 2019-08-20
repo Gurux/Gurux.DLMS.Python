@@ -121,7 +121,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
             #  ClassID
-            _GXCommon.setData(bb, DataType.UINT16, self.monitoredValue.objectType.value)
+            _GXCommon.setData(bb, DataType.UINT16, self.monitoredValue.objectType)
             #  LN.
             _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
             #  Attribute index.

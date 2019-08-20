@@ -113,7 +113,7 @@ class GXDLMSChippering:
     @classmethod
     def getAuthenticatedData(cls, p, plainText):
         data = GXByteBuffer()
-        sc = p.security.value | p.securitySuite.value
+        sc = p.security | p.securitySuite
         if p.security == Security.AUTHENTICATION:
             data.setUInt8(sc)
             data.set(p.authenticationKey)

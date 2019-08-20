@@ -168,7 +168,7 @@ class GXSettings:
             elif it.tag == 'S':#Serial Port
                 self.media = GXSerial(None)
                 tmp = it.value.split(':')
-                self.media.portName = tmp[0]
+                self.media.port = tmp[0]
                 if len(tmp) > 1:
                     self.media.baudRate = int(tmp[1])
                     self.media.dataBits = int(tmp[2][0: 1])

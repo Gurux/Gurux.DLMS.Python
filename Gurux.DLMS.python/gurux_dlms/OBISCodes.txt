@@ -108,11 +108,11 @@
 0.0-64.29.0.0.255;90;;Ch. $B;G3-PLC MAC layer counters;;;
 0.0-64.29.1.0.255;91;;Ch. $B;G3-PLC MAC setup;;;
 0.0-64.29.2.0.255;92;;Ch. $B;G3-PLC 6LoWPAN adaptation layer setup;;;
-0.0-64.30.0.0-127.255;101;;Ch. $B;ZigBee® SAS startup;;#$(E+1);
-0.0-64.30.1.0-127.255;102;;Ch. $B;ZigBee® SAS join;;#$(E+1);
-0.0-64.30.2.0-127.255;103;;Ch. $B;ZigBee® SAS APS fragmentation;;#$(E+1);
-0.0-64.30.3.0-127.255;104;;Ch. $B;ZigBee® network control;;#$(E+1);
-0.0-64.30.4.0-127.255;105;;Ch. $B;ZigBee® tunnel setup;;#$(E+1);
+0.0-64.30.0.0-127.255;101;;Ch. $B;ZigBee(C) SAS startup;;#$(E+1);
+0.0-64.30.1.0-127.255;102;;Ch. $B;ZigBee(C) SAS join;;#$(E+1);
+0.0-64.30.2.0-127.255;103;;Ch. $B;ZigBee(C) SAS APS fragmentation;;#$(E+1);
+0.0-64.30.3.0-127.255;104;;Ch. $B;ZigBee(C) network control;;#$(E+1);
+0.0-64.30.4.0-127.255;105;;Ch. $B;ZigBee(C) tunnel setup;;#$(E+1);
 0.0-64.31.0.0.255;73;;Ch. $B;Wireless Mode Q channel;;;
 0.0.40.0.0.255;12,15;;Ch. $B;Current association;;;
 0.0.40.0.1.255;12,15;;Ch. $B;Association;;#$E;

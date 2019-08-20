@@ -31,9 +31,14 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+    __base = IntEnum
+except Exception:
+    __base = object
 
-from enum import Enum
-class VdeStateError(Enum):
+class VdeStateError(__base):
     """VdeState error describes Vde state errors."""
     #pylint: disable=too-few-public-methods
 

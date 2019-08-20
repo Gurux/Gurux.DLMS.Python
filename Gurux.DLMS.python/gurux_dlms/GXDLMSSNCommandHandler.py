@@ -89,7 +89,7 @@ class GXDLMSSNCommandHandler:
             e.parameters = _GXCommon.getData(data, di)
         #  Return error if connection is not established.
         if not settings.acceptConnection() and (not e.action or e.target.shortName != 0xFA00 or e.index != 8):
-            replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED.value))
+            replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
             return
         list_.append(e)
         if not e.action and server.onGetAttributeAccess(e) == AccessMode.NO_ACCESS:
@@ -172,7 +172,7 @@ class GXDLMSSNCommandHandler:
             else:
                 if not first and list_:
                     data.setUInt8(SingleReadResponse.DATA_ACCESS_ERROR)
-                data.setUInt8(e.error.value)
+                data.setUInt8(e.error)
                 type_ = SingleReadResponse.DATA_ACCESS_ERROR
             first = False
         return type_
@@ -296,7 +296,7 @@ class GXDLMSSNCommandHandler:
     @classmethod
     def returnSNError(cls, settings, cmd, error, replyData):
         bb = GXByteBuffer()
-        bb.setUInt8(error.value)
+        bb.setUInt8(error)
         GXDLMS.getSNPdu(GXDLMSSNParameters(settings, cmd, 1, SingleReadResponse.DATA_ACCESS_ERROR, bb, None), replyData)
         settings.resetBlockIndex()
 
@@ -326,7 +326,7 @@ class GXDLMSSNCommandHandler:
     @classmethod
     def handleWriteRequest(cls, settings, server, data, replyData, xml):
         if xml is None and not settings.acceptConnection:
-            replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED.value))
+            replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
             return
         type_ = int()
         value = None
@@ -474,7 +474,7 @@ class GXDLMSSNCommandHandler:
                 if ot == TranslatorOutputType.STANDARD_XML:
                     reply.xml.appendEndTag(Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)
             else:
-                v = ValueEventArgs(list_.get(pos).getKey(), list_.get(pos).value, 0, None)
+                v = ValueEventArgs(list_[pos].key, list_[pos].value, 0, None)
                 v.value = _GXCommon.getData(reply.data, di)
                 list_.get(pos).getKey().setValue(settings, v)
             pos += 1

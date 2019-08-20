@@ -536,26 +536,26 @@ class GXDLMSServer:
                 diagnostic = SourceDiagnostic.NO_REASON_GIVEN
                 error = GXByteBuffer()
                 error.setUInt8(0xE)
-                error.setUInt8(ConfirmedServiceError.INITIATE_ERROR.value)
+                error.setUInt8(ConfirmedServiceError.INITIATE_ERROR)
                 error.setUInt8(ServiceError.INITIATE)
-                error.setUInt8(Initiate.INCOMPATIBLE_CONFORMANCE.value)
+                error.setUInt8(Initiate.INCOMPATIBLE_CONFORMANC)
             elif self.settings.maxPduSize < 64:
                 result = AssociationResult.PERMANENT_REJECTED
                 diagnostic = SourceDiagnostic.NO_REASON_GIVEN
                 error = GXByteBuffer()
                 error.setUInt8(0xE)
-                error.setUInt8(ConfirmedServiceError.INITIATE_ERROR.value)
+                error.setUInt8(ConfirmedServiceError.INITIATE_ERROR)
                 error.setUInt8(ServiceError.INITIATE)
-                error.setUInt8(Initiate.PDU_SIZE_TOO_SHORT.value)
+                error.setUInt8(Initiate.PDU_SIZE_TOO_SHORT)
             elif self.settings.dlmsVersion != 6:
                 self.settings.dlmsVersion = 6
                 result = AssociationResult.PERMANENT_REJECTED
                 diagnostic = SourceDiagnostic.NO_REASON_GIVEN
                 error = GXByteBuffer()
                 error.setUInt8(0xE)
-                error.setUInt8(ConfirmedServiceError.INITIATE_ERROR.value)
+                error.setUInt8(ConfirmedServiceError.INITIATE_ERROR)
                 error.setUInt8(ServiceError.INITIATE)
-                error.setUInt8(Initiate.DLMS_VERSION_TOO_LOW.value)
+                error.setUInt8(Initiate.DLMS_VERSION_TOO_LOW)
             elif diagnostic != SourceDiagnostic.NONE:
                 result = AssociationResult.PERMANENT_REJECTED
                 diagnostic = SourceDiagnostic.NOT_SUPPORTED
@@ -564,7 +564,7 @@ class GXDLMSServer:
                 diagnostic = self.onValidateAuthentication(self.settings.authentication, self.settings.password)
                 if diagnostic != SourceDiagnostic.NONE:
                     result = AssociationResult.PERMANENT_REJECTED
-                elif self.settings.authentication.value > Authentication.LOW.value:
+                elif self.settings.authentication > Authentication.LOW:
                     result = AssociationResult.ACCEPTED
                     diagnostic = SourceDiagnostic.AUTHENTICATION_REQUIRED
                     if self.useLogicalNameReferencing:
@@ -592,15 +592,15 @@ class GXDLMSServer:
             diagnostic = SourceDiagnostic.NO_REASON_GIVEN
             error = GXByteBuffer()
             error.setUInt8(0xE)
-            error.setUInt8(e.confirmedServiceError.value)
-            error.setUInt8(e.serviceError.value)
+            error.setUInt8(e.confirmedServiceError)
+            error.setUInt8(e.serviceError)
             error.setUInt8(e.serviceErrorValue)
         except GXDLMSException as e:
             result = e.result
             diagnostic = e.diagnostic
         if self.settings.interfaceType == InterfaceType.HDLC:
             self.replyData.set(_GXCommon.LLC_REPLY_BYTES)
-        if self.settings.authentication.value > Authentication.LOW.value:
+        if self.settings.authentication > Authentication.LOW:
             self.settings.setStoCChallenge(GXSecure.generateChallenge())
         _GXAPDU.generateAARE(self.settings, self.replyData, result, diagnostic, self.settings.cipher, error, None)
 
@@ -781,9 +781,9 @@ class GXDLMSServer:
         if self.settings.interfaceType == InterfaceType.HDLC:
             GXDLMS.addLLCBytes(self.settings, self.replyData)
         self.replyData.setUInt8(Command.CONFIRMED_SERVICE_ERROR)
-        self.replyData.setUInt8(e.getConfirmedServiceError().value)
-        self.replyData.setUInt8(e.getServiceError().value)
-        self.replyData.setUInt8(e.getServiceErrorValue())
+        self.replyData.setUInt8(e.confirmedServiceError)
+        self.replyData.setUInt8(e.serviceError)
+        self.replyData.setUInt8(e.serviceErrorValue)
         if self.settings.interfaceType == InterfaceType.WRAPPER:
             return GXDLMS.getWrapperFrame(self.settings, self.replyData)
         return GXDLMS.getHdlcFrame(self.settings, int(0), self.replyData)
@@ -803,11 +803,11 @@ class GXDLMSServer:
         else:
             cmd = Command.NONE
         if self.settings.useLogicalNameReferencing:
-            p = GXDLMSLNParameters(self.settings, 0, cmd, 1, None, None, error.value)
+            p = GXDLMSLNParameters(self.settings, 0, cmd, 1, None, None, error)
             GXDLMS.getLNPdu(p, self.replyData)
         else:
             bb = GXByteBuffer()
-            bb.setUInt8(error.value)
+            bb.setUInt8(error)
             p2 = GXDLMSSNParameters(self.settings, cmd, 1, 1, None, bb)
             GXDLMS.getSNPdu(p2, self.replyData)
         if self.settings.interfaceType == InterfaceType.WRAPPER:
@@ -883,7 +883,7 @@ class GXDLMSServer:
                 blockNumberAck = data.getUInt16()
                 len_ = _GXCommon.getObjectCount(data)
                 if len_ > len(data) - data.position:
-                    self.replyData.set(self.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED.value))
+                    self.replyData.set(self.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
                 else:
                     self.transaction.data.set(data)
                     igonoreAck = (bc & 0x40) != 0 and (blockNumberAck * self.settings.windowSize) + 1 > blockNumber
@@ -908,7 +908,7 @@ class GXDLMSServer:
             blockNumberAck = data.getUInt16()
             len_ = _GXCommon.getObjectCount(data)
             if len_ > len(data) - data.position:
-                self.replyData.set(self.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED.value))
+                self.replyData.set(self.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
             else:
                 self.transaction = GXDLMSLongTransaction(None, data.getUInt8(), data)
                 self.replyData.setUInt8(Command.GENERAL_BLOCK_TRANSFER)
@@ -921,4 +921,4 @@ class GXDLMSServer:
 
     @classmethod
     def generateConfirmedServiceError(cls, service, type_, code_):
-        return [Command.CONFIRMED_SERVICE_ERROR, service.value, type_.value, code_]
+        return [Command.CONFIRMED_SERVICE_ERROR, service, type_, code_]

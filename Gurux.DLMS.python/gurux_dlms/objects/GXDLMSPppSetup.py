@@ -120,6 +120,8 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         if index == 4:
             return DataType.ARRAY
         if index == 5:
+            if not self.userName:
+                return DataType.NONE;
             return DataType.STRUCTURE
         raise ValueError("getDataType failed. Invalid attribute index.")
 
@@ -160,12 +162,15 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(data, _GXCommon.getDLMSDataType(it.data), it.data)
             ret = data.array()
         elif e.index == 5:
-            data = GXByteBuffer()
-            data.setUInt8(int(DataType.STRUCTURE))
-            data.setUInt8(2)
-            _GXCommon.setData(data, DataType.OCTET_STRING, self.userName)
-            _GXCommon.setData(data, DataType.OCTET_STRING, self.password)
-            ret = data.array()
+            if self.userName:
+                data = GXByteBuffer()
+                data.setUInt8(int(DataType.STRUCTURE))
+                data.setUInt8(2)
+                _GXCommon.setData(data, DataType.OCTET_STRING, self.userName)
+                _GXCommon.setData(data, DataType.OCTET_STRING, self.password)
+                ret = data.array()
+            else:
+                ret = None
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret

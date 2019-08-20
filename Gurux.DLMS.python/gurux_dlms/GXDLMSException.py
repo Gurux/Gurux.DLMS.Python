@@ -46,7 +46,7 @@ class GXDLMSException(Exception):
             self.result = errCode
             self.diagnostic = serviceErr
         else:
-            Exception.__init__(self, self.getDescription(ErrorCode(errCode)))
+            Exception.__init__(self, self.getDescription(errCode))
         self.errorCode = errCode
         self.stateError = None
         self.exceptionServiceError = None

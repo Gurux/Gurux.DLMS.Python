@@ -59,28 +59,23 @@ from .GXCiphering import GXCiphering
 # available.
 # pylint: disable=too-many-public-methods
 class _GXAPDU:
-    _LOGICAL_NAME_OBJECT_ID = bytes([0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x01])
-    _SHORT_NAME_OBJECT_ID = bytes([0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x02])
-    _LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING = bytes([0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x03])
-    _SHORT_NAME_OBJECT_ID_WITH_CIPHERING = bytes([0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x04])
-
     #
     # Retrieves the string that indicates the level of authentication, if any.
     #
     @classmethod
-    def getAuthenticationString(cls, settings, data):
+    def getAuthenticationString(cls, settings, data, ignoreAcse):
         if settings.authentication != Authentication.NONE or\
-            (settings.cipher and settings.cipher.security != Security.NONE):
+            (not ignoreAcse and settings.cipher and settings.cipher.security != Security.NONE):
             #  Add sender ACSE-requirements field component.
-            data.setUInt8(BerType.CONTEXT.value | PduType.SENDER_ACSE_REQUIREMENTS.value)
+            data.setUInt8(BerType.CONTEXT | PduType.SENDER_ACSE_REQUIREMENTS)
             data.setUInt8(2)
-            data.setUInt8(BerType.BIT_STRING.value | BerType.OCTET_STRING.value)
+            data.setUInt8(BerType.BIT_STRING | BerType.OCTET_STRING)
             data.setUInt8(0x80)
-            data.setUInt8(BerType.CONTEXT.value | PduType.MECHANISM_NAME.value)
+            data.setUInt8(BerType.CONTEXT | PduType.MECHANISM_NAME)
             #  Len
             data.setUInt8(7)
             #  OBJECT IDENTIFIER
-            p = [int(0x60), int(0x85), int(0x74), 0x05, 0x08, 0x02, settings.authentication.value]
+            p = [int(0x60), int(0x85), int(0x74), 0x05, 0x08, 0x02, settings.authentication]
             data.set(p)
         #  If authentication is used.
         if settings.authentication != Authentication.NONE:
@@ -93,12 +88,12 @@ class _GXAPDU:
             else:
                 callingAuthenticationValue = settings.ctoSChallenge
             #  0xAC
-            data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AUTHENTICATION_VALUE.value)
+            data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AUTHENTICATION_VALUE)
             #  Len
             len_ = len(callingAuthenticationValue)
             data.setUInt8((2 + len_))
             #  Add authentication information.
-            data.setUInt8(BerType.CONTEXT.value)
+            data.setUInt8(BerType.CONTEXT)
             #  Len.
             data.setUInt8(len_)
             if len_ != 0:
@@ -119,46 +114,53 @@ class _GXAPDU:
         #  ProtocolVersion
         if settings.protocolVersion:
             len_ = len(settings.protocolVersion)
-            data.setUInt8(BerType.CONTEXT.value | PduType.PROTOCOL_VERSION.value)
+            data.setUInt8(BerType.CONTEXT | PduType.PROTOCOL_VERSION)
             data.setUInt8(2)
             data.setUInt8(8 - len_)
             _GXCommon.setBitString(data, settings.protocolVersion, False)
         #  Application context name tag
-        data.setUInt8((BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.APPLICATION_CONTEXT_NAME.value))
+        data.setUInt8((BerType.CONTEXT | BerType.CONSTRUCTED | PduType.APPLICATION_CONTEXT_NAME))
         #  Len
         data.setUInt8(0x09)
-        data.setUInt8(BerType.OBJECT_IDENTIFIER.value)
+        data.setUInt8(BerType.OBJECT_IDENTIFIER)
         #  Len
         data.setUInt8(0x07)
         ciphered = cipher and cipher.isCiphered()
+        data.setUInt8(0x60)
+        data.setUInt8(0x85)
+        data.setUInt8(0x74)
+        data.setUInt8(0x5)
+        data.setUInt8(0x8)
+        data.setUInt8(0x1)
         if settings.useLogicalNameReferencing:
             if ciphered:
-                data.set(cls._LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING)
+                data.setUInt8(3)
             else:
-                data.set(cls._LOGICAL_NAME_OBJECT_ID)
+                data.setUInt8(1)
         else:
             if ciphered:
-                data.set(cls._SHORT_NAME_OBJECT_ID_WITH_CIPHERING)
+                data.SetUInt8(4)
             else:
-                data.set(cls._SHORT_NAME_OBJECT_ID)
+                data.SetUInt8(2)
+
         #  Add system title.
         if not settings.isServer and (ciphered or settings.authentication == Authentication.HIGH_GMAC) or settings.authentication == Authentication.HIGH_ECDSA:
             if len(cipher.systemTitle) != 8:
                 raise ValueError("SystemTitle")
             #  Add calling-AP-title
-            data.setUInt8((BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AP_TITLE.value))
+            data.setUInt8((BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AP_TITLE))
             #  LEN
             data.setUInt8(2 + len(cipher.systemTitle))
-            data.setUInt8(BerType.OCTET_STRING.value)
+            data.setUInt8(BerType.OCTET_STRING)
             #  LEN
             data.setUInt8(len(cipher.systemTitle))
             data.set(cipher.systemTitle)
         #  Add CallingAEInvocationId.
         if not settings.isServer and settings.userId != -1:
-            data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AE_INVOCATION_ID.value)
+            data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AE_INVOCATION_ID)
             #  LEN
             data.setUInt8(3)
-            data.setUInt8(BerType.INTEGER.value)
+            data.setUInt8(BerType.INTEGER)
             #  LEN
             data.setUInt8(1)
             data.setUInt8(settings.userId)
@@ -218,12 +220,12 @@ class _GXAPDU:
     #
     @classmethod
     def generateUserInformation(cls, settings, cipher, encryptedData, data):
-        data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.USER_INFORMATION.value)
+        data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.USER_INFORMATION)
         if not cipher or not cipher.isCiphered():
             #  Length for AARQ user field
             data.setUInt8(0x10)
             #  Coding the choice for user-information (Octet STRING, universal)
-            data.setUInt8(BerType.OCTET_STRING.value)
+            data.setUInt8(BerType.OCTET_STRING)
             #  Length
             data.setUInt8(0)
             offset = len(data)
@@ -234,7 +236,7 @@ class _GXAPDU:
                 #  Length for AARQ user field
                 data.setUInt8(int((4 + len(encryptedData))))
                 #  Tag
-                data.setUInt8(BerType.OCTET_STRING.value)
+                data.setUInt8(BerType.OCTET_STRING)
                 data.setUInt8(int((2 + len(encryptedData))))
                 #  Coding the choice for user-information (Octet STRING,
                 #  universal)
@@ -255,7 +257,7 @@ class _GXAPDU:
                 data.setUInt8(2 + len(crypted))
                 #  Coding the choice for user-information (Octet string,
                 #  universal)
-                data.setUInt8(BerType.OCTET_STRING.value)
+                data.setUInt8(BerType.OCTET_STRING)
                 data.setUInt8(len(crypted))
                 data.set(crypted)
 
@@ -265,14 +267,14 @@ class _GXAPDU:
     @classmethod
     def generateAarq(cls, settings, cipher, encryptedData, data):
         #  AARQ APDU Tag
-        data.setUInt8(BerType.APPLICATION.value | BerType.CONSTRUCTED.value)
+        data.setUInt8(BerType.APPLICATION | BerType.CONSTRUCTED)
         #  Length is updated later.
         offset = len(data)
         data.setUInt8(0)
         # /////////////////////////////////////////
         #  Add Application context name.
         cls.generateApplicationContextName(settings, data, cipher)
-        cls.getAuthenticationString(settings, data)
+        cls.getAuthenticationString(settings, data, encryptedData)
         cls.generateUserInformation(settings, cipher, encryptedData, data)
         data.setUInt8((len(data) - offset - 1), offset)
 
@@ -426,7 +428,7 @@ class _GXAPDU:
         bb.set(tmp)
         v = bb.getInt32()
         if settings.isServer:
-            settings.negotiatedConformance = v & settings.proposedConformance.value
+            settings.negotiatedConformance = v & settings.proposedConformance
             if xml:
                 xml.appendStartTag(TranslatorGeneralTags.PROPOSED_CONFORMANCE)
                 cls.getConformance(v, xml)
@@ -453,7 +455,7 @@ class _GXAPDU:
         else:
             pdu = data.getUInt16()
             if xml is None and pdu < 64:
-                raise GXDLMSConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.PDU_SIZE.value)
+                raise GXDLMSConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.PDU_SIZE)
             #  Max PDU size.
             settings.maxPduSize = pdu
             if xml:
@@ -566,26 +568,34 @@ class _GXAPDU:
             settings.cipher.setSecurity(Security.NONE)
         #  Object ID length.
         len_ = buff.getUInt8()
+        tmp = bytearray(len_)
+        buff.get(tmp)
+        if tmp[0] != 0x60 or tmp[1] != 0x85 or tmp[2] != 0x74 or tmp[3] != 0x5 or tmp[4] != 0x8 or tmp[5] != 0x1:
+            if xml:
+                xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "UNKNOWN")
+                return True
+            raise Exception("Encoding failed. Invalid Application context name.");
+        name = tmp[6];
         if xml:
-            if buff.compare(cls._LOGICAL_NAME_OBJECT_ID):
+            if name == 1:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "LN")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "1")
                 settings.setUseLogicalNameReferencing(True)
-            elif buff.compare(cls._LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING):
+            elif name == 3:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "LN_WITH_CIPHERING")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "3")
                 settings.setUseLogicalNameReferencing(True)
-            elif buff.compare(cls._SHORT_NAME_OBJECT_ID):
+            elif name == 2:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "SN")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "2")
                 settings.setUseLogicalNameReferencing(False)
-            elif buff.compare(cls._SHORT_NAME_OBJECT_ID_WITH_CIPHERING):
+            elif name == 4:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "SN_WITH_CIPHERING")
                 else:
@@ -595,23 +605,23 @@ class _GXAPDU:
                 return False
             return True
         if settings.getUseLogicalNameReferencing():
-            if buff.compare(cls._LOGICAL_NAME_OBJECT_ID):
+            if name == 1:
                 return True
             #  If ciphering is used.
-            return buff.compare(cls._LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING)
-        if buff.compare(cls._SHORT_NAME_OBJECT_ID):
+            return name == 3
+        if name == 2:
             return True
         #  If ciphering is used.
-        return buff.compare(cls._SHORT_NAME_OBJECT_ID_WITH_CIPHERING)
+        return name == 4
 
     @classmethod
     def validateAare(cls, settings, buff):
         tag = buff.getUInt8()
         if settings.isServer:
-            if tag != (BerType.APPLICATION.value | BerType.CONSTRUCTED.value | PduType.PROTOCOL_VERSION.value):
+            if tag != (BerType.APPLICATION | BerType.CONSTRUCTED | PduType.PROTOCOL_VERSION):
                 raise ValueError("Invalid tag.")
         else:
-            if tag != (BerType.APPLICATION.value | BerType.CONSTRUCTED.value | PduType.APPLICATION_CONTEXT_NAME.value):
+            if tag != (BerType.APPLICATION | BerType.CONSTRUCTED | PduType.APPLICATION_CONTEXT_NAME):
                 raise ValueError("Invalid tag.")
 
     #
@@ -664,17 +674,17 @@ class _GXAPDU:
         tag = 0
         while buff.position < len(buff):
             tag = buff.getUInt8()
-            if tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.APPLICATION_CONTEXT_NAME.value:
+            if tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.APPLICATION_CONTEXT_NAME:
                 if not cls.parseApplicationContextName(settings, buff, xml):
                     raise GXDLMSException(AssociationResult.PERMANENT_REJECTED, SourceDiagnostic.NOT_SUPPORTED)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLED_AP_TITLE.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AP_TITLE:
                 #  0xA2
                 #  Get length.
                 if buff.getUInt8() != 3:
                     raise ValueError("Invalid tag.")
                 if settings.isServer:
                     #  Choice for result (INTEGER, universal)
-                    if buff.getUInt8() != BerType.OCTET_STRING.value:
+                    if buff.getUInt8() != BerType.OCTET_STRING:
                         raise ValueError("Invalid tag.")
                     len_ = buff.getUInt8()
                     tmp = bytearray(len_)
@@ -689,24 +699,24 @@ class _GXAPDU:
                         xml.appendLine(TranslatorTags.CALLED_AP_TITLE, "Value", GXByteBuffer.hex(tmp, False))
                 else:
                     #  Choice for result (INTEGER, universal)
-                    if buff.getUInt8() != BerType.INTEGER.value:
+                    if buff.getUInt8() != BerType.INTEGER:
                         raise ValueError("Invalid tag.")
                     #  Get length.
                     if buff.getUInt8() != 1:
                         raise ValueError("Invalid tag.")
-                    resultComponent = AssociationResult(buff.getUInt8())
+                    resultComponent = buff.getUInt8()
                     if xml:
                         if resultComponent != AssociationResult.ACCEPTED:
                             xml.appendComment(resultComponent.__str__())
-                        xml.appendLine(TranslatorGeneralTags.ASSOCIATION_RESULT, "Value", xml.integerToHex(resultComponent.value, 2))
+                        xml.appendLine(TranslatorGeneralTags.ASSOCIATION_RESULT, "Value", xml.integerToHex(resultComponent, 2))
                         xml.appendStartTag(TranslatorGeneralTags.RESULT_SOURCE_DIAGNOSTIC)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLED_AE_QUALIFIER.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AE_QUALIFIER:
                 #  0xA3
                 resultDiagnosticValue = _GXAPDU.parseSourceDiagnostic(settings, buff, xml)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLED_AP_INVOCATION_ID.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AP_INVOCATION_ID:
                 #  0xA4
                 _GXAPDU.parseResult(settings, buff, xml)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AP_TITLE.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AP_TITLE:
                 #  0xA6
                 len_ = buff.getUInt8()
                 tag = buff.getUInt8()
@@ -719,7 +729,7 @@ class _GXAPDU:
                     if xml is None:
                         raise ex
                 _GXAPDU.appendClientSystemTitleToXml(settings, xml)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.SENDER_ACSE_REQUIREMENTS.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.SENDER_ACSE_REQUIREMENTS:
                 #  0xAA
                 len_ = buff.getUInt8()
                 tag = buff.getUInt8()
@@ -728,7 +738,7 @@ class _GXAPDU:
                 buff.get(tmp)
                 settings.setStoCChallenge(tmp)
                 _GXAPDU.appendServerSystemTitleToXml(settings, xml, tag)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AE_INVOCATION_ID.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AE_INVOCATION_ID:
                 #  0xA9
                 len_ = buff.getUInt8()
                 tag = buff.getUInt8()
@@ -737,7 +747,7 @@ class _GXAPDU:
                 if xml:
                     #  CallingAPTitle
                     xml.appendLine(TranslatorGeneralTags.CALLING_AE_INVOCATION_ID, "Value", xml.integerToHex(settings.userId, 2))
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLED_AE_INVOCATION_ID.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AE_INVOCATION_ID:
                 #  0xA5
                 len_ = buff.getUInt8()
                 tag = buff.getUInt8()
@@ -746,7 +756,7 @@ class _GXAPDU:
                 if xml:
                     #  CallingAPTitle
                     xml.appendLine(TranslatorGeneralTags.CALLED_AE_INVOCATION_ID, "Value", xml.integerToHex(settings.getUserId(), 2))
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | 7:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | 7:
                 #  0xA7
                 len_ = buff.getUInt8()
                 tag = buff.getUInt8()
@@ -755,7 +765,7 @@ class _GXAPDU:
                 if xml:
                     #  CallingAPTitle
                     xml.appendLine(TranslatorGeneralTags.RESPONDING_AE_INVOCATION_ID, "Value", xml.integerToHex(settings.userId, 2))
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AP_INVOCATION_ID.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AP_INVOCATION_ID:
                 #  0xA8
                 if buff.getUInt8() != 3:
                     raise ValueError("Invalid tag.")
@@ -768,19 +778,19 @@ class _GXAPDU:
                 if xml:
                     #  CallingApInvocationId
                     xml.appendLine(TranslatorTags.CALLING_AP_INVOCATION_ID, "Value", xml.integerToHex(len_, 2))
-            elif tag in (BerType.CONTEXT.value | PduType.SENDER_ACSE_REQUIREMENTS.value, BerType.CONTEXT.value | PduType.CALLING_AP_INVOCATION_ID.value):
+            elif tag in (BerType.CONTEXT | PduType.SENDER_ACSE_REQUIREMENTS, BerType.CONTEXT | PduType.CALLING_AP_INVOCATION_ID):
                 #  0x88
                 #  Get sender ACSE-requirements field component.
                 if buff.getUInt8() != 2:
                     raise ValueError("Invalid tag.")
-                if buff.getUInt8() != BerType.OBJECT_DESCRIPTOR.value:
+                if buff.getUInt8() != BerType.OBJECT_DESCRIPTOR:
                     raise ValueError("Invalid tag.")
                 #  Get only value because client application is
                 #  sending system title with LOW authentication.
                 buff.getUInt8()
                 if xml:
                     xml.appendLine(tag, "Value", "1")
-            elif tag in (BerType.CONTEXT.value | PduType.MECHANISM_NAME.value, BerType.CONTEXT.value | PduType.CALLING_AE_INVOCATION_ID.value):
+            elif tag in (BerType.CONTEXT | PduType.MECHANISM_NAME, BerType.CONTEXT | PduType.CALLING_AE_INVOCATION_ID):
                 #  0x89
                 _GXAPDU.updateAuthentication(settings, buff)
                 if xml:
@@ -788,11 +798,11 @@ class _GXAPDU:
                         str_ = settings.authentication.name[0] + settings.authentication.name[1:].lower()
                         xml.appendLine(tag, "Value", str_)
                     else:
-                        xml.appendLine(tag, "Value", str(settings.authentication.value))
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLING_AUTHENTICATION_VALUE.value:
+                        xml.appendLine(tag, "Value", str(settings.authentication))
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AUTHENTICATION_VALUE:
                 #  0xAC
                 _GXAPDU.updatePassword(settings, buff, xml)
-            elif tag == BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.USER_INFORMATION.value:
+            elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.USER_INFORMATION:
                 #  0xBE
                 #  Check result component.  Some meters are returning invalid
                 #  user-information if connection failed.
@@ -803,7 +813,7 @@ class _GXAPDU:
                 except Exception:
                     if xml is None:
                         raise GXDLMSException(AssociationResult.PERMANENT_REJECTED, SourceDiagnostic.NO_REASON_GIVEN)
-            elif tag == BerType.CONTEXT.value:
+            elif tag == BerType.CONTEXT:
                 #  0x80
                 cls.parseProtocolVersion(settings, buff, xml)
             else:
@@ -839,7 +849,7 @@ class _GXAPDU:
             if buff.getUInt8() != 0xA:
                 raise ValueError("Invalid tag.")
             #  Choice for result (Universal, Octet string type)
-            if buff.getUInt8() != BerType.OCTET_STRING.value:
+            if buff.getUInt8() != BerType.OCTET_STRING:
                 raise ValueError("Invalid tag.")
             #  responding-AP-title-field
             #  Get length.
@@ -865,16 +875,16 @@ class _GXAPDU:
         else:
             #  Result source diagnostic component.
             tag = buff.getUInt8()
-            if tag != BerType.INTEGER.value:
+            if tag != BerType.INTEGER:
                 raise ValueError("Invalid tag.")
             len_ = buff.getUInt8()
             if len_ != 1:
                 raise ValueError("Invalid tag.")
-            resultDiagnosticValue = SourceDiagnostic(buff.getUInt8())
+            resultDiagnosticValue = buff.getUInt8()
             if xml:
                 if resultDiagnosticValue != SourceDiagnostic.NONE:
                     xml.appendComment(resultDiagnosticValue.__str__())
-                xml.appendLine(TranslatorGeneralTags.ACSE_SERVICE_USER, "Value", xml.integerToHex(resultDiagnosticValue.value, 2))
+                xml.appendLine(TranslatorGeneralTags.ACSE_SERVICE_USER, "Value", xml.integerToHex(resultDiagnosticValue, 2))
                 xml.appendEndTag(TranslatorGeneralTags.RESULT_SOURCE_DIAGNOSTIC)
         return resultDiagnosticValue
 
@@ -968,7 +978,7 @@ class _GXAPDU:
         #  encoding the number of unused bits in the bit string
         data.setUInt8(0x00)
         bb = GXByteBuffer(4)
-        bb.setUInt32(settings.negotiatedConformance.value)
+        bb.setUInt32(settings.negotiatedConformance)
         data.set(bb.subArray(1, 3))
         data.setUInt16(settings.getMaxPduSize())
         #  VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
@@ -988,12 +998,12 @@ class _GXAPDU:
     def generateAARE(cls, settings, data, result, diagnostic, cipher, errorData, encryptedData):
         offset = len(data)
         #  Set AARE tag and length 0x61
-        data.setUInt8(BerType.APPLICATION | BerType.CONSTRUCTED.value | PduType.APPLICATION_CONTEXT_NAME)
+        data.setUInt8(BerType.APPLICATION | BerType.CONSTRUCTED | PduType.APPLICATION_CONTEXT_NAME)
         #  Length is updated later.
         data.setUInt8(0)
         cls.generateApplicationContextName(settings, data, cipher)
         #  Result 0xA2
-        data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | BerType.INTEGER)
+        data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | BerType.INTEGER)
         data.setUInt8(3)
         #  len
         data.setUInt8(BerType.INTEGER)
@@ -1001,7 +1011,7 @@ class _GXAPDU:
         #  Choice for result (INTEGER, universal)
         data.setUInt8(1)
         #  Len
-        data.setUInt8(result.value)
+        data.setUInt8(result)
         #  ResultValue
         #  SourceDiagnostic
         data.setUInt8(0xA3)
@@ -1017,24 +1027,24 @@ class _GXAPDU:
         data.setUInt8(1)
         #  Len
         #  diagnostic
-        data.setUInt8(diagnostic.value)
+        data.setUInt8(diagnostic)
         #  SystemTitle
         if cipher and (settings.authentication == Authentication.HIGH_GMAC or cipher.isCiphered()):
-            data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLED_AP_INVOCATION_ID)
+            data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AP_INVOCATION_ID)
             data.setUInt8((len(cipher.systemTitle)))
             data.setUInt8(BerType.OCTET_STRING)
             data.setUInt8()
             data.set(cipher.systemTitle)
         #  Add CalledAEInvocationId.
         if settings.getUserId() != -1:
-            data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.CALLED_AE_INVOCATION_ID)
+            data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AE_INVOCATION_ID)
             #  LEN
             data.setUInt8(3)
             data.setUInt8(BerType.INTEGER)
             #  LEN
             data.setUInt8(1)
             data.setUInt8(settings.userId)
-        if settings.authentication.value > Authentication.LOW.value:
+        if settings.authentication > Authentication.LOW:
             #  Add server ACSE-requirenents field component.
             data.setUInt8(0x88)
             data.setUInt8(0x02)
@@ -1050,7 +1060,7 @@ class _GXAPDU:
             data.setUInt8(0x05)
             data.setUInt8(0x08)
             data.setUInt8(0x02)
-            data.setUInt8(settings.authentication.value)
+            data.setUInt8(settings.authentication)
             #  Add tag.
             data.setUInt8(0xAA)
             data.setUInt8((len(settings.stoCChallenge)))
@@ -1061,7 +1071,7 @@ class _GXAPDU:
         if result == AssociationResult.ACCEPTED or not cipher or cipher.security == Security.NONE:
             #  Add User Information
             #  Tag 0xBE
-            data.setUInt8(BerType.CONTEXT.value | BerType.CONSTRUCTED.value | PduType.USER_INFORMATION)
+            data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.USER_INFORMATION)
             if encryptedData:
                 tmp2 = GXByteBuffer(2 + len(encryptedData))
                 tmp2.setUInt8(Command.GLO_INITIATE_RESPONSE)

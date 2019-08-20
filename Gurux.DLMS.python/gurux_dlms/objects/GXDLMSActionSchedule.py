@@ -194,7 +194,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         if self.target:
-            writer.writeElementString("ObjectType", self.target.objectType.value)
+            writer.writeElementString("ObjectType", self.target.objectType)
             writer.writeElementString("LN", self.target.logicalName)
         writer.writeElementString("ExecutedScriptSelector", self.executedScriptSelector)
         writer.writeElementString("Type", self.type_.value)

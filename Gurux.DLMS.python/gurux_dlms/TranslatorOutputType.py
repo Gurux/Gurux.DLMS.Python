@@ -31,11 +31,15 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from enum import Enum
-#
-#  * Enumerates Translator output types.
-#
-class TranslatorOutputType(Enum):
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+    __base = IntEnum
+except Exception:
+    __base = object
+
+class TranslatorOutputType(__base):
+    """Enumerates Translator output types."""
     #pylint: disable=too-few-public-methods
     SIMPLE_XML = 0
     STANDARD_XML = 1

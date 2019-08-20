@@ -175,12 +175,12 @@ class GXDLMSSettings:
         if frame_ == 0x13:
             return True
         #  If U frame.
-        if (frame_ & HdlcFrameType.U_FRAME.value) == HdlcFrameType.U_FRAME.value:
+        if (frame_ & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
             if frame_ in (0x73, 0x93):
                 self.resetFrameSequence()
                 return True
         #  If S -frame.
-        if (frame_ & HdlcFrameType.S_FRAME.value) == HdlcFrameType.S_FRAME.value:
+        if (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
             self.receiverFrame = self.increaseReceiverSequence(self.receiverFrame)
             return True
         #  Handle I-frame.

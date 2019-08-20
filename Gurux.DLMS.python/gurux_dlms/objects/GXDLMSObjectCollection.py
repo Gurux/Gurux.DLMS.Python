@@ -59,21 +59,12 @@ class GXDLMSObjectCollection(list):
         item.parent = self
 
     def getObjects(self, type_):
-        if isinstance(type_, ObjectType):
+        if isinstance(type_, (int, ObjectType)):
             type_ = [type_]
         items = GXDLMSObjectCollection()
         for it in self:
             if it.objectType in type_:
                 items.append(it)
-        return items
-
-    def getObjects_(self, types):
-        items = GXDLMSObjectCollection()
-        for it in self:
-            for type_ in types:
-                if type_ == it.objectType:
-                    items.append(it)
-                    break
         return items
 
     def findByLN(self, type_, ln):

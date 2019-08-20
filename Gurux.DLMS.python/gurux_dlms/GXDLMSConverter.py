@@ -102,7 +102,7 @@ class GXDLMSConverter:
                 elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.2.255", ln):
                     code_.dataType = "26"
             if not code_.dataType == "*" and not code_.dataType == "" and "," not in code_.dataType:
-                type_ = DataType(int(code_.dataType))
+                type_ = code_.dataType
                 it.uiDataType = 2, type_
         else:
             print("Unknown OBIS Code: " + it.logicalName + " Type: " + it.objectType)
@@ -146,7 +146,7 @@ class GXDLMSConverter:
         if standard != Standard.DLMS:
             for it in cls.__getObjects(standard):
                 tmp = GXStandardObisCode(None)
-                tmp.interfaces = str(it.objectType.value)
+                tmp.interfaces = str(it.objectType)
                 tmp.OBIS = it.logicalName.split('.')
                 tmp.description = it.description
                 codes.append(tmp)
@@ -158,8 +158,11 @@ class GXDLMSConverter:
             if it != "":
                 items = it.split(';')
                 obis = items[0].split('.')
-                code_ = GXStandardObisCode(obis, str(items[3]) + "; " + str(items[4]) + "; " + str(items[5]) + "; " + str(items[6]) + "; " + str(items[7]), str(items[1]), str(items[2]))
-                codes.append(code_)
+                try:
+                    code_ = GXStandardObisCode(obis, str(items[3]) + "; " + str(items[4]) + "; " + str(items[5]) + "; " + str(items[6]) + "; " + str(items[7]), str(items[1]), str(items[2]))
+                    codes.append(code_)
+                except UnicodeEncodeError:
+                    pass
 
     @classmethod
     def changeType(cls, value, type_):

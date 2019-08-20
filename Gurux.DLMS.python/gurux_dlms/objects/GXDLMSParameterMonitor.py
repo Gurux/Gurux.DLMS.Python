@@ -80,7 +80,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
         bb = GXByteBuffer()
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
-        _GXCommon.setData(bb, DataType.UINT16, entry.target.objectType.value)
+        _GXCommon.setData(bb, DataType.UINT16, entry.target.objectType)
         _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
         _GXCommon.setData(bb, DataType.INT8, entry.attributeIndex)
         return client.method(self, 1, bb.array(), DataType.ARRAY)
@@ -172,7 +172,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(data, DataType.INT8, 1)
                 _GXCommon.setData(data, DataType.NONE, None)
             else:
-                _GXCommon.setData(data, DataType.UINT16, self.changedParameter.target.objectType.value)
+                _GXCommon.setData(data, DataType.UINT16, self.changedParameter.target.objectType)
                 _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.changedParameter.target.logicalName))
                 _GXCommon.setData(data, DataType.INT8, self.changedParameter.attributeIndex)
                 _GXCommon.setData(data, _GXCommon.getDLMSDataType(self.changedParameter.value), self.changedParameter.value)
@@ -189,7 +189,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
                 for it in self.parameters:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.UINT16, it.target.objectType.value)
+                    _GXCommon.setData(data, DataType.UINT16, it.target.objectType)
                     _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.target.logicalName))
                     _GXCommon.setData(data, DataType.INT8, it.attributeIndex)
             ret = data
@@ -273,7 +273,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         if self.changedParameter and self.changedParameter.target:
             writer.writeStartElement("ChangedParameter")
-            writer.writeElementString("Type", self.changedParameter.target.objectType.value)
+            writer.writeElementString("Type", self.changedParameter.target.objectType)
             writer.writeElementString("LN", self.changedParameter.target.logicalName)
             writer.writeElementString("Index", self.changedParameter.attributeIndex)
             writer.writeElementObject("Value", self.changedParameter.value)
@@ -284,7 +284,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("Parameters")
             for it in self.parameters:
                 writer.writeStartElement("Item")
-                writer.writeElementString("Type", it.target.objectType.value)
+                writer.writeElementString("Type", it.target.objectType)
                 writer.writeElementString("LN", it.target.logicalName)
                 writer.writeElementString("Index", it.attributeIndex)
                 writer.writeEndElement()

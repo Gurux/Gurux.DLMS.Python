@@ -33,7 +33,12 @@
 # ---------------------------------------------------------------------------
 
 import xml.etree.cElementTree as ET
-from enum import Enum
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+except Exception:
+    pass
+
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..GXDLMSConverter import GXDLMSConverter

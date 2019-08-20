@@ -175,7 +175,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(4)
                     _GXCommon.setData(bb, DataType.INT16, it.shortName)
-                    _GXCommon.setData(bb, DataType.UINT16, it.objectType.value)
+                    _GXCommon.setData(bb, DataType.UINT16, it.objectType)
                     _GXCommon.setData(bb, DataType.UINT8, 0)
                     _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
                     settings.index = settings.index + 1

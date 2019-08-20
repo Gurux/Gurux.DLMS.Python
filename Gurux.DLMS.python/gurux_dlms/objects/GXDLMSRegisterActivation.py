@@ -127,7 +127,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
                 for it in self.registerAssignment:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(2)
-                    _GXCommon.setData(data, DataType.UINT16, it.objectType.value)
+                    _GXCommon.setData(data, DataType.UINT16, it.objectType)
                     _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
             return data
         if e.index == 3:

@@ -475,7 +475,7 @@ class GXDLMSClient(object):
         else:
             self.settings.setInvokeID(1)
         #  If authentication or ciphering is used.
-        if self.authentication.value > Authentication.LOW.value:
+        if self.authentication > Authentication.LOW:
             self.settings.ctoSChallenge = GXSecure.generateChallenge()
         else:
             self.settings.setCtoSChallenge(None)
@@ -611,7 +611,7 @@ class GXDLMSClient(object):
 
     @classmethod
     def __createDLMSObject(cls, classID, version, baseName, ln, accessRights):
-        type_ = ObjectType(classID)
+        type_ = classID
         obj = cls.createObject(type_)
         cls.__updateObjectData(obj, type_, version, baseName, ln, accessRights)
         return obj
@@ -653,7 +653,7 @@ class GXDLMSClient(object):
             for attributeAccess in accessRights[0]:
                 id_ = attributeAccess[0]
                 if id_ > 0:
-                    mode = AccessMode(attributeAccess[1])
+                    mode = attributeAccess[1]
                     obj.setAccess(id_, mode)
             for methodAccess in accessRights[1]:
                 id_ = methodAccess[0]
@@ -665,7 +665,7 @@ class GXDLMSClient(object):
                         tmp = 0
                 else:
                     tmp = methodAccess[1]
-                obj.setMethodAccess(id_, MethodAccessMode(tmp))
+                obj.setMethodAccess(id_, tmp)
         if baseName is not None:
             obj.shortName = baseName
         if version is not None:
@@ -771,7 +771,7 @@ class GXDLMSClient(object):
         attributeDescriptor = GXByteBuffer()
         _GXCommon.setData(data, type_, value)
         if self.useLogicalNameReferencing:
-            attributeDescriptor.setUInt16(objectType.value)
+            attributeDescriptor.setUInt16(objectType)
             attributeDescriptor.set(_GXCommon.logicalNameToBytes(str(name)))
             attributeDescriptor.setUInt8(int(methodIndex))
             if type_ == DataType.NONE:
@@ -829,7 +829,7 @@ class GXDLMSClient(object):
         attributeDescriptor = GXByteBuffer()
         _GXCommon.setData(data, type_, value)
         if self.useLogicalNameReferencing:
-            attributeDescriptor.setUInt16(objectType.value)
+            attributeDescriptor.setUInt16(objectType)
             attributeDescriptor.set(_GXCommon.logicalNameToBytes(str(name)))
             attributeDescriptor.setUInt8(index)
             attributeDescriptor.setUInt8(0)
@@ -858,7 +858,7 @@ class GXDLMSClient(object):
         if self.useLogicalNameReferencing:
             bb.setUInt8(len(list_))
             for it in list_:
-                bb.setUInt16(it.target.objectType.value)
+                bb.setUInt16(it.target.objectType)
                 bb.set(_GXCommon.logicalNameToBytes(it.target.logicalName))
                 bb.setUInt8(it.index)
                 bb.setUInt8(0)
@@ -896,7 +896,7 @@ class GXDLMSClient(object):
         if self.autoIncreaseInvokeID:
             self.settings.setInvokeID(int(((self.settings.invokeId + 1) & 0xF)))
         if self.useLogicalNameReferencing:
-            attributeDescriptor.setUInt16(objectType.value)
+            attributeDescriptor.setUInt16(objectType)
             attributeDescriptor.set(_GXCommon.logicalNameToBytes(str(name)))
             attributeDescriptor.setUInt8(attributeOrdinal)
             if not data:
@@ -937,7 +937,7 @@ class GXDLMSClient(object):
                 count = 10
             _GXCommon.setObjectCount(count, data)
             for k, v in list_:
-                data.setUInt16(k.objectType.value)
+                data.setUInt16(k.objectType)
                 data.set(_GXCommon.logicalNameToBytes(k.logicalName))
                 data.setUInt8(v)
                 data.setUInt8(0)
@@ -1025,7 +1025,7 @@ class GXDLMSClient(object):
         buff.setUInt8(0x04)
         buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
-        _GXCommon.setData(buff, DataType.UINT16, sort.objectType.value)
+        _GXCommon.setData(buff, DataType.UINT16, sort.objectType)
         _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
         _GXCommon.setData(buff, DataType.INT8, 2)
         _GXCommon.setData(buff, DataType.UINT16, sort.version)
@@ -1043,7 +1043,7 @@ class GXDLMSClient(object):
             for it in columns:
                 buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(4)
-                _GXCommon.setData(buff, DataType.UINT16, it[0].objectType.value)
+                _GXCommon.setData(buff, DataType.UINT16, it[0].objectType)
                 _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it[0].logicalName))
                 _GXCommon.setData(buff, DataType.INT8, it[1].attributeIndex)
                 _GXCommon.setData(buff, DataType.INT16, it[1].dataIndex)
@@ -1052,7 +1052,7 @@ class GXDLMSClient(object):
     @classmethod
     def createObject(cls, type_):
         from ._GXObjectFactory import _GXObjectFactory
-        return _GXObjectFactory.createObject(ObjectType(type_))
+        return _GXObjectFactory.createObject(type_)
 
     def receiverReady(self, type_):
         return GXDLMS.receiverReady(self.settings, type_)
@@ -1069,7 +1069,7 @@ class GXDLMSClient(object):
             ret = GXDLMS.getData(self.settings, reply, data, notify)
         except Exception as ex:
             if self.translator is None or self.throwExceptions:
-                raise ex
+                raise
             ret = True
         if ret and self.translator and data.moreData == RequestTypes.NONE:
             if data.xml is None:
@@ -1136,7 +1136,7 @@ class GXDLMSClient(object):
         _GXCommon.setObjectCount(len(list_), bb)
         for it in list_:
             bb.setUInt8(it.command)
-            bb.setUInt16(it.target.objectType.value)
+            bb.setUInt16(it.target.objectType)
             items = ".".split(it.target.logicalName)
             if len(items) != 6:
                 raise ValueError("Invalid Logical Name.")

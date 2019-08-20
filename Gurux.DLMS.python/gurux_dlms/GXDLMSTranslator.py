@@ -318,10 +318,10 @@ class GXDLMSTranslator:
             xml.appendComment("SNRM frame.")
         elif frame_ == 0x73:
             xml.appendComment("UA frame.")
-        elif (frame_ & HdlcFrameType.S_FRAME.value) == HdlcFrameType.S_FRAME.value:
+        elif (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
             #  If S -frame.
             xml.appendComment("S frame.")
-        elif (frame_ & 1) == HdlcFrameType.U_FRAME.value:
+        elif (frame_ & 1) == HdlcFrameType.U_FRAME:
             #  Handle U-frame.
             xml.appendComment("U frame.")
         else:
@@ -1028,7 +1028,7 @@ class GXDLMSTranslator:
                     s.attributeDescriptor.setUInt8(1)
                 else:
                     se = TranslatorStandardTags.getServiceError(str_[2:])
-                    s.attributeDescriptor.setUInt8(se.value)
+                    s.attributeDescriptor.setUInt8(se)
                     s.attributeDescriptor.setUInt8(TranslatorStandardTags.getError(se, cls.getValue(node, s)))
             else:
                 if tag != TranslatorTags.SERVICE_ERROR:
@@ -1036,7 +1036,7 @@ class GXDLMSTranslator:
                         s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
                     else:
                         se = TranslatorSimpleTags.getServiceError(str_)
-                        s.attributeDescriptor.setUInt8(se.value)
+                        s.attributeDescriptor.setUInt8(se)
                         s.attributeDescriptor.setUInt8(TranslatorSimpleTags.getError(se, cls.getValue(node, s)))
         else:
             if tag in (Command.GET_REQUEST << 8 | GetCommandType.NORMAL,

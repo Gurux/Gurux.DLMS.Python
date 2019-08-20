@@ -155,7 +155,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             for k, v in self.pushObjectList:
                 buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(4)
-                _GXCommon.setData(buff, DataType.UINT16, k.objectType.value)
+                _GXCommon.setData(buff, DataType.UINT16, k.objectType)
                 _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
                 _GXCommon.setData(buff, DataType.INT8, v.attributeIndex)
                 _GXCommon.setData(buff, DataType.UINT16, v.dataIndex)
@@ -260,7 +260,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("ObjectList")
             for k, v in self.pushObjectList:
                 writer.writeStartElement("Item")
-                writer.writeElementString("ObjectType", k.objectType.value)
+                writer.writeElementString("ObjectType", k.objectType)
                 writer.writeElementString("LN", k.logicalName)
                 writer.writeElementString("AI", v.attributeIndex)
                 writer.writeElementString("DI", v.dataIndex)

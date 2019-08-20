@@ -256,7 +256,7 @@ class GXDLMSNotify(object):
         reply = None
         if self.useLogicalNameReferencing:
             for k, v in list_:
-                buff.setUInt16(k.objectType.value)
+                buff.setUInt16(k.objectType)
                 buff.set(_GXCommon.logicalNameToBytes(k.logicalName))
                 buff.setUInt8(v)
                 self.addData(k, v, buff)
