@@ -815,7 +815,7 @@ class GXDLMSChipperingStream:
         n = len(data) / 8
         if (n * 8) != len(data):
             raise ValueError("Invalid data.")
-        iv = bytes([0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6])
+        iv = bytearray([0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6])
         block = bytearray(len(data) + len(iv))
         buf = bytearray(8 + len(iv))
         block[0:len(self.IV)] = self.IV[0:len(self.IV)]
@@ -844,7 +844,7 @@ class GXDLMSChipperingStream:
         n = len(input_) / 8
         if (n * 8) != len(input_):
             raise ValueError("Invalid data.")
-        iv = bytes([0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6])
+        iv = bytearray([0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6])
         if len(input_) > len(iv):
             block = bytearray(len(input_) - len(iv))
         else:

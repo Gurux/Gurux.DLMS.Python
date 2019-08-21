@@ -32,21 +32,18 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import sys
-import socket
-import locale
-import re
-import calendar
 import traceback
-from gurux_dlms import *
-from gurux_dlms.manufacturersettings import *
-from gurux_dlms.enums import *
-from gurux_dlms.objects import *
+from gurux_common.io import Parity, StopBits, BaudRate
+from gurux_serial import GXSerial
+from gurux_net import GXNet
+from gurux_dlms.enums import ObjectType
 from GXSettings import GXSettings
 from GXDLMSReader import GXDLMSReader
 
-class sampleclient(object):
+#pylint: disable=too-few-public-methods,broad-except
+class sampleclient():
     @classmethod
-    def main(self, args):
+    def main(cls, args):
         # args: the command line arguments
         reader = None
         settings = GXSettings()
@@ -58,24 +55,22 @@ class sampleclient(object):
                 return
             # //////////////////////////////////////
             #  Initialize connection settings.
-            # ignore serial for now.
-            # if isinstance(settings.media, serial.Serial):
-            #     if settings.iec:
-            #        with serial.Serial() as settings.media:
-            #         settings.media.baudrate = 300
-            #         settings.media.bytesize = 7
-            #         settings.media.parity = 'E'
-            #         settings.media.stopbits = 1
-            #      else:
-            #         settings.media.baudrate = 9600
-            #         settings.media.bytesize = 8
-            #         settings.media.parity = 'N'
-            #         settings.media.stopbits = 1
-            #if not isinstance(settings.media, GXNet):
-            #    raise Exception("Unknown media type.")
+            if isinstance(settings.media, GXSerial):
+                if settings.iec:
+                    settings.media.baudrate = BaudRate.BAUD_RATE_300
+                    settings.media.bytesize = 7
+                    settings.media.parity = Parity.EVEN
+                    settings.media.stopbits = StopBits.ONE
+                else:
+                    settings.media.baudrate = BaudRate.BAUD_RATE_9600
+                    settings.media.bytesize = 8
+                    settings.media.parity = Parity.NONE
+                    settings.media.stopbits = StopBits.ONE
+            elif not isinstance(settings.media, GXNet):
+                raise Exception("Unknown media type.")
             # //////////////////////////////////////
             reader = GXDLMSReader(settings.client, settings.media, settings.trace)
-            if len(settings.readObjects) != 0:
+            if settings.readObjects:
                 reader.initializeConnection()
                 reader.getAssociationView()
                 for it in settings.readObjects:
@@ -83,13 +78,13 @@ class sampleclient(object):
                     reader.showValue(it.getValue(), val)
             else:
                 reader.readAll()
-        except Exception as ex:
+        except Exception:
             traceback.print_exc()
         finally:
-            if reader != None:
+            if reader:
                 try:
                     reader.close()
-                except Exception as e:
+                except Exception:
                     traceback.print_exc()
             print("Ended. Press any key to continue.")
 

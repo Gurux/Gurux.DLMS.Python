@@ -56,7 +56,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         sn : Short Name of the object.
         """
         GXDLMSObject.__init__(self, ObjectType.ASSOCIATION_SHORT_NAME, ln, sn)
-        self.secret = bytes()
+        self.secret = bytearray()
         self.objectList = GXDLMSObjectCollection(self)
         self.version = 2
         self.securitySetupReference = None

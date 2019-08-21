@@ -66,9 +66,9 @@ class GXStandardObisCodeCollection(list):
         """Check is interface included to standard."""
 
         #  If all interfaces are allowed.
-        if ic == 0 or it.interfaces == "*":
+        if int(ic) == 0 or it.interfaces == "*":
             return True
-        return str(ic) in it.interfaces.split(',')
+        return str(int(ic)) in it.interfaces.split(',')
 
     @classmethod
     def equalsMask(cls, obis, ic):

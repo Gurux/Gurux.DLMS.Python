@@ -681,6 +681,9 @@ class GXDLMSClient(object):
         else:
             objects = self.parseSNObjects(data, onlyKnownObjects)
         self.settings.objects = objects
+
+        c = GXDLMSConverter(self.standard);
+        c.updateOBISCodeInformation(objects);
         return objects
 
     def parseLNObjects(self, buff, onlyKnownObjects):

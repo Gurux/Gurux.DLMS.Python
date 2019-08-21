@@ -58,7 +58,7 @@ class GXDateTime:
             self.value = value.value
             self.skip = value.skip
         elif not value:
-            self.value = datetime.datetime.min
+            self.value = None
         else:
             raise ValueError("Invalid datetime value.")
 
@@ -68,7 +68,7 @@ class GXDateTime:
 
     @classmethod
     def __get_pattern(cls, loading):
-        tm = datetime.datetime(1, 2, 3, 13, 14, 15)
+        tm = datetime.datetime(1900, 2, 3, 13, 14, 15)
         pm = tm.strftime('%p')
         date = tm.strftime('%x')
         for s in date:
@@ -80,14 +80,14 @@ class GXDateTime:
         appendPM = ""
         date = date.replace(" ", sep).replace(" ", "")
         for d in date.split(sep):
-            if not d.isnumeric():
+            if not cls.__isNumeric(d):
                 if d == '' and sep != '.':
                     d = '.'
                 appendPM += d
                 continue
             dp += sep
             tmp = int(d)
-            if tmp == 1:
+            if tmp == 1900:
                 if loading:
                     dp += "%Y"
                 elif len(d) == 2:
@@ -196,7 +196,7 @@ class GXDateTime:
         return format_
 
     def toFormatString(self):
-        if not self.value or self.value == datetime.datetime.min:
+        if not self.value:
             return ""
 
         if self.skip != DateTimeSkips.NONE:
@@ -262,7 +262,7 @@ class GXDateTime:
         return value
 
     def __str__(self):
-        if not self.value or self.value == datetime.datetime.min:
+        if not self.value:
             return ""
         str_ = ""
         if self.skip != DateTimeSkips.NONE:

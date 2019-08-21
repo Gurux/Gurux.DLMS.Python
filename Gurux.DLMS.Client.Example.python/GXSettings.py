@@ -37,7 +37,7 @@ from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity
 from gurux_net.enums import NetworkType
 from gurux_net import GXNet
-from gurux_serial import GXSerial
+from gurux_serial.GXSerial import GXSerial
 from GXCmdParameter import GXCmdParameter
 
 class GXSettings:
@@ -79,6 +79,9 @@ class GXSettings:
         print("GuruxDlmsSample -r SN -c 16 -s 1 -sp COM1 -i")
         print("Read Indian device using serial port connection.")
         print("GuruxDlmsSample -S COM1 -c 16 -s 1 -a Low -P [password]")
+        print("------------------------------------------------------")
+        print("Available serial ports:")
+        print(GXSerial.getPortNames())
 
     # Returns command line parameters.
     #

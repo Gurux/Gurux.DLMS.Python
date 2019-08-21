@@ -32,14 +32,16 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import datetime
+import time
 import traceback
 from gurux_common.enums import TraceLevel
-from gurux_common import ReceiveParameters
+from gurux_common.io import Parity, StopBits
+from gurux_common import ReceiveParameters, GXCommon
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
-from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType
-from gurux_dlms.GXDLMSConverter import GXDLMSConverter
+from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security
 from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric
 from gurux_net import GXNet
+from gurux_serial import GXSerial
 
 class GXDLMSReader:
     def __init__(self, client, media, trace):
@@ -61,7 +63,11 @@ class GXDLMSReader:
             print("DisconnectRequest")
             reply = GXReplyData()
             try:
-                self.readDataBlock(self.client.releaseRequest(), reply)
+                #Release is call only for secured connections.
+                #All meters are not supporting Release and it's causing problems.
+                if self.client.InterfaceType == InterfaceType.WRAPPER or\
+                    (self.client.InterfaceType == InterfaceType.HDLC and self.client.Ciphering.Security != Security.NONE):
+                    self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception:
                 pass
                 #  All meters don't support release.
@@ -141,7 +147,7 @@ class GXDLMSReader:
                 pos += 1
             except Exception as e:
                 self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.ERROR)
-                raise
+                raise e
             self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.VERBOSE)
             if reply.error != 0:
                 raise GXDLMSException(reply.error)
@@ -163,6 +169,74 @@ class GXDLMSReader:
 
     def initializeConnection(self):
         self.media.open()
+        if self.iec and isinstance(self.media, GXSerial):
+            p = ReceiveParameters()
+            p.allData = False
+            p.eop = '\n'
+            p.waitTime = self.waitTime
+            with self.media.getSynchronous():
+                data = "/?!\r\n"
+                self.writeTrace("TX: " + self.now() + "\t" + data, TraceLevel.VERBOSE)
+                self.media.send(data)
+                if not self.media.receive(p):
+                    raise Exception("Failed to received reply from the media.")
+
+                self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
+                #If echo is used.
+                replyStr = str(p.reply)
+                if data == replyStr:
+                    p.reply = None
+                    if not self.media.receive(p):
+                        raise Exception("Failed to received reply from the media.")
+                    self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
+                    replyStr = str(p.reply)
+
+            if not replyStr or replyStr[0] != '/':
+                raise Exception("Invalid responce : " + replyStr)
+            baudrate = replyStr[4]
+            if baudrate == '0':
+                bitrate = 300
+            elif baudrate == '1':
+                bitrate = 600
+            elif baudrate == '2':
+                bitrate = 1200
+            elif baudrate == '3':
+                bitrate = 2400
+            elif baudrate == '4':
+                bitrate = 4800
+            elif baudrate == '5':
+                bitrate = 9600
+            elif baudrate == '6':
+                bitrate = 19200
+            else:
+                raise Exception("Unknown baud rate.")
+
+            print("Bitrate is : " + bitrate)
+            #Send ACK
+            #Send Protocol control character
+            controlCharacter = '2'.encode()
+            #"2" HDLC protocol procedure (Mode E)
+            #Mode control character
+            #"2" //(HDLC protocol procedure) (Binary mode)
+            modeControlCharacter = '2'.encode()
+            #Set mode E.
+            tmp = bytearray([0x06, controlCharacter, baudrate, modeControlCharacter, 13, 10])
+            p.reply = None
+            with self.media.getSynchronous():
+                self.media.send(tmp)
+                self.writeTrace("TX: " + self.now() + "\t" + GXCommon.toHex(tmp), TraceLevel.VERBOSE)
+                p.waitTime = 200
+                if self.media.receive(p):
+                    self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
+                self.media.close()
+                self.media.dataBits = 8
+                self.media.parity = Parity.NONE
+                self.media.stopBits = StopBits.ONE
+                self.media.baudRate = bitrate
+                self.media.open()
+                #This sleep make sure that all meters can be read.
+                time.sleep(1000)
+
         reply = GXReplyData()
         data = self.client.snrmRequest()
         if data:
@@ -258,7 +332,7 @@ class GXDLMSReader:
                 self.read(pg, 3)
                 if self.trace > TraceLevel.WARNING:
                     sb = ""
-                    for k, v in pg.captureObjects:
+                    for k, _ in pg.captureObjects:
                         if sb:
                             sb += " | "
                         sb += str(k.name)
@@ -347,9 +421,7 @@ class GXDLMSReader:
     def getAssociationView(self):
         reply = GXReplyData()
         self.readDataBlock(self.client.getObjectsRequest(), reply)
-        objects = self.client.parseObjects(reply.data, True)
-        converter = GXDLMSConverter()
-        converter.updateOBISCodeInformation(objects)
+        self.client.parseObjects(reply.data, True)
 
     def readAll(self):
         try:
