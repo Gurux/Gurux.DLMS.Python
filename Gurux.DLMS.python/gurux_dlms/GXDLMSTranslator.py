@@ -77,7 +77,6 @@ from .ActionResponseType import ActionResponseType
 from .enums.Authentication import Authentication
 from .enums.AssociationResult import AssociationResult
 from .enums.SourceDiagnostic import SourceDiagnostic
-from .enums.Conformance import Conformance
 from .AesGcmParameter import AesGcmParameter
 from .GXDLMSException import GXDLMSException
 
@@ -889,7 +888,7 @@ class GXDLMSTranslator:
                 list_ = s.settings.negotiatedConformance
             else:
                 list_ = s.settings.proposedConformance
-            list_.clear()
+            list_ = []
             if s.outputType == TranslatorOutputType.STANDARD_XML:
                 nodes = node.getFirstChild().getNodeValue()
                 for it in nodes.split(" "):

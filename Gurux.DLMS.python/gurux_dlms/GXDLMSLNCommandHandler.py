@@ -622,7 +622,7 @@ class GXDLMSLNCommandHandler:
             info = _GXDataInfo()
             parameters = _GXCommon.getData(data, info)
         obj = settings.objects.findByLN(ot, _GXCommon.toLogicalName(ln))
-        if not settings.acceptConnection() and (ci != ObjectType.ASSOCIATION_LOGICAL_NAME.value or id_ != 1):
+        if not settings.acceptConnection() and (ci != ObjectType.ASSOCIATION_LOGICAL_NAME or id_ != 1):
             replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
             return
         if obj is None:

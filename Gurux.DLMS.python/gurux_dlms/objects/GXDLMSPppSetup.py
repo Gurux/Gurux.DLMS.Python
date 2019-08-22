@@ -121,7 +121,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             return DataType.ARRAY
         if index == 5:
             if not self.userName:
-                return DataType.NONE;
+                return DataType.NONE
             return DataType.STRUCTURE
         raise ValueError("getDataType failed. Invalid attribute index.")
 

@@ -1004,22 +1004,22 @@ class GXDLMS:
                 len_ -= 1
             data.packetLength = len_
             data.complete = True
-            cmd = MBusCommand(buff.getUInt8())
+            cmd = buff.getUInt8()
             manufacturerID = buff.getUInt16()
             man = cls.decryptManufacturer(manufacturerID)
             #id =
             buff.getUInt32()
             meterVersion = buff.getUInt8()
-            type_ = MBusMeterType(buff.getUInt8())
-            ci = MBusControlInfo(buff.getUInt8())
+            type_ = buff.getUInt8()
+            ci = buff.getUInt8()
             #frameId =
             buff.getUInt8()
             #state =
             buff.getUInt8()
             configurationWord = buff.getUInt16()
             encryption = MBusEncryptionMode(configurationWord & 7)
-            settings.setClientAddress(buff.getUInt8())
-            settings.setServerAddress(buff.getUInt8())
+            settings.clientAddress = buff.getUInt8()
+            settings.serverAddress = buff.getUInt8()
             if data.xml and data.xml.comments:
                 data.xml.appendComment("Command: " + cmd)
                 data.xml.appendComment("Manufacturer: " + man)
@@ -1032,8 +1032,8 @@ class GXDLMS:
     def isMBusData(cls, buff):
         if len(buff) - buff.position < 2:
             return False
-        cmd = MBusCommand(buff.getUInt8(buff.position + 1))
-        return cmd in (MBusCommand.SND_NR, MBusCommand.SND_UD2, MBusCommand.RSP_UD)
+        cmd = buff.getUInt8(buff.position + 1)
+        return cmd == MBusCommand.SND_NR or cmd == MBusCommand.SND_UD2 or cmd == MBusCommand.RSP_UD
 
     @classmethod
     def checkWrapperAddress(cls, settings, buff, notify):

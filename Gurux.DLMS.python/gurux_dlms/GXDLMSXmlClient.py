@@ -154,7 +154,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
                                                                             n5.getAttributes().getNamedItem("Value").setNodeValue(bb.toHex(False, 2))
                                                                             break
                                                                     pos7 += 1
-                                                            break
+                                                                break
                                                             pos6 += 1
                                                         break
                                                     pos5 += 1

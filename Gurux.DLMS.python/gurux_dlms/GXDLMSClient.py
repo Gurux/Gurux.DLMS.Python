@@ -33,7 +33,7 @@
 # ---------------------------------------------------------------------------
 from __future__ import print_function
 from .GXDLMSSettings import GXDLMSSettings
-from .enums import Authentication, InterfaceType, SourceDiagnostic, DataType, AccessMode, MethodAccessMode
+from .enums import Authentication, InterfaceType, SourceDiagnostic, DataType
 from .ConnectionState import ConnectionState
 from .GXByteBuffer import GXByteBuffer
 from .GXDLMSLimits import GXDLMSLimits
@@ -682,8 +682,8 @@ class GXDLMSClient(object):
             objects = self.parseSNObjects(data, onlyKnownObjects)
         self.settings.objects = objects
 
-        c = GXDLMSConverter(self.standard);
-        c.updateOBISCodeInformation(objects);
+        c = GXDLMSConverter(self.standard)
+        c.updateOBISCodeInformation(objects)
         return objects
 
     def parseLNObjects(self, buff, onlyKnownObjects):
@@ -1072,7 +1072,7 @@ class GXDLMSClient(object):
             ret = GXDLMS.getData(self.settings, reply, data, notify)
         except Exception as ex:
             if self.translator is None or self.throwExceptions:
-                raise
+                raise ex
             ret = True
         if ret and self.translator and data.moreData == RequestTypes.NONE:
             if data.xml is None:

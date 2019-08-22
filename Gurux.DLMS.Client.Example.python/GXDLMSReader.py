@@ -36,7 +36,7 @@ import time
 import traceback
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits
-from gurux_common import ReceiveParameters, GXCommon
+from gurux_common import ReceiveParameters, GXCommon, TimeoutException
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
 from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security
 from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric
@@ -131,8 +131,8 @@ class GXDLMSReader:
                     while not self.media.receive(p):
                         pos += 1
                         if pos == 3:
-                            raise ValueError("Failed to receive reply from the device in given time.")
-                        if len(rd) == 0:
+                            raise TimeoutException("Failed to receive reply from the device in given time.")
+                        if rd.size == 0:
                             print("Data send failed.  Try to resend " + str(pos) + "/3")
                             self.media.send(data, None)
                     rd.set(p.reply)
@@ -353,6 +353,8 @@ class GXDLMSReader:
                 except Exception as ex:
                     self.writeTrace("Error! Index: " + str(pos) + " " + str(ex), TraceLevel.ERROR)
                     self.writeTrace(str(ex), TraceLevel.ERROR)
+                    if not isinstance(ex, (GXDLMSException, TimeoutException)):
+                        traceback.print_exc()
 
     def showValue(self, pos, val):
         if isinstance(val, (bytes, bytearray)):
@@ -393,7 +395,8 @@ class GXDLMSReader:
                         self.writeTrace("", TraceLevel.INFO)
             except Exception as ex:
                 self.writeTrace("Error! Failed to read first row: " + str(ex), TraceLevel.ERROR)
-                traceback.print_exc()
+                if not isinstance(ex, (GXDLMSException, TimeoutException)):
+                    traceback.print_exc()
             try:
                 start = datetime.datetime.now()
                 end = start

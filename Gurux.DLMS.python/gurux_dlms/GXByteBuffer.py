@@ -169,7 +169,7 @@ class GXByteBuffer(__base):
     #
     def subArray(self, index, count):
         if count != 0:
-            tmp = bytearray (count)
+            tmp = bytearray(count)
             tmp[0:count] = self._data[index:index + count]
             return tmp
         return bytearray(0)

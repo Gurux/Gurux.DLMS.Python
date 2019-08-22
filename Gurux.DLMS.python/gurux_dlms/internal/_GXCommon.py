@@ -32,11 +32,6 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #pylint: disable=broad-except,no-name-in-module
-try:
-    from enum import IntEnum
-except Exception:
-    pass
-
 import time
 import calendar
 from datetime import datetime
@@ -748,7 +743,7 @@ class _GXCommon:
         dt = None
         pos = 0
         while pos != len_:
-            dt = DataType(buff.getUInt8())
+            dt = buff.getUInt8()
             if dt == DataType.ARRAY:
                 cnt = buff.getUInt16()
                 tmp = list()
@@ -798,7 +793,7 @@ class _GXCommon:
         if len(buff) - buff.position < 2:
             info.complete = (False)
             return None
-        dt = DataType(buff.getUInt8())
+        dt = buff.getUInt8()
         if dt == DataType.ARRAY:
             raise ValueError("Invalid compact array data.")
         len_ = _GXCommon.getObjectCount(buff)
@@ -908,7 +903,7 @@ class _GXCommon:
         if len(buff) - buff.position < 1:
             info.complete = (False)
             return None
-        value = int(buff.getUInt8() & 0xFF)
+        value = buff.getUInt8() & 0xFF
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
         return value
@@ -1195,7 +1190,7 @@ class _GXCommon:
         pos = buff.position
         while pos != len(buff):
             size += 1
-            if (buff.getUInt8(pos) & 0x1) == 1:
+            if buff.getUInt8(pos) & 0x1 == 1:
                 break
             pos += 1
         if size == 1:
@@ -1225,14 +1220,6 @@ class _GXCommon:
         from ..GXDateTime import GXDateTime
         from ..GXDate import GXDate
         from ..GXTime import GXTime
-        #  If value is enum get integer value.
-        try:
-            if isinstance(value, IntEnum):
-                value = value.value
-        except Exception:
-            #Enum is not supported.
-            pass
-
         if dataType in (DataType.ARRAY, DataType.STRUCTURE) and isinstance(value, (GXByteBuffer, bytearray, bytes)):
             #  If byte array is added do not add type.
             buff.set(value)
@@ -1557,7 +1544,8 @@ class _GXCommon:
         elif value == DataType.OCTET_STRING:
             ret = bytes.__class__
         elif value == DataType.ENUM:
-            ret = Enum.__class__
+            ret = int.__class__
+            #ret = Enum.__class__
         elif value == DataType.INT8:
             ret = int.__class__
         elif value == DataType.INT16:
@@ -1595,8 +1583,8 @@ class _GXCommon:
             ret = DataType.NONE
         elif isinstance(value, (bytes, bytearray, GXByteBuffer)):
             ret = DataType.OCTET_STRING
-        elif isinstance(value, (Enum,)):
-            ret = DataType.ENUM
+        #elif isinstance(value, (Enum,)):
+        #    ret = DataType.ENUM
         elif isinstance(value, int):
             ret = DataType.INT32
         elif isinstance(value, GXTime):

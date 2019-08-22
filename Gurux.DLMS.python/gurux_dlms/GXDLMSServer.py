@@ -538,7 +538,7 @@ class GXDLMSServer:
                 error.setUInt8(0xE)
                 error.setUInt8(ConfirmedServiceError.INITIATE_ERROR)
                 error.setUInt8(ServiceError.INITIATE)
-                error.setUInt8(Initiate.INCOMPATIBLE_CONFORMANC)
+                error.setUInt8(Initiate.INCOMPATIBLE_CONFORMANCE)
             elif self.settings.maxPduSize < 64:
                 result = AssociationResult.PERMANENT_REJECTED
                 diagnostic = SourceDiagnostic.NO_REASON_GIVEN

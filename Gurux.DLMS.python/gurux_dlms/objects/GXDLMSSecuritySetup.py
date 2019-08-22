@@ -82,7 +82,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     # security: New security level.
     # Generated action.
     def activate(self, client, security):
-        return client.method(self, 1, security.value, DataType.ENUM)
+        return client.method(self, 1, security, DataType.ENUM)
 
     #
     # Updates one or more global keys.
@@ -103,7 +103,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
             _GXCommon.setData(bb, DataType.ENUM, it.getKey())
-            tmp = GXDLMSSecureClient.encrypt(kek, it.value)
+            tmp = GXDLMSSecureClient.encrypt(kek, it)
             _GXCommon.setData(bb, DataType.OCTET_STRING, tmp)
         return client.method(self, 2, bb.array(), DataType.ARRAY)
 
@@ -127,7 +127,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
             _GXCommon.setData(bb, DataType.ENUM, it.getKey())
-            _GXCommon.setData(bb, DataType.OCTET_STRING, it.value)
+            _GXCommon.setData(bb, DataType.OCTET_STRING, it)
         return client.method(self, 3, bb.array(), DataType.ARRAY)
 
     #
@@ -155,10 +155,10 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return self.__keyAgreement(client, list_)
 
     def generateKeyPair(self, client, type_):
-        return client.method(self, 4, type_.value, DataType.ENUM)
+        return client.method(self, 4, type_, DataType.ENUM)
 
     def generateCertificate(self, client, type_):
-        return client.method(self, 5, type_.value, DataType.ENUM)
+        return client.method(self, 5, type_, DataType.ENUM)
 
 
     def importCertificate(self, client, certificate):
@@ -178,9 +178,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         bb.setUInt8(DataType.ENUM)
-        bb.setUInt8(entity.value)
+        bb.setUInt8(entity)
         bb.setUInt8(DataType.ENUM)
-        bb.setUInt8(type_.value)
+        bb.setUInt8(type_)
         _GXCommon.setData(bb, DataType.OCTET_STRING, systemTitle)
         return client.method(self, 7, bb.array(), DataType.STRUCTURE)
 
@@ -205,9 +205,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         bb.setUInt8(DataType.ENUM)
-        bb.setUInt8(entity.value)
+        bb.setUInt8(entity)
         bb.setUInt8(DataType.ENUM)
-        bb.setUInt8(type_.value)
+        bb.setUInt8(type_)
         _GXCommon.setData(bb, DataType.OCTET_STRING, systemTitle)
         return client.method(self, 8, bb.array(), DataType.STRUCTURE)
 
@@ -247,9 +247,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             elif self.version == 1:
                 self.securityPolicy = SecurityPolicy(e.parameters)
                 if self.securityPolicy & SecurityPolicy.AUTHENTICATED_RESPONSE != 0:
-                    settings.cipher.security = Security(settings.cipher.security | Security.AUTHENTICATION.value)
+                    settings.cipher.security = Security(settings.cipher.security | Security.AUTHENTICATION)
                 if self.securityPolicy & SecurityPolicy.ENCRYPTED_RESPONSE != 0:
-                    settings.cipher.security = Security(settings.cipher.security | Security.ENCRYPTION.value)
+                    settings.cipher.security = Security(settings.cipher.security | Security.ENCRYPTION)
         elif e.index == 2:
             from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
             for tmp in e.parameters:
@@ -335,9 +335,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(int(DataType.STRUCTURE))
             _GXCommon.setObjectCount(6, bb)
             bb.setUInt8(int(DataType.ENUM))
-            bb.setUInt8(int(CertificateEntity.SERVER.value))
+            bb.setUInt8(int(CertificateEntity.SERVER))
             bb.setUInt8(int(DataType.ENUM))
-            bb.setUInt8(int(CertificateType.DIGITAL_SIGNATURE.value))
+            bb.setUInt8(int(CertificateType.DIGITAL_SIGNATURE))
             _GXCommon.addString(it.serialNumber, bb)
             _GXCommon.addString(it.issuer, bb)
             _GXCommon.addString(it.subject, bb)
@@ -349,9 +349,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            ret = self.securityPolicy.value
+            ret = self.securityPolicy
         elif e.index == 3:
-            ret = self.securitySuite.value
+            ret = self.securitySuite
         elif e.index == 4:
             ret = self.clientSystemTitle
         elif e.index == 5:

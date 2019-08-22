@@ -32,7 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
-from .enums import BerType, PduType, Authentication, Command, AssociationResult, SourceDiagnostic, Conformance, Service
+from .enums import BerType, PduType, Authentication, Command, AssociationResult, SourceDiagnostic, Service
 from .ConfirmedServiceError import ConfirmedServiceError
 from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
 from .internal._GXCommon import _GXCommon
@@ -558,6 +558,7 @@ class _GXAPDU:
     #
     @classmethod
     def parseApplicationContextName(cls, settings, buff, xml):
+        #pylint: disable=too-many-boolean-expressions
         #  Get length.
         len_ = buff.getUInt8()
         if len(buff) - buff.position < len_:
@@ -574,8 +575,8 @@ class _GXAPDU:
             if xml:
                 xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "UNKNOWN")
                 return True
-            raise Exception("Encoding failed. Invalid Application context name.");
-        name = tmp[6];
+            raise Exception("Encoding failed. Invalid Application context name.")
+        name = tmp[6]
         if xml:
             if name == 1:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
@@ -656,8 +657,8 @@ class _GXAPDU:
     def parseProtocolVersion(cls, settings, buff, xml):
         #  Get count.
         buff.getUInt8()
-        unusedBits = int(buff.getUInt8())
-        value = int(buff.getUInt8())
+        unusedBits = buff.getUInt8()
+        value = buff.getUInt8()
         sb = _GXCommon.toBitString(value, 8 - unusedBits)
         settings.protocolVersion = sb
         if xml:
@@ -752,7 +753,7 @@ class _GXAPDU:
                 len_ = buff.getUInt8()
                 tag = buff.getUInt8()
                 len_ = buff.getUInt8()
-                settings.setUserId(buff.getUInt8())
+                settings.userId = buff.getUInt8()
                 if xml:
                     #  CallingAPTitle
                     xml.appendLine(TranslatorGeneralTags.CALLED_AE_INVOCATION_ID, "Value", xml.integerToHex(settings.getUserId(), 2))

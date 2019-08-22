@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..enums import DataType, ObjectType, Authentication, Conformance, AccessMode, MethodAccessMode
+from ..enums import DataType, ObjectType, Authentication, AccessMode, MethodAccessMode
 from .enums import AssociationStatus, ApplicationContextName
 from .GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXApplicationContextName import GXApplicationContextName
@@ -442,7 +442,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def updateObjectList(cls, settings, target, value):
         from .._GXObjectFactory import _GXObjectFactory
-        target.clear()
+        target = []
         if value:
             for item in value:
                 type_ = ObjectType(item[0])
@@ -468,7 +468,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 self.applicationContextName.identifiedOrganization = buff.getUInt8()
                 self.applicationContextName.dlmsUA = buff.getUInt8()
                 self.applicationContextName.applicationContext = buff.getUInt8()
-                self.applicationContextName.contextId = ApplicationContextName(buff.getUInt8())
+                self.applicationContextName.contextId = buff.getUInt8()
             else:
                 if buff.getUInt8() != 2 and buff.getUInt8() != 7:
                     raise ValueError()
@@ -492,7 +492,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 self.applicationContextName.applicationContext = buff.getUInt8()
                 if buff.getUInt8() != 0x11:
                     raise ValueError()
-                self.applicationContextName.contextId = ApplicationContextName(buff.getUInt8())
+                self.applicationContextName.contextId = buff.getUInt8()
         else:
             if value:
                 self.applicationContextName.jointIsoCtt = value[0]
@@ -512,10 +512,10 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.country(0)
                     self.authenticationMechanismName.countryName(0)
                     buff.position = buff.position + 3
-                    self.authenticationMechanismName.identifiedOrganization(buff.getUInt8())
-                    self.authenticationMechanismName.dlmsUA(buff.getUInt8())
-                    self.authenticationMechanismName.authenticationMechanismName(buff.getUInt8())
-                    self.authenticationMechanismName.mechanismId(Authentication(buff.getUInt8()))
+                    self.authenticationMechanismName.identifiedOrganization = buff.getUInt8()
+                    self.authenticationMechanismName.dlmsUA = buff.getUInt8()
+                    self.authenticationMechanismName.authenticationMechanismName = buff.getUInt8()
+                    self.authenticationMechanismName.mechanismId = buff.getUInt8()
                 else:
                     if buff.getUInt8() != 2 and buff.getUInt8() != 7:
                         raise ValueError()
@@ -539,7 +539,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.authenticationMechanismName = buff.getUInt8()
                     if buff.getUInt8() != 0x11:
                         raise ValueError()
-                    self.authenticationMechanismName.mechanismId = Authentication(buff.getUInt8())
+                    self.authenticationMechanismName.mechanismId = buff.getUInt8()
             else:
                 if value:
                     self.authenticationMechanismName.jointIsoCtt = value[0]
@@ -581,7 +581,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.associationStatus = AssociationStatus.NON_ASSOCIATED
             else:
-                self.associationStatus = AssociationStatus(e.value)
+                self.associationStatus = e.value
         elif e.index == 9:
             self.securitySetupReference = _GXCommon.toLogicalName(e.value)
         elif e.index == 10:

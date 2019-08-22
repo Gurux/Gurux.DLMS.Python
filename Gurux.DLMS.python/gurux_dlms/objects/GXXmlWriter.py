@@ -33,12 +33,6 @@
 # ---------------------------------------------------------------------------
 
 import xml.etree.cElementTree as ET
-#pylint: disable=broad-except,no-name-in-module
-try:
-    from enum import IntEnum
-except Exception:
-    pass
-
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..GXDLMSConverter import GXDLMSConverter
@@ -87,8 +81,6 @@ class GXXmlWriter:
                 ET.SubElement(self.getTarget(), name).text = value
             elif isinstance(value, GXDateTime):
                 ET.SubElement(self.getTarget(), name).text = value.toFormatString()
-            elif isinstance(value, Enum):
-                ET.SubElement(self.getTarget(), name).text = str(value.value)
             elif isinstance(value, bool):
                 if value:
                     ET.SubElement(self.getTarget(), name).text = "1"
