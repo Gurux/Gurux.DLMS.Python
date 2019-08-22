@@ -364,7 +364,7 @@ class GXStandardObisCodeCollection(list):
         for it in self:
             #  Interface is tested first because it's faster.
             if self.equalsInterface(it, ic) and self.equalsObisCode(it.obis, obisCode):
-                tmp = GXStandardObisCode(it.obis, it.description, it, it.dataType)
+                tmp = GXStandardObisCode(it.obis[0:], it.description, it, it.dataType)
                 list_.append(tmp)
                 tmp2 = it.description.split(';')
                 if len(tmp2) > 1:
