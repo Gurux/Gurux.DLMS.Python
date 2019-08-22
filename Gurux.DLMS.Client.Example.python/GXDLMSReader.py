@@ -132,19 +132,11 @@ class GXDLMSReader:
                         pos += 1
                         if pos == 3:
                             raise ValueError("Failed to receive reply from the device in given time.")
-                        #If echo.
-                        if not rd or len(rd) == len(data):
+                        if len(rd) == 0:
+                            print("Data send failed.  Try to resend " + str(pos) + "/3")
                             self.media.send(data, None)
-                        #Try to read again...
-                        print("Data send failed. Try to resend " + str(pos) + "/3")
-
                     rd.set(p.reply)
                     p.reply = None
-                if pos == 3:
-                    raise ValueError("Failed to receive reply from the device in given time.")
-                if pos != 0:
-                    print("Data send failed.  Try to resend " + str(pos) + "/3")
-                pos += 1
             except Exception as e:
                 self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.ERROR)
                 raise e
@@ -431,5 +423,9 @@ class GXDLMSReader:
             self.getProfileGenericColumns()
             self.getReadOut()
             self.getProfileGenerics()
+        except (KeyboardInterrupt, SystemExit):
+            #Don't send anything if user is closing the app.
+            self.media = None
+            raise
         finally:
             self.close()
