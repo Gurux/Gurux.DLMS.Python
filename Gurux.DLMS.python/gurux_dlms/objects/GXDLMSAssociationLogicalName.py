@@ -508,9 +508,9 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             if isinstance(value, bytearray):
                 buff = GXByteBuffer(value)
                 if buff.getUInt8(0) == 0x60:
-                    self.authenticationMechanismName.jointIsoCtt(0)
-                    self.authenticationMechanismName.country(0)
-                    self.authenticationMechanismName.countryName(0)
+                    self.authenticationMechanismName.jointIsoCtt = 0
+                    self.authenticationMechanismName.country = 0
+                    self.authenticationMechanismName.countryName = 0
                     buff.position = buff.position + 3
                     self.authenticationMechanismName.identifiedOrganization = buff.getUInt8()
                     self.authenticationMechanismName.dlmsUA = buff.getUInt8()
