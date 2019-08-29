@@ -139,9 +139,9 @@ class _GXAPDU:
                 data.setUInt8(1)
         else:
             if ciphered:
-                data.SetUInt8(4)
+                data.setUInt8(4)
             else:
-                data.SetUInt8(2)
+                data.setUInt8(2)
 
         #  Add system title.
         if not settings.isServer and (ciphered or settings.authentication == Authentication.HIGH_GMAC) or settings.authentication == Authentication.HIGH_ECDSA:
