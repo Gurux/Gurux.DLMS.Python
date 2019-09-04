@@ -75,7 +75,7 @@ class GXDLMSTranslatorStructure:
         return self.sb.__str__()
 
     def getDataType(self, type_):
-        return self.__getTag(_GXCommon.DATA_TYPE_OFFSET + type_.value)
+        return self.__getTag(_GXCommon.DATA_TYPE_OFFSET + type_)
 
     def __getTag(self, tag):
         if self.outputType == TranslatorOutputType.SIMPLE_XML or self.omitNameSpace:
@@ -179,10 +179,12 @@ class GXDLMSTranslatorStructure:
         if isinstance(name, int):
             tag = self.__getTag(tag << 8 | name)
             name = None
+        elif isinstance(tag, int):
+            tag = self.__getTag(tag)
         self.appendSpaces(2 * self.offset)
         self.sb += '<'
         self.sb += tag
-        if self.outputType == TranslatorOutputType.SIMPLE_XML and name is not None:
+        if self.outputType == TranslatorOutputType.SIMPLE_XML and name:
             self.sb += ' '
             self.sb += name
             self.sb += "=\""

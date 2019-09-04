@@ -457,8 +457,8 @@ class GXDLMSTranslator:
     # Converted XML.
     #
     def pduToXml(self, pdu):
-        if isinstance(pdu, str):
-            pdu = GXByteBuffer(GXByteBuffer.hexToBytes(pdu))
+        if not isinstance(pdu, GXByteBuffer):
+            pdu = GXByteBuffer(pdu)
         return self.__pduToXml(pdu, self.omitXmlDeclaration, self.omitXmlNameSpace)
 
     @classmethod
@@ -1670,9 +1670,9 @@ class GXDLMSTranslator:
     def dataToXml(self, data):
         di = _GXDataInfo()
         xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
-        di.xml = (xml)
+        di.xml = xml
         _GXCommon.getData(data, di)
-        return di.xml.__str__()
+        return str(di.xml)
 
     def __getAllDataNodes(self, nodes, s):
         preData = None

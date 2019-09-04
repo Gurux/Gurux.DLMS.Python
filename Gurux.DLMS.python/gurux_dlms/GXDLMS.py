@@ -930,8 +930,7 @@ class GXDLMS:
             if settings.clientAddress != target:
                 if settings.clientAddress == source and settings.serverAddress == target:
                     reply.position = index + 1
-                    return False
-                raise Exception("Destination addresses do not match. It is " + str(target) + ". It should be " + str(settings.clientAddress) + ".")
+            return False
             if settings.serverAddress != source:
                 readLogical = [0]
                 readPhysical = [0]
@@ -940,7 +939,7 @@ class GXDLMS:
                 cls.getServerAddress(source, readLogical, readPhysical)
                 cls.getServerAddress(settings.serverAddress, logical, physical)
                 if readLogical[0] != logical[0] or readPhysical[0] != physical[0]:
-                    raise Exception("Source addresses do not match. It is " + str(source) + ". It should be " + str(settings.serverAddress) + ".")
+                    return False
         return True
 
     @classmethod

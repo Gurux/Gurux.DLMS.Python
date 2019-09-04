@@ -34,12 +34,6 @@
 import sys
 import struct
 
-#Maximum size of byte.
-_MAX_BYTE_SIZE = 0xFF
-_NIBBLE = 4
-#Value of Hex A in decimal.
-_HEX_A_DECIMAL_VALUE = 10
-
 #pylint: disable=import-error, no-name-in-module
 if sys.version_info < (3, 0):
     __base = object
@@ -53,6 +47,9 @@ class GXByteBuffer(__base):
     Byte array class is used to save received bytes.
     """
 
+    __HEX_ARRAY = "0123456789ABCDEFGH"
+    __NIBBLE = 4
+    __LOW_BYTE_PART = 0x0F
     __ARRAY_CAPACITY = 10
 
     def __init__(self, value=None):
@@ -561,15 +558,36 @@ class GXByteBuffer(__base):
             count = len(self) - index
         return self.hex(self._data, addSpace, index, count)
 
+    #Convert char hex value to byte value.
+    @classmethod
+    def ___getValue(cls, c):
+        #Id char.
+        if c.islower():
+            c = c.upper()
+        pos = GXByteBuffer.__HEX_ARRAY.find(c)
+        if pos == -1:
+            raise Exception("Invalid hex string")
+        return pos
+
     @classmethod
     def hexToBytes(cls, value):
         """Convert string to byte array.
         value: Hex string.
         Returns byte array.
         """
-        if value is None:
-            return ""
-        return bytearray.fromhex(value.replace(" ", ""))
+        buff = bytearray()
+        lastValue = -1
+        for ch in value:
+            if ch != ' ':
+                if lastValue == -1:
+                    lastValue = cls.___getValue(ch)
+                elif lastValue != -1:
+                    buff.append(lastValue << GXByteBuffer.__NIBBLE | cls.___getValue(ch))
+                    lastValue = -1
+            elif lastValue != -1:
+                buff.append(cls.___getValue(ch))
+                lastValue = -1
+        return buff
 
     @classmethod
     def hex(cls, value, addSpace=True, index=0, count=None):
@@ -579,8 +597,6 @@ class GXByteBuffer(__base):
         #Return empty string if array is empty.
         if not value:
             return ""
-        __hexArray = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
-        LOW_BYTE_PART = 0x0F
         hexChars = ""
         #Python 2.7 handles bytes as a string array. It's changed to bytearray.
         if sys.version_info < (3, 0) and not isinstance(value, bytearray):
@@ -588,8 +604,8 @@ class GXByteBuffer(__base):
         if count == 0:
             count = len(value)
         for it in value[index:count]:
-            hexChars += __hexArray[it >> _NIBBLE]
-            hexChars += __hexArray[it & LOW_BYTE_PART]
+            hexChars += GXByteBuffer.__HEX_ARRAY[it >> GXByteBuffer.__NIBBLE]
+            hexChars += GXByteBuffer.__HEX_ARRAY[it & GXByteBuffer.__LOW_BYTE_PART]
             if addSpace:
                 hexChars += ' '
         return hexChars
