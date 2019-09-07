@@ -930,7 +930,7 @@ class GXDLMS:
             if settings.clientAddress != target:
                 if settings.clientAddress == source and settings.serverAddress == target:
                     reply.position = index + 1
-            return False
+                return False
             if settings.serverAddress != source:
                 readLogical = [0]
                 readPhysical = [0]

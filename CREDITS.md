@@ -1,5 +1,7 @@
 Credits
 =======
+  - checkHdlcAddress isseue.
+    * [lafka](https://github.com/lafka)
   - setUInt8 capitalized isseue.
     * [vascomedici](https://github.com/vascomedici)
   - HLS AARQ Generation issue.
