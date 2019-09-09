@@ -65,8 +65,8 @@ class GXDLMSReader:
             try:
                 #Release is call only for secured connections.
                 #All meters are not supporting Release and it's causing problems.
-                if self.client.InterfaceType == InterfaceType.WRAPPER or\
-                    (self.client.InterfaceType == InterfaceType.HDLC and self.client.Ciphering.Security != Security.NONE):
+                if self.client.interfaceType == InterfaceType.WRAPPER or\
+                    (self.client.interfaceType == InterfaceType.HDLC and self.client.ciphering.security != Security.NONE):
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception:
                 pass

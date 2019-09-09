@@ -73,9 +73,9 @@ class sampleclient():
             if settings.readObjects:
                 reader.initializeConnection()
                 reader.getAssociationView()
-                for it in settings.readObjects:
-                    val = reader.read(settings.client.objects.findByLN(ObjectType.NONE, it.getKey()), it.getValue())
-                    reader.showValue(it.getValue(), val)
+                for k, v in settings.readObjects:
+                    val = reader.read(settings.client.objects.findByLN(ObjectType.NONE, k), v)
+                    reader.showValue(v, val)
             else:
                 reader.readAll()
         except Exception:

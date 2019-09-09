@@ -48,6 +48,9 @@ from ..enums import DataType
 from ..enums import DateTimeSkips, ClockStatus
 from ..TranslatorTags import TranslatorTags
 from ..TranslatorOutputType import TranslatorOutputType
+from ..GXStructure import GXStructure
+from ..GXArray import GXArray
+from ..enums.Standard import Standard
 
 # pylint: disable=too-many-public-methods
 class _GXCommon:
@@ -346,7 +349,10 @@ class _GXCommon:
             info.complete = False
             return None
         startIndex = index
-        value = list()
+        if info.type_ == DataType.ARRAY:
+            value = GXArray()
+        else:
+            value = GXStructure()
         #  Position where last row was found.  Cache uses this info.
         pos = info.index
         while pos != info.count:
@@ -589,7 +595,7 @@ class _GXCommon:
                 info.xml.appendComment("{:.2f}".format(value))
             tmp = GXByteBuffer()
             cls.setData(tmp, DataType.FLOAT64, value)
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))
+            info.xml.appendLine(info.xml.getDataType(info.type_), None, GXByteBuffer.toHex(False, 1, len(tmp) - 1))
         return value
 
     #
@@ -767,11 +773,11 @@ class _GXCommon:
         for it in cols:
             if isinstance(it, (DataType,)):
                 info.xml.appendEmptyTag(info.xml.getDataType(it))
-            elif isinstance(it, object):
+            elif isinstance(it, GXStructure):
                 info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE, None, None)
                 cls.appendDataTypeAsXml(it, info)
                 info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE)
-            elif isinstance(it, list):
+            elif isinstance(it, GXArray):
                 info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY, None, None)
                 cls.appendDataTypeAsXml(it, info)
                 info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY)
@@ -820,9 +826,9 @@ class _GXCommon:
                 row = list()
                 pos = 0
                 while pos != len(cols):
-                    if isinstance(cols[pos], list):
+                    if isinstance(cols[pos], GXArray):
                         cls.getCompactArrayItem(buff, cols[pos], row, 1)
-                    elif isinstance(cols[pos], list):
+                    elif isinstance(cols[pos], GXStructure):
                         tmp2 = list()
                         cls.getCompactArrayItem(buff, cols[pos], tmp2, 1)
                         row.append(tmp2[0])
@@ -1702,3 +1708,87 @@ class _GXCommon:
         #UTC time.
         sb += "Z"
         return sb
+
+    @classmethod
+    def encryptManufacturer(cls, flagName):
+        if len(flagName) != 3:
+            raise ValueError("Invalid Flag name.")
+        value = ((flagName.charAt(0) - 0x40) & 0x1f)
+        value <<= 5
+        value += ((flagName.charAt(0) - 0x40) & 0x1f)
+        value <<= 5
+        value += ((flagName.charAt(0) - 0x40) & 0x1f)
+        return value
+
+    @classmethod
+    def decryptManufacturer(cls, value):
+        tmp = (value >> 8 | value << 8)
+        c = str(((tmp & 0x1f) + 0x40))
+        tmp = (tmp >> 5)
+        c1 = str(((tmp & 0x1f) + 0x40))
+        tmp = (tmp >> 5)
+        c2 = str(((tmp & 0x1f) + 0x40))
+        return str(c2, c1, c)
+
+    @classmethod
+    def idisSystemTitleToString(cls, st):
+        sb = '\r'
+        sb += "IDIS system title:\r"
+        sb += "Manufacturer Code: "
+        sb += str((st[0], st[1], st[2]))
+        sb += "\rFunction type: "
+        ft = st[4] >> 4
+        add = False
+        if (ft & 0x1) != 0:
+            sb += "Disconnector extension"
+            add = True
+        if (ft & 0x2) != 0:
+            if add:
+                sb += ", "
+            add = True
+            sb += "Load Management extension"
+
+        if (ft & 0x4) != 0:
+            if add:
+                sb += ", "
+            sb += "Multi Utility extension"
+        #Serial number
+        sn = (st[4] & 0xF) << 24
+        sn |= st[5] << 16
+        sn |= st[6] << 8
+        sn |= st[7]
+        sb += '\r'
+        sb += "Serial number: "
+        sb += str(sn) + '\r'
+        return sb
+
+    @classmethod
+    def dlmsSystemTitleToString(cls, st):
+        sb = '\r'
+        sb += "IDIS system title:\r"
+        sb += "Manufacturer Code: "
+        sb += str((st[0], st[1], st[2]))
+        sb += "Serial number: "
+        sb += str(st[3], st[4], st[5], st[6], st[7])
+        return sb
+
+    @classmethod
+    def uniSystemTitleToString(cls, st):
+        sb = '\r'
+        sb += "UNI/TS system title:\r"
+        sb += "Manufacturer: "
+        m = st[0] << 8 | st[1]
+        sb += cls.decryptManufacturer(m)
+        sb += "\rSerial number: "
+        sb += GXByteBuffer.toHex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
+        return sb
+
+    @classmethod
+    def systemTitleToString(cls, standard, st):
+        ###Conver system title to string.
+        #pylint: disable=too-many-boolean-expressions
+        if standard == Standard.ITALY or not st[0].isalpha() or not st[1].isalpha() or not st[2].isalpha():
+            return cls.uniSystemTitleToString(st)
+        if standard == Standard.IDIS or not st[3].isdigit() or not st[4].isdigit() or not st[5].isdigit() or not st[6].isdigit() or not st[7].isdigit():
+            return cls.idisSystemTitleToString(st)
+        return cls.dlmsSystemTitleToString(st)

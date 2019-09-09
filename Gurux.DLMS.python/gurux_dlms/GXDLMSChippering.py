@@ -163,6 +163,8 @@ class GXDLMSChippering:
             title = bytearray(len_)
             data.get(title)
             p.systemTitle = title
+            if p.xml and p.xml.comments:
+                p.xml.appendComment(_GXCommon.systemTitleToString(0, p.systemTitle))
         elif cmd in (Command.GENERAL_CIPHERING, Command.GLO_INITIATE_REQUEST, Command.GLO_INITIATE_RESPONSE, Command.GLO_READ_REQUEST, Command.GLO_READ_RESPONSE, \
             Command.GLO_WRITE_REQUEST, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_REQUEST, Command.GLO_GET_RESPONSE, Command.GLO_SET_REQUEST, \
             Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST, Command.GLO_METHOD_RESPONSE, Command.GLO_EVENT_NOTIFICATION_REQUEST,\

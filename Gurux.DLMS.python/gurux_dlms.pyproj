@@ -63,6 +63,8 @@
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
     <Compile Include="gurux_dlms\GXCiphering.py" />
+    <Compile Include="gurux_dlms\GXStructure.py" />
+    <Compile Include="gurux_dlms\GXArray.py" />
     <Compile Include="gurux_dlms\GXDLMSChippering.py" />
     <Compile Include="gurux_dlms\GXDLMSChipperingStream.py" />
     <Compile Include="gurux_dlms\GXSecure.py" />

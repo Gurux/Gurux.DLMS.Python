@@ -31,25 +31,6 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#pylint: disable=broad-except,no-name-in-module
-try:
-    from enum import IntEnum
-    __base = IntEnum
-except Exception:
-    __base = object
-
-
-class Standard(__base):
-    """Used DLMS standard."""
-    #pylint: disable=too-few-public-methods
-
-    #Meter uses default DLMS IEC 62056 standard. https://dlms.com
-    DLMS = 0
-    #Meter uses India DLMS standard IS 15959-2. https://www.standardsbis.in
-    INDIA = 1
-    #Meter uses Italy DLMS standard UNI/TS 11291-11-2. https://uni.com
-    ITALY = 2
-    #Meter uses Saudi Arabia DLMS standard.
-    SAUDI_ARABIA = 3
-    #Meter uses IDIS DLMS standard. https://www.idis-association.com/
-    IDIS = 4
+class GXArray(list):
+    def __init__(self):
+        list.__init__(self)

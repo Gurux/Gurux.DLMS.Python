@@ -62,8 +62,6 @@ from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
 from .MBusEncryptionMode import MBusEncryptionMode
 from .MBusCommand import MBusCommand
 from .enums.Standard import Standard
-from .MBusMeterType import MBusMeterType
-from .MBusControlInfo import MBusControlInfo
 
 # pylint: disable=too-many-public-methods,too-many-function-args
 class GXDLMS:
@@ -972,27 +970,6 @@ class GXDLMS:
         return isData
 
     @classmethod
-    def encryptManufacturer(cls, flagName):
-        if len(flagName) != 3:
-            raise ValueError("Invalid Flag name.")
-        value = ((flagName.charAt(0) - 0x40) & 0x1f)
-        value <<= 5
-        value += ((flagName.charAt(0) - 0x40) & 0x1f)
-        value <<= 5
-        value += ((flagName.charAt(0) - 0x40) & 0x1f)
-        return value
-
-    @classmethod
-    def decryptManufacturer(cls, value):
-        tmp = (value >> 8 | value << 8)
-        c = str(((tmp & 0x1f) + 0x40))
-        tmp = (tmp >> 5)
-        c1 = str(((tmp & 0x1f) + 0x40))
-        tmp = (tmp >> 5)
-        c2 = str(((tmp & 0x1f) + 0x40))
-        return str(c2, c1, c)
-
-    @classmethod
     def getMBusData(cls, settings, buff, data):
         len_ = buff.getUInt8()
         if len(buff) < len_ - 1:
@@ -1005,7 +982,7 @@ class GXDLMS:
             data.complete = True
             cmd = buff.getUInt8()
             manufacturerID = buff.getUInt16()
-            man = cls.decryptManufacturer(manufacturerID)
+            man = _GXCommon.decryptManufacturer(manufacturerID)
             #id =
             buff.getUInt32()
             meterVersion = buff.getUInt8()
@@ -1032,7 +1009,7 @@ class GXDLMS:
         if len(buff) - buff.position < 2:
             return False
         cmd = buff.getUInt8(buff.position + 1)
-        return cmd == MBusCommand.SND_NR or cmd == MBusCommand.SND_UD2 or cmd == MBusCommand.RSP_UD
+        return cmd in (MBusCommand.SND_NR, MBusCommand.SND_UD2, MBusCommand.RSP_UD)
 
     @classmethod
     def checkWrapperAddress(cls, settings, buff, notify):
