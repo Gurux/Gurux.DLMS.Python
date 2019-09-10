@@ -118,7 +118,7 @@ class GXDLMS:
             id_ = settings.getReceiverReady()
             return GXDLMS.getHdlcFrame(settings, id_, None)
         cmd = int()
-        if settings.getUseLogicalNameReferencing():
+        if settings.useLogicalNameReferencing:
             if settings.isServer:
                 cmd = Command.GET_RESPONSE
             else:
@@ -131,12 +131,12 @@ class GXDLMS:
         #  Get next block.
         reply = None
         bb = GXByteBuffer(6)
-        if settings.getUseLogicalNameReferencing():
+        if settings.useLogicalNameReferencing:
             bb.setUInt32(settings.blockIndex)
         else:
             bb.setUInt16(settings.blockIndex)
         settings.increaseBlockIndex()
-        if settings.getUseLogicalNameReferencing():
+        if settings.useLogicalNameReferencing:
             p = GXDLMSLNParameters(settings, 0, cmd, GetCommandType.NEXT_DATA_BLOCK, bb, None, 0xff)
             reply = GXDLMS.getLnMessages(p)
         else:
@@ -482,12 +482,9 @@ class GXDLMS:
                 cmd = Command.GENERAL_GLO_CIPHERING
                 key = cipher.blockCipherKey
         cipher.invocationCounter = cipher.invocationCounter + 1
-        s = AesGcmParameter(cmd)
+        s = AesGcmParameter(cmd, cipher.systemTitle, key, cipher.authenticationKey)
         s.security = cipher.security
         s.invocationCounter = cipher.invocationCounter
-        s.systemTitle = cipher.systemTitle
-        s.blockCipherKey = key
-        s.authenticationKey = cipher.authenticationKey
         tmp = GXCiphering.encrypt(s, data)
         if p.command == Command.DATA_NOTIFICATION or p.command == Command.GENERAL_GLO_CIPHERING or p.command == Command.GENERAL_DED_CIPHERING:
             reply = GXByteBuffer()
@@ -659,7 +656,9 @@ class GXDLMS:
             p.settings.count = 0
         if ciphering and p.command != Command.AARQ and p.command != Command.AARE:
             cipher = p.settings.cipher
-            s = AesGcmParameter(cls.getGloMessage(p.command), cipher.security, cipher.invocationCounter, cipher.getSystemTitle(), cipher.blockCipherKey, cipher.authenticationKey)
+            s = AesGcmParameter(cls.getGloMessage(p.command), cipher.systemTitle, cipher.blockCipherKey, cipher.authenticationKey)
+            s.security = cipher.security
+            s.invocationCounter = cipher.invocationCounter
             tmp = GXCiphering.encrypt(s, reply.array())
             assert not tmp
             reply.size(0)
@@ -912,18 +911,18 @@ class GXDLMS:
         if server:
             if settings.serverAddress != 0 and settings.serverAddress != target:
                 if reply.getUInt8(reply.position) == Command.SNRM:
-                    settings.setServerAddress(target)
+                    settings.serverAddress = target
                 else:
                     raise Exception("Server addresses do not match. It is " + str(target) + ". It should be " + str(settings.serverAddress) + ".")
             else:
-                settings.setServerAddress(target)
+                settings.serverAddress = target
             if settings.clientAddress != 0 and settings.clientAddress != source:
                 if reply.getUInt8(reply.position) == Command.SNRM:
                     settings.setClientAddress(source)
                 else:
                     raise Exception("Client addresses do not match. It is " + str(source) + ". It should be " + str(settings.clientAddress) + ".")
             else:
-                settings.setClientAddress(source)
+                settings.clientAddress = source
         else:
             if settings.clientAddress != target:
                 if settings.clientAddress == source and settings.serverAddress == target:
@@ -1727,15 +1726,9 @@ class GXDLMS:
             data.data.size = data.data.position = index
             p = None
             if settings.cipher.dedicatedKey and settings.connected == ConnectionState.DLMS:
-                p = AesGcmParameter(0)
-                p.systemTitle = settings.sourceSystemTitle
-                p.blockCipherKey = settings.cipher.dedicatedKey
-                p.authenticationKey = settings.cipher.authenticationKey
+                p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
             else:
-                p = AesGcmParameter(0)
-                p.systemTitle = settings.sourceSystemTitle
-                p.blockCipherKey = settings.cipher.blockCipherKey
-                p.authenticationKey = settings.cipher.authenticationKey
+                p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
             data.data.set(GXCiphering.decrypt(settings.cipher, p, bb))
             data.command = Command.NONE
             cls.getPdu(settings, data)
@@ -1748,7 +1741,7 @@ class GXDLMS:
             raise ValueError("Secure connection is not supported.")
         if (data.moreData & RequestTypes.FRAME) == 0:
             data.data.position = data.data.position - 1
-            p = AesGcmParameter(settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+            p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
             tmp = GXCiphering.decrypt(settings.cipher, p, data.data)
             data.data.clear()
             data.data.set(tmp)

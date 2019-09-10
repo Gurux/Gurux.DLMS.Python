@@ -85,8 +85,8 @@ class GXDLMSSettings:
         self.longInvokeID = 0x1
         self.priority = Priority.HIGH
         self.serviceClass = ServiceClass.CONFIRMED
-        self.clientAddress = 16
-        self.serverAddress = 1
+        self.clientAddress = 0
+        self.serverAddress = 0
         self.serverAddressSize = 0
         self.useLogicalNameReferencing = True
         self.interfaceType = InterfaceType.HDLC

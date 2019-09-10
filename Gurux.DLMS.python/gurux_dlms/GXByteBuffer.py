@@ -68,6 +68,8 @@ class GXByteBuffer(__base):
             self.set(value)
         elif isinstance(value, int):
             self.setCapacity(value)
+        elif isinstance(value, str):
+            self.setHexString(value)
         else:
             self.setCapacity(0)
 

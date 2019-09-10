@@ -1735,7 +1735,7 @@ class _GXCommon:
         sb = '\r'
         sb += "IDIS system title:\r"
         sb += "Manufacturer Code: "
-        sb += str((st[0], st[1], st[2]))
+        sb += cls.__getChar(st[0]) + cls.__getChar(st[1]) + cls.__getChar(st[2])
         sb += "\rFunction type: "
         ft = st[4] >> 4
         add = False
@@ -1767,9 +1767,9 @@ class _GXCommon:
         sb = '\r'
         sb += "IDIS system title:\r"
         sb += "Manufacturer Code: "
-        sb += str((st[0], st[1], st[2]))
+        sb += cls.__getChar(st[0]) + cls.__getChar(st[1]) + cls.__getChar(st[2])
         sb += "Serial number: "
-        sb += str(st[3], st[4], st[5], st[6], st[7])
+        sb += cls.__getChar(st[3]) + cls.__getChar(st[4]) + cls.__getChar(st[5]) + cls.__getChar(st[6]) + cls.__getChar(st[7])
         return sb
 
     @classmethod
@@ -1784,11 +1784,23 @@ class _GXCommon:
         return sb
 
     @classmethod
+    def __getChar(cls, ch):
+        try:
+            return str(chr(ch))
+        except Exception:
+            #If python 2.7 is used.
+            #pylint: disable=undefined-variable
+            return str(unichr(ch))
+
+    @classmethod
     def systemTitleToString(cls, standard, st):
         ###Conver system title to string.
         #pylint: disable=too-many-boolean-expressions
-        if standard == Standard.ITALY or not st[0].isalpha() or not st[1].isalpha() or not st[2].isalpha():
+        if standard == Standard.ITALY or not cls.__getChar(st[0]).isalpha() or \
+            not cls.__getChar(st[1]).isalpha() or not cls.__getChar(st[2]).isalpha():
             return cls.uniSystemTitleToString(st)
-        if standard == Standard.IDIS or not st[3].isdigit() or not st[4].isdigit() or not st[5].isdigit() or not st[6].isdigit() or not st[7].isdigit():
+        if standard == Standard.IDIS or not cls.__getChar(st[3]).isdigit() or \
+            not cls.__getChar(st[4]).isdigit() or not cls.__getChar(st[5]).isdigit() or \
+            not cls.__getChar(st[6]).isdigit() or not cls.__getChar(st[7]).isdigit():
             return cls.idisSystemTitleToString(st)
         return cls.dlmsSystemTitleToString(st)

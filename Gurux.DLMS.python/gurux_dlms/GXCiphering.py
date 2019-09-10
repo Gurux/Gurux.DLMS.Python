@@ -123,7 +123,9 @@ class GXCiphering(GXICipher):
     # @return Generated challenge.
     #
     def generateGmacPassword(self, challenge):
-        p = AesGcmParameter(0x10, Security.AUTHENTICATION, self.invocationCounter, self.systemTitle, self.blockCipherKey, self.authenticationKey)
+        p = AesGcmParameter(0x10, self.systemTitle, self.blockCipherKey, self.authenticationKey)
+        p.security = Security.AUTHENTICATION
+        p.invocationCounter = self.invocationCounter
         bb = GXByteBuffer()
         GXDLMSChippering.encryptAesGcm(p, challenge)
         bb.setUInt8(0x10)

@@ -108,9 +108,9 @@ class GXDLMSNotify(object):
     # of PDU packet.  Value can be from 0 to 0xFFFF.  By default the value is
     # 0xFFFF.
     #
-    # @see GXDLMSClient#getClientAddress
-    # @see GXDLMSClient#getServerAddress
-    # @see GXDLMSClient#getUseLogicalNameReferencing
+    # @see GXDLMSClient#clientAddress
+    # @see GXDLMSClient#serverAddress
+    # @see GXDLMSClient#useLogicalNameReferencing
     # Maximum size of received PDU.
     #
     maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)

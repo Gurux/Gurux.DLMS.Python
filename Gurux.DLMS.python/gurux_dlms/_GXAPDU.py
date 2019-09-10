@@ -246,12 +246,9 @@ class _GXAPDU:
             else:
                 tmp = GXByteBuffer()
                 cls.getInitiateRequest(settings, tmp)
-                p = AesGcmParameter(Command.GLO_INITIATE_REQUEST)
+                p = AesGcmParameter(Command.GLO_INITIATE_REQUEST, cipher.systemTitle, cipher.blockCipherKey, cipher.authenticationKey)
                 p.security = cipher.security
                 p.invocationCounter = cipher.invocationCounter
-                p.systemTitle = cipher.systemTitle
-                p.blockCipherKey = cipher.blockCipherKey
-                p.authenticationKey = cipher.authenticationKey
                 crypted = GXCiphering.encrypt(p, tmp.array())
                 #  Length for AARQ user field
                 data.setUInt8(2 + len(crypted))
@@ -477,14 +474,14 @@ class _GXAPDU:
                     settings.setUseLogicalNameReferencing(True)
                 else:
                     #  If LN
-                    if not settings.getUseLogicalNameReferencing() and xml is None:
+                    if not settings.useLogicalNameReferencing and xml is None:
                         raise ValueError("Invalid VAA.")
             elif tag == 0xFA00:
                 #  If SN
                 if initiateRequest:
                     settings.setUseLogicalNameReferencing(False)
                 else:
-                    if settings.getUseLogicalNameReferencing():
+                    if settings.useLogicalNameReferencing:
                         raise ValueError("Invalid VAA.")
             else:
                 #  Unknown VAA.
@@ -536,10 +533,7 @@ class _GXAPDU:
                 xml.appendLine(tag, None, GXByteBuffer.hex(encrypted, False))
                 return
             data.position = data.position - 1
-            p = AesGcmParameter(0)
-            p.systemTitle = settings.sourceSystemTitle
-            p.blockCipherKey = settings.cipher.blockCipherKey
-            p.authenticationKey = settings.cipher.authenticationKey
+            p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
             tmp = GXCiphering.decrypt(settings.cipher, p, data)
             data.size = 0
             data.set(tmp)
@@ -558,7 +552,7 @@ class _GXAPDU:
     #
     @classmethod
     def parseApplicationContextName(cls, settings, buff, xml):
-        #pylint: disable=too-many-boolean-expressions
+        #pylint: disable=too-many-boolean-expressions, too-many-return-statements
         #  Get length.
         len_ = buff.getUInt8()
         if len(buff) - buff.position < len_:
@@ -605,7 +599,7 @@ class _GXAPDU:
             else:
                 return False
             return True
-        if settings.getUseLogicalNameReferencing():
+        if settings.useLogicalNameReferencing:
             if name == 1:
                 return True
             #  If ciphering is used.
@@ -985,12 +979,14 @@ class _GXAPDU:
         data.set(bb.subArray(1, 3))
         data.setUInt16(settings.getMaxPduSize())
         #  VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
-        if settings.getUseLogicalNameReferencing():
+        if settings.useLogicalNameReferencing:
             data.setUInt16(0x0007)
         else:
             data.setUInt16(0xFA00)
         if cipher and cipher.isCiphered():
-            p = AesGcmParameter(Command.GLO_INITIATE_RESPONSE, cipher.security, cipher.invocationCounter, cipher.systemTitle, cipher.blockCipherKey, cipher.authenticationKey)
+            p = AesGcmParameter(Command.GLO_INITIATE_RESPONSE, cipher.systemTitle, cipher.blockCipherKey, cipher.authenticationKey)
+            p.security = cipher.security
+            p.invocationCounter = cipher.invocationCounter
             return GXCiphering.encrypt(p, data.array())
         return data.array()
 

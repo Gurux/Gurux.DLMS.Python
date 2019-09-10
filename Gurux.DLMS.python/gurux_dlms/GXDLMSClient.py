@@ -186,9 +186,9 @@ class GXDLMSClient(object):
     #      value is
     # 0xFFFF.
     #
-    # @see GXDLMSClient#getClientAddress
-    # @see GXDLMSClient#getServerAddress
-    # @see GXDLMSClient#getUseLogicalNameReferencing
+    # @see GXDLMSClient.clientAddress
+    # @see GXDLMSClient.serverAddress
+    # @see GXDLMSClient.useLogicalNameReferencing
     # Maximum size of received PDU.
     #
     maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
@@ -505,9 +505,9 @@ class GXDLMSClient(object):
     # reply
     # Received data.
     # @see GXDLMSClient#aarqRequest
-    # @see GXDLMSClient#getUseLogicalNameReferencing
-    # @see GXDLMSClient#getNegotiatedConformance
-    # @see GXDLMSClient#getProposedConformance
+    # @see GXDLMSClient#useLogicalNameReferencing
+    # @see GXDLMSClient#negotiatedConformance
+    # @see GXDLMSClient#proposedConformance
     #
     def parseAareResponse(self, reply):
         self.isAuthenticationRequired = _GXAPDU.parsePDU(self.settings, self.settings.cipher, reply, None) == SourceDiagnostic.AUTHENTICATION_REQUIRED

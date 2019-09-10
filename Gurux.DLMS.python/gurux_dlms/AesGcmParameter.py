@@ -37,39 +37,27 @@ from .CountType import CountType
 
  # pylint: disable=too-many-instance-attributes
 class AesGcmParameter:
-    #
-    # Constructor.
-    #
-    # forTag: Tag.
-    # forSecurity: Security level.
-    # forSecuritySuite: Security suite.
-    # forInvocationCounter: Invocation counter.
-    # kdf
-    #            KDF.
-    # forAuthenticationKey
-    #            Authentication key.
-    # forOriginatorSystemTitle
-    #            Originator system title.
-    # forRecipientSystemTitle
-    #            Recipient system title.
-    # forDateTime
-    #            Date and time.
-    # forOtherInformation
-    #            Other information.
-    #
-    def __init__(self, forTag):
-        self.tag = int(forTag)
+    def __init__(self, tag=0, systemTitle=None, blockCipherKey=None, authenticationKey=None):
+        """
+        Constructor.
+
+        tag : Tag.
+        systemTitle : System title.
+        blockCipherKey : Block cipher key.
+        authenticationKey : Authentication key.
+        """
+        self.tag = tag
         self.security = Security.NONE
         # Invocation counter.
         self.invocationCounter = 0
         # Used security suite.
         self.securitySuite = SecuritySuite.AES_GCM_128
         # Block cipher key.
-        self.blockCipherKey = None
+        self.blockCipherKey = blockCipherKey
         # Authentication key.
-        self.authenticationKey = None
+        self.authenticationKey = authenticationKey
         # System title.
-        self.systemTitle = None
+        self.systemTitle = systemTitle
         # Recipient system title.
         self.recipientSystemTitle = None
         # Count type.

@@ -80,7 +80,8 @@ from .enums.SourceDiagnostic import SourceDiagnostic
 from .AesGcmParameter import AesGcmParameter
 from .GXDLMSException import GXDLMSException
 
-# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes, old-style-class
+# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,
+# old-style-class
 class GXDLMSTranslator:
     """
     This class is used to translate DLMS frame or PDU to xml.
@@ -300,17 +301,6 @@ class GXDLMSTranslator:
         self.multipleFrames = False
         self.pduFrames.clear()
 
-    #
-    # Convert message to XML.
-    #
-    # @param value
-    #            Bytes to convert.
-    # Converted xml.  {@link setPduOnly} {@link setCompleatePdu}
-    #
-
-    def messageToXml(self, value):
-        return self.messageToXml(GXByteBuffer(value))
-
     @classmethod
     def checkFrame(cls, frame_, xml):
         if frame_ == 0x93:
@@ -333,11 +323,18 @@ class GXDLMSTranslator:
                 xml.appendComment("I frame.")
 
     #
-    # Convert message to XML.
+    #
     #
     # pylint:disable=broad-except
-    def messageToXml_0(self, value):
+    def messageToXml(self, value):
+        """
+        Convert message to XML.
+        value : Bytes to convert.
+        Returns Converted xml.
+        """
         # pylint: disable=too-many-nested-blocks
+        if not isinstance(value, GXByteBuffer):
+            value = GXByteBuffer(value)
         if not value:
             raise ValueError("value")
         try:
@@ -511,7 +508,8 @@ class GXDLMSTranslator:
     # Converted XML.
     #
     def __pduToXml_(self, xml, value, omitDeclaration, omitNameSpace, allowUnknownCommand=True):
-        #pylint: disable=bad-option-value,too-many-arguments,too-many-locals,too-many-nested-blocks,redefined-variable-type
+        #pylint: disable=bad-option-value,too-many-arguments,too-many-locals,
+        #too-many-nested-blocks,redefined-variable-type
         if not value:
             raise ValueError("value")
         settings = GXDLMSSettings(True)
@@ -616,8 +614,8 @@ class GXDLMSTranslator:
                      Command.GLO_SET_REQUEST, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,
                      Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST,
                      Command.GLO_METHOD_RESPONSE, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST,
-                     Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_REQUEST,
-                     Command.DED_METHOD_RESPONSE):
+                     Command.DED_READ_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,
+                     Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE):
             if settings.cipher and self.comments:
                 originalPosition = value.position
                 len_ = xml.getXmlLength()
@@ -632,9 +630,9 @@ class GXDLMSTranslator:
                     if st:
                         p = None
                         if cmd in (Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST):
-                            p = AesGcmParameter(st, settings.cipher.getDedicatedKey(), settings.cipher.authenticationKey)
+                            p = AesGcmParameter(0, st, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
                         else:
-                            p = AesGcmParameter(st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                            p = AesGcmParameter(0, st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
                         if p.blockCipherKey:
                             data2 = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, value))
                             xml.startComment("Decrypt data:")
@@ -649,15 +647,16 @@ class GXDLMSTranslator:
             if cnt != len(value) - value.position:
                 xml.appendComment("Invalid length: " + str(cnt) + ". It should be: " + str(len(value) - value.position))
             xml.appendLine(cmd, "Value", value.toHex(False, value.position, len(value) - value.position))
-        elif cmd == Command.GENERAL_GLO_CIPHERING:
+        elif cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
             if settings.cipher and self.comments:
                 len_ = xml.getXmlLength()
                 try:
                     tmp = GXByteBuffer()
-                    tmp.set(value.data, value.position - 1, len(value) - value.position + 1)
-                    p = None
-                    p = AesGcmParameter(settings.cipher.getSystemTitle(), settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                    tmp.set(value, value.position - 1, len(value) - value.position + 1)
+                    p = AesGcmParameter(0, settings.cipher.systemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                    p.xml = xml
                     tmp = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, tmp))
+                    len_ = xml.getXmlLength()
                     xml.startComment("Decrypt data:")
                     self.__pduToXml_(xml, tmp, omitDeclaration, omitNameSpace, False)
                     xml.endComment()

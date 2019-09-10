@@ -96,12 +96,9 @@ class GXSecure:
             raise Exception("SHA256 is not supported.")
         if settings.authentication == Authentication.HIGH_GMAC:
             #  SC is always Security.Authentication.
-            p = AesGcmParameter(0)
+            p = AesGcmParameter(0, secret, cipher.blockCipherKey, cipher.authenticationKey)
             p.security = Security.AUTHENTICATION
             p.invocationCounter = ic
-            p.systemTitle = secret
-            p.blockCipherKey = cipher.blockCipherKey
-            p.authenticationKey = cipher.authenticationKey
             p.type_ = CountType.TAG
             challenge.clear()
             challenge.setUInt8(Security.AUTHENTICATION)

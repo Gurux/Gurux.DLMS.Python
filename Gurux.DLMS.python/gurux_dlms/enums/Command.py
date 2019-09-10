@@ -273,6 +273,51 @@ class Command(__base):
     EVENT_NOTIFICATION = 0xC2
 
     #
+    # Ded initiate request.
+    #
+    DED_INITIATE_REQUEST = 65
+
+    #
+    # Ded read request.
+    #
+    DED_READ_REQUEST = 69
+
+    #
+    # Ded write request.
+    #
+    DED_WRITE_REQUEST = 70
+
+    #
+    # Ded initiate response.
+    #
+    DED_INITIATE_RESPONSE = 72
+
+    #
+    # Ded read response.
+    #
+    DED_READ_RESPONSE = 76
+
+    #
+    # Ded write response.
+    #
+    DED_WRITE_RESPONSE = 77
+
+    #
+    # Ded confirmed service error.
+    #
+    DED_CONFIRMED_SERVICE_ERROR = 78
+
+    #
+    # Ded confirmed write request.
+    #
+    DED_UNCONFIRMED_WRITE_REQUEST = 86
+
+    #
+    # Ded information report request.
+    #
+    DED_INFORMATION_REPORT_REQUEST = 88
+
+    #
     # Ded get request.
     #
     DED_GET_REQUEST = 0xD0
