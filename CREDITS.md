@@ -1,5 +1,7 @@
 Credits
 =======
+  - handleMethodResponse issue
+    * [Olav Frengstad](https://github.com/lafka)
   - checkHdlcAddress isseue.
     * [lafka](https://github.com/lafka)
   - setUInt8 capitalized isseue.

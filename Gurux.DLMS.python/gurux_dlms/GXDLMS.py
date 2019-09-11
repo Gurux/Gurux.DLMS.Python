@@ -1195,14 +1195,14 @@ class GXDLMS:
             if data.data.position < data.data.size:
                 ret = data.data.getUInt8()
                 if ret == 0:
-                    cls.getDataFromBlock(data, 0)
+                    cls.getDataFromBlock(data.data, 0)
                 elif ret == 1:
                     ret = int(data.data.getUInt8())
                     if ret != 0:
                         data.error = data.data.getUInt8()
                         if ret == 9 and data.getError() == 16:
                             data.data.position = data.data.position - 2
-                            cls.getDataFromBlock(data, 0)
+                            cls.getDataFromBlock(data.data, 0)
                             data.error = 0
                             ret = 0
                     else:
