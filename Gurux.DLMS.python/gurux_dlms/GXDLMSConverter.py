@@ -127,35 +127,35 @@ class GXDLMSConverter:
             str_ = pkg_resources.resource_string(__name__, "SaudiArabia.txt").decode("utf-8")
         if not str_:
             return None
-        str_ = str_.replace("\r", " ")
-        rows = str_.split('\n')
+        str_ = str_.replace("\n", "\r")
+        rows = str_.split('\r')
         for it in rows:
-            items = it.split(';')
-            if len(items) > 1:
-                ot = ObjectType(int(items.get(0)))
-                ln = _GXCommon.toLogicalName(_GXCommon.logicalNameToBytes(items.get(1)))
-                version = int(items.get(2))
-                desc = items.get(3)
-                code_ = GXObisCode(ln, ot, desc)
-                code_.version = version
-                codes.append(code_)
+            if it and not it.startswith("#"):
+                items = it.split(';')
+                if len(items) > 1:
+                    ot = int(items[0])
+                    ln = _GXCommon.toLogicalName(_GXCommon.logicalNameToBytes(items[1]))
+                    version = int(items[2])
+                    desc = items[3]
+                    code_ = GXObisCode(ln, ot, 0, desc)
+                    code_.version = version
+                    codes.append(code_)
         return codes
 
     @classmethod
     def __readStandardObisInfo(cls, standard, codes):
         if standard != Standard.DLMS:
             for it in cls.__getObjects(standard):
-                tmp = GXStandardObisCode(None)
+                tmp = GXStandardObisCode(it.logicalName.split('.'))
                 tmp.interfaces = str(it.objectType)
-                tmp.OBIS = it.logicalName.split('.')
                 tmp.description = it.description
                 codes.append(tmp)
 
         str_ = pkg_resources.resource_string(__name__, "OBISCodes.txt").decode("utf-8")
-        str_ = str_.replace("\r", "")
-        rows = str_.split('\n')
+        str_ = str_.replace("\n", "\r")
+        rows = str_.split('\r')
         for it in rows:
-            if it != "":
+            if it and not it.startswith("#"):
                 items = it.split(';')
                 obis = items[0].split('.')
                 try:

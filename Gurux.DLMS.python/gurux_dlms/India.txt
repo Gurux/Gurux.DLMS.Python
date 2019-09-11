@@ -95,4 +95,4 @@
 70;0.0.96.3.10.255;0;Load Limit Function Status
 71;0.0.17.0.0.255;0;Load Limit Threshold (kW)
 71;0.0.17.0.0.255;0;Load Limit Value (kW)
-3;0.0.94.91.8.255;0;Cumulative power — OFF duration in min
+3;0.0.94.91.8.255;0;Cumulative power - OFF duration in min

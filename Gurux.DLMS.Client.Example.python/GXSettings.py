@@ -165,7 +165,7 @@ class GXSettings:
                 #  Get (read) selected objects.
                 for o in it.value.split(";,"):
                     tmp = o.split(":")
-                    if len(tmp) != 6:
+                    if len(tmp) != 2:
                         raise ValueError("Invalid Logical name or attribute index.")
                     self.readObjects.append((tmp[0].strip(), int(tmp[1].strip())))
             elif it.tag == 'S':#Serial Port

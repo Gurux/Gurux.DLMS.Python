@@ -43,11 +43,11 @@ class GXObisCode:
     # ot: Object type.
     # index: Attribute index.
     #
-    def __init__(self, ln=None, ot=ObjectType.NONE, index=0):
+    def __init__(self, ln=None, ot=ObjectType.NONE, index=0, desc=None):
         self.version = 0
         self.attributeIndex = index
         self.logicalName = ln
-        self.description = None
+        self.description = desc
         self.objectType = ot
         self.attributes = GXAttributeCollection(self)
         self.attributes.parent = self
