@@ -48,4 +48,4 @@ class RequestTypes(__base):
     NONE = 0
     DATABLOCK = 1
     FRAME = 2
-    BOTH = 3
+    GBT = 4

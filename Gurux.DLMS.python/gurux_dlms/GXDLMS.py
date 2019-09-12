@@ -110,14 +110,17 @@ class GXDLMS:
     # Acknowledgment message as byte array.
     #
     @classmethod
-    def receiverReady(cls, settings, type_):
-        if type_ == RequestTypes.NONE:
+    def receiverReady(cls, settings, reply):
+        if isinstance(reply, RequestTypes):
+            tmp = reply
+            reply = GXReplyData()
+            reply.moreData = tmp
+        if reply.moreData == RequestTypes.NONE:
             raise ValueError("Invalid receiverReady RequestTypes parameter.")
         #  Get next frame.
-        if (type_ & RequestTypes.FRAME) != 0:
+        if (reply.moreData & RequestTypes.FRAME) != 0:
             id_ = settings.getReceiverReady()
             return GXDLMS.getHdlcFrame(settings, id_, None)
-        cmd = int()
         if settings.useLogicalNameReferencing:
             if settings.isServer:
                 cmd = Command.GET_RESPONSE
@@ -128,20 +131,28 @@ class GXDLMS:
                 cmd = Command.READ_RESPONSE
             else:
                 cmd = Command.READ_REQUEST
-        #  Get next block.
-        reply = None
-        bb = GXByteBuffer(6)
-        if settings.useLogicalNameReferencing:
-            bb.setUInt32(settings.blockIndex)
-        else:
-            bb.setUInt16(settings.blockIndex)
-        settings.increaseBlockIndex()
-        if settings.useLogicalNameReferencing:
-            p = GXDLMSLNParameters(settings, 0, cmd, GetCommandType.NEXT_DATA_BLOCK, bb, None, 0xff)
+
+        if reply.moreData == RequestTypes.GBT:
+            p = GXDLMSLNParameters(settings, 0, Command.GENERAL_BLOCK_TRANSFER, 0, None, None, 0xff)
+            p.WindowSize = reply.windowSize
+            p.blockNumberAck = reply.blockNumberAck
+            p.blockIndex = reply.blockNumber
+            p.Streaming = False
             reply = GXDLMS.getLnMessages(p)
         else:
-            p = GXDLMSSNParameters(settings, cmd, 1, VariableAccessSpecification.BLOCK_NUMBER_ACCESS, bb, None)
-            reply = GXDLMS.getSnMessages(p)
+            #  Get next block.
+            bb = GXByteBuffer(4)
+            if settings.useLogicalNameReferencing:
+                bb.setUInt32(settings.blockIndex)
+            else:
+                bb.setUInt16(settings.blockIndex)
+            settings.increaseBlockIndex()
+            if settings.useLogicalNameReferencing:
+                p = GXDLMSLNParameters(settings, 0, cmd, GetCommandType.NEXT_DATA_BLOCK, bb, None, 0xff)
+                reply = GXDLMS.getLnMessages(p)
+            else:
+                p = GXDLMSSNParameters(settings, cmd, 1, VariableAccessSpecification.BLOCK_NUMBER_ACCESS, bb, None)
+                reply = GXDLMS.getSnMessages(p)
         return reply[0]
 
     #
@@ -399,12 +410,13 @@ class GXDLMS:
                             tmp = []
                             if p.settings.cipher.securitySuite == SecuritySuite.AES_GCM_128:
                                 tmp = cls.cipher0(p, reply)
-                            reply.data.size(0)
-                            reply.data.set(tmp)
-                            reply.size(0)
-                            len_ = reply.data.size
+                            p.data.size = 0
+                            p.data.set(tmp)
+                            reply.size = 0
+                            len_ = p.data.size
                             if 7 + len_ > p.settings.maxPduSize:
                                 len_ = p.settings.maxPduSize - 7
+                            ciphering = False
                     elif p.command != Command.GET_REQUEST and len_ + len(reply) > p.settings.maxPduSize:
                         len_ = p.settings.maxPduSize - len(reply)
                     reply.set(p.data, p.data.position, len_)
@@ -418,7 +430,7 @@ class GXDLMS:
                     reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
                     reply.set(p.settings.gateway.physicalDeviceAddress)
                     reply.set(tmp)
-            if ciphering and p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER == Conformance.NONE and p.command != Command.RELEASE_REQUEST:
+            if ciphering and reply and p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER == Conformance.NONE and p.command != Command.RELEASE_REQUEST:
                 tmp = []
                 if p.settings.cipher.securitySuite == SecuritySuite.AES_GCM_128:
                     tmp = cls.cipher0(p, reply.array())
@@ -1484,7 +1496,7 @@ class GXDLMS:
                         settings.resetBlockIndex()
         elif type_ == GetCommandType.WITH_LIST:
             cnt = _GXCommon.getObjectCount(data)
-            values = list([None]*cnt)
+            values = list([None] * cnt)
             if reply.xml:
                 reply.xml.appendStartTag(TranslatorTags.RESULT, "Qty", reply.xml.integerToHex(cnt, 2))
             pos = 0
@@ -1562,9 +1574,9 @@ class GXDLMS:
             return
         cls.getDataFromBlock(data.data, index)
         if (bc & 0x80) == 0:
-            data.moreData = (RequestTypes(data.moreData | RequestTypes.DATABLOCK))
+            data.moreData = (RequestTypes(data.moreData | RequestTypes.GBT))
         else:
-            data.moreData = (RequestTypes(data.moreData & ~RequestTypes.DATABLOCK))
+            data.moreData = (RequestTypes(data.moreData & ~RequestTypes.GBT))
             if data.data.size != 0:
                 data.data.position = 0
                 cls.getPdu(settings, data)
@@ -1643,9 +1655,10 @@ class GXDLMS:
                 else:
                     data.data.position = 1
             if cmd == Command.GENERAL_BLOCK_TRANSFER:
-                if not data.isMoreData():
-                    cls.handleGbt(settings, data)
-                data.command = (Command.NONE)
+                data.data.position = data.cipherIndex + 1
+                cls.handleGbt(settings, data)
+                data.cipherIndex = data.data.size
+                data.command = Command.NONE
             elif settings.isServer:
                 if cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST, \
                     Command.GLO_METHOD_REQUEST, Command.GLO_EVENT_NOTIFICATION_REQUEST, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, \

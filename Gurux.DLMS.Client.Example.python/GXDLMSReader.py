@@ -156,7 +156,7 @@ class GXDLMSReader:
                     if reply.isStreaming():
                         data = None
                     else:
-                        data = self.client.receiverReady(reply.moreData)
+                        data = self.client.receiverReady(reply)
                     self.readDLMSPacket(data, reply)
 
     def initializeConnection(self):
