@@ -565,17 +565,14 @@ class GXDLMS:
                 elif p.settings.interfaceType == InterfaceType.HDLC:
                     messages.append(cls.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
-                        if p.settings.isServer:
-                            frame_ = 0
-                        else:
-                            frame_ = p.settings.getNextSend(False)
+                        frame_ = p.settings.getNextSend(False)
                 elif p.settings.interfaceType == InterfaceType.PDU:
                     messages.append(reply.array())
                     break
                 else:
                     raise ValueError("InterfaceType")
             reply.clear()
-            if not p.data and p.data.position != p.data.size:
+            if not (p.data and p.data.position != p.data.size):
                 break
         return messages
 
@@ -608,8 +605,8 @@ class GXDLMS:
 
     @classmethod
     def getSNPdu(cls, p, reply):
-        ciphering = p.settings.cipher and p.settings.cipher.security != Security.NONE
-        if (not ciphering or p.command == Command.AARQ or p.command == Command.AARE) and p.settings.interfaceType == InterfaceType.HDLC:
+        ciphering = p.settings.cipher and p.settings.cipher.security != Security.NONE and p.command != Command.AARQ and p.command != Command.AARE
+        if not ciphering and p.settings.interfaceType == InterfaceType.HDLC:
             if p.settings.isServer:
                 reply.set(_GXCommon.LLC_REPLY_BYTES)
             elif not reply:
@@ -632,8 +629,8 @@ class GXDLMS:
             reply.set(p.attributeDescriptor)
         elif p.command != Command.AARQ and p.command != Command.AARE:
             reply.setUInt8(p.command)
-            if p.getCount() != 0xFF:
-                _GXCommon.setObjectCount(p.getCount(), reply)
+            if p.count != 0xFF:
+                _GXCommon.setObjectCount(p.count, reply)
             if p.requestType != 0xFF:
                 reply.setUInt8(p.requestType)
             reply.set(p.attributeDescriptor)
@@ -1105,7 +1102,7 @@ class GXDLMS:
             values = list()
             if isinstance(reply.value, list):
                 values.append(reply.value)
-            reply.setValue(None)
+            reply.value = None
         if reply.xml:
             reply.xml.appendStartTag(Command.READ_RESPONSE, "Qty", reply.xml.integerToHex(cnt, 2))
         while pos != cnt:
@@ -1121,7 +1118,6 @@ class GXDLMS:
             else:
                 type_ = reply.commandType
             standardXml = reply.xml and reply.xml.outputType == TranslatorOutputType.STANDARD_XML
-            type_ = SingleReadResponse(type_)
             if type_ == SingleReadResponse.DATA:
                 reply.error = 0
                 if reply.xml:
@@ -1137,13 +1133,13 @@ class GXDLMS:
                 elif cnt == 1:
                     cls.getDataFromBlock(reply.data, 0)
                 else:
-                    reply.setReadPosition(data.position)
+                    reply.readPosition = data.position
                     cls.getValueFromData(settings, reply)
-                    if data.position == reply.getReadPosition():
+                    if data.position == reply.readPosition:
                         index2 = index
-                        if cnt != 1 and reply.getTotalCount() == 0:
+                        if cnt != 1 and reply.totalCount == 0:
                             index2 += 1
-                        reply.setTotalCount(0)
+                        reply.totalCount = 0
                         data.position = index2
                         cls.getDataFromBlock(reply.data, 0)
                         reply.value = None
@@ -1151,7 +1147,7 @@ class GXDLMS:
                         return False
                     data.position = reply.readPosition
                     values.append(reply.value)
-                    reply.setValue(None)
+                    reply.value = None
             elif type_ == SingleReadResponse.DATA_ACCESS_ERROR:
                 reply.error = data.getUInt8()
                 if reply.xml:
