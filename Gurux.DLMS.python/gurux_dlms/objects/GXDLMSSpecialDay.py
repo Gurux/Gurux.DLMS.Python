@@ -41,3 +41,6 @@ class GXDLMSSpecialDay:
         self.index = 0
         self.date = None
         self.dayId = 0
+
+    def __str__(self):
+        return str(self.index) + " " + str(self.date) + " " + str(self.dayId)

@@ -31,9 +31,12 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import math
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
+from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
+from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType, Unit
 
@@ -41,7 +44,7 @@ from ..enums import ObjectType, DataType, Unit
 class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
-    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSProfileGeneric
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSExtendedRegister
     """
 
     def __init__(self, ln=None, sn=0):
@@ -121,17 +124,56 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
     #      Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        if e.index == 1:
+            return _GXCommon.logicalNameToBytes(self.logicalName)
+        if e.index == 2:
+            return self.value
+        if e.index == 3:
+            data = GXByteBuffer()
+            data.setUInt8(DataType.STRUCTURE)
+            data.setUInt8(2)
+            _GXCommon.setData(data, DataType.INT8, int(self.scaler))
+            _GXCommon.setData(data, DataType.ENUM, int(self.unit))
+            return data.array()
         if e.index == 4:
             return self.status
         if e.index == 5:
             return self.captureTime
-        return super(GXDLMSExtendedRegister, self).getValue(settings, e)
+        e.error = ErrorCode.READ_WRITE_DENIED
+        return None
 
     #
     #      Set value of given attribute.
     #
     def setValue(self, settings, e):
-        if e.index == 4:
+        #pylint: disable=broad-except
+        if e.index == 1:
+            self.logicalName = _GXCommon.toLogicalName(e.value)
+        elif e.index == 2:
+            if self.scaler != 0 and e.value:
+                try:
+                    if settings.isServer:
+                        self.value = e.value
+                    else:
+                        self.value = e.value * math.log10(self.scaler)
+                except Exception:
+                    #  Sometimes scaler is set for wrong Object type.
+                    self.value = e.value
+            else:
+                self.value = e.value
+        elif e.index == 3:
+            #  Set default values.
+            if not e.value:
+                self.scaler = 0
+                self.unit = 0
+            else:
+                if not e.value:
+                    self.scaler = 0
+                    self.unit = 0
+                else:
+                    self.scaler = e.value[0]
+                    self.unit = e.value[1]
+        elif e.index == 4:
             self.status = e.value
         elif e.index == 5:
             if e.value is None:
@@ -142,7 +184,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
                 else:
                     self.captureTime = e.value
         else:
-            super(GXDLMSExtendedRegister, self).setValue(settings, e)
+            e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
         self.unit = Unit(reader.readElementContentAsInt("Unit", 0))
