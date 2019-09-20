@@ -1,5 +1,7 @@
 Credits
 =======
+  - Wrong positioning of arguments for len field in RLRQ
+    * [alyainfo](https://www.gurux.fi/user/155959)
   - handleMethodResponse issue
     * [Olav Frengstad](https://github.com/lafka)
   - checkHdlcAddress isseue.

@@ -585,9 +585,8 @@ class GXDLMSClient(object):
         #Increase IC.
         if self.settings.cipher and self.settings.cipher.isCiphered:
             self.settings.cipher.invocationCounter = self.settings.cipher.invocationCounter + 1
-
         _GXAPDU.generateUserInformation(self.settings, self.settings.cipher, None, buff)
-        buff.setUInt8(0, int((len(buff) - 1)))
+        buff.setUInt8(len(buff) - 1, 0)
         reply = None
         if self.useLogicalNameReferencing:
             p = GXDLMSLNParameters(self.settings, 0, Command.RELEASE_REQUEST, 0, buff, None, 0xff)
