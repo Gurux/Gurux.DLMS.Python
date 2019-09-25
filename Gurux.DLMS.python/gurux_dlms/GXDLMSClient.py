@@ -162,6 +162,15 @@ class GXDLMSClient(object):
     #
     serverAddressSize = property(__getServerAddressSize, __setServerAddressSize)
 
+    def __getSourceSystemTitle(self):
+        return self.settings.sourceSystemTitle
+
+    #
+    # Source system title.
+    # Meter returns system title when ciphered connection is made or GMAC authentication is used.
+    #
+    sourceSystemTitle = property(__getSourceSystemTitle, None)
+
     def __getWindowSize(self):
         return self.settings.windowSize
 
