@@ -165,7 +165,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif index == 9:
             ret = DataType.BITSTRING
         elif index == 10:
-            ret = DataType.OCTET_STRING
+            ret = DataType.DATETIME
         elif index == 11:
             ret = DataType.INT32
         elif index == 12:
@@ -175,6 +175,11 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
+    def getUIDataType(self, index):
+        if index in (7, 10):
+            return DataType.DATETIME
+        return super(GXDLMSCharge, self).getUIDataType(index)
 
     @classmethod
     def getUnitCharge(cls, charge):
@@ -286,7 +291,10 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 9:
             self.chargeConfiguration = str(e.value)
         elif e.index == 10:
-            self.lastCollectionTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+            if isinstance(e.value, bytearray):
+                self.lastCollectionTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+            else:
+                self.lastCollectionTime = e.value
         elif e.index == 11:
             self.lastCollectionAmount = e.value
         elif e.index == 12:

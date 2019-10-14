@@ -250,9 +250,9 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
 
     def imageTransferInitiate(self, client, imageIdentifier, forImageSize):
         if self.imageBlockSize == 0:
-            raise ValueError("Invalid image block size")
+            raise ValueError("Invalid image block size.")
         if self.imageBlockSize > client.maxReceivePDUSize:
-            raise ValueError("Invalid image block size")
+            raise ValueError("Image block size is bigger than max PDU size.")
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(2)

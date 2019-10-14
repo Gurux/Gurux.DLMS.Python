@@ -67,7 +67,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
     def getUIDataType(self, index):
         if index in (2, 5, 6):
             return DataType.DATETIME
-        return super(GXDLMSClock, self).getDataType(index)
+        return super(GXDLMSClock, self).getUIDataType(index)
 
     def getValues(self):
         return [self.logicalName,
@@ -223,13 +223,10 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            if e.value is None:
-                self.time = GXDateTime()
+            if isinstance(e.value, bytearray):
+                self.time = _GXCommon.changeType(e.value, DataType.DATETIME)
             else:
-                if isinstance(e.value, bytearray):
-                    self.time = _GXCommon.changeType(e.value, DataType.DATETIME)
-                else:
-                    self.time = e.value
+                self.time = e.value
         elif e.index == 3:
             if e.value is None:
                 self.timeZone = 0
