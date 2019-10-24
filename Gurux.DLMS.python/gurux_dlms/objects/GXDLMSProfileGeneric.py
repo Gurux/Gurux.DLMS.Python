@@ -201,7 +201,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setObjectCount(e.rowEndIndex - e.rowBeginIndex, data)
             else:
                 _GXCommon.setObjectCount(len(table), data)
-        types = list(len(self.captureObjects))
+        types = [None] * len(self.captureObjects)
         pos = 0
         for k, v in self.captureObjects:
             types[pos] = k.getDataType(v.attributeIndex)
@@ -506,7 +506,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
 
     def __capture(self, server):
         srv = server
-        values = list(len(self.captureObjects))
+        values = [None] * len(self.captureObjects)
         pos = 0
         args = [ValueEventArgs(srv, self, 2)]
         srv.onPreGet(args)
