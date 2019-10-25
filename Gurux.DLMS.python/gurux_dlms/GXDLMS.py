@@ -358,7 +358,7 @@ class GXDLMS:
                     else:
                         reply.setUInt8(cls.getInvokeIDPriority(p.settings))
             reply.set(p.attributeDescriptor)
-            if p.multipleBlocks and not p.settings.negotiatedConformance.contains(Conformance.GENERAL_BLOCK_TRANSFER):
+            if p.multipleBlocks and not (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) != 0:
                 if p.lastBlock:
                     reply.setUInt8(1)
                     p.settings.setCount(0)

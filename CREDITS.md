@@ -1,5 +1,7 @@
 Credits
 =======
+  - Use bitwise operator when checking conformance for General Block Transfer
+    * [Olav Frengstad](https://github.com/lafka)
   - Wrong positioning of arguments for len field in RLRQ
     * [alyainfo](https://www.gurux.fi/user/155959)
   - handleMethodResponse issue
