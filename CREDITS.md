@@ -1,5 +1,7 @@
 Credits
 =======
+  - getLNPdu counts length wrong when GBT is used.
+    * [Olav Frengstad](https://github.com/lafka)
   - Use bitwise operator when checking conformance for General Block Transfer
     * [Olav Frengstad](https://github.com/lafka)
   - Wrong positioning of arguments for len field in RLRQ

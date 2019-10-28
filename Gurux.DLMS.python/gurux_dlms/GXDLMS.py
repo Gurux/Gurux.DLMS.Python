@@ -358,7 +358,7 @@ class GXDLMS:
                     else:
                         reply.setUInt8(cls.getInvokeIDPriority(p.settings))
             reply.set(p.attributeDescriptor)
-            if p.multipleBlocks and not (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) != 0:
+            if p.multipleBlocks and not (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
                 if p.lastBlock:
                     reply.setUInt8(1)
                     p.settings.setCount(0)
@@ -372,7 +372,7 @@ class GXDLMS:
                         reply.setUInt8(1)
                     reply.setUInt8(p.status)
                 if p.data:
-                    len_ = reply.data.size - reply.data.position
+                    len_ = p.data.size - p.data.position
                 else:
                     len_ = 0
                 totalLength = len_ + len(reply)
