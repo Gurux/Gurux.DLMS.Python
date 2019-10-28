@@ -45,10 +45,9 @@ class SerialNumberCounter:
                 values.append(expressions[last: index])
                 values.append(str(ch))
                 last = index + 1
-            else:
-                index += 1
+            index += 1
         if index != last:
-            values.append(expressions[last: index])
+            values.append(expressions[last:])
         return values
 
     @classmethod

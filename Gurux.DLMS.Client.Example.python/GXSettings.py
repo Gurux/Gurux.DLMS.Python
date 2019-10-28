@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from gurux_dlms.enums import InterfaceType, Authentication
+from gurux_dlms import GXDLMSClient
 from gurux_dlms.secure import GXDLMSSecureClient
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity
@@ -118,7 +119,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:S:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:S:n:")
         for it in parameters:
             if it.tag == 'w':
                 self.client.interfaceType = InterfaceType.WRAPPER
@@ -194,6 +195,8 @@ class GXSettings:
                 self.client.clientAddress = int(it.value)
             elif it.tag == 's':
                 self.client.serverAddress = int(it.value)
+            elif it.tag == 'n':
+                self.client.serverAddress = GXDLMSClient.getServerAddress(int(it.value))
             elif it.tag == '?':
                 if it.tag == 'c':
                     raise ValueError("Missing mandatory client option.")
