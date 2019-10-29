@@ -181,14 +181,11 @@ class GXSettings:
             elif it.tag == 'a':
                 try:
                     it.value = it.value.upper()
-                    if it.value.startswith("HIGH"):
+                    if it.value != "HIGH" and it.value.startswith("HIGH"):
                         it.value = "HIGH_" + it.value[4:]
                     self.client.authentication = Authentication[it.value]
                 except Exception:
-                    #raise ValueError("Invalid Authentication option: '" +
-                    #it.value + "'.  (None, Low, High, HighMd5, HighSha1,
-                    #HighGmac, HighSha256)")
-                    raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, HighGmac)")
+                    raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighGmac)")
             elif it.tag == 'o':
                 pass
             elif it.tag == 'c':
