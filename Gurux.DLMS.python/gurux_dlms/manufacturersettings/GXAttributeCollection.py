@@ -51,8 +51,6 @@ class GXAttributeCollection(list):
         item.parent = self
 
     def find(self, index):
-        if index < 1:
-            raise ValueError("Invalid attribute Index.")
         for it in self:
             if it.index == index:
                 return it
