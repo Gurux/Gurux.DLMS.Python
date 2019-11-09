@@ -336,7 +336,7 @@ class GXDLMS:
                 else:
                     pos = len(reply)
                     _GXCommon.setData(reply, DataType.OCTET_STRING, p.getTime())
-                    if p.command != Command.DATA_NOTIFICATION:
+                    if p.command != Command.EVENT_NOTIFICATION:
                         reply.move(pos + 1, pos, len(reply) - pos - 1)
                 cls.multipleBlocks(p, reply, ciphering)
             elif p.command != Command.RELEASE_REQUEST:
