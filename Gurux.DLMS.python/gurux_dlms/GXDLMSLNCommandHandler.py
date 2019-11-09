@@ -735,9 +735,11 @@ class GXDLMSLNCommandHandler:
     def handleEventNotification(cls, settings, reply, list_):
         data = reply.data
         reply.time = None
+        #Check is date-time available.
         len_ = data.getUInt8()
         tmp = None
         if len_ != 0:
+            len_ = data.getUInt8()
             tmp = bytearray(len_)
             data.get(tmp)
             reply.time = _GXCommon.changeType(tmp, DataType.DATETIME)
