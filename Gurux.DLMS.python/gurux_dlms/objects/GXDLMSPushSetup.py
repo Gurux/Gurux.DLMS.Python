@@ -202,7 +202,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                     obj = settings.objects.findByLN(type_, ln)
                     if not obj:
                         obj = _GXObjectFactory.createObject(type_)
-                        obj.logicalName(ln)
+                        obj.logicalName = ln
                     co = GXDLMSCaptureObject()
                     co.attributeIndex = it[2]
                     co.dataIndex = it[3]
