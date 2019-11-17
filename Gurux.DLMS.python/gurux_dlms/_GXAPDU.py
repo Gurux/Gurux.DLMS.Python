@@ -956,7 +956,7 @@ class _GXAPDU:
         ch = buff.getUInt8()
         if ch < 0 or ch > 7:
             raise ValueError("Invalid tag.")
-        settings.authentication = Authentication(ch)
+        settings.authentication = ch
 
     #pylint: disable=too-many-function-args
     @classmethod

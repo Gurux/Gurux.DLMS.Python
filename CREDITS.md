@@ -1,5 +1,7 @@
 Credits
 =======
+  - GXDLMSPushSetup: set logicalName(ln) changed to logicalName = ln
+    * [Olav Frengstad](https://github.com/lafka)
   - getLNPdu counts length wrong when GBT is used.
     * [Olav Frengstad](https://github.com/lafka)
   - Use bitwise operator when checking conformance for General Block Transfer
