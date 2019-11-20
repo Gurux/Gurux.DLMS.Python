@@ -927,6 +927,8 @@ class _GXAPDU:
             settings.ctoSChallenge = tmp
         if xml:
             if xml.outputType == TranslatorOutputType.SIMPLE_XML:
+                if GXByteBuffer.isAsciiString(tmp):
+                    xml.appendComment(tmp.decode("utf-8"))
                 xml.appendLine(TranslatorGeneralTags.CALLING_AUTHENTICATION, "Value", GXByteBuffer.hex(tmp, False))
             else:
                 xml.appendStartTag(TranslatorGeneralTags.CALLING_AUTHENTICATION)

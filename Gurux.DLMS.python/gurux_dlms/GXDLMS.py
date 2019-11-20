@@ -536,11 +536,11 @@ class GXDLMS:
                         frame_ = p.settings.getNextSend(False)
                 elif p.settings.interfaceType == InterfaceType.PDU:
                     messages.append(reply.array())
-                    frame_ = 0
                     break
                 else:
                     raise ValueError("InterfaceType")
             reply.clear()
+            frame_ = 0
             if not p.data or p.data.position == p.data.size:
                 break
         return messages
@@ -573,7 +573,8 @@ class GXDLMS:
                 else:
                     raise ValueError("InterfaceType")
             reply.clear()
-            if not (p.data and p.data.position != p.data.size):
+            frame_ = 0
+            if not p.data or p.data.position == p.data.size:
                 break
         return messages
 
