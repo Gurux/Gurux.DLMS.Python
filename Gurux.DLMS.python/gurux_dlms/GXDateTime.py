@@ -33,7 +33,7 @@
 # ---------------------------------------------------------------------------
 import datetime
 import calendar
-from .enums import DateTimeSkips, ClockStatus
+from .enums import DateTimeSkips, ClockStatus, DateTimeExtraInfo
 
 ###Python 2 requires this
 #pylint: disable=bad-option-value,old-style-class
@@ -45,8 +45,7 @@ class GXDateTime:
     #            Date value.
     #
     def __init__(self, value=None):
-        self.daylightSavingsBegin = False
-        self.daylightSavingsEnd = False
+        self.extra = DateTimeExtraInfo.NONE
         self.skip = DateTimeSkips.NONE
         self.status = ClockStatus.OK
         self.dayOfWeek = 0

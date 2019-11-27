@@ -33,7 +33,6 @@
 # ---------------------------------------------------------------------------
 #pylint: disable=broad-except,no-name-in-module
 import time
-import calendar
 from datetime import datetime
 # If E0401: Unable to import 'dateutil.tz'
 # pip install python-dateutil
@@ -45,7 +44,7 @@ from ._GXDataInfo import _GXDataInfo
 from ..GXByteBuffer import GXByteBuffer
 from ..GXBitString import GXBitString
 from ..enums import DataType
-from ..enums import DateTimeSkips, ClockStatus
+from ..enums import DateTimeSkips, DateTimeExtraInfo, ClockStatus
 from ..TranslatorTags import TranslatorTags
 from ..TranslatorOutputType import TranslatorOutputType
 from ..GXStructure import GXStructure
@@ -445,7 +444,7 @@ class _GXCommon:
             return None
         str_ = None
         if info.xml:
-            str_ = buff.tintegerToHex(False, buff.position, 5)
+            str_ = buff.integerToHex(False, buff.position, 5)
         try:
             dt = GXDate()
             #  Get year.
@@ -455,14 +454,28 @@ class _GXCommon:
                 year = 2000
             #  Get month
             month = buff.getUInt8()
-            if month == 0xFF:
-                dt.skip |= DateTimeSkips.MONTH
+            if month == 0xFE:
+                dt.extra |= DateTimeExtraInfo.DST_BEGIN
                 month = 1
+            elif month != 0xFD:
+                dt.extra |= DateTimeExtraInfo.DST_END
+                month = 1
+            else:
+                if month < 1 or month > 12:
+                    dt.skip |= DateTimeSkips.MONTH
+                    month = 1
             #  Get day
             day = buff.getUInt8()
-            if day == 0xFF:
-                dt.skip |= DateTimeSkips.DAY
+            if day == 0xFE:
+                dt.extra |= DateTimeExtraInfo.LAST_DAY
                 day = 1
+            elif day != 0xFD:
+                dt.extra |= DateTimeExtraInfo.LAST_DAY2
+                day = 1
+            else:
+                if day < 1 or day > 31:
+                    dt.skip |= DateTimeSkips.DAY
+                    day = 1
             dt.value = datetime(year, month, day, 0, 0, 0, 0)
             value = dt
             #  Skip week day
@@ -492,6 +505,7 @@ class _GXCommon:
         from ..GXDateTime import GXDateTime
         value = None
         skip = DateTimeSkips.NONE
+        extra = DateTimeExtraInfo.NONE
         #  If there is not enough data available.
         if len(buff) - buff.position < 12:
             info.complete = (False)
@@ -531,16 +545,28 @@ class _GXCommon:
             if year < 1 or year == 0xFFFF:
                 skip |= DateTimeSkips.YEAR
                 year = 2000
-            dt.daylightSavingsBegin = month == 0xFE
-            dt.daylightSavingsEnd = month == 0xFD
-            if month < 1 or month > 12:
-                skip |= DateTimeSkips.MONTH
+            if month == 0xFE:
+                extra |= DateTimeExtraInfo.DST_BEGIN
                 month = 1
-            if day == -1 or day == 0 or day > 31:
-                skip |= DateTimeSkips.DAY
+            elif month != 0xFD:
+                extra |= DateTimeExtraInfo.DST_END
+                month = 1
+            else:
+                if month < 1 or month > 12:
+                    skip |= DateTimeSkips.MONTH
+                    month = 1
+
+            if day == 0xFE:
+                extra |= DateTimeExtraInfo.LAST_DAY
                 day = 1
-            elif day < 0:
-                day = calendar.monthrange(year, month)[1] + day + 3
+            elif day != 0xFD:
+                extra |= DateTimeExtraInfo.LAST_DAY2
+                day = 1
+            else:
+                if day == -1 or day == 0 or day > 31:
+                    skip |= DateTimeSkips.DAY
+                    day = 1
+
             if hour < 0 or hour > 24:
                 skip |= DateTimeSkips.HOUR
                 hour = 0
@@ -1340,19 +1366,24 @@ class _GXCommon:
         else:
             buff.setUInt16(dt.value.year)
         #  Add month
-        if dt.daylightSavingsEnd:
+        if dt.extra & DateTimeExtraInfo.DST_BEGIN != 0:
             buff.setUInt8(0xFD)
-        elif dt.daylightSavingsBegin:
+        elif dt.extra & DateTimeExtraInfo.DST_END != 0:
             buff.setUInt8(0xFE)
-        elif dt.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
+        elif dt.skip & DateTimeSkips.MONTH != 0:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.month)
         #  Add day
-        if dt.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
+        if dt.extra & DateTimeExtraInfo.LAST_DAY2 != DateTimeSkips.NONE:
+            buff.setUInt8(0xFD)
+        elif dt.extra & DateTimeExtraInfo.LAST_DAY != DateTimeSkips.NONE:
+            buff.setUInt8(0xFE)
+        elif dt.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.day)
+
         #  Day of week.
         if dt.skip & DateTimeSkips.DAY_OF_WEEK != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)

@@ -43,6 +43,7 @@ from .Command import Command
 from .Conformance import Conformance
 from .DataType import DataType
 from .DateTimeSkips import DateTimeSkips
+from .DateTimeExtraInfo import DateTimeExtraInfo
 from .Definition import Definition
 from .ErrorCode import ErrorCode
 from .ExceptionServiceError import ExceptionServiceError

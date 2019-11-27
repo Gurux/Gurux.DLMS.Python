@@ -35,6 +35,7 @@
     <Compile Include="gurux_dlms\enums\Command.py" />
     <Compile Include="gurux_dlms\enums\Conformance.py" />
     <Compile Include="gurux_dlms\enums\DataType.py" />
+    <Compile Include="gurux_dlms\enums\DateTimeExtraInfo.py" />
     <Compile Include="gurux_dlms\enums\DateTimeSkips.py" />
     <Compile Include="gurux_dlms\enums\Definition.py" />
     <Compile Include="gurux_dlms\enums\ErrorCode.py" />
