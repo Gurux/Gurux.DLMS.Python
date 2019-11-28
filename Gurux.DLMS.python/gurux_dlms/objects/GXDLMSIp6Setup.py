@@ -241,16 +241,22 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 4:
             self.unicastIPAddress = []
             if e.value:
+                # This fails in Python 2.7.4. Update to 2.7.6
+                # https://bugs.python.org/issue10212
                 for it in e.value:
                     self.unicastIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
         elif e.index == 5:
             self.multicastIPAddress = []
             if e.value:
+                # This fails in Python 2.7.4. Update to 2.7.6
+                # https://bugs.python.org/issue10212
                 for it in e.value:
                     self.multicastIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
         elif e.index == 6:
             self.gatewayIPAddress = []
             if e.value:
+                # This fails in Python 2.7.4. Update to 2.7.6
+                # https://bugs.python.org/issue10212
                 for it in e.value:
                     self.gatewayIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
         elif e.index == 7:
@@ -262,6 +268,8 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             if not e.value:
                 self.secondaryDNSAddress = None
             else:
+                # This fails in Python 2.7.4. Update to 2.7.6
+                # https://bugs.python.org/issue10212
                 self.secondaryDNSAddress = socket.inet_ntop(socket.AF_INET6, it)
         elif e.index == 9:
             self.trafficClass = e.value

@@ -39,7 +39,7 @@ class GXDLMSWeekProfile:
     #pylint: disable=too-many-instance-attributes,too-few-public-methods
     def __init__(self):
         """Constructor."""
-        self.name = bytes
+        self.name = None
         self.monday = 0
         self.tuesday = 0
         self.wednesday = 0
@@ -51,6 +51,6 @@ class GXDLMSWeekProfile:
     def __str__(self):
         if not self.name:
             return None
-        if isinstance(self.name, str):
+        if isinstance(self.name, (str, unicode)):
             return self.name
         return GXByteBuffer.hex(self.name)

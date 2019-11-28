@@ -414,7 +414,7 @@ class _GXCommon:
             else:
                 ms = 0
                 value.skip |= DateTimeSkips.MILLISECOND
-            value.value = datetime(datetime.min.year, 1, 1, hour, minute, second, ms)
+            value.value = datetime(1900, 1, 1, hour, minute, second, ms)
         except Exception as ex:
             if info.xml is None:
                 raise ex
@@ -449,7 +449,7 @@ class _GXCommon:
             dt = GXDate()
             #  Get year.
             year = buff.getUInt16()
-            if year == 0xFFFF:
+            if year < 1900 or year == 0xFFFF:
                 dt.skip |= DateTimeSkips.YEAR
                 year = 2000
             #  Get month
