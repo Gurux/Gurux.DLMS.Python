@@ -1423,16 +1423,21 @@ class _GXCommon:
         else:
             buff.setUInt16(dt.value.year)
         #  Add month
-        if dt.daylightSavingsEnd:
+        if dt.extra & DateTimeExtraInfo.DST_BEGIN != 0:
             buff.setUInt8(0xFD)
-        elif dt.daylightSavingsBegin:
+        elif dt.extra & DateTimeExtraInfo.DST_END != 0:
             buff.setUInt8(0xFE)
         elif dt.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.month)
+
         #  Add day
-        if dt.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
+        if dt.extra & DateTimeExtraInfo.LAST_DAY2 != DateTimeSkips.NONE:
+            buff.setUInt8(0xFD)
+        elif dt.extra & DateTimeExtraInfo.LAST_DAY != DateTimeSkips.NONE:
+            buff.setUInt8(0xFE)
+        elif dt.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.day)
