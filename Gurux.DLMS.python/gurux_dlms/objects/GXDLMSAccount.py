@@ -337,14 +337,14 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.accountStatus = AccountStatus(e.value[0])
-            self.paymentMode = PaymentMode(e.value[1])
+            self.accountStatus = e.value[0]
+            self.paymentMode = e.value[1]
         elif e.index == 3:
             self.currentCreditInUse = e.value
         elif e.index == 4:
             bb = GXByteBuffer()
             _GXCommon.setBitString(bb, e.value, False)
-            self.currentCreditStatus = AccountCreditStatus(bb.getUInt8(0))
+            self.currentCreditStatus = bb.getUInt8(0)
         elif e.index == 5:
             self.availableCredit = e.value
         elif e.index == 6:

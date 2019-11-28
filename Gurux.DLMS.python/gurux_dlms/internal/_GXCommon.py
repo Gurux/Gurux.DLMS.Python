@@ -542,7 +542,7 @@ class _GXCommon:
                 skip |= DateTimeSkips.DEVITATION
             status = buff.getUInt8()
             dt.status = ClockStatus(status)
-            if year < 1 or year == 0xFFFF:
+            if year < 1900 or year == 0xFFFF:
                 skip |= DateTimeSkips.YEAR
                 year = 2000
             if month == 0xFE:

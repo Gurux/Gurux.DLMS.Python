@@ -285,7 +285,10 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 6:
             self.setUnitCharge(settings, self.unitChargePassive, e.value)
         elif e.index == 7:
-            self.unitChargeActivationTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+            if isinstance(e.value, bytearray):
+                self.unitChargeActivationTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+            else:
+                self.unitChargeActivationTime = e.value
         elif e.index == 8:
             self.period = e.value
         elif e.index == 9:

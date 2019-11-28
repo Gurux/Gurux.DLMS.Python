@@ -211,9 +211,9 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 7:
             bb = GXByteBuffer()
             _GXCommon.setBitString(bb, e.value, False)
-            self.creditConfiguration = CreditConfiguration(bb.getUInt8(0))
+            self.creditConfiguration = bb.getUInt8(0)
         elif e.index == 8:
-            self.status = CreditStatus(e.value)
+            self.status = e.value
         elif e.index == 9:
             self.presetCreditAmount = e.value
         elif e.index == 10:
