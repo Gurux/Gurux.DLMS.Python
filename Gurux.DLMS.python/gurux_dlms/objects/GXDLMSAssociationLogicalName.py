@@ -501,7 +501,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 self.applicationContextName.identifiedOrganization = value[3]
                 self.applicationContextName.dlmsUA = value[4]
                 self.applicationContextName.applicationContext = value[5]
-                self.applicationContextName.contextId = ApplicationContextName(value[6])
+                self.applicationContextName.contextId = value[6]
 
     def updateAuthenticationMechanismName(self, value):
         if value:
