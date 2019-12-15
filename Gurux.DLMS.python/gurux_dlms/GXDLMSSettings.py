@@ -386,6 +386,19 @@ class GXDLMSSettings:
         self.sourceSystemTitle = value
 
     #
+    # @param value
+    # Set client address
+    #
+    def setClientAddress(self, value):
+        self.clientAddress = value
+
+    #
+    # Client address
+    #
+    def getClientAddress(self):
+        return self.clientAddress
+
+    #
     # Long data count.
     #
     def getCount(self):
