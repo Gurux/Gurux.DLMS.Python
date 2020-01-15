@@ -697,6 +697,7 @@ class GXDLMSTranslator:
         else:
             if not allowUnknownCommand:
                 raise Exception("Invalid command.")
+            value.position -= 1
             xml.appendLine("<Data=\"" + value.toHex(False, value.position, len(value) - value.position) + "\" />")
         if self.outputType == TranslatorOutputType.STANDARD_XML:
             sb = ""

@@ -33,11 +33,11 @@
 # ---------------------------------------------------------------------------
 from __future__ import print_function
 from .GXDLMSSettings import GXDLMSSettings
-from .enums import Authentication, InterfaceType, SourceDiagnostic, DataType
+from .enums import Authentication, InterfaceType, SourceDiagnostic, DataType, Conformance
 from .ConnectionState import ConnectionState
 from .GXByteBuffer import GXByteBuffer
 from .GXDLMSLimits import GXDLMSLimits
-from .enums import Command, ObjectType, DateTimeSkips
+from .enums import Command, ObjectType
 from .GXDLMS import GXDLMS
 from ._GXAPDU import _GXAPDU
 from ._HDLCInfo import _HDLCInfo
@@ -935,6 +935,9 @@ class GXDLMSClient(object):
     def readList(self, list_):
         if not list_:
             raise ValueError("Invalid parameter.")
+        if self.negotiatedConformance & Conformance.MULTIPLE_REFERENCES == 0:
+            raise ValueError("Meter doesn't support multiple objects reading with one request.")
+
         messages = list()
         data = GXByteBuffer()
         self.settings.resetBlockIndex()
@@ -1022,9 +1025,6 @@ class GXDLMSClient(object):
             start = GXDateTime(start)
         if not isinstance(end, GXDateTime):
             end = GXDateTime(end)
-
-        start.skip |= DateTimeSkips.DAY_OF_WEEK
-        end.skip |= DateTimeSkips.DAY_OF_WEEK
         sort = pg.sortObject
         if not sort and pg.captureObjects:
             sort = pg.captureObjects[0][0]

@@ -84,6 +84,13 @@ class GXSecure:
         #  Get shared secret
         if settings.authentication == Authentication.HIGH_GMAC:
             challenge.set(data)
+        elif settings.authentication == Authentication.HIGH_SHA256:
+            challenge.set(secret)
+            challenge.set(settings.cipher.systemTitle)
+            challenge.set(settings.sourceSystemTitle)
+            challenge.set(settings.stoCChallenge)
+            challenge.set(settings.ctoSChallenge)
+            challenge.set(data)
         else:
             challenge.set(data)
             challenge.set(secret)

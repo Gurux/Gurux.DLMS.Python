@@ -147,10 +147,26 @@ class GXDateTime:
             self.skip = DateTimeSkips.NONE
         if self.status is None:
             self.status = ClockStatus.OK
+        if self.extra is None:
+            self.extra = DateTimeExtraInfo.NONE
         if value:
             str_ = self.__get_pattern(True)
             str_ = self._remove(str_)
             v = value
+
+            if value.find('BEGIN') != -1:
+                self.extra |= DateTimeExtraInfo.DST_BEGIN
+                v = v.replace("BEGIN", "01")
+            if value.find("END") != -1:
+                self.extra |= DateTimeExtraInfo.DST_END
+                v = v.replace("END", "01")
+            if value.find("LASTDAY2") != -1:
+                self.extra |= DateTimeExtraInfo.LAST_DAY2
+                v = v.replace("LASTDAY2", "01")
+            if value.find("LASTDAY") != -1:
+                self.extra |= DateTimeExtraInfo.LAST_DAY
+                v = v.replace("LASTDAY", "01")
+
             if value.find('*') != -1:
                 lastFormatIndex = -1
                 pos = 0
@@ -202,44 +218,58 @@ class GXDateTime:
             #  Separate date and time parts.
             str_ = self.__get_pattern(True)
             str_ = self._remove(str_)
+
+            if self.extra & DateTimeExtraInfo.DST_BEGIN != 0:
+                str_ = self._replace(str_, "%m", "BEGIN")
+                str_ = self._replace(str_, "%-m", "BEGIN")
+            elif self.extra & DateTimeExtraInfo.DST_END != 0:
+                str_ = self._replace(str_, "%m", "END")
+                str_ = self._replace(str_, "%-m", "END")
+            elif self.extra & DateTimeExtraInfo.LAST_DAY != 0:
+                str_ = self._replace(str_, "%d", "LASTDAY")
+                str_ = self._replace(str_, "%-d", "LASTDAY")
+            elif self.extra & DateTimeExtraInfo.LAST_DAY2 != 0:
+                str_ = self._replace(str_, "%d", "LASTDAY2")
+                str_ = self._replace(str_, "%-d", "LASTDAY2")
+
             if self.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%y")
-                str_ = self._replace(str_, "%-y")
+                str_ = self._replace(str_, "%y", "*")
+                str_ = self._replace(str_, "%-y", "*")
             if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%m")
-                str_ = self._replace(str_, "%-m")
+                str_ = self._replace(str_, "%m", "*")
+                str_ = self._replace(str_, "%-m", "*")
             if self.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%d")
-                str_ = self._replace(str_, "%-d")
+                str_ = self._replace(str_, "%d", "*")
+                str_ = self._replace(str_, "%-d", "*")
             if self.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%H")
-                str_ = self._replace(str_, "%-H")
-                str_ = self._replace(str_, "%I")
-                str_ = self._replace(str_, "%-I")
+                str_ = self._replace(str_, "%H", "*")
+                str_ = self._replace(str_, "%-H", "*")
+                str_ = self._replace(str_, "%I", "*")
+                str_ = self._replace(str_, "%-I", "*")
                 str_ = self._remove_(str_, "p", False)
             if self.skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%f")
+                str_ = self._replace(str_, "%f", "*")
             else:
                 index = str_.find("%S")
                 if index != -1:
                     sep = str_[index - 1]
-                    str_.replace("%S", "%S" + sep + "%f")
+                    str_.replace("%S", "%S" + sep + "%f", "*")
                 else:
                     index = str_.find("%-S")
                     if index != -1:
                         sep = str_[index - 1]
                         str_.replace("%-S", "%-S" + sep + "%f")
             if self.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%S")
-                str_ = self._replace(str_, "%-S")
+                str_ = self._replace(str_, "%S", "*")
+                str_ = self._replace(str_, "%-S", "*")
             else:
                 index = str_.find("%M")
                 if index != -1:
                     sep = str_[index - 1]
                     str_.replace("%M", "%M" + sep + "%S")
             if self.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%M")
-                str_ = self._replace(str_, "%-M")
+                str_ = self._replace(str_, "%M", "*")
+                str_ = self._replace(str_, "%-M", "*")
             return self.value.strftime(str_)
         return self.value.strftime("%x %X")
 
@@ -254,10 +284,10 @@ class GXDateTime:
         return value
 
     @classmethod
-    def _replace(cls, value, tag):
+    def _replace(cls, value, tag, replacement):
         pos = value.find(tag)
         if pos != -1:
-            value = value.replace(tag, "*")
+            value = value.replace(tag, replacement)
         return value
 
     def __str__(self):

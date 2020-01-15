@@ -753,7 +753,7 @@ class GXDLMS:
             bb.setUInt8(0xA0 | (((len(secondaryAddress) + len(primaryAddress) + len1) >> 8) & 0x7))
         else:
             len1 = frameSize
-            bb.setUInt8(0xA8 | ((len1 >> 8) & 0x7))
+            bb.setUInt8(0xA8 | (((len(secondaryAddress) + len(primaryAddress) + len1) >> 8) & 0x7))
         if len1 == 0:
             bb.setUInt8(5 + len(secondaryAddress) + len(primaryAddress) + len1)
         else:

@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from abc import abstractmethod
+from ..internal._GXCommon import _GXCommon
 from ..manufacturersettings import GXAttributeCollection, GXDLMSAttributeSettings
 from ..enums.DataType import DataType
 from ..enums.AccessMode import AccessMode
@@ -58,6 +59,14 @@ class GXDLMSObject(object):
         # Logical Name of COSEM object.
         self.logicalName = ln
         self.readTimes = dict()
+
+    #
+    # Validate logical name.
+    # value: Logical Name.
+    #
+    @classmethod
+    def validateLogicalName(cls, value):
+        _GXCommon.logicalNameToBytes(value)
 
     #
     # Is attribute read.  This can be used with static attributes to
