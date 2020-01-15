@@ -88,9 +88,12 @@ class GXSecure:
             challenge.set(secret)
             challenge.set(settings.cipher.systemTitle)
             challenge.set(settings.sourceSystemTitle)
-            challenge.set(settings.stoCChallenge)
-            challenge.set(settings.ctoSChallenge)
-            challenge.set(data)
+            if settings.isServer:
+                challenge.set(settings.ctoSChallenge)
+                challenge.set(settings.stoCChallenge)
+            else:
+                challenge.set(settings.stoCChallenge)
+                challenge.set(settings.ctoSChallenge)
         else:
             challenge.set(data)
             challenge.set(secret)
