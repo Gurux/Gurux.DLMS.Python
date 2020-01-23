@@ -1485,7 +1485,7 @@ class GXDLMS:
                         raise ValueError("Invalid block length.")
                     reply.command = (Command.NONE)
                 if blockLength == 0:
-                    data.size(index)
+                    data.size = index
                 else:
                     cls.getDataFromBlock(data, index)
                 if reply.moreData == RequestTypes.NONE:
