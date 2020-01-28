@@ -275,14 +275,14 @@ class GXByteBuffer(__base):
             self.setFloat(value, self.size)
             self.size += 4
         else:
-            self.set(struct.pack("f", value))
+            self.set(struct.pack("f", value), index)
 
     def setDouble(self, value, index=None):
         if index is None:
             self.setDouble(value, self.size)
             self.size += 8
         else:
-            self.set(struct.pack("d", value))
+            self.set(struct.pack("d", value), index)
 
     def getUInt8(self, index=None):
         if index is None:
@@ -368,7 +368,7 @@ class GXByteBuffer(__base):
         tmp2 = tmp[1]
         tmp[1] = tmp[2]
         tmp[2] = tmp2
-        return struct.unpack("f", tmp)
+        return struct.unpack("f", tmp)[0]
 
     def getDouble(self, index=None):
         if index is None:
@@ -388,7 +388,7 @@ class GXByteBuffer(__base):
         tmp2 = tmp[3]
         tmp[3] = tmp[4]
         tmp[4] = tmp2
-        return struct.unpack("d", tmp)
+        return struct.unpack("d", tmp)[0]
 
     def getInt64(self, index=None):
         if index is None:
