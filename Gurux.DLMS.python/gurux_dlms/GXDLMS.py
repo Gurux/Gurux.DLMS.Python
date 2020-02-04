@@ -397,7 +397,7 @@ class GXDLMS:
                         if 3 + len_ + len(p.settings.gateway.physicalDeviceAddress) > p.settings.maxPduSize:
                             len_ -= (3 + len(p.settings.gateway.physicalDeviceAddress))
                         tmp = GXByteBuffer(reply)
-                        reply.size(0)
+                        reply.size = 0
                         reply.setUInt8(Command.GATEWAY_REQUEST)
                         reply.setUInt8(p.settings.gateway.networkId)
                         reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
@@ -425,7 +425,7 @@ class GXDLMS:
                     if 3 + len_ + len(p.settings.gateway.physicalDeviceAddress) > p.settings.maxPduSize:
                         len_ -= (3 + len(p.settings.gateway.physicalDeviceAddress))
                     tmp = GXByteBuffer(reply)
-                    reply.size(0)
+                    reply.size = 0
                     reply.setUInt8(Command.GATEWAY_REQUEST)
                     reply.setUInt8(p.settings.gateway.networkId)
                     reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
@@ -466,7 +466,7 @@ class GXDLMS:
                 if 3 + len_ + len(p.settings.gateway.physicalDeviceAddress) > p.settings.maxPduSize:
                     len_ -= (3 + len(p.settings.gateway.physicalDeviceAddress))
                 tmp = GXByteBuffer(reply)
-                reply.size(0)
+                reply.size = 0
                 reply.setUInt8(Command.GATEWAY_REQUEST)
                 reply.setUInt8(p.settings.gateway.networkId)
                 reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
@@ -516,9 +516,7 @@ class GXDLMS:
         reply = GXByteBuffer()
         messages = list()
         frame_ = 0
-        if p.command == Command.AARQ:
-            frame_ = 0x10
-        elif p.command == Command.DATA_NOTIFICATION or p.command == Command.EVENT_NOTIFICATION:
+        if p.command == Command.DATA_NOTIFICATION or p.command == Command.EVENT_NOTIFICATION:
             frame_ = 0x13
         while True:
             GXDLMS.getLNPdu(p, reply)
@@ -550,12 +548,8 @@ class GXDLMS:
         reply = GXByteBuffer()
         messages = list()
         frame_ = 0x0
-        if p.command == Command.AARQ:
-            frame_ = 0x10
-        elif p.command == Command.INFORMATION_REPORT:
+        if p.command == Command.INFORMATION_REPORT or p.command == Command.DATA_NOTIFICATION:
             frame_ = 0x13
-        elif p.command == Command.NONE:
-            frame_ = p.settings.getNextSend(True)
         while True:
             cls.getSNPdu(p, reply)
             if p.command != Command.AARQ and p.command != Command.AARE:
@@ -639,7 +633,7 @@ class GXDLMS:
             if not p.multipleBlocks:
                 p.multipleBlocks = len(reply) + cipherSize + cnt > p.settings.maxPduSize
                 if p.multipleBlocks:
-                    reply.size(0)
+                    reply.size = 0
                     if not ciphering and p.settings.interfaceType == InterfaceType.HDLC:
                         if p.settings.isServer:
                             reply.set(_GXCommon.LLC_REPLY_BYTES)
@@ -672,7 +666,7 @@ class GXDLMS:
             s.invocationCounter = cipher.invocationCounter
             tmp = GXCiphering.encrypt(s, reply.array())
             assert not tmp
-            reply.size(0)
+            reply.size = 0
             if p.settings.interfaceType == InterfaceType.HDLC:
                 if p.settings.isServer:
                     reply.set(_GXCommon.LLC_REPLY_BYTES)
@@ -788,7 +782,8 @@ class GXDLMS:
 
     @classmethod
     def getHdlcData(cls, server, settings, reply, data, notify):
-        # pylint:disable=too-many-arguments,too-many-locals,too-many-return-statements, protected-access,broad-except
+        # pylint:disable=too-many-arguments,too-many-locals,too-many-return-statements,
+        # protected-access,broad-except
         ch = 0
         pos = reply.position
         packetStartID = reply.position
@@ -939,7 +934,8 @@ class GXDLMS:
                 if settings.clientAddress == source and settings.serverAddress == target:
                     reply.position = index + 1
                 return False
-            if settings.serverAddress != source:
+            #If All-station (Broadcast).
+            if settings.serverAddress != source and settings.serverAddress != 0x7F and settings.serverAddress != 0x3FFF:
                 readLogical = [0]
                 readPhysical = [0]
                 logical = [0]
@@ -1485,7 +1481,7 @@ class GXDLMS:
                         raise ValueError("Invalid block length.")
                     reply.command = (Command.NONE)
                 if blockLength == 0:
-                    data.size(index)
+                    data.size = index
                 else:
                     cls.getDataFromBlock(data, index)
                 if reply.moreData == RequestTypes.NONE:

@@ -31,31 +31,21 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..GXByteBuffer import GXByteBuffer
+#pylint: disable=broad-except,no-name-in-module
+try:
+    from enum import IntEnum
+    __base = IntEnum
+except Exception:
+    __base = object
 
-###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
-class GXDLMSWeekProfile:
-    #pylint: disable=too-many-instance-attributes,too-few-public-methods
-    def __init__(self):
-        """Constructor."""
-        self.name = None
-        self.monday = 0
-        self.tuesday = 0
-        self.wednesday = 0
-        self.thursday = 0
-        self.friday = 0
-        self.saturday = 0
-        self.sunday = 0
+class MBusEncryptionKeyStatus(__base):
+    """
+    M-Bus encryption key status enumerated values.
+    """
+    #pylint: disable=too-few-public-methods
 
-    def __str__(self):
-        if not self.name:
-            return None
-        if isinstance(self.name, str):
-            return self.name
-        try:
-            if isinstance(self.name, unicode):
-                return self.name
-        except Exception:
-            return GXByteBuffer.hex(self.name)
-        return GXByteBuffer.hex(self.name)
+    NO_ENCRYPTION_KEY = 0
+    ENCRYPTION_KEY_SET = 1
+    ENCRYPTION_KEY_TRANSFERRED = 2
+    ENCRYPTION_KEY_SET_AND_TRANSFERRED = 3
+    ENCRYPTION_KEY_INUSE = 4

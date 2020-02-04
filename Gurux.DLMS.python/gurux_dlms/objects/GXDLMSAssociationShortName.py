@@ -227,11 +227,11 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             from .._GXObjectFactory import _GXObjectFactory
-            self.objectList = []
+            self.objectList.clear()
             if e.value:
                 for item in e.value:
                     sn = item[0]
-                    ot = ObjectType(item[1])
+                    ot = item[1]
                     version = item[2]
                     ln = _GXCommon.toLogicalName(item[3])
                     obj = _GXObjectFactory.createObject(ot)

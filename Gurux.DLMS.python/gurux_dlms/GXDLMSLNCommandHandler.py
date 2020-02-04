@@ -221,10 +221,10 @@ class GXDLMSLNCommandHandler:
                     rowsize = 0
                     pg = e.target
                     #  Count how many rows we can fit to one PDU.
-                    for it in pg.getCaptureObjects():
-                        dt = it.getKey().getDataType(it.value.getAttributeIndex())
+                    for k, v in pg.captureObjects:
+                        dt = k.getDataType(v.attributeIndex)
                         if dt == DataType.OCTET_STRING:
-                            dt = it.getKey().getUIDataType(it.value.getAttributeIndex())
+                            dt = k.getUIDataType(v.attributeIndex)
                             if dt == DataType.DATETIME:
                                 rowsize += _GXCommon.getDataTypeSize(DataType.DATETIME)
                             elif dt == DataType.DATE:

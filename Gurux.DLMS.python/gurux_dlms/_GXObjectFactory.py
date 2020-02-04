@@ -46,7 +46,7 @@ class _GXObjectFactory:
         #pylint: disable=bad-option-value,redefined-variable-type
         from .objects import GXDLMSObject, GXDLMSActionSchedule, GXDLMSActivityCalendar, GXDLMSAssociationLogicalName,\
             GXDLMSAssociationShortName, GXDLMSAutoAnswer, GXDLMSAutoConnect, GXDLMSClock, GXDLMSData, GXDLMSDemandRegister,\
-            GXDLMSMacAddressSetup, GXDLMSRegister, GXDLMSExtendedRegister, GXDLMSGprsSetup, GXDLMSHdlcSetup, GXDLMSIECOpticalPortSetup,\
+            GXDLMSMacAddressSetup, GXDLMSRegister, GXDLMSExtendedRegister, GXDLMSGprsSetup, GXDLMSHdlcSetup, GXDLMSIECLocalPortSetup,\
             GXDLMSIecTwistedPairSetup, GXDLMSIp4Setup, GXDLMSIp6Setup, GXDLMSMBusSlavePortSetup, GXDLMSImageTransfer, GXDLMSSecuritySetup,\
             GXDLMSDisconnectControl, GXDLMSLimiter, GXDLMSMBusClient, GXDLMSModemConfiguration, GXDLMSPppSetup, GXDLMSProfileGeneric,\
             GXDLMSRegisterMonitor, GXDLMSRegisterActivation, GXDLMSSapAssignment, GXDLMSSchedule, GXDLMSScriptTable, GXDLMSSpecialDaysTable,\
@@ -85,7 +85,7 @@ class _GXObjectFactory:
         elif ot == ObjectType.IEC_HDLC_SETUP:
             ret = GXDLMSHdlcSetup()
         elif ot == ObjectType.IEC_LOCAL_PORT_SETUP:
-            ret = GXDLMSIECOpticalPortSetup()
+            ret = GXDLMSIECLocalPortSetup()
         elif ot == ObjectType.IEC_TWISTED_PAIR_SETUP:
             ret = GXDLMSIecTwistedPairSetup()
         elif ot == ObjectType.IP4_SETUP:

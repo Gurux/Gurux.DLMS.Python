@@ -67,7 +67,7 @@ from .GXDLMSGprsSetup import GXDLMSGprsSetup
 from .GXDLMSGSMCellInfo import GXDLMSGSMCellInfo
 from .GXDLMSGSMDiagnostic import GXDLMSGSMDiagnostic
 from .GXDLMSHdlcSetup import GXDLMSHdlcSetup
-from .GXDLMSIECOpticalPortSetup import GXDLMSIECOpticalPortSetup
+from .GXDLMSIECLocalPortSetup import GXDLMSIECLocalPortSetup
 from .GXDLMSIecTwistedPairSetup import GXDLMSIecTwistedPairSetup
 from .GXDLMSImageActivateInfo import GXDLMSImageActivateInfo
 from .GXDLMSImageTransfer import GXDLMSImageTransfer

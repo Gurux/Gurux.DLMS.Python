@@ -39,7 +39,7 @@ from gurux_common.io import Parity, StopBits
 from gurux_common import ReceiveParameters, GXCommon, TimeoutException
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
 from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security
-from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric
+from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
 from gurux_net import GXNet
 from gurux_serial import GXSerial
 
@@ -277,7 +277,7 @@ class GXDLMSReader:
         data = self.client.read(pg.name, pg.objectType, 3)[0]
         self.readDataBlock(data, reply)
         self.client.updateValue(pg, 3, reply.value)
-        return pg.getCaptureObjects()
+        return pg.captureObjects
 
     def readRowsByEntry(self, pg, index, count):
         data = self.client.readRowsByEntry(pg, index, count)
@@ -298,7 +298,7 @@ class GXDLMSReader:
             if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES != 0:
                 list_ = list()
                 for it in objs:
-                    if isinstance(it, (GXDLMSRegister,)):
+                    if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
                         list_.append((it, 3))
                     elif isinstance(it, (GXDLMSDemandRegister,)):
                         list_.append((it, 4))

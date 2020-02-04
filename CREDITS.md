@@ -1,5 +1,9 @@
 Credits
 =======
+  - GXByteBuffer setFloat and setDouble ignores index parameter.
+    * [Olav Frengstad](https://github.com/lafka)
+  - GXByteBuffer size property is called as a function.
+    * [Olav Frengstad](https://github.com/lafka)
   - GXDLMSPushSetup: set logicalName(ln) changed to logicalName = ln
     * [Olav Frengstad](https://github.com/lafka)
   - getLNPdu counts length wrong when GBT is used.

@@ -241,9 +241,9 @@ class GXDLMSNotify(object):
             raise ValueError("push")
         buff = GXByteBuffer()
         buff.setUInt8(int(DataType.STRUCTURE))
-        _GXCommon.setObjectCount(push.getPushObjectList().size(), buff)
-        for it in push.getPushObjectList():
-            self.addData(it.getKey(), it.value.getAttributeIndex(), buff)
+        _GXCommon.setObjectCount(len(push.pushObjectList), buff)
+        for k, v in push.pushObjectList:
+            self.addData(k, v.attributeIndex, buff)
         return self.generateDataNotificationMessages(date, buff)
 
     def generateReport(self, time, list_):

@@ -39,10 +39,10 @@ from ..enums import ObjectType, DataType
 from .enums import OpticalProtocolMode, BaudRate, LocalPortResponseTime
 
 # pylint: disable=too-many-instance-attributes
-class GXDLMSIECOpticalPortSetup(GXDLMSObject, IGXDLMSBase):
+class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
-    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIECOpticalPortSetup
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIECLocalPortSetup
     """
 
     def __init__(self, ln="0.0.20.0.0.255", sn=0):
@@ -61,6 +61,7 @@ class GXDLMSIECOpticalPortSetup(GXDLMSObject, IGXDLMSBase):
         self.password2 = None
         self.password5 = None
         self.deviceAddress = None
+        self.version = 1
 
     def getValues(self):
         return [self.logicalName,
@@ -208,3 +209,6 @@ class GXDLMSIECOpticalPortSetup(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("Password1", self.password1)
         writer.writeElementString("Password2", self.password2)
         writer.writeElementString("Password5", self.password5)
+
+class GXDLMSIECOpticalPortSetup(GXDLMSIECLocalPortSetup):
+    """Obsolete. Use GXDLMSIECLocalPortSetup instead."""

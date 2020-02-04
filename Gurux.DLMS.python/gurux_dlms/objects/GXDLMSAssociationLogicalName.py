@@ -445,7 +445,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         target = []
         if value:
             for item in value:
-                type_ = ObjectType(item[0])
+                type_ = item[0]
                 version = item[1]
                 ln = _GXCommon.toLogicalName(item[2])
                 obj = settings.objects.findByLN(type_, ln)

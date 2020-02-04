@@ -48,12 +48,12 @@ class GXDLMSSettings:
     #
     # Server receiver frame sequence starting number.
     #
-    __SERVER_START_RECEIVER_FRAME_SEQUENCE = 0xEE
+    __SERVER_START_RECEIVER_FRAME_SEQUENCE = 0xFE
 
     #
     # Client sender frame sequence starting number.
     #
-    __CLIENT_START_SENDER_FRAME_SEQUENCE = 0x10
+    __CLIENT_START_SENDER_FRAME_SEQUENCE = 0xFE
 
     #
     # Client receiver frame sequence starting number.

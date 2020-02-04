@@ -1089,7 +1089,7 @@ class GXDLMSClient(object):
             try:
                 data2 = data.data
                 if data.command == Command.GET_RESPONSE:
-                    tmp = GXByteBuffer((4 + data.data.size()))
+                    tmp = GXByteBuffer((4 + data.data.size))
                     tmp.setUInt8(data.command)
                     tmp.setUInt8(GetCommandType.NORMAL)
                     tmp.setUInt8(int(data.invokeId))
@@ -1097,7 +1097,7 @@ class GXDLMSClient(object):
                     tmp.set(data.data)
                     data.setData(tmp)
                 elif data.command == Command.METHOD_RESPONSE:
-                    tmp = GXByteBuffer((6 + data.data.size()))
+                    tmp = GXByteBuffer((6 + data.data.size))
                     tmp.setUInt8(data.command)
                     tmp.setUInt8(GetCommandType.NORMAL)
                     tmp.setUInt8(int(data.invokeId))
@@ -1107,7 +1107,7 @@ class GXDLMSClient(object):
                     tmp.set(data.data)
                     data.setData(tmp)
                 elif data.command == Command.READ_RESPONSE:
-                    tmp = GXByteBuffer(3 + data.data.size())
+                    tmp = GXByteBuffer(3 + data.data.size)
                     tmp.setUInt8(data.command)
                     tmp.setUInt8(VariableAccessSpecification.VARIABLE_NAME)
                     tmp.setUInt8(int(data.invokeId))
@@ -1117,11 +1117,11 @@ class GXDLMSClient(object):
                 data.data.position = 0
                 if data.command == Command.SNRM or data.command == Command.UA:
                     data.xml.appendStartTag(data.command)
-                    if data.data.size() != 0:
+                    if data.data.size != 0:
                         self.translator.pduToXml(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
                     data.xml.appendEndTag(data.command)
                 else:
-                    if data.data.size() != 0:
+                    if data.data.size != 0:
                         self.translator.pduToXml(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
                     data.setData(data2)
             finally:

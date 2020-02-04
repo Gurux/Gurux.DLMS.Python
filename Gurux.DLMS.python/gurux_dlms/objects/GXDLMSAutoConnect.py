@@ -60,6 +60,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         self.repetitionDelay = 0
         self.callingWindow = list()
         self.destinations = list()
+        self.version = 2
 
     #
     # Initiates the connection process.

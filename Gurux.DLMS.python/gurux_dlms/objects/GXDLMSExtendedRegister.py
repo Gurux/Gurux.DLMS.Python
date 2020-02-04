@@ -155,7 +155,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
                     if settings.isServer:
                         self.value = e.value
                     else:
-                        self.value = e.value * math.log10(self.scaler)
+                        self.value = e.value * math.pow(10, self.scaler)
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.value = e.value

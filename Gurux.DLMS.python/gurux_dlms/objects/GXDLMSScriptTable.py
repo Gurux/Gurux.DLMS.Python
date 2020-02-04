@@ -156,7 +156,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                             if val > 0:
                                 type_ = ScriptActionType(val)
                             it.type = type_
-                            ot = ObjectType(arr[1])
+                            ot = arr[1]
                             ln = _GXCommon.toLogicalName(arr[2])
                             t = settings.objects.findByLN(ot, ln)
                             if t is None:

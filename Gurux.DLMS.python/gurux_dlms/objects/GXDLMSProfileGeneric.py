@@ -99,8 +99,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     def addCaptureObject(self, item, attributeIndex, dataIndex):
         if item is None:
             raise ValueError("Invalid Object")
-        if attributeIndex < 1:
-            raise ValueError("Invalid attribute index")
+        #Don't check attributeIndex. Some meters are using -1.
         if dataIndex < 0:
             raise ValueError("Invalid data index")
         co = GXDLMSCaptureObject(attributeIndex, dataIndex)
@@ -387,7 +386,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                     tmp = it
                     if len(tmp) != 4:
                         raise Exception("Invalid structure format.")
-                    type_ = ObjectType(tmp[0])
+                    type_ = tmp[0]
                     ln = _GXCommon.toLogicalName(tmp[1])
                     obj = None
                     if settings and settings.objects:

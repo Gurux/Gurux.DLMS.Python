@@ -194,7 +194,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
                     if settings.isServer:
                         self.currentAverageValue = e.value
                     else:
-                        self.currentAverageValue = e.value * math.log10(self.scaler)
+                        self.currentAverageValue = e.value * math.pow(10, self.scaler)
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.currentAverageValue = e.value
@@ -206,7 +206,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
                     if settings.isServer:
                         self.lastAverageValue = e.value
                     else:
-                        self.lastAverageValue = e.value * math.log10(self.scaler)
+                        self.lastAverageValue = e.value * math.pow(10, self.scaler)
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.lastAverageValue = e.value

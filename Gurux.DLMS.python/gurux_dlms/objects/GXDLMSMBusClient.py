@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
+from .enums import MBusEncryptionKeyStatus
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
@@ -64,8 +65,24 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         self.accessNumber = None
         self.status = None
         self.alarm = None
+        self.configuration = 0
+        self.encryptionKeyStatus = MBusEncryptionKeyStatus.NO_ENCRYPTION_KEY
+        self.version = 1
 
     def getValues(self):
+        if self.version == 0:
+            return [self.logicalName,
+                    self.mBusPortReference,
+                    self.captureDefinition,
+                    self.capturePeriod,
+                    self.primaryAddress,
+                    self.identificationNumber,
+                    self.manufacturerID,
+                    self.dataHeaderVersion,
+                    self.deviceType,
+                    self.accessNumber,
+                    self.status,
+                    self.alarm]
         return [self.logicalName,
                 self.mBusPortReference,
                 self.captureDefinition,
@@ -77,7 +94,9 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
                 self.deviceType,
                 self.accessNumber,
                 self.status,
-                self.alarm]
+                self.alarm,
+                self.configuration,
+                self.encryptionKeyStatus]
 
     # Returns collection of attributes to read.  If attribute is static
     #      and
@@ -120,12 +139,21 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         #  Alarm
         if all_ or self.canRead(12):
             attributes.append(12)
+        if self.version != 0:
+            #  Alarm
+            if all_ or self.canRead(13):
+                attributes.append(13)
+            #  Alarm
+            if all_ or self.canRead(14):
+                attributes.append(14)
         return attributes
 
     #
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
+        if self.version != 0:
+            return 14
         return 12
 
     #
@@ -159,6 +187,10 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             ret = DataType.UINT8
         elif index == 12:
             ret = DataType.UINT8
+        elif index == 13:
+            ret = DataType.UINT16
+        elif index == 14:
+            ret = DataType.ENUM
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
@@ -202,6 +234,10 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             ret = self.status
         elif e.index == 12:
             ret = self.alarm
+        elif e.index == 13:
+            ret = self.configuration
+        elif e.index == 14:
+            ret = self.encryptionKeyStatus
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
@@ -237,6 +273,10 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             self.status = e.value
         elif e.index == 12:
             self.alarm = e.value
+        elif e.index == 13:
+            self.configuration = e.value
+        elif e.index == 14:
+            self.encryptionKeyStatus = e.value
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
@@ -256,6 +296,11 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         self.dataHeaderVersion = reader.readElementContentAsInt("DataHeaderVersion")
         self.deviceType = reader.readElementContentAsInt("DeviceType")
         self.accessNumber = reader.readElementContentAsInt("AccessNumber")
+        self.status = reader.readElementContentAsInt("Status")
+        self.alarm = reader.readElementContentAsInt("Alarm")
+        if self.version != 0:
+            self.configuration = reader.readElementContentAsInt("Configuration")
+            self.encryptionKeyStatus = MBusEncryptionKeyStatus(reader.readElementContentAsInt("EncryptionKeyStatus"))
 
     def save(self, writer):
         writer.writeElementString("MBusPortReference", self.mBusPortReference)
@@ -274,3 +319,6 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("DataHeaderVersion", self.dataHeaderVersion)
         writer.writeElementString("DeviceType", self.deviceType)
         writer.writeElementString("AccessNumber", self.accessNumber)
+        if self.version != 0:
+            writer.writeElementString("Configuration", self.configuration)
+            writer.writeElementString("EncryptionKeyStatus", self.encryptionKeyStatus)

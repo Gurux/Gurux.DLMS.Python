@@ -197,7 +197,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             from .._GXObjectFactory import _GXObjectFactory
             if e.value:
                 for it in e.value:
-                    type_ = ObjectType(it[0])
+                    type_ = it[0]
                     ln = _GXCommon.toLogicalName(it[1])
                     obj = settings.objects.findByLN(type_, ln)
                     if not obj:
@@ -208,9 +208,16 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                     co.dataIndex = it[3]
                     self.pushObjectList.append((obj, co))
         elif e.index == 3:
+            #pylint: disable=broad-except
             if e.value:
                 self.sendDestinationAndMethod.service = ServiceType(e.value[0])
-                self.sendDestinationAndMethod.destination = e.value[1].decode("utf-8")
+                try:
+                    if self.sendDestinationAndMethod.service == ServiceType.HDLC:
+                        self.sendDestinationAndMethod.destination = _GXCommon.toLogicalName(e.value[1])
+                    else:
+                        self.sendDestinationAndMethod.destination = e.value[1].decode()
+                except Exception:
+                    self.sendDestinationAndMethod.destination = GXByteBuffer.toHex(e.value[1])
                 self.sendDestinationAndMethod.message = MessageType(e.value[2])
         elif e.index == 4:
             self.communicationWindow = []

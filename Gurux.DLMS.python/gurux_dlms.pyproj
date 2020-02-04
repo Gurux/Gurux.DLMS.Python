@@ -72,6 +72,8 @@
     <Compile Include="gurux_dlms\GXStandardObisCodeCollection.py" />
     <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttributeSettings.py" />
     <Compile Include="gurux_dlms\objects\enums\KeyUsage.py" />
+    <Compile Include="gurux_dlms\objects\enums\MBusEncryptionKeyStatus.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSIECLocalPortSetup.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureClient.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureNotify.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureServer.py" />
@@ -216,7 +218,6 @@
     <Compile Include="gurux_dlms\objects\GXDLMSGSMCellInfo.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSGSMDiagnostic.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSHdlcSetup.py" />
-    <Compile Include="gurux_dlms\objects\GXDLMSIECOpticalPortSetup.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSIecTwistedPairSetup.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSImageActivateInfo.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSImageTransfer.py" />
