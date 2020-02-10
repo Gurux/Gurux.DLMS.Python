@@ -116,7 +116,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                 data.setUInt8(DataType.ARRAY)
                 #  Count
                 data.setUInt8(len(it.actions))
-                for a in it.getActions:
+                for a in it.actions:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(5)
                     #  service_id
