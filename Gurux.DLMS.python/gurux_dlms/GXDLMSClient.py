@@ -833,7 +833,7 @@ class GXDLMSClient(object):
         if self.autoIncreaseInvokeID:
             self.settings.setInvokeID(int(((self.settings.invokeId + 1) & 0xF)))
         type_ = dataType
-        if type_ == DataType.NONE:
+        if value is not None and type_ == DataType.NONE:
             raise Exception("Invalid parameter. In python value type must give.")
         reply = None
         data = GXByteBuffer()

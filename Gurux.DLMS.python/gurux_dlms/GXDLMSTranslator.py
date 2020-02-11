@@ -121,6 +121,10 @@ class GXDLMSTranslator:
         self.authenticationKey = None
         # Invocation Counter.
         self.invocationCounter = 0
+        # Dedicated key.
+        self.dedicatedKey = None
+        # Server system title.
+        seld.serverSystemTitle = None
         self.outputType = type_
         # Is only complete PDU parsed and shown.
         self.completePdu = False
@@ -283,16 +287,19 @@ class GXDLMSTranslator:
         GXDLMS.getData(settings, value, data, None)
         return data.data
 
-    def getCiphering(self):
-        if self.security != Security.NONE:
+    def getCiphering(self, settings, force):
+        if force or self.security != Security.NONE:
             c = GXCiphering(self.systemTitle)
             c.security = self.security
             c.systemTitle = self.systemTitle
             c.blockCipherKey = self.blockCipherKey
             c.authenticationKey = self.authenticationKey
             c.invocationCounter = self.invocationCounter
-            return c
-        return None
+            c.dedicatedKey = self.dedicatedKey
+            settings.sourceSystemTitle = self.serverSystemTitle
+            settings.cipher = c
+        else:
+            settings.cipher = None
 
     #
     # Clear {@link messageToXml} internal settings.

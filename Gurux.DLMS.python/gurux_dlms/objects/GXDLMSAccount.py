@@ -302,9 +302,9 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(2)
                     bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
-                    bb.set(_GXCommon.logicalNameToBytes(it.getCreditReference()))
+                    bb.set(_GXCommon.logicalNameToBytes(it.creditReference))
                     bb.setUInt8(DataType.UINT8)
-                    bb.setUInt8(it.getTokenProportion())
+                    bb.setUInt8(it.tokenProportion)
             ret = bb.array()
         elif e.index == 13:
             ret = self.accountActivationTime

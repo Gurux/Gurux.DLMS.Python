@@ -496,6 +496,7 @@ class GXDLMS:
                 key = cipher.blockCipherKey
         cipher.invocationCounter = cipher.invocationCounter + 1
         s = AesGcmParameter(cmd, cipher.systemTitle, key, cipher.authenticationKey)
+        s.ignoreSystemTitle = p.settings.standard == Standard.ITALY
         s.security = cipher.security
         s.invocationCounter = cipher.invocationCounter
         tmp = GXCiphering.encrypt(s, data)
@@ -825,6 +826,7 @@ class GXDLMS:
             return GXDLMS.getHdlcData(server, settings, reply, data, notify)
         addresses = [0, 0]
         try:
+            #pylint: disable=broad-except
             ret = GXDLMS.checkHdlcAddress(server, settings, reply, eopPos, addresses)
         except Exception:
             ret = False
@@ -1662,8 +1664,9 @@ class GXDLMS:
                     cls.getPdu(settings, data)
             else:
                 data.command = (Command.NONE)
-                if cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE or \
-                    Command.GLO_METHOD_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE):
+                if cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE,\
+                    Command.GLO_METHOD_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE,\
+                    Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
                     data.data.position = data.cipherIndex
                     cls.getPdu(settings, data)
         if cmd == Command.READ_RESPONSE and data.commandType == SingleReadResponse.DATA_BLOCK_RESULT and \

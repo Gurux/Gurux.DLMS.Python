@@ -56,6 +56,7 @@ class GXDateTime:
         elif isinstance(value, GXDateTime):
             self.value = value.value
             self.skip = value.skip
+            self.extra = value.extra
         elif not value:
             self.value = None
         else:

@@ -116,7 +116,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                 data.setUInt8(DataType.ARRAY)
                 #  Count
                 data.setUInt8(len(it.actions))
-                for a in it.getActions:
+                for a in it.actions:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(5)
                     #  service_id
@@ -147,7 +147,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                 if isinstance(e.value[0], list):
                     for item in e.value:
                         script = GXDLMSScript()
-                        script.Id = item[0]
+                        script.id = item[0]
                         self.scripts.append(script)
                         for arr in item[1]:
                             it = GXDLMSScriptAction()

@@ -1,5 +1,7 @@
 Credits
 =======
+  - Script table getActions changed to actions.
+    * [Olav Frengstad](https://github.com/lafka)
   - GXByteBuffer setFloat and setDouble ignores index parameter.
     * [Olav Frengstad](https://github.com/lafka)
   - GXByteBuffer size property is called as a function.

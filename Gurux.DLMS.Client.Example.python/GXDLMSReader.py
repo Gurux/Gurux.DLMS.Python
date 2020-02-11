@@ -39,23 +39,48 @@ from gurux_common.io import Parity, StopBits
 from gurux_common import ReceiveParameters, GXCommon, TimeoutException
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
 from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security
-from gurux_dlms.objects import GXDLMSObject, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
+from gurux_dlms.objects import GXDLMSObject, GXDLMSData, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
 from gurux_net import GXNet
 from gurux_serial import GXSerial
 
 class GXDLMSReader:
-    def __init__(self, client, media, trace):
-        self.iec = False
+    #pylint: disable=too-many-public-methods, too-many-instance-attributes
+    def __init__(self, client, media, trace, invocationCounter, useOpticalHead):
+        #pylint: disable=too-many-arguments
         self.replyBuff = bytearray(8 + 1024)
         self.waitTime = 5000
         self.logFile = open("logFile.txt", "a")
         self.trace = trace
         self.media = media
+        self.invocationCounter = invocationCounter
+        self.useOpticalHead = useOpticalHead
         self.client = client
         if self.trace > TraceLevel.WARNING:
             print("Authentication: " + str(self.client.authentication))
             print("ClientAddress: " + hex(self.client.clientAddress))
             print("ServerAddress: " + hex(self.client.serverAddress))
+
+    def disconnect(self):
+        #pylint: disable=broad-except
+        if self.media and self.media.isOpen():
+            print("DisconnectRequest")
+            reply = GXReplyData()
+            self.readDLMSPacket(self.client.disconnectRequest(), reply)
+
+    def release(self):
+        #pylint: disable=broad-except
+        if self.media and self.media.isOpen():
+            print("DisconnectRequest")
+            reply = GXReplyData()
+            try:
+                #Release is call only for secured connections.
+                #All meters are not supporting Release and it's causing problems.
+                if self.client.interfaceType == InterfaceType.WRAPPER or\
+                    (self.client.interfaceType == InterfaceType.HDLC and self.client.ciphering.security != Security.NONE):
+                    self.readDataBlock(self.client.releaseRequest(), reply)
+            except Exception:
+                pass
+                #  All meters don't support release.
 
     def close(self):
         #pylint: disable=broad-except
@@ -159,9 +184,8 @@ class GXDLMSReader:
                         data = self.client.receiverReady(reply)
                     self.readDLMSPacket(data, reply)
 
-    def initializeConnection(self):
-        self.media.open()
-        if self.iec and isinstance(self.media, GXSerial):
+    def initializeOpticalHead(self):
+        if self.useOpticalHead and isinstance(self.media, GXSerial):
             p = ReceiveParameters()
             p.allData = False
             p.eop = '\n'
@@ -229,6 +253,44 @@ class GXDLMSReader:
                 #This sleep make sure that all meters can be read.
                 time.sleep(1000)
 
+    def updateFrameCounter(self):
+        if self.invocationCounter and self.client.ciphering is not None and self.client.ciphering.security != Security.NONE:
+            self.initializeOpticalHead()
+            self.client.proposedConformance |= Conformance.GENERAL_PROTECTION
+            add = self.client.clientAddress
+            auth = self.client.authentication
+            security = self.client.ciphering.security
+            challenge = self.client.ctoSChallenge
+            try:
+                self.client.clientAddress = 16
+                self.client.authentication = Authentication.NONE
+                self.client.ciphering.security = Security.NONE
+                reply = GXReplyData()
+                data = self.client.snrmRequest()
+                if data:
+                    self.readDLMSPacket(data, reply)
+                    self.client.parseUAResponse(reply.data)
+                    size = self.client.limits.maxInfoTX + 40
+                    self.replyBuff = bytearray(size)
+                reply.clear()
+                self.readDataBlock(self.client.aarqRequest(), reply)
+                self.client.parseAareResponse(reply.data)
+                reply.clear()
+                d = GXDLMSData(self.invocationCounter)
+                self.read(d, 2)
+                self.client.ciphering.invocationCounter = 1 + d.value
+                print("Invocation counter: " + str(self.client.ciphering.invocationCounter))
+                self.disconnect()
+                #except Exception as ex:
+            finally:
+                self.client.clientAddress = add
+                self.client.authentication = auth
+                self.client.ciphering.security = security
+                self.client.ctoSChallenge = challenge
+
+    def initializeConnection(self):
+        self.updateFrameCounter()
+        self.initializeOpticalHead()
         reply = GXReplyData()
         data = self.client.snrmRequest()
         if data:

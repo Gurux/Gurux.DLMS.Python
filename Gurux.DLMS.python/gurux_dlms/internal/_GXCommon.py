@@ -457,7 +457,7 @@ class _GXCommon:
             if month == 0xFE:
                 dt.extra |= DateTimeExtraInfo.DST_BEGIN
                 month = 1
-            elif month != 0xFD:
+            elif month == 0xFD:
                 dt.extra |= DateTimeExtraInfo.DST_END
                 month = 1
             else:
@@ -469,7 +469,7 @@ class _GXCommon:
             if day == 0xFE:
                 dt.extra |= DateTimeExtraInfo.LAST_DAY
                 day = 1
-            elif day != 0xFD:
+            elif day == 0xFD:
                 dt.extra |= DateTimeExtraInfo.LAST_DAY2
                 day = 1
             else:
@@ -548,7 +548,7 @@ class _GXCommon:
             if month == 0xFE:
                 extra |= DateTimeExtraInfo.DST_BEGIN
                 month = 1
-            elif month != 0xFD:
+            elif month == 0xFD:
                 extra |= DateTimeExtraInfo.DST_END
                 month = 1
             else:
@@ -559,7 +559,7 @@ class _GXCommon:
             if day == 0xFE:
                 extra |= DateTimeExtraInfo.LAST_DAY
                 day = 1
-            elif day != 0xFD:
+            elif day == 0xFD:
                 extra |= DateTimeExtraInfo.LAST_DAY2
                 day = 1
             else:
@@ -1367,9 +1367,9 @@ class _GXCommon:
             buff.setUInt16(dt.value.year)
         #  Add month
         if dt.extra & DateTimeExtraInfo.DST_BEGIN != 0:
-            buff.setUInt8(0xFD)
-        elif dt.extra & DateTimeExtraInfo.DST_END != 0:
             buff.setUInt8(0xFE)
+        elif dt.extra & DateTimeExtraInfo.DST_END != 0:
+            buff.setUInt8(0xFD)
         elif dt.skip & DateTimeSkips.MONTH != 0:
             buff.setUInt8(0xFF)
         else:

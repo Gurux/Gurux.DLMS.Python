@@ -276,7 +276,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                 it.start = _GXCommon.changeType(item[1], DataType.DATETIME)
                 weekName = item[2]
                 #  If week name is ignored.
-                if weekName:
+                if not weekName:
                     it.weekName = ""
                 else:
                     it.weekName = _GXCommon.changeType(weekName, DataType.STRING)

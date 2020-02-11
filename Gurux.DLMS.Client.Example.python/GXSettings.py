@@ -31,11 +31,11 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from gurux_dlms.enums import InterfaceType, Authentication
+from gurux_dlms.enums import InterfaceType, Authentication, Security
 from gurux_dlms import GXDLMSClient
 from gurux_dlms.secure import GXDLMSSecureClient
 from gurux_common.enums import TraceLevel
-from gurux_common.io import Parity
+from gurux_common.io import Parity, StopBits, BaudRate
 from gurux_net.enums import NetworkType
 from gurux_net import GXNet
 from gurux_serial.GXSerial import GXSerial
@@ -49,6 +49,7 @@ class GXSettings:
         self.media = None
         self.trace = TraceLevel.INFO
         self.iec = False
+        self.invocationCounter = None
         self.client = GXDLMSSecureClient(True)
         #  Objects to read.
         self.readObjects = []
@@ -62,7 +63,7 @@ class GXSettings:
         print("GuruxDlmsSample -h [Meter IP Address] -p [Meter Port No] -c 16 -s 1 -r SN")
         print(" -h \t host name or IP address.")
         print(" -p \t port number or name (Example: 1000).")
-        print(" -S \t serial port.")
+        print(" -S \t serial port. (Example: COM1 or COM1:9600:8None1)")
         print(" -i IEC is a start protocol.")
         print(" -a \t Authentication (None, Low, High).")
         print(" -P \t Password for authentication.")
@@ -73,6 +74,9 @@ class GXSettings:
         print(" -w WRAPPER profile is used. HDLC is default.")
         print(" -t [Error, Warning, Info, Verbose] Trace messages.")
         print(" -g \"0.0.1.0.0.255:1; 0.0.1.0.0.255:2\" Get selected object(s) with given attribute index.")
+        print(" -C Security Level. (None, Authentication, Encrypted, AuthenticationEncryption)")
+        print(" -v Invocation counter data object Logical Name. Ex. 0.0.43.1.0.255")
+
         print("Example:")
         print("Read LG device using TCP/IP connection.")
         print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
@@ -119,7 +123,8 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:S:n:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:S:n:C:v:")
+        defaultBaudRate = True
         for it in parameters:
             if it.tag == 'w':
                 self.client.interfaceType = InterfaceType.WRAPPER
@@ -162,6 +167,15 @@ class GXSettings:
             elif it.tag == 'i':
                 #  IEC.
                 self.iec = True
+                if not defaultBaudRate:
+                    self.media.baudrate = BaudRate.BAUD_RATE_300
+                    self.media.bytesize = 7
+                    self.media.parity = Parity.EVEN
+                    self.media.stopbits = StopBits.ONE
+            elif it.tag == 'v':
+                from gurux_dlms.objects import GXDLMSObject
+                self.invocationCounter = it.value
+                GXDLMSObject.validateLogicalName(self.invocationCounter)
             elif it.tag == 'g':
                 #  Get (read) selected objects.
                 for o in it.value.split(";,"):
@@ -174,10 +188,16 @@ class GXSettings:
                 tmp = it.value.split(':')
                 self.media.port = tmp[0]
                 if len(tmp) > 1:
+                    defaultBaudRate = False
                     self.media.baudRate = int(tmp[1])
                     self.media.dataBits = int(tmp[2][0: 1])
-                    self.media.parity = Parity(tmp[2][1: len(tmp[2]) - 2] .Substring(1, tmp[2].Length - 2))
+                    self.media.parity = Parity[tmp[2][1: len(tmp[2]) - 1].upper()]
                     self.media.stopBits = int(tmp[2][len(tmp[2]) - 1:])
+                else:
+                    self.media.baudrate = BaudRate.BAUD_RATE_9600
+                    self.media.bytesize = 8
+                    self.media.parity = Parity.NONE
+                    self.media.stopbits = StopBits.ONE
             elif it.tag == 'a':
                 try:
                     it.value = it.value.upper()
@@ -186,6 +206,17 @@ class GXSettings:
                     self.client.authentication = Authentication[it.value]
                 except Exception:
                     raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighGmac)")
+            elif it.tag == 'C':
+                if it.value == "None":
+                    self.client.ciphering.security = Security.NONE
+                elif it.value == "Authentication":
+                    self.client.ciphering.security = Security.AUTHENTICATION
+                elif it.value == "Encryption":
+                    self.client.ciphering.security = Security.ENCRYPTION
+                elif it.value == "AuthenticationEncryption":
+                    self.client.ciphering.security = Security.AUTHENTICATION_ENCRYPTION
+                else:
+                    raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
             elif it.tag == 'o':
                 pass
             elif it.tag == 'c':

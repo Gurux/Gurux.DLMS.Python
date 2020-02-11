@@ -197,7 +197,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             if e.value:
                 for item in e.value:
                     it2 = GXDLMSPppSetupIPCPOption()
-                    it2.type_ = PppSetupIPCPOptionType(item[0])
+                    it2.type_ = item[0]
                     it2.length = item[1]
                     it2.data = item[2]
                     self.ipcpOptions.append(it2)

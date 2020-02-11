@@ -76,4 +76,7 @@ class AesGcmParameter:
         self.cipheredContent = None
         # Shared secret is generated when connection is made.
         self.sharedSecret = None
+        # xml settings. This is used only on xml parser.
         self.xml = None
+        # System title is not send on pre-established connecions.
+        self.ignoreSystemTitle = False

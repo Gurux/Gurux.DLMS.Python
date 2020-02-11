@@ -33,7 +33,6 @@
 # ---------------------------------------------------------------------------
 import sys
 import traceback
-from gurux_common.io import Parity, StopBits, BaudRate
 from gurux_serial import GXSerial
 from gurux_net import GXNet
 from gurux_dlms.enums import ObjectType
@@ -55,21 +54,11 @@ class sampleclient():
                 return
             # //////////////////////////////////////
             #  Initialize connection settings.
-            if isinstance(settings.media, GXSerial):
-                if settings.iec:
-                    settings.media.baudrate = BaudRate.BAUD_RATE_300
-                    settings.media.bytesize = 7
-                    settings.media.parity = Parity.EVEN
-                    settings.media.stopbits = StopBits.ONE
-                else:
-                    settings.media.baudrate = BaudRate.BAUD_RATE_9600
-                    settings.media.bytesize = 8
-                    settings.media.parity = Parity.NONE
-                    settings.media.stopbits = StopBits.ONE
-            elif not isinstance(settings.media, GXNet):
+            if not isinstance(settings.media, (GXSerial, GXNet)):
                 raise Exception("Unknown media type.")
             # //////////////////////////////////////
-            reader = GXDLMSReader(settings.client, settings.media, settings.trace)
+            reader = GXDLMSReader(settings.client, settings.media, settings.trace, settings.invocationCounter, settings.iec)
+            settings.media.open()
             if settings.readObjects:
                 reader.initializeConnection()
                 reader.getAssociationView()

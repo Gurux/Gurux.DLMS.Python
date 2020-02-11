@@ -125,14 +125,12 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
-
         return 11
 
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
-
         return 3
 
     def getDataType(self, index):
@@ -171,7 +169,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             ret = self.currentCreditAmount
         elif e.index == 3:
-            ret = self.type_.value
+            ret = self.type_
         elif e.index == 4:
             ret = self.priority
         elif e.index == 5:
@@ -181,7 +179,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 7:
             ret = self.creditConfiguration
         elif e.index == 8:
-            ret = self.status.value
+            ret = self.status
         elif e.index == 9:
             ret = self.presetCreditAmount
         elif e.index == 10:
@@ -201,7 +199,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.currentCreditAmount = e.value
         elif e.index == 3:
-            self.type_ = CreditType(e.value)
+            self.type_ = e.value
         elif e.index == 4:
             self.priority = e.value
         elif e.index == 5:
@@ -233,8 +231,8 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.currentCreditAmount = reader.readElementContentAsInt("CurrentCreditAmount")
-        self.type_ = CreditType(reader.readElementContentAsInt("Type"))
-        self.priority = int(reader.readElementContentAsInt("Priority"))
+        self.type_ = reader.readElementContentAsInt("Type")
+        self.priority = reader.readElementContentAsInt("Priority")
         self.warningThreshold = reader.readElementContentAsInt("WarningThreshold")
         self.limit = reader.readElementContentAsInt("Limit")
         self.creditConfiguration = CreditConfiguration(reader.readElementContentAsInt("CreditConfiguration"))
