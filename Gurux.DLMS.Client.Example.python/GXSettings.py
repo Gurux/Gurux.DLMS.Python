@@ -70,7 +70,7 @@ class GXSettings:
         print(" -c \t Client address. (Default: 16)")
         print(" -s \t Server address. (Default: 1)")
         print(" -n \t Server address as serial number.")
-        print(" -r [sn, sn]\t Short name or Logican Name (default) referencing is used.")
+        print(" -r [sn, ln]\t Short name or Logical Name (default) referencing is used.")
         print(" -w WRAPPER profile is used. HDLC is default.")
         print(" -t [Error, Warning, Info, Verbose] Trace messages.")
         print(" -g \"0.0.1.0.0.255:1; 0.0.1.0.0.255:2\" Get selected object(s) with given attribute index.")
