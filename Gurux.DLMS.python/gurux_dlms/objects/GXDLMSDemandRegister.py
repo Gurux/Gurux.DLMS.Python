@@ -189,24 +189,24 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            if self.scaler != 0 and e.value:
+            if self.scaler != 1 and e.value:
                 try:
                     if settings.isServer:
                         self.currentAverageValue = e.value
                     else:
-                        self.currentAverageValue = e.value * math.pow(10, self.scaler)
+                        self.currentAverageValue = e.value * self.scaler
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.currentAverageValue = e.value
             else:
                 self.currentAverageValue = e.value
         elif e.index == 3:
-            if self.scaler != 0 and e.value:
+            if self.scaler != 1 and e.value:
                 try:
                     if settings.isServer:
                         self.lastAverageValue = e.value
                     else:
-                        self.lastAverageValue = e.value * math.pow(10, self.scaler)
+                        self.lastAverageValue = e.value * self.scaler
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.lastAverageValue = e.value
@@ -215,12 +215,12 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
         elif e.index == 4:
             #  Set default values.
             if e.value is None:
-                self.scaler = 0
+                self.scaler = 1
                 self.unit = 0
             else:
                 if len(e.value) != 2:
                     raise ValueError("setValue failed. Invalid scaler unit value.")
-                self.scaler = e.value[0]
+                self.scaler = math.pow(10, e.value[0])
                 self.unit = e.value[1]
         elif e.index == 5:
             if e.value is None:

@@ -150,12 +150,12 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            if self.scaler != 0 and e.value:
+            if self.scaler != 1 and e.value:
                 try:
                     if settings.isServer:
                         self.value = e.value
                     else:
-                        self.value = e.value * math.pow(10, self.scaler)
+                        self.value = e.value * self.scaler
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.value = e.value
@@ -171,7 +171,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
                     self.scaler = 0
                     self.unit = 0
                 else:
-                    self.scaler = e.value[0]
+                    self.scaler = math.pow(10, e.value[0])
                     self.unit = e.value[1]
         elif e.index == 4:
             self.status = e.value
