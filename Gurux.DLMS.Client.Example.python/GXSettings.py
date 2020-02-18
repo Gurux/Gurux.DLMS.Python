@@ -205,7 +205,7 @@ class GXSettings:
                         it.value = "HIGH_" + it.value[4:]
                     self.client.authentication = Authentication[it.value]
                 except Exception:
-                    raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighGmac)")
+                    raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighMd5, HighSha1, HighGMac, HighSha256)")
             elif it.tag == 'C':
                 if it.value == "None":
                     self.client.ciphering.security = Security.NONE

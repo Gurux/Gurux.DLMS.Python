@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import random
+import hashlib
 from .enums import Authentication, Security
 from .GXDLMSChipperingStream import GXDLMSChipperingStream
 from .GXByteBuffer import GXByteBuffer
@@ -86,25 +87,23 @@ class GXSecure:
             challenge.set(data)
         elif settings.authentication == Authentication.HIGH_SHA256:
             challenge.set(secret)
-            challenge.set(settings.cipher.systemTitle)
-            challenge.set(settings.sourceSystemTitle)
-            if settings.isServer:
-                challenge.set(settings.ctoSChallenge)
-                challenge.set(settings.stoCChallenge)
-            else:
-                challenge.set(settings.stoCChallenge)
-                challenge.set(settings.ctoSChallenge)
         else:
             challenge.set(data)
             challenge.set(secret)
         d = challenge.array()
         if settings.authentication == Authentication.HIGH_MD5:
-            raise Exception("MD5is not supported.")
-        if settings.authentication == Authentication.HIGH_SHA1:
-            raise Exception("SHA1 is not supported.")
-        if settings.authentication == Authentication.HIGH_SHA256:
-            raise Exception("SHA256 is not supported.")
-        if settings.authentication == Authentication.HIGH_GMAC:
+            md = hashlib.md5()
+            md.update(d)
+            d = md.digest()
+        elif settings.authentication == Authentication.HIGH_SHA1:
+            md = hashlib.sha1()
+            md.update(d)
+            d = md.digest()
+        elif settings.authentication == Authentication.HIGH_SHA256:
+            md = hashlib.sha256()
+            md.update(d)
+            d = md.digest()
+        elif settings.authentication == Authentication.HIGH_GMAC:
             #  SC is always Security.Authentication.
             p = AesGcmParameter(0, secret, cipher.blockCipherKey, cipher.authenticationKey)
             p.security = Security.AUTHENTICATION
@@ -115,7 +114,7 @@ class GXSecure:
             challenge.setUInt32(p.invocationCounter)
             challenge.set(GXDLMSChippering.encryptAesGcm(p, d))
             d = challenge.array()
-        if settings.authentication == Authentication.HIGH_ECDSA:
+        elif settings.authentication == Authentication.HIGH_ECDSA:
             raise Exception("ECDSA is not supported.")
         return d
 

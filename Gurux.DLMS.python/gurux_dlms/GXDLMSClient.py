@@ -541,6 +541,14 @@ class GXDLMSClient(object):
         pw = []
         if self.settings.authentication == Authentication.HIGH_GMAC:
             pw = self.settings.cipher.systemTitle
+        elif self.settings.authentication == Authentication.HIGH_SHA256:
+            tmp = GXByteBuffer()
+            tmp.set(self.settings.password)
+            tmp.set(self.settings.cipher.systemTitle)
+            tmp.set(self.settings.sourceSystemTitle)
+            tmp.set(self.settings.stoCChallenge)
+            tmp.set(self.settings.ctoSChallenge)
+            pw = tmp.array()
         else:
             pw = self.settings.password
         ic = 0
@@ -570,6 +578,14 @@ class GXDLMSClient(object):
                 bb = GXByteBuffer(value)
                 bb.getUInt8()
                 ic = bb.getUInt32()
+            elif self.settings.authentication == Authentication.HIGH_SHA256:
+                tmp2 = GXByteBuffer()
+                tmp2.set(self.settings.password);
+                tmp2.set(self.settings.sourceSystemTitle)
+                tmp2.set(self.settings.cipher.systemTitle)
+                tmp2.set(self.settings.ctoSChallenge)
+                tmp2.set(self.settings.stoCChallenge)
+                secret = tmp2.array()
             else:
                 secret = self.settings.password
             tmp = GXSecure.secure(self.settings, self.settings.cipher, ic, self.settings.getCtoSChallenge(), secret)
