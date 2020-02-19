@@ -580,7 +580,7 @@ class GXDLMSClient(object):
                 ic = bb.getUInt32()
             elif self.settings.authentication == Authentication.HIGH_SHA256:
                 tmp2 = GXByteBuffer()
-                tmp2.set(self.settings.password);
+                tmp2.set(self.settings.password)
                 tmp2.set(self.settings.sourceSystemTitle)
                 tmp2.set(self.settings.cipher.systemTitle)
                 tmp2.set(self.settings.ctoSChallenge)
@@ -808,11 +808,6 @@ class GXDLMSClient(object):
             p = GXDLMSLNParameters(self.settings, 0, Command.METHOD_REQUEST, ActionRequestType.NORMAL, attributeDescriptor, data, 0xff)
             reply = GXDLMS.getLnMessages(p)
         else:
-            requestType = 0
-            if type_ == DataType.NONE:
-                requestType = VariableAccessSpecification.VARIABLE_NAME
-            else:
-                requestType = VariableAccessSpecification.PARAMETERISED_ACCESS
             ind = [0]
             count = [0]
             GXDLMS.getActionInfo(objectType, ind, count)
@@ -826,7 +821,7 @@ class GXDLMSClient(object):
                 attributeDescriptor.setUInt8(1)
             else:
                 attributeDescriptor.setUInt8(0)
-            p = GXDLMSSNParameters(self.settings, Command.READ_REQUEST, 1, requestType, attributeDescriptor, data)
+            p = GXDLMSSNParameters(self.settings, Command.WRITE_REQUEST, 1, VariableAccessSpecification.VARIABLE_NAME, attributeDescriptor, data)
             reply = GXDLMS.getSnMessages(p)
         return reply
 

@@ -79,9 +79,12 @@
 7;1.0.99.2.0.255;1;Daily Load Profile
 8;0.0.1.0.0.255;0;Clock
 9;0.0.10.0.1.255;0;MD Reset Action
-15;0.0.40.0.2.255;1;LLS Secret Key
-15;0.0.40.0.3.255;1;HLS Secret key - Association 3 (HLS)
-15;0.0.40.0.5.255;1;HLS Secret key - Association 4 (Firmware Upgrade)
+15;0.0.40.0.1.255;1;PC Association
+15;0.0.40.0.2.255;1;MR Association (LLS)
+15;0.0.40.0.3.255;1;US Association (HLS)
+15;0.0.40.0.4.255;1;Push Association (HLS)
+15;0.0.40.0.5.255;1;Firmware Upgrade Association (HLS)
+15;0.0.40.0.6.255;1;IHD Association (Pre-established, LLS)
 18;0.0.44.0.0.255;0;Image Activation Info
 20;0.0.13.0.0.255;0;Activity Calendar Active Time
 20;0.0.13.0.0.255;0;Activity Calendar For Time Zones
@@ -96,3 +99,8 @@
 71;0.0.17.0.0.255;0;Load Limit Threshold (kW)
 71;0.0.17.0.0.255;0;Load Limit Value (kW)
 3;0.0.94.91.8.255;0;Cumulative power - OFF duration in min
+64;0.0.25.9.1.255;0;Periodic Push (SM to HES)
+64;0.0.25.9.2.255;0;Utility Message (HES to IHD)
+64;0.0.25.9.3.255;0;Consumer Message (IHD to HES)
+64;0.0.25.9.4.255;0;Periodic Push (SM to IHD)
+64;0.0.25.9.5.255;0;EventPush (SM to HES)

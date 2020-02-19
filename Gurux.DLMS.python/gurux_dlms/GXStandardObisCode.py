@@ -38,7 +38,7 @@ class GXStandardObisCode:
     #
     # Constructor.
     #
-    def __init__(self, forObis, desc=None, forInterfaces=None, forDataType=None):
+    def __init__(self, forObis, desc=None, forInterfaces=None, forDataType=""):
         # OBIS code.
         if forObis is None:
             self.obis = [0, 0, 0, 0, 0, 0]
