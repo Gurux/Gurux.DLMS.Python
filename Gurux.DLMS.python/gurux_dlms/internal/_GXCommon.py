@@ -307,8 +307,9 @@ class _GXCommon:
     #
     @classmethod
     def integerToHex(cls, value, desimals):
-        str_ = hex(value)[2:]
-        if desimals == 0 or len(_GXCommon.zeroes) == len(str_):
+        nbits = desimals * 4
+        str_ = hex((value + (1 << nbits)) % (1 << nbits))[2:].upper()
+        if desimals == 0 or desimals == len(str_):
             return str_
         return _GXCommon.zeroes[0: desimals - len(str_)] + str_.upper()
 

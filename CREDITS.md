@@ -1,5 +1,9 @@
 Credits
 =======
+  - integerToHex wrongly converting negative integers.
+    * [i96751414](https://github.com/i96751414)
+  - GXDLMSTranslator is using wrong getCiphering defenitions.
+    * [i96751414](https://github.com/i96751414)
   - Script table getActions changed to actions.
     * [Olav Frengstad](https://github.com/lafka)
   - GXByteBuffer setFloat and setDouble ignores index parameter.

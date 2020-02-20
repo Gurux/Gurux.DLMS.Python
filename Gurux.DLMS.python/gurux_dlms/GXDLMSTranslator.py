@@ -124,7 +124,7 @@ class GXDLMSTranslator:
         # Dedicated key.
         self.dedicatedKey = None
         # Server system title.
-        seld.serverSystemTitle = None
+        self.serverSystemTitle = None
         self.outputType = type_
         # Is only complete PDU parsed and shown.
         self.completePdu = False
@@ -350,7 +350,7 @@ class GXDLMSTranslator:
             data.xml = (xml)
             offset = value.position
             settings = GXDLMSSettings(True)
-            settings.cipher = self.getCiphering()
+            self.getCiphering(settings.cipher, True)
             #  If HDLC framing.
             if value.getUInt8(value.position) == 0x7e:
                 settings.interfaceType = InterfaceType.HDLC
@@ -520,7 +520,7 @@ class GXDLMSTranslator:
         if not value:
             raise ValueError("value")
         settings = GXDLMSSettings(True)
-        settings.cipher = self.getCiphering()
+        self.getCiphering(settings.cipher, False)
         data = GXReplyData()
         cmd = value.getUInt8()
         str_ = None
@@ -534,7 +534,7 @@ class GXDLMSTranslator:
         elif cmd == Command.INITIATE_RESPONSE:
             value.position = 0
             settings = GXDLMSSettings(False)
-            settings.cipher = self.getCiphering()
+            self.getCiphering(settings.cipher, True)
             _GXAPDU.parseInitiate(True, settings, settings.cipher, value, xml)
         elif cmd == 0x81:
             #  Ua
@@ -543,7 +543,7 @@ class GXDLMSTranslator:
         elif cmd == Command.AARE:
             value.position = 0
             settings = GXDLMSSettings(False)
-            settings.cipher = self.getCiphering()
+            self.getCiphering(settings.cipher, True)
             _GXAPDU.parsePDU(settings, settings.cipher, value, xml)
         elif cmd == Command.GET_REQUEST:
             GXDLMSLNCommandHandler.handleGetRequest(settings, None, value, None, xml)
