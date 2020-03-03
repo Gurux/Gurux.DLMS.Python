@@ -1057,8 +1057,8 @@ class _GXCommon:
         value = tmp
         if info.xml:
             if info.xml.comments and tmp:
-                #  This might be logical name.
-                if len(tmp) == 6 and tmp[5] == -1:
+                #  This might be a logical name.
+                if len(tmp) == 6 and tmp[5] == 255:
                     info.xml.appendComment(cls.toLogicalName(tmp))
                 else:
                     isString = True

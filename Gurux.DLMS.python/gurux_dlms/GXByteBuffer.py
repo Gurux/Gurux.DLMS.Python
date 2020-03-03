@@ -603,7 +603,7 @@ class GXByteBuffer(__base):
         #Python 2.7 handles bytes as a string array. It's changed to bytearray.
         if sys.version_info < (3, 0) and not isinstance(value, bytearray):
             value = bytearray(value)
-        if count == 0:
+        if count is None:
             count = len(value)
         for it in value[index:count]:
             hexChars += GXByteBuffer.__HEX_ARRAY[it >> GXByteBuffer.__NIBBLE]

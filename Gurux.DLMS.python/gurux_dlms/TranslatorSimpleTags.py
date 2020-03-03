@@ -518,8 +518,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getApplicationReferenceByValue(cls, value):
         ret = None
-        for k, v in cls.__getApplicationReference():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getApplicationReference().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -534,8 +534,8 @@ class TranslatorSimpleTags:
     @classmethod
     def getServiceError(cls, value):
         error = None
-        for k, v in cls.__getServiceErrors():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getServiceErrors().items():
+            if value == v:
                 error = k
                 break
         if error is None:
@@ -545,8 +545,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getHardwareResourceByValue(cls, value):
         ret = None
-        for k, v in cls.__getHardwareResource():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getHardwareResource().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -556,8 +556,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getVdeStateErrorByValue(cls, value):
         ret = None
-        for k, v in cls.__getVdeStateError():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getVdeStateError().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -567,8 +567,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getServiceByValue(cls, value):
         ret = None
-        for k, v in cls.__getService():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getService().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -578,8 +578,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getDefinitionByValue(cls, value):
         ret = None
-        for k, v in cls.__getDefinition():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getDefinition().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -589,8 +589,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getAccessByValue(cls, value):
         ret = None
-        for k, v in cls.__getAccess():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getAccess().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -598,10 +598,10 @@ class TranslatorSimpleTags:
         return ret
 
     @classmethod
-    def __getInitiateByValue(cls, value):
+    def getInitiateByValue(cls, value):
         ret = None
-        for k, v in cls.__getInitiate():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getInitiate().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -611,8 +611,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getLoadDataSetByValue(cls, value):
         ret = None
-        for k, v in cls.__getLoadDataSet():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getLoadDataSet().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -622,8 +622,8 @@ class TranslatorSimpleTags:
     @classmethod
     def __getTaskByValue(cls, value):
         ret = None
-        for k, v in cls.__getTask():
-            if value.compareTo(v) == 0:
+        for k, v in cls.__getTask().items():
+            if value == v:
                 ret = k
                 break
         if ret is None:
@@ -646,7 +646,7 @@ class TranslatorSimpleTags:
         elif serviceError == ServiceError.ACCESS:
             ret = cls.__getAccessByValue(value)
         elif serviceError == ServiceError.INITIATE:
-            ret = cls.__getInitiateByValue(value)
+            ret = cls.getInitiateByValue(value)
         elif serviceError == ServiceError.LOAD_DATASET:
             ret = cls.__getLoadDataSetByValue(value)
         elif serviceError == ServiceError.TASK:

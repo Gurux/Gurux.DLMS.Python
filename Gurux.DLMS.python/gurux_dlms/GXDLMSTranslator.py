@@ -350,7 +350,7 @@ class GXDLMSTranslator:
             data.xml = (xml)
             offset = value.position
             settings = GXDLMSSettings(True)
-            self.getCiphering(settings.cipher, True)
+            self.getCiphering(settings, True)
             #  If HDLC framing.
             if value.getUInt8(value.position) == 0x7e:
                 settings.interfaceType = InterfaceType.HDLC
@@ -520,7 +520,7 @@ class GXDLMSTranslator:
         if not value:
             raise ValueError("value")
         settings = GXDLMSSettings(True)
-        self.getCiphering(settings.cipher, False)
+        self.getCiphering(settings, False)
         data = GXReplyData()
         cmd = value.getUInt8()
         str_ = None
@@ -534,7 +534,7 @@ class GXDLMSTranslator:
         elif cmd == Command.INITIATE_RESPONSE:
             value.position = 0
             settings = GXDLMSSettings(False)
-            self.getCiphering(settings.cipher, True)
+            self.getCiphering(settings, True)
             _GXAPDU.parseInitiate(True, settings, settings.cipher, value, xml)
         elif cmd == 0x81:
             #  Ua
@@ -543,7 +543,7 @@ class GXDLMSTranslator:
         elif cmd == Command.AARE:
             value.position = 0
             settings = GXDLMSSettings(False)
-            self.getCiphering(settings.cipher, True)
+            self.getCiphering(settings, True)
             _GXAPDU.parsePDU(settings, settings.cipher, value, xml)
         elif cmd == Command.GET_REQUEST:
             GXDLMSLNCommandHandler.handleGetRequest(settings, None, value, None, xml)
@@ -818,9 +818,9 @@ class GXDLMSTranslator:
                 else:
                     raise ValueError("Invalid application context name.")
             else:
-                if node.getAttributes().item(0).getNodeValue().compareTo("SN") == 0 or node.getAttributes().item(0).getNodeValue().compareTo("SN_WITH_CIPHERING") == 0:
+                if node.attrib["Value"] == "SN" or node.attrib["Value"] == "SN_WITH_CIPHERING":
                     s.settings.setUseLogicalNameReferencing(False)
-                elif node.getAttributes().item(0).getNodeValue().compareTo("LN") == 0 or node.getAttributes().item(0).getNodeValue().compareTo("LN_WITH_CIPHERING") == 0:
+                elif node.attrib["Value"] == "LN" or node.attrib["Value"] == "LN_WITH_CIPHERING":
                     s.settings.setUseLogicalNameReferencing(True)
                 else:
                     raise ValueError("Invalid Reference type name.")
@@ -872,7 +872,7 @@ class GXDLMSTranslator:
                 s.settings.authentication = Authentication(int(cls.getValue(node, s)))
         elif tag == 0xAC:
             if s.settings.authentication == Authentication.LOW:
-                s.settings.setPassword(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                s.settings.password = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             else:
                 s.settings.setCtoSChallenge(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
         elif tag == TranslatorGeneralTags.DEDICATED_KEY:
@@ -906,22 +906,22 @@ class GXDLMSTranslator:
                 list_ = s.settings.negotiatedConformance
             else:
                 list_ = s.settings.proposedConformance
-            list_.append(TranslatorSimpleTags.value_ofConformance(node.getAttributes().getNamedItem("Name").getNodeValue()))
+            list_ |= TranslatorSimpleTags.value_ofConformance(node.attrib["Name"])
         elif tag == 0xA2:
-            s.setResult(AssociationResult(s.parseInt(cls.getValue(node, s))))
+            s.result = AssociationResult(s.parseInt(cls.getValue(node, s)))
         elif tag == 0xBE02:
             pass
         elif tag == 0xBE07:
-            s.settings.setMaxPduSize(s.parseInt(cls.getValue(node, s)))
+            s.settings.maxPduSize = s.parseInt(cls.getValue(node, s))
         elif tag == 0xA3:
-            s.setDiagnostic(SourceDiagnostic.NONE)
+            s.diagnostic = SourceDiagnostic.NONE
         elif tag == 0xA301:
-            s.setDiagnostic(SourceDiagnostic(s.parseInt(cls.getValue(node, s))))
+            s.diagnostic = SourceDiagnostic(s.parseInt(cls.getValue(node, s)))
         elif tag == 0xBE09:
             pass
         elif tag == TranslatorGeneralTags.CHAR_STRING:
             if s.settings.authentication == Authentication.LOW:
-                s.settings.setPassword(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                s.settings.password = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             else:
                 if s.command == Command.AARQ:
                     s.settings.setCtoSChallenge(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
@@ -937,6 +937,26 @@ class GXDLMSTranslator:
             if s.command == Command.NONE:
                 s.settings.setServer(False)
                 s.command = (tag)
+        elif tag == TranslatorTags.REASON:
+            if s.command == Command.RELEASE_REQUEST:
+                if s.OutputType == TranslatorOutputType.SIMPLE_XML:
+                    s.reason = TranslatorSimpleTags.value_ofReleaseRequestReason(cls.getValue(node, s))
+                else:
+                    s.reason = TranslatorStandardTags.value_ofReleaseRequestReason(cls.getValue(node, s))
+            else:
+                if s.OutputType == TranslatorOutputType.SIMPLE_XML:
+                    s.reason = TranslatorSimpleTags.value_ofReleaseResponseReason(cls.getValue(node, s))
+                else:
+                    s.reason = TranslatorStandardTags.value_ofReleaseResponseReason(cls.getValue(node, s))
+        elif tag == TranslatorTags.SERVICE:
+            s.attributeDescriptor.setUInt8(0xE)
+            s.attributeDescriptor.setUInt8(s.parseInt(cls.getValue(node, s)))
+        elif tag == TranslatorTags.SERVICE_ERROR:
+            if s.command == Command.AARE:
+                s.attributeDescriptor.setUInt8(6)
+                for childNode in node:
+                    s.attributeDescriptor.setUInt8(TranslatorSimpleTags.getInitiateByValue(cls.getValue(childNode, s)))
+                return False
         elif tag == TranslatorTags.PROTOCOL_VERSION:
             str_ = cls.getValue(node, s)
             pv = GXByteBuffer()
@@ -972,6 +992,7 @@ class GXDLMSTranslator:
             s.attributeDescriptor.setUInt8(int(s.parseInt(cls.getValue(node, s))))
         else:
             raise ValueError("Invalid AARQ node: " + node.tag)
+        return True
 
     @classmethod
     def getValue(cls, node, s):
@@ -1020,7 +1041,8 @@ class GXDLMSTranslator:
             if not ((s.settings.clientAddress == 0 or s.settings.serverAddress == 0) and cls.getFrame(node, s, tag) or tag in (TranslatorTags.PDU_DLMS, TranslatorTags.PDU_CSE)):
                 cls.getCommand(node, s, tag)
         elif s.command in (Command.AARQ, Command.AARE, Command.INITIATE_REQUEST, Command.INITIATE_RESPONSE, Command.RELEASE_REQUEST, Command.RELEASE_RESPONSE):
-            cls.handleAarqAare(node, s, tag)
+            if not cls.handleAarqAare(node, s, tag):
+                return
         elif tag >= _GXCommon.DATA_TYPE_OFFSET:
             if tag == DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET or (s.command == Command.EVENT_NOTIFICATION and not s.attributeDescriptor):
                 preData = cls.updateDateTime(node, s, preData)
@@ -1227,7 +1249,7 @@ class GXDLMSTranslator:
                         else:
                             s.attributeDescriptor.setUInt8(s.requestType)
                             s.setRequestType(0xFF)
-                        s.setCount(s.getCount() + 1)
+                        s.count = s.count + 1
                     elif s.command != Command.INFORMATION_REPORT:
                         s.attributeDescriptor.setUInt8(s.count)
                     if s.outputType == TranslatorOutputType.SIMPLE_XML:
@@ -1240,7 +1262,7 @@ class GXDLMSTranslator:
                 pass
             elif tag == Command.READ_RESPONSE << 8 | SingleReadResponse.DATA_ACCESS_ERROR:
                 err = cls.value_ofErrorCode(s.outputType, cls.getValue(node, s))
-                s.setCount(s.getCount() + 1)
+                s.count = s.count + 1
                 s.data.setUInt8(1)
                 s.data.setUInt8(err)
             elif tag == TranslatorTags.NOTIFICATION_BODY:

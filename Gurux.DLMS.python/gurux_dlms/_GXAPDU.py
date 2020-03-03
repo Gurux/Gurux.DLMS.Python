@@ -792,7 +792,7 @@ class _GXAPDU:
                 _GXAPDU.updateAuthentication(settings, buff)
                 if xml:
                     if xml.outputType == TranslatorOutputType.SIMPLE_XML:
-                        str_ = settings.authentication.name[0] + settings.authentication.name[1:].lower()
+                        str_ = Authentication.toString(settings.authentication)
                         xml.appendLine(tag, "Value", str_)
                     else:
                         xml.appendLine(tag, "Value", str(settings.authentication))
@@ -979,7 +979,7 @@ class _GXAPDU:
         bb = GXByteBuffer(4)
         bb.setUInt32(settings.negotiatedConformance)
         data.set(bb.subArray(1, 3))
-        data.setUInt16(settings.getMaxPduSize())
+        data.setUInt16(settings.maxPduSize)
         #  VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
         if settings.useLogicalNameReferencing:
             data.setUInt16(0x0007)
@@ -1037,7 +1037,7 @@ class _GXAPDU:
             data.setUInt8()
             data.set(cipher.systemTitle)
         #  Add CalledAEInvocationId.
-        if settings.getUserId() != -1:
+        if settings.userId != -1:
             data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AE_INVOCATION_ID)
             #  LEN
             data.setUInt8(3)
@@ -1067,8 +1067,8 @@ class _GXAPDU:
             data.setUInt8((len(settings.stoCChallenge)))
             #  Len
             data.setUInt8(BerType.CONTEXT)
-            data.setUInt8()
-            data.set(settings.StoCChallenge)
+            data.setUInt8(len(settings.stoCChallenge))
+            data.set(settings.stoCChallenge)
         if result == AssociationResult.ACCEPTED or not cipher or cipher.security == Security.NONE:
             #  Add User Information
             #  Tag 0xBE
@@ -1084,10 +1084,10 @@ class _GXAPDU:
                     tmp = errorData
                 else:
                     tmp = cls.getUserInformation(settings, cipher)
-            data.setUInt8((len(tmp)))
+            data.setUInt8(2 + (len(tmp)))
             #  Coding the choice for user-information (Octet STRING, universal)
             data.setUInt8(BerType.OCTET_STRING)
             #  Length
-            data.setUInt8()
+            data.setUInt8(len(tmp))
             data.set(tmp)
-        data.setUInt8((offset + 1), (len(data) - offset - 2))
+        data.setUInt8((len(data) - offset - 2), (offset + 1))

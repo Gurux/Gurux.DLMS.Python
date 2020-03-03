@@ -1,5 +1,7 @@
 Credits
 =======
+  - getCiphering parameter issue from GXDLMSTranslator.
+    * [jothikumar mani](https://github.com/jk-arm)
   - integerToHex wrongly converting negative integers.
     * [i96751414](https://github.com/i96751414)
   - GXDLMSTranslator is using wrong getCiphering defenitions.
