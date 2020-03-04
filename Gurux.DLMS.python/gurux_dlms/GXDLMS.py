@@ -926,7 +926,7 @@ class GXDLMS:
                 settings.serverAddress = target
             if settings.clientAddress != 0 and settings.clientAddress != source:
                 if reply.getUInt8(reply.position) == Command.SNRM:
-                    settings.setClientAddress(source)
+                    settings.clientAddress = source
                 else:
                     raise Exception("Client addresses do not match. It is " + str(source) + ". It should be " + str(settings.clientAddress) + ".")
             else:
@@ -1027,7 +1027,7 @@ class GXDLMS:
             value = buff.getUInt16()
             if settings.clientAddress != 0 and settings.clientAddress != value:
                 raise Exception("Source addresses do not match. It is " + str(value) + ". It should be " + str(settings.clientAddress) + ".")
-            settings.setClientAddress(value)
+            settings.clientAddress = value
             value = buff.getUInt16()
             if settings.serverAddress != 0 and settings.serverAddress != value:
                 raise Exception("Destination addresses do not match. It is " + str(value) + ". It should be " + str(settings.serverAddress) + ".")
