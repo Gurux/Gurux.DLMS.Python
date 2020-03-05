@@ -222,3 +222,215 @@ class GXDLMSConverter:
         else:
             raise ValueError('Invalid data type.')
         return ret
+
+    @classmethod
+    def objectTypeToString(cls, ot):
+        if ot == ObjectType.ACTION_SCHEDULE:
+            ret = "ActionSchedule"
+        elif ot == ObjectType.ACTIVITY_CALENDAR:
+            ret = "ActivityCalendar"
+        elif ot == ObjectType.ASSOCIATION_LOGICAL_NAME:
+            ret = "AssociationLogicalName"
+        elif ot == ObjectType.ASSOCIATION_SHORT_NAME:
+            ret = "AssociationShortName"
+        elif ot == ObjectType.AUTO_ANSWER:
+            ret = "AutoAnswer"
+        elif ot == ObjectType.AUTO_CONNECT:
+            ret = "AutoConnect"
+        elif ot == ObjectType.CLOCK:
+            ret = "Clock"
+        elif ot == ObjectType.DATA:
+            ret = "Data"
+        elif ot == ObjectType.DEMAND_REGISTER:
+            ret = "DemandRegister"
+        elif ot == ObjectType.MAC_ADDRESS_SETUP:
+            ret = "MacAddressSetup"
+        elif ot == ObjectType.EXTENDED_REGISTER:
+            ret = "ExtendedRegister"
+        elif ot == ObjectType.GPRS_SETUP:
+            ret = "GprsSetup"
+        elif ot == ObjectType.SECURITY_SETUP:
+            ret = "SecuritySetup"
+        elif ot == ObjectType.IEC_HDLC_SETUP:
+            ret = "HdlcSetup"
+        elif ot == ObjectType.IEC_LOCAL_PORT_SETUP:
+            ret = "IECOpticalPortSetup"
+        elif ot == ObjectType.IEC_TWISTED_PAIR_SETUP:
+            ret = "IEC_TWISTED_PAIR_SETUP"
+        elif ot == ObjectType.IP4_SETUP:
+            ret = "Ip4Setup"
+        elif ot == ObjectType.MBUS_SLAVE_PORT_SETUP:
+            ret = "MBusSlavePortSetup"
+        elif ot == ObjectType.IMAGE_TRANSFER:
+            ret = "ImageTransfer"
+        elif ot == ObjectType.DISCONNECT_CONTROL:
+            ret = "DisconnectControl"
+        elif ot == ObjectType.LIMITER:
+            ret = "Limiter"
+        elif ot == ObjectType.MBUS_CLIENT:
+            ret = "MBusClient"
+        elif ot == ObjectType.MODEM_CONFIGURATION:
+            ret = "ModemConfiguration"
+        elif ot == ObjectType.PPP_SETUP:
+            ret = "PppSetup"
+        elif ot == ObjectType.PROFILE_GENERIC:
+            ret = "ProfileGeneric"
+        elif ot == ObjectType.REGISTER:
+            ret = "Register"
+        elif ot == ObjectType.REGISTER_ACTIVATION:
+            ret = "RegisterActivation"
+        elif ot == ObjectType.REGISTER_MONITOR:
+            ret = "RegisterMonitor"
+        elif ot == ObjectType.REGISTER_TABLE:
+            ret = "RegisterTable"
+        elif ot == ObjectType.ZIG_BEE_SAS_STARTUP:
+            ret = "ZigBeeSasStartup"
+        elif ot == ObjectType.ZIG_BEE_SAS_JOIN:
+            ret = "ZigBeeSasJoin"
+        elif ot == ObjectType.ZIG_BEE_SAS_APS_FRAGMENTATION:
+            ret = "ZigBeeSasApsFragmentation"
+        elif ot == ObjectType.ZIG_BEE_NETWORK_CONTROL:
+            ret = "ZigBeeNetworkControl"
+        elif ot == ObjectType.SAP_ASSIGNMENT:
+            ret = "SapAssignment"
+        elif ot == ObjectType.SCHEDULE:
+            ret = "Schedule"
+        elif ot == ObjectType.SCRIPT_TABLE:
+            ret = "ScriptTable"
+        elif ot == ObjectType.SMTP_SETUP:
+            ret = "SMTPSetup"
+        elif ot == ObjectType.SPECIAL_DAYS_TABLE:
+            ret = "SpecialDaysTable"
+        elif ot == ObjectType.STATUS_MAPPING:
+            ret = "StatusMapping"
+        elif ot == ObjectType.TCP_UDP_SETUP:
+            ret = "TcpUdpSetup"
+        elif ot == ObjectType.UTILITY_TABLES:
+            ret = "UtilityTables"
+        elif ot == ObjectType.MBUS_MASTER_PORT_SETUP:
+            ret = "MBusMasterPortSetup"
+        elif ot == ObjectType.PUSH_SETUP:
+            ret = "PushSetup"
+        elif ot == ObjectType.ACCOUNT:
+            ret = "Account"
+        elif ot == ObjectType.CREDIT:
+            ret = "Credit"
+        elif ot == ObjectType.CHARGE:
+            ret = "Charge"
+        elif ot == ObjectType.PARAMETER_MONITOR:
+            ret = "ParameterMonitor"
+        elif ot == ObjectType.TOKEN_GATEWAY:
+            ret = "TokenGateway"
+        elif ot == ObjectType.GSM_DIAGNOSTIC:
+            ret = "GSMDiagnostic"
+        elif ot == ObjectType.COMPACT_DATA:
+            ret = "CompactData"
+        else:
+            ret = "Manufacture spesific."
+        return ret
+
+    @classmethod
+    def valueOfObjectType(cls, value):
+        if value == "ActionSchedule":
+            ot = ObjectType.ACTION_SCHEDULE
+        elif value == "ActivityCalendar":
+            ot = ObjectType.ACTIVITY_CALENDAR
+        elif value == "AssociationLogicalName":
+            ot = ObjectType.ASSOCIATION_LOGICAL_NAME
+        elif value == "AssociationShortName":
+            ot = ObjectType.ASSOCIATION_SHORT_NAME
+        elif value == "AutoAnswer":
+            ot = ObjectType.AUTO_ANSWER
+        elif value == "AutoConnect":
+            ot = ObjectType.AUTO_CONNECT
+        elif value == "Clock":
+            ot = ObjectType.CLOCK
+        elif value == "Data":
+            ot = ObjectType.DATA
+        elif value == "DemandRegister":
+            ot = ObjectType.DEMAND_REGISTER
+        elif value == "MacAddressSetup":
+            ot = ObjectType.MAC_ADDRESS_SETUP
+        elif value == "ExtendedRegister":
+            ot = ObjectType.EXTENDED_REGISTER
+        elif value == "GprsSetup":
+            ot = ObjectType.GPRS_SETUP
+        elif value == "SecuritySetup":
+            ot = ObjectType.SECURITY_SETUP
+        elif value == "HdlcSetup":
+            ot = ObjectType.IEC_HDLC_SETUP
+        elif value == "IECOpticalPortSetup":
+            ot = ObjectType.IEC_LOCAL_PORT_SETUP
+        elif value == "IEC_TWISTED_PAIR_SETUP":
+            ot = ObjectType.IEC_TWISTED_PAIR_SETUP
+        elif value == "Ip4Setup":
+            ot = ObjectType.IP4_SETUP
+        elif value == "MBusSlavePortSetup":
+            ot = ObjectType.MBUS_SLAVE_PORT_SETUP
+        elif value == "ImageTransfer":
+            ot = ObjectType.IMAGE_TRANSFER
+        elif value == "DisconnectControl":
+            ot = ObjectType.DISCONNECT_CONTROL
+        elif value == "Limiter":
+            ot = ObjectType.LIMITER
+        elif value == "MBusClient":
+            ot = ObjectType.MBUS_CLIENT
+        elif value == "ModemConfiguration":
+            ot = ObjectType.MODEM_CONFIGURATION
+        elif value == "PppSetup":
+            ot = ObjectType.PPP_SETUP
+        elif value == "ProfileGeneric":
+            ot = ObjectType.PROFILE_GENERIC
+        elif value == "Register":
+            ot = ObjectType.REGISTER
+        elif value == "RegisterActivation":
+            ot = ObjectType.REGISTER_ACTIVATION
+        elif value == "RegisterMonitor":
+            ot = ObjectType.REGISTER_MONITOR
+        elif value == "RegisterTable":
+            ot = ObjectType.REGISTER_TABLE
+        elif value == "ZigBeeSasStartup":
+            ot = ObjectType.ZIG_BEE_SAS_STARTUP
+        elif value == "ZigBeeSasJoin":
+            ot = ObjectType.ZIG_BEE_SAS_JOIN
+        elif value == "ZigBeeSasApsFragmentation":
+            ot = ObjectType.ZIG_BEE_SAS_APS_FRAGMENTATION
+        elif value == "ZigBeeNetworkControl":
+            ot = ObjectType.ZIG_BEE_NETWORK_CONTROL
+        elif value == "SapAssignment":
+            ot = ObjectType.SAP_ASSIGNMENT
+        elif value == "Schedule":
+            ot = ObjectType.SCHEDULE
+        elif value == "ScriptTable":
+            ot = ObjectType.SCRIPT_TABLE
+        elif value == "SMTPSetup":
+            ot = ObjectType.SMTP_SETUP
+        elif value == "SpecialDaysTable":
+            ot = ObjectType.SPECIAL_DAYS_TABLE
+        elif value == "StatusMapping":
+            ot = ObjectType.STATUS_MAPPING
+        elif value == "TcpUdpSetup":
+            ot = ObjectType.TCP_UDP_SETUP
+        elif value == "UtilityTables":
+            ot = ObjectType.UTILITY_TABLES
+        elif value == "MBusMasterPortSetup":
+            ot = ObjectType.MBUS_MASTER_PORT_SETUP
+        elif value == "PushSetup":
+            ot = ObjectType.PUSH_SETUP
+        elif value == "Account":
+            ot = ObjectType.ACCOUNT
+        elif value == "Credit":
+            ot = ObjectType.CREDIT
+        elif value == "Charge":
+            ot = ObjectType.CHARGE
+        elif value == "ParameterMonitor":
+            ot = ObjectType.PARAMETER_MONITOR
+        elif value == "TokenGateway":
+            ot = ObjectType.TOKEN_GATEWAY
+        elif value == "GSMDiagnostic":
+            ot = ObjectType.GSM_DIAGNOSTIC
+        elif value == "CompactData":
+            ot = ObjectType.COMPACT_DATA
+        else:
+            ot = ObjectType.NONE
+        return ot

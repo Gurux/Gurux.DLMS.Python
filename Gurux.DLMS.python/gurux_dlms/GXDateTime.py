@@ -254,7 +254,7 @@ class GXDateTime:
                 index = str_.find("%S")
                 if index != -1:
                     sep = str_[index - 1]
-                    str_.replace("%S", "%S" + sep + "%f", "*")
+                    str_.replace("%S", "%S" + sep + "%f")
                 else:
                     index = str_.find("%-S")
                     if index != -1:

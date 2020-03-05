@@ -79,6 +79,7 @@ from .enums.AssociationResult import AssociationResult
 from .enums.SourceDiagnostic import SourceDiagnostic
 from .AesGcmParameter import AesGcmParameter
 from .GXDLMSException import GXDLMSException
+from .enums.Standard import Standard
 
 # pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,
 # old-style-class
@@ -114,11 +115,11 @@ class GXDLMSTranslator:
         # Used security.
         self.security = Security.NONE
         # System title.
-        self.systemTitle = None
+        self.systemTitle = "ABCDEFGH".encode()
         # Block cipher key.
-        self.blockCipherKey = None
+        self.blockCipherKey = bytearray((0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F))
         # Authentication key.
-        self.authenticationKey = None
+        self.authenticationKey = bytearray((0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF))
         # Invocation Counter.
         self.invocationCounter = 0
         # Dedicated key.
@@ -129,6 +130,7 @@ class GXDLMSTranslator:
         # Is only complete PDU parsed and shown.
         self.completePdu = False
         self.__getTags(self.outputType, self.tags, self.tagsByName)
+        self.standard = Standard.DLMS
 
     #
     # Find next frame from the string.  Position of data is set to the begin of
@@ -507,6 +509,16 @@ class GXDLMSTranslator:
         xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
         return self.__pduToXml_(xml, value, omitDeclaration, omitNameSpace, True)
 
+    @classmethod
+    def isCiphered(cls, cmd):
+        return cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING,\
+            Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST,\
+            Command.GLO_SET_REQUEST, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,\
+            Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST,\
+            Command.GLO_METHOD_RESPONSE, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST,\
+            Command.DED_READ_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
+            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE)
+
     #
     # Convert bytes to XML.
     #
@@ -520,9 +532,10 @@ class GXDLMSTranslator:
         if not value:
             raise ValueError("value")
         settings = GXDLMSSettings(True)
-        self.getCiphering(settings, False)
-        data = GXReplyData()
+        settings.standard = self.standard
         cmd = value.getUInt8()
+        self.getCiphering(settings, self.isCiphered(cmd))
+        data = GXReplyData()
         str_ = None
         if cmd == Command.AARQ:
             value.position = 0
@@ -634,7 +647,7 @@ class GXDLMSTranslator:
                         st = settings.cipher.getSystemTitle()
                     else:
                         st = settings.sourceSystemTitle
-                    if st:
+                    if st or cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
                         p = None
                         if cmd in (Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST):
                             p = AesGcmParameter(0, st, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
@@ -646,8 +659,7 @@ class GXDLMSTranslator:
                             self.__pduToXml_(xml, data2, omitDeclaration, omitNameSpace, False)
                             xml.endComment()
                 except Exception:
-                    #  It's OK if this fails.  Ciphering settings are not
-                    #  correct.
+                    #  It's OK if this fails.  Ciphering settings are not correct.
                     xml.xml.setXmlLength(len_)
                 value.position = originalPosition
             cnt = _GXCommon.getObjectCount(value)
@@ -657,6 +669,7 @@ class GXDLMSTranslator:
         elif cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
             if settings.cipher and self.comments:
                 len_ = xml.getXmlLength()
+                originalPosition = value.position
                 try:
                     tmp = GXByteBuffer()
                     tmp.set(value, value.position - 1, len(value) - value.position + 1)
@@ -671,6 +684,7 @@ class GXDLMSTranslator:
                     #  It's OK if this fails.  Ciphering settings are not
                     #  correct.
                     xml.setXmlLength(len_)
+                value.position = originalPosition
             len_ = _GXCommon.getObjectCount(value)
             tmp = bytearray(len_)
             value.get(tmp)

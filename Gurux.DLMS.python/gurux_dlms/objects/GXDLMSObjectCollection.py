@@ -37,6 +37,7 @@ from .GXDLMSObject import GXDLMSObject
 from ..enums import ObjectType
 from .GXXmlWriter import GXXmlWriter
 from .GXXmlReader import GXXmlReader
+from ..GXDLMSConverter import GXDLMSConverter
 
 class GXDLMSObjectCollection(list):
     """
@@ -130,23 +131,11 @@ class GXDLMSObjectCollection(list):
                 reader.read()
         return reader.objects
 
-    @classmethod
-    def getObjectName(cls, ot):
-        name = ot.name.lower()
-        tmp = name.split("_")
-        pos = 0
-        name = ""
-        while pos < len(tmp):
-            name += tmp[pos][0].upper()
-            name += tmp[pos][1:]
-            pos += 1
-        return name
-
     def save(self, name, settings=None):
         writer = GXXmlWriter()
         objects = ET.Element("objects")
         for it in self:
-            node = ET.SubElement(objects, "GXDLMS" + self.getObjectName(it.objectType))
+            node = ET.SubElement(objects, "GXDLMS" + GXDLMSConverter.objectTypeToString(it.objectType))
             if it.shortName != 0:
                 ET.SubElement(node, "SN").text = it.shortName
             ET.SubElement(node, "LN").text = it.logicalName
