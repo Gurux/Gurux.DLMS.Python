@@ -217,6 +217,6 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("Name", it)
                 writer.writeEndElement()
             writer.writeEndElement()
-        writer.writeElementString("DeliveryMethod", self.deliveryMethod)
-        writer.writeElementString("Status", self.statusCode)
+        writer.writeElementString("DeliveryMethod", int(self.deliveryMethod))
+        writer.writeElementString("Status", int(self.statusCode))
         writer.writeElementString("Data", self.dataValue)

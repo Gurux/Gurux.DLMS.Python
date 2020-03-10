@@ -272,14 +272,9 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         if value:
             for item in value:
                 it = GXDLMSSeasonProfile()
-                it.name = _GXCommon.changeType(item[0], DataType.STRING)
+                it.name = item[0]
                 it.start = _GXCommon.changeType(item[1], DataType.DATETIME)
-                weekName = item[2]
-                #  If week name is ignored.
-                if not weekName:
-                    it.weekName = ""
-                else:
-                    it.weekName = _GXCommon.changeType(weekName, DataType.STRING)
+                it.weekName = item[2]
                 items.append(it)
         return items
 
@@ -289,7 +284,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         if value:
             for item in value:
                 it = GXDLMSWeekProfile()
-                it.name = _GXCommon.changeType(item[0], DataType.STRING)
+                it.name = item[0]
                 it.monday = item[1]
                 it.tuesday = item[2]
                 it.wednesday = item[3]
@@ -360,10 +355,8 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             while reader.isStartElement("Item", True):
                 it = GXDLMSSeasonProfile()
                 it.name = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Name"))
-                it.name = reader.readElementContentAsString("Name")
                 it.start = GXDateTime(reader.readElementContentAsString("Start"))
                 it.weekName = GXByteBuffer.hexToBytes(reader.readElementContentAsString("WeekName"))
-                it.weekName = reader.readElementContentAsString("WeekName")
                 list_.append(it)
             reader.readEndElement(name)
         return list_
@@ -431,10 +424,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                     str_ = GXByteBuffer.hex(str_)
                 writer.writeElementString("Name", str_)
                 writer.writeElementString("Start", it.start.toFormatString())
-                str_ = it.weekName
-                if isinstance(str_, (bytearray, bytes)):
-                    str_ = GXByteBuffer.hex(str_)
-                writer.writeElementString("WeekName", str_)
+                writer.writeElementString("WeekName", GXByteBuffer.hex(it.weekName))
                 writer.writeEndElement()
             writer.writeEndElement()
 
@@ -444,10 +434,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement(name)
             for it in list_:
                 writer.writeStartElement("Item")
-                str_ = it.name
-                if isinstance(str_, (bytearray, bytes)):
-                    str_ = GXByteBuffer.hex(str_)
-                writer.writeElementString("Name", str_)
+                writer.writeElementString("Name", GXByteBuffer.hex(it.name))
                 writer.writeElementString("Monday", it.monday)
                 writer.writeElementString("Tuesday", it.tuesday)
                 writer.writeElementString("Wednesday", it.wednesday)

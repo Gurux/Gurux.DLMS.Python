@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 
 import xml.etree.cElementTree as ET
+from enum import Enum, IntEnum
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..GXDLMSConverter import GXDLMSConverter
@@ -104,19 +105,6 @@ class GXXmlWriter:
                 else:
                     self.writeElementObject("Item", tmp)
 
-    def __writeElementObject(self, name, value, type_, uiType):
-        if type_ != DataType.NONE and isinstance(value, str):
-            if type_ == DataType.OCTET_STRING:
-                if uiType == DataType.STRING:
-                    self.writeElementObject(name, (str(value)).encode(), True)
-                elif uiType == DataType.OCTET_STRING:
-                    self.writeElementObject(name, GXByteBuffer.hexToBytes(str(value)), True)
-                return
-            if not isinstance(value, (GXDateTime)):
-                self.writeElementObject(name, GXDLMSConverter.changeType(value, type_), True)
-                return
-        self.writeElementObject(name, value, True)
-
     #
     # Write object value to file.
     #
@@ -129,17 +117,20 @@ class GXXmlWriter:
     #
     # pylint: disable=too-many-arguments
     def writeElementObject(self, name, value, skipDefaultValue=True, type_=DataType.NONE, uiType=DataType.NONE):
+        if isinstance(value, (Enum, IntEnum)):
+            raise ValueError("Datatype is enum.")
+
         if value or not skipDefaultValue:
             if type_ == DataType.OCTET_STRING:
                 if uiType == DataType.STRING:
                     value = str(value)
                 elif uiType == DataType.OCTET_STRING:
                     value = GXByteBuffer.hexToBytes(value)
-            elif not isinstance(value, GXDateTime):
+            elif type_ != DataType.NONE and not isinstance(value, GXDateTime):
                 value = GXDLMSConverter.changeType(value, type_)
 
             dt = _GXCommon.getDLMSDataType(value)
-            target = self.writeStartElement(name, "Type", str(dt), False)
+            target = self.writeStartElement(name, "Type", str(int(dt)), False)
             if dt == DataType.ARRAY:
                 self.writeArray(value)
             else:

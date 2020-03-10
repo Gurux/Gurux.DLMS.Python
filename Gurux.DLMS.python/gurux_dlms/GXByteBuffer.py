@@ -578,17 +578,18 @@ class GXByteBuffer(__base):
         Returns byte array.
         """
         buff = bytearray()
-        lastValue = -1
-        for ch in value:
-            if ch != ' ':
-                if lastValue == -1:
-                    lastValue = cls.___getValue(ch)
+        if value:
+            lastValue = -1
+            for ch in value:
+                if ch != ' ':
+                    if lastValue == -1:
+                        lastValue = cls.___getValue(ch)
+                    elif lastValue != -1:
+                        buff.append(lastValue << GXByteBuffer.__NIBBLE | cls.___getValue(ch))
+                        lastValue = -1
                 elif lastValue != -1:
-                    buff.append(lastValue << GXByteBuffer.__NIBBLE | cls.___getValue(ch))
+                    buff.append(cls.___getValue(ch))
                     lastValue = -1
-            elif lastValue != -1:
-                buff.append(cls.___getValue(ch))
-                lastValue = -1
         return buff
 
     @classmethod

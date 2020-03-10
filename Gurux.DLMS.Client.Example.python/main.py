@@ -39,10 +39,25 @@ from gurux_dlms.enums import ObjectType
 from GXSettings import GXSettings
 from GXDLMSReader import GXDLMSReader
 
+try:
+    import pkg_resources
+    #pylint: disable=broad-except
+except Exception:
+    #It's OK if this fails.
+    print("pkg_resources not found")
+
 #pylint: disable=too-few-public-methods,broad-except
 class sampleclient():
     @classmethod
     def main(cls, args):
+        try:
+            print("gurux_dlms version: " + pkg_resources.get_distribution("gurux_dlms").version)
+            print("gurux_net version: " + pkg_resources.get_distribution("gurux_net").version)
+            print("gurux_serial version: " + pkg_resources.get_distribution("gurux_serial").version)
+        except Exception:
+            #It's OK if this fails.
+            print("pkg_resources not found")
+
         # args: the command line arguments
         reader = None
         settings = GXSettings()
@@ -66,7 +81,7 @@ class sampleclient():
                     val = reader.read(settings.client.objects.findByLN(ObjectType.NONE, k), v)
                     reader.showValue(v, val)
             else:
-                reader.readAll()
+                reader.readAll(settings.outputFile)
         except Exception:
             traceback.print_exc()
         finally:

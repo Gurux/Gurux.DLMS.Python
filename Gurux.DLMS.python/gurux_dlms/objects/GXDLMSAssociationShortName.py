@@ -131,7 +131,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(3)
         _GXCommon.setData(data, DataType.UINT16, item.shortName)
-        data.setUInt8(int(DataType.ARRAY))
+        data.setUInt8(DataType.ARRAY)
         data.setUInt8(len(item.attributes))
         for att in item.attributes:
             data.setUInt8(DataType.STRUCTURE)
@@ -165,7 +165,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         cnt = len(self.objectList)
         if settings.index == 0:
             settings.setCount(cnt)
-            bb.setUInt8(int(DataType.ARRAY))
+            bb.setUInt8(DataType.ARRAY)
             _GXCommon.setObjectCount(cnt, bb)
         pos = 0
         if cnt != 0:

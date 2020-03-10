@@ -135,7 +135,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             ret = _GXCommon.logicalNameToBytes(self.phyReference)
         elif e.index == 3:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.ARRAY))
+            data.setUInt8(DataType.ARRAY)
             if not self.lcpOptions:
                 data.setUInt8(0)
             else:
@@ -149,7 +149,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             ret = data.array()
         elif e.index == 4:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.ARRAY))
+            data.setUInt8(DataType.ARRAY)
             if not self.ipcpOptions:
                 data.setUInt8(0)
             else:
@@ -164,7 +164,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 5:
             if self.userName:
                 data = GXByteBuffer()
-                data.setUInt8(int(DataType.STRUCTURE))
+                data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
                 _GXCommon.setData(data, DataType.OCTET_STRING, self.userName)
                 _GXCommon.setData(data, DataType.OCTET_STRING, self.password)

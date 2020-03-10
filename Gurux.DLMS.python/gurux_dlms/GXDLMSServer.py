@@ -393,7 +393,7 @@ class GXDLMSServer:
         if push is None:
             raise ValueError("push")
         buff = GXByteBuffer()
-        buff.setUInt8(int(DataType.STRUCTURE))
+        buff.setUInt8(DataType.STRUCTURE)
         _GXCommon.setObjectCount(len(push.pushObjectList), buff)
         for k, v in push.pushObjectList:
             self.addData(k, v.attributeIndex, buff)

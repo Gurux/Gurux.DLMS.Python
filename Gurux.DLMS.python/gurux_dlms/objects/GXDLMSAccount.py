@@ -531,7 +531,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("AccountClosureTime", self.accountClosureTime.toFormatString())
         writer.writeElementString("CurrencyName", self.currency.name)
         writer.writeElementString("CurrencyScale", self.currency.scale)
-        writer.writeElementString("CurrencyUnit", self.currency.unit)
+        writer.writeElementString("CurrencyUnit", int(self.currency.unit))
         writer.writeElementString("LowCreditThreshold", self.lowCreditThreshold)
         writer.writeElementString("NextCreditAvailableThreshold", self.nextCreditAvailableThreshold)
         writer.writeElementString("MaxProvision", self.maxProvision)

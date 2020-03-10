@@ -59,6 +59,13 @@ class GXDLMSObjectCollection(list):
         super(GXDLMSObjectCollection, self).append(item)
         item.parent = self
 
+    def extend(self, items):
+        if not isinstance(items, GXDLMSObjectCollection):
+            raise TypeError('items is not of type GXDLMSObjectCollection')
+        for it in self:
+            super(GXDLMSObjectCollection, self).append(it)
+            it.parent = self
+
     def getObjects(self, type_):
         if isinstance(type_, (int, ObjectType)):
             type_ = [type_]
@@ -90,14 +97,6 @@ class GXDLMSObjectCollection(list):
         return str_
 
     @classmethod
-    def getName(cls, name):
-        name = "ObjectType." + name
-        for it in ObjectType:
-            if str(it).replace("_", "") == name:
-                return it
-        return None
-
-    @classmethod
     def load(cls, file_):
         from .._GXObjectFactory import _GXObjectFactory
         obj = None
@@ -112,7 +111,7 @@ class GXDLMSObjectCollection(list):
                     reader.getNext()
                 elif target.find("GXDLMS") == 0:
                     try:
-                        type_ = cls.getName(target[6:].upper())
+                        type_ = GXDLMSConverter.valueOfObjectType(target[6:])
                     except Exception:
                         raise ValueError("Invalid object type: " + target + ".")
                     obj = _GXObjectFactory.createObject(type_)

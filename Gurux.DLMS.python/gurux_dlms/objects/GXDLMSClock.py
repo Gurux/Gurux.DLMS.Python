@@ -289,11 +289,11 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("Time", self.time.toFormatString())
         if self.timeZone != 0:
             writer.writeElementString("TimeZone", self.timeZone)
-        writer.writeElementString("Status", self.status)
+        writer.writeElementString("Status", int(self.status))
         if self.begin:
             writer.writeElementString("Begin", self.begin.toFormatString())
         if self.end:
             writer.writeElementString("End", self.end.toFormatString())
         writer.writeElementString("Deviation", self.deviation)
         writer.writeElementString("Enabled", self.enabled)
-        writer.writeElementString("ClockBase", self.clockBase)
+        writer.writeElementString("ClockBase", int(self.clockBase))

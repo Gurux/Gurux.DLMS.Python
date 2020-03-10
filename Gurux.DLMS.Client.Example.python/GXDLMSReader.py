@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import os
 import datetime
 import time
 import traceback
@@ -39,7 +40,7 @@ from gurux_common.io import Parity, StopBits
 from gurux_common import ReceiveParameters, GXCommon, TimeoutException
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
 from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security
-from gurux_dlms.objects import GXDLMSObject, GXDLMSData, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
+from gurux_dlms.objects import GXDLMSObject, GXDLMSObjectCollection, GXDLMSData, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
 from gurux_net import GXNet
 from gurux_serial import GXSerial
 
@@ -480,14 +481,27 @@ class GXDLMSReader:
         self.readDataBlock(self.client.getObjectsRequest(), reply)
         self.client.parseObjects(reply.data, True)
 
-    def readAll(self):
+    def readAll(self, outputFile):
         try:
+            read = False
             self.initializeConnection()
-            self.getAssociationView()
-            self.readScalerAndUnits()
-            self.getProfileGenericColumns()
+            if outputFile and os.path.exists(outputFile):
+                try:
+                    self.client.objects.clear()
+                    c = GXDLMSObjectCollection.load(outputFile)
+                    self.client.objects.extend(c)
+                    if self.client.objects:
+                        read = True
+                except Exception:
+                    read = False
+            if not read:
+                self.getAssociationView()
+                self.readScalerAndUnits()
+                self.getProfileGenericColumns()
             self.getReadOut()
             self.getProfileGenerics()
+            if outputFile:
+                self.client.objects.save(outputFile)
         except (KeyboardInterrupt, SystemExit):
             #Don't send anything if user is closing the app.
             self.media = None

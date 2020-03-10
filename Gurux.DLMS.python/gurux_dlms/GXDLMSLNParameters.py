@@ -32,6 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
+from .enums.Command import Command
+from .GetCommandType import GetCommandType
 #
 #  LN Parameters
 #pylint: disable=too-many-instance-attributes, too-many-arguments
@@ -70,3 +72,7 @@ class GXDLMSLNParameters:
         self.windowSize = 1
         # Is GBT streaming used.
         self.streaming = False
+        if self.settings:
+            self.settings.command = forCommand
+            if forCommand == Command.GET_REQUEST and forCommandType != GetCommandType.NEXT_DATA_BLOCK:
+                self.settings.commandType = forCommandType

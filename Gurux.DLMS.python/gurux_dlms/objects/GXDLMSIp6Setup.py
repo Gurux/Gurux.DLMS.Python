@@ -315,7 +315,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         self.gatewayIPAddress = self.loadIPAddress(reader, "GatewayIPAddress")
         self.primaryDNSAddress = reader.readElementContentAsString("PrimaryDNSAddress")
         self.secondaryDNSAddress = reader.readElementContentAsString("SecondaryDNSAddress")
-        self.trafficClass = int(reader.readElementContentAsInt("TrafficClass"))
+        self.trafficClass = reader.readElementContentAsInt("TrafficClass")
         self.neighborDiscoverySetup = self.loadNeighborDiscoverySetup(reader, "NeighborDiscoverySetup")
 
     @classmethod
@@ -340,7 +340,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         writer.writeElementString("DataLinkLayerReference", self.dataLinkLayerReference)
-        writer.writeElementString("AddressConfigMode", self.addressConfigMode)
+        writer.writeElementString("AddressConfigMode", int(self.addressConfigMode))
         self.saveIPAddress(writer, self.unicastIPAddress, "UnicastIPAddress")
         self.saveIPAddress(writer, self.multicastIPAddress, "MulticastIPAddress")
         self.saveIPAddress(writer, self.gatewayIPAddress, "GatewayIPAddress")

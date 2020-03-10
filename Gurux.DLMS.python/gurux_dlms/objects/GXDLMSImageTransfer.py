@@ -192,11 +192,11 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             ret = self.imageTransferStatus
         elif e.index == 7:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.ARRAY))
+            data.setUInt8(DataType.ARRAY)
             #  Count
             data.setUInt8(len(self.imageActivateInfo))
             for it in self.imageActivateInfo:
-                data.setUInt8(int(DataType.STRUCTURE))
+                data.setUInt8(DataType.STRUCTURE)
                 #  Item count.
                 data.setUInt8(int(3))
                 _GXCommon.setData(data, DataType.UINT32, it.size)
@@ -312,7 +312,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("ImageTransferredBlocksStatus", self.imageTransferredBlocksStatus)
         writer.writeElementString("ImageFirstNotTransferredBlockNumber", self.imageFirstNotTransferredBlockNumber)
         writer.writeElementString("ImageTransferEnabled", self.imageTransferEnabled)
-        writer.writeElementString("ImageTransferStatus", self.imageTransferStatus)
+        writer.writeElementString("ImageTransferStatus", int(self.imageTransferStatus))
         if self.imageActivateInfo:
             writer.writeStartElement("ImageActivateInfo")
             for it in self.imageActivateInfo:

@@ -49,13 +49,4 @@ class GXDLMSWeekProfile:
         self.sunday = 0
 
     def __str__(self):
-        if not self.name:
-            return None
-        if isinstance(self.name, str):
-            return self.name
-        try:
-            if isinstance(self.name, unicode):
-                return self.name
-        except Exception:
-            return GXByteBuffer.hex(self.name)
         return GXByteBuffer.hex(self.name)

@@ -1109,8 +1109,8 @@ class GXDLMS:
             if data.available() == 0:
                 if cnt != 1:
                     cls.getDataFromBlock(reply.data, 0)
-                    reply.setValue(values)
-                    reply.setReadPosition(data.position)
+                    reply.value = values
+                    reply.readPosition = data.position
                 return False
             if first:
                 type_ = data.getUInt8()
@@ -1418,20 +1418,47 @@ class GXDLMS:
             data.xml.appendEndTag(Command.WRITE_RESPONSE)
 
     @classmethod
+    def handleGetResponseWithList(cls, settings, reply):
+        cnt = _GXCommon.getObjectCount(reply.data)
+        values = list([None] * cnt)
+        if reply.xml:
+            reply.xml.appendStartTag(TranslatorTags.RESULT, "Qty", reply.xml.integerToHex(cnt, 2))
+        pos = 0
+        while pos != cnt:
+            ch = reply.data.getUInt8()
+            if ch != 0:
+                reply.error = reply.data.getUInt8()
+            else:
+                if reply.xml:
+                    di = _GXDataInfo()
+                    di.xml = (reply.xml)
+                    reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
+                    _GXCommon.getData(reply.data, di)
+                    reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
+                else:
+                    reply.readPosition = reply.data.position
+                    cls.getValueFromData(settings, reply)
+                    reply.data.position = reply.readPosition
+                    if values:
+                        values[pos] = reply.value
+                    reply.value = None
+            pos += 1
+        reply.value = values
+
+    @classmethod
     def handleGetResponse(cls, settings, reply, index):
         # pylint: disable=too-many-locals
         ret = True
-        data = reply.data
-        type_ = data.getUInt8()
-        ch = data.getUInt8()
+        type_ = reply.data.getUInt8()
+        ch = reply.data.getUInt8()
         if reply.xml:
             reply.xml.appendStartTag(Command.GET_RESPONSE)
             reply.xml.appendStartTag(Command.GET_RESPONSE, type_)
             reply.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", reply.xml.integerToHex(ch, 2))
         if type_ == GetCommandType.NORMAL:
-            ch = data.getUInt8()
+            ch = reply.data.getUInt8()
             if ch != 0:
-                reply.error = data.getUInt8()
+                reply.error = reply.data.getUInt8()
             if reply.xml:
                 reply.xml.appendStartTag(TranslatorTags.RESULT)
                 if reply.getError() != 0:
@@ -1443,9 +1470,9 @@ class GXDLMS:
                     _GXCommon.getData(reply.data, di)
                     reply.xml.appendEndTag(TranslatorTags.DATA)
             else:
-                cls.getDataFromBlock(data, 0)
+                cls.getDataFromBlock(reply.data, 0)
         elif type_ == GetCommandType.NEXT_DATA_BLOCK:
-            ch = data.getUInt8()
+            ch = reply.data.getUInt8()
             if reply.xml:
                 reply.xml.appendStartTag(TranslatorTags.RESULT)
                 reply.xml.appendLine(TranslatorTags.LAST_BLOCK, "Value", reply.xml.integerToHex(ch, 2))
@@ -1453,7 +1480,7 @@ class GXDLMS:
                 reply.moreData = reply.moreData | RequestTypes.DATABLOCK
             else:
                 reply.moreData = reply.moreData & ~RequestTypes.DATABLOCK
-            number = data.getUInt32()
+            number = reply.data.getUInt32()
             if reply.xml:
                 reply.xml.appendLine(TranslatorTags.BLOCK_NUMBER, "Value", reply.xml.integerToHex(number, 8))
             else:
@@ -1462,60 +1489,39 @@ class GXDLMS:
                 expectedIndex = settings.blockIndex
                 if number != expectedIndex:
                     raise ValueError("Invalid Block number. It is " + number + " and it should be " + expectedIndex + ".")
-            ch = data.getUInt8()
+            ch = reply.data.getUInt8()
             if ch != 0:
-                reply.error = data.getUInt8()
+                reply.error = reply.data.getUInt8()
             if reply.xml:
                 reply.xml.appendStartTag(TranslatorTags.RESULT)
                 if reply.getError() != 0:
                     reply.xml.appendLine(TranslatorTags.DATA_ACCESS_RESULT, "Value", GXDLMS.errorCodeToString(reply.xml.outputType, reply.error))
-                elif data.available() != 0:
-                    blockLength = _GXCommon.getObjectCount(data)
+                elif reply.data.available() != 0:
+                    blockLength = _GXCommon.getObjectCount(reply.data)
                     if (reply.moreData & RequestTypes.FRAME) == 0:
-                        if blockLength > len(data) - data.position:
-                            reply.xml.appendComment("Block is not complete." + str(len(data) - data.position) + "/" + str(blockLength) + ".")
-                    reply.xml.appendLine(TranslatorTags.RAW_DATA, "Value", data.toHex(False, data.position, data.available()))
+                        if blockLength > len(reply.data) - reply.data.position:
+                            reply.xml.appendComment("Block is not complete." + str(len(reply.data) - reply.data.position) + "/" + str(blockLength) + ".")
+                    reply.xml.appendLine(TranslatorTags.RAW_DATA, "Value", reply.data.toHex(False, reply.data.position, reply.data.available()))
                 reply.xml.appendEndTag(TranslatorTags.RESULT)
-            elif data.position != len(data):
-                blockLength = _GXCommon.getObjectCount(data)
+            elif reply.data.position != len(reply.data):
+                blockLength = _GXCommon.getObjectCount(reply.data)
                 if (reply.moreData & RequestTypes.FRAME) == 0:
-                    if blockLength > len(data) - data.position:
+                    if blockLength > len(reply.data) - reply.data.position:
                         raise ValueError("Invalid block length.")
-                    reply.command = (Command.NONE)
+                    reply.command = Command.NONE
                 if blockLength == 0:
-                    data.size = index
+                    reply.data.size = index
                 else:
-                    cls.getDataFromBlock(data, index)
+                    cls.getDataFromBlock(reply.data, index)
                 if reply.moreData == RequestTypes.NONE:
                     if not reply.peek:
-                        data.position = 0
+                        reply.data.position = 0
                         settings.resetBlockIndex()
+                if reply.moreData == RequestTypes.NONE and settings and settings.command == Command.GET_REQUEST and settings.commandType == GetCommandType.WITH_LIST:
+                    cls.handleGetResponseWithList(settings, reply)
+                    ret = False
         elif type_ == GetCommandType.WITH_LIST:
-            cnt = _GXCommon.getObjectCount(data)
-            values = list([None] * cnt)
-            if reply.xml:
-                reply.xml.appendStartTag(TranslatorTags.RESULT, "Qty", reply.xml.integerToHex(cnt, 2))
-            pos = 0
-            while pos != cnt:
-                ch = data.getUInt8()
-                if ch != 0:
-                    reply.error = data.getUInt8()
-                else:
-                    if reply.xml:
-                        di = _GXDataInfo()
-                        di.xml = (reply.xml)
-                        reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
-                        _GXCommon.getData(reply.data, di)
-                        reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
-                    else:
-                        reply.readPosition = data.position
-                        cls.getValueFromData(settings, reply)
-                        data.position = reply.readPosition
-                        if values:
-                            values[pos] = reply.value
-                        reply.value = None
-                pos += 1
-            reply.value = values
+            cls.handleGetResponseWithList(settings, reply)
             ret = False
         else:
             raise ValueError("Invalid Get response.")

@@ -226,7 +226,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
             self.destinations = str_.split(';')
 
     def save(self, writer):
-        writer.writeElementString("Mode", self.mode)
+        writer.writeElementString("Mode", int(self.mode))
         writer.writeElementString("Repetitions", self.repetitions)
         writer.writeElementString("RepetitionDelay", self.repetitionDelay)
         if self.callingWindow:

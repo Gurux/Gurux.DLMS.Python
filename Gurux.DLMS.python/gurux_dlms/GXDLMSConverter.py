@@ -325,6 +325,8 @@ class GXDLMSConverter:
             ret = "GSMDiagnostic"
         elif ot == ObjectType.COMPACT_DATA:
             ret = "CompactData"
+        elif ot == ObjectType.IP6_SETUP:
+            ret = "Ip6Setup"
         else:
             ret = "Manufacture spesific."
         return ret
@@ -431,6 +433,8 @@ class GXDLMSConverter:
             ot = ObjectType.GSM_DIAGNOSTIC
         elif value == "CompactData":
             ot = ObjectType.COMPACT_DATA
+        elif value == "Ip6Setup":
+            ot = ObjectType.IP6_SETUP
         else:
             ot = ObjectType.NONE
         return ot

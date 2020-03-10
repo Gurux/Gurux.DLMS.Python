@@ -226,15 +226,15 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                 writer.writeStartElement("Actions")
                 for a in it.actions:
                     writer.writeStartElement("Action")
-                    writer.writeElementString("Type", a.type_)
+                    writer.writeElementString("Type", int(a.type_))
                     if a.target is None:
-                        writer.writeElementString("ObjectType", ObjectType.NONE)
+                        writer.writeElementString("ObjectType", int(ObjectType.NONE))
                         writer.writeElementString("LN", "0.0.0.0.0.0")
                         writer.writeElementString("Index", "0")
-                        writer.writeElementString("ParameterDataType", DataType.NONE)
+                        writer.writeElementString("ParameterDataType", int(DataType.NONE))
                         writer.writeElementObject("Parameter", "")
                     else:
-                        writer.writeElementString("ObjectType", a.target.objectType)
+                        writer.writeElementString("ObjectType", int(a.target.objectType))
                         writer.writeElementString("LN", a.target.logicalName)
                         writer.writeElementString("Index", a.index)
                         writer.writeElementObject("Parameter", a.parameter)

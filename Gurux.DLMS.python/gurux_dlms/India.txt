@@ -1,9 +1,17 @@
 # IC | OBIS | VERSION | DESCRIPTION
-1;0.0.0.1.0.255;0;Cumulative Billing count
+1;0.0.0.1.0.255;0;Cum. Billing Count
+1;0.0.0.1.1.255;0;Available Billing Periods
+1;0.0.42.0.0.255;0;COSEM Logical Device Name
+1;0.0.43.1.1.255;0;Invocation Counter #1 (PC)
+1;0.0.43.1.2.255;0;Invocation Counter #2 (MR)
+1;0.0.43.1.3.255;0;Invocation Counter #3 (US)
+1;0.0.43.1.4.255;0;Invocation Counter #4 (Push)
+1;0.0.43.1.5.255;0;Invocation Counter #5 (FW)
+1;0.0.43.1.6.255;0;Invocation Counter #6 (IHD)
 1;0.0.94.91.0.255;0;Cumulative Tamper Count
 1;0.0.94.91.9.255;0;Meter Type
 1;0.0.94.91.11.255;0;Meter Category
-1;0.0.94.91.12.255;0;Meter Current Rating
+1;0.0.94.91.12.255;0;Current Rating
 1;0.0.94.91.18.255;0;Event Status Word 1 (ESW-1)
 1;0.0.94.91.26.255;0;ESWF
 1;0.0.94.96.19.255;0;Metering Mode
@@ -11,34 +19,96 @@
 1;0.0.94.96.21.255;0;Last Token Recharge Amount
 1;0.0.94.96.22.255;0;Last Token Recharge Time
 1;0.0.94.96.23.255;0;Total Amount At Last Recharge
-1;0.0.94.96.24.255;0;Current Prepayment Mode Balance Amount
-1;0.0.94.96.25.255;0;Current Prepayment Balance Time
+1;0.0.94.96.24.255;0;Current Balance Amount
+1;0.0.94.96.25.255;0;Current Balance Time
 1;0.0.96.1.0.255;0;Meter Serial Number
 1;0.0.96.1.1.255;0;Manufacturer Name
 1;0.0.96.1.2.255;0;Device ID
-1;0.0.96.1.4.255;0;Meter Year Of Manufacture
-1;0.0.96.2.0.255;0;Cumulative Programming Count
+1;0.0.96.1.4.255;0;Year Of Manufacture
+1;0.0.96.2.0.255;0;Cum. Programming Count
+1;0.0.96.7.0.255;0;No of Power Failures
+1;0.0.96.10.1.255;0;Meter Health Indicator
+1;0.0.96.11.0.255;0;Event:Voltage Related
 1;0.0.96.11.1.255;0;Event:Current Related
 1;0.0.96.11.2.255;0;Event:Power Related
 1;0.0.96.11.3.255;0;Event:Transaction Related
 1;0.0.96.11.4.255;0;Event:Others
-1;0.0.96.11.5.255;0;Event:Non Roll Over Events
-1;0.0.96.11.6.255;0;Event:Load Switch Status
+1;0.0.96.11.5.255;0;Event:Non-Roll Over
+1;0.0.96.11.6.255;0;Event:Control
+1;0.0.96.15.0.255;0;EventLog Seq:Voltage
+1;0.0.96.15.1.255;0;EventLog Seq:Current
+1;0.0.96.15.2.255;0;EventLog Seq:Power
+1;0.0.96.15.3.255;0;EventLog Seq:Transaction
+1;0.0.96.15.4.255;0;EventLog Seq:Others
+1;0.0.96.15.5.255;0;EventLog Seq:Non-Roll Over
+1;0.0.96.15.6.255;0;EventLog Seq:Control
+1;0.0.96.15.128.255;0;Tamper Count for Billing Period
+1;1.0.96.128.25.255;0;Active Relay Time (MF)
+1;1.0.96.128.30.255;0;Passive Relay Time (MF)
+1;0.0.97.98.0.255;0;Alarm register object?
 1;1.0.0.2.0.255;0;Firmware Version For Meter
+1;1.0.0.4.2.255;0;CTR
+1;1.0.0.4.3.255;0;PTR
 1;1.0.0.8.0.255;0;Demand Integration Period
 1;1.0.0.8.4.255;0;Profile Capture Period
-3;0.0.0.1.2.255;0;Billing Date Import Mode
-3;0.0.94.91.13.255;0;Billing Power ON duration in Minutes (During Billing Period)
-3;0.0.94.91.14.255;0;Cumulative power ON Duration in Minutes
-3;1.0.1.7.0.255;0;Active Power-kW
-3;1.0.1.29.0.255;0;Block Energy-kWh - Import
-3;1.0.1.8.0.255;0;Cumulative Energy-kWh
-3;1.0.1.8.1.255;0;Cumulative Energy-kWh for TZ1
-3;1.0.1.8.2.255;0;Cumulative Energy-kWh for TZ2
-3;1.0.1.8.3.255;0;Cumulative Energy-kWh for TZ3
-3;1.0.1.8.4.255;0;Cumulative Energy-kWh for TZ4
-3;1.0.10.8.0.255;0;Cumulative Energy-kVAh - Export
-3;1.0.10.29.0.255;0;Block Energy-kVAh - Export
+1;1.0.96.128.25.255;0;Active Relay Time
+1;1.0.96.128.30.255;0;Passive Relay Time
+3;0.0.0.1.2.255;0;Billing Date
+3;0.0.94.91.8.255;0;Cum. Power Failure Duration
+3;0.0.94.91.13.255;0;Billing Power On Duration
+3;0.0.94.91.14.255;0;Cum. Power On Duration
+3;1.0.1.7.0.255;0;Active Power-W
+3;1.0.1.8.0.255;0;Cum. Energy-Wh(Imp)
+3;1.0.1.8.1.255;0;Cum. Energy-Wh(Imp)-TZ1
+3;1.0.1.8.2.255;0;Cum. Energy-Wh(Imp)-TZ2
+3;1.0.1.8.3.255;0;Cum. Energy-Wh(Imp)-TZ3
+3;1.0.1.8.4.255;0;Cum. Energy-Wh(Imp)-TZ4
+3;1.0.1.8.5.255;0;Cum. Energy-Wh(Imp)-TZ5
+3;1.0.1.8.6.255;0;Cum. Energy-Wh(Imp)-TZ6
+3;1.0.1.8.7.255;0;Cum. Energy-Wh(Imp)-TZ7
+3;1.0.1.8.8.255;0;Cum. Energy-Wh(Imp)-TZ8
+3;1.0.1.9.0.255;0;Cum. Energy-Wh Total?
+3;1.0.1.29.0.255;0;Block Energy-Wh(Imp)
+3;1.0.2.8.0.255;0;Cum. Energy-Wh(Exp)
+3;1.0.2.8.1.255;0;Cum. Energy-Wh(Exp)-TZ1
+3;1.0.2.8.2.255;0;Cum. Energy-Wh(Exp)-TZ2
+3;1.0.2.8.3.255;0;Cum. Energy-Wh(Exp)-TZ3
+3;1.0.2.8.4.255;0;Cum. Energy-Wh(Exp)-TZ4
+3;1.0.2.8.5.255;0;Cum. Energy-Wh(Exp)-TZ5
+3;1.0.2.8.6.255;0;Cum. Energy-Wh(Exp)-TZ6
+3;1.0.2.8.7.255;0;Cum. Energy-Wh(Exp)-TZ7
+3;1.0.2.8.8.255;0;Cum. Energy-Wh(Exp)-TZ8
+3;1.0.2.29.0.255;0;Block Energy-Wh(Exp)
+3;1.0.3.7.0.255;0;Signed Reactive Power-VAr
+3;1.0.5.8.0.255;0;Cum. Energy-VArh, Q1
+3;1.0.5.29.0.255;0;Block Energy-VArh, Q1
+3;1.0.6.8.0.255;0;Cum. Energy-VArh, Q2
+3;1.0.6.29.0.255;0;Block Energy-VArh, Q2
+3;1.0.7.8.0.255;0;Cum. Energy-VArh, Q3
+3;1.0.7.29.0.255;0;Block Energy-VArh, Q3
+3;1.0.8.8.0.255;0;Cum. Energy-VArh, Q4
+3;1.0.8.29.0.255;0;Block Energy-VArh, Q4
+3;1.0.9.7.0.255;0;Apparent Power-VA
+3;1.0.9.8.0.255;0;Cum. Energy-VAh(Imp)
+3;1.0.9.8.1.255;0;Cum. Energy-VAh(Imp)-TZ1
+3;1.0.9.8.2.255;0;Cum. Energy-VAh(Imp)-TZ2
+3;1.0.9.8.3.255;0;Cum. Energy-VAh(Imp)-TZ3
+3;1.0.9.8.4.255;0;Cum. Energy-VAh(Imp)-TZ4
+3;1.0.9.8.5.255;0;Cum. Energy-VAh(Imp)-TZ5
+3;1.0.9.8.6.255;0;Cum. Energy-VAh(Imp)-TZ6
+3;1.0.9.8.7.255;0;Cum. Energy-VAh(Imp)-TZ7
+3;1.0.9.8.8.255;0;Cum. Energy-VAh(Imp)-TZ8
+3;1.0.9.29.0.255;0;Block Energy-VAh(Imp)
+3;1.0.10.8.0.255;0;Cum. Energy-VAh(Exp)
+3;1.0.10.8.1.255;0;Cum. Energy-VAh(Exp)-TZ1
+3;1.0.10.8.2.255;0;Cum. Energy-VAh(Exp)-TZ2
+3;1.0.10.8.3.255;0;Cum. Energy-VAh(Exp)-TZ3
+3;1.0.10.8.4.255;0;Cum. Energy-VAh(Exp)-TZ4
+3;1.0.10.8.5.255;0;Cum. Energy-VAh(Exp)-TZ5
+3;1.0.10.8.6.255;0;Cum. Energy-VAh(Exp)-TZ6
+3;1.0.10.8.7.255;0;Cum. Energy-VAh(Exp)-TZ7
+3;1.0.10.8.8.255;0;Cum. Energy-VAh(Exp)-TZ8
+3;1.0.10.29.0.255;0;Block Energy-VAh(Exp)
 3;1.0.11.7.0.255;0;Phase Current
 3;1.0.11.27.0.255;0;Average Current
 3;1.0.12.7.0.255;0;Voltage
@@ -46,19 +116,63 @@
 3;1.0.13.0.0.255;0;Average Power Factor for Billing Period
 3;1.0.13.7.0.255;0;Signed Power Factor
 3;1.0.14.7.0.255;0;Frequency-Hz
-3;1.0.2.8.0.255;0;Cumulative Energy-kWh - Export
-3;1.0.2.29.0.255;0;Block Energy-kWh - Export
-3;1.0.9.7.0.255;0;Apparent Power-KVA
-3;1.0.9.8.0.255;0;Cumulative Energy-kVAh - Import
-3;1.0.9.8.1.255;0;Cumulative Energy-kVAH for TZ1
-3;1.0.9.8.2.255;0;Cumulative Energy-kVAH for TZ2
-3;1.0.9.8.3.255;0;Cumulative Energy-kVAH for TZ3
-3;1.0.9.8.4.255;0;Cumulative Energy-kVAH for TZ4
-3;1.0.9.29.0.255;0;Block Energy-kVAh - Import
+3;1.0.31.7.0.255;0;L1 Current 
+3;1.0.31.27.0.255;0;L1 Current Avg
+3;1.0.32.7.0.255;0;L1 Voltage
+3;1.0.32.27.0.255;0;L1 Voltage Avg
+3;1.0.33.7.0.255;0;L1 Power Factor
+3;1.0.51.7.0.255;0;L2 Current
+3;1.0.51.27.0.255;0;L2 Current Avg
+3;1.0.52.7.0.255;0;L2 Voltage
+3;1.0.52.27.0.255;0;L2 Voltage Avg
+3;1.0.53.7.0.255;0;L2 Power Factor
+3;1.0.71.7.0.255;0;L3 Current
+3;1.0.71.27.0.255;0;L3 Current Avg
+3;1.0.72.7.0.255;0;L3 Voltage
+3;1.0.72.27.0.255;0;L3 Voltage Avg
+3;1.0.73.7.0.255;0;L3 Power factor
+3;1.0.81.7.1.255;0;Angle Phase (A, B) volt.
+3;1.0.81.7.12.255;0;Angle Phase (B, C) volt.
+3;1.0.81.7.2.255;0;Angle Phase (A, C) volt.
 3;1.0.91.7.0.255;0;Neutral Current
 3;1.0.94.91.14.255;0;Current
-4;1.0.1.6.0.255;0;Maximum Demand-kW
-4;1.0.9.6.0.255;0;Maximum Demand-kVA
+4;1.0.1.6.0.255;0;MD-W(Imp)
+4;1.0.1.6.1.255;0;MD-W(Imp)-TZ1
+4;1.0.1.6.2.255;0;MD-W(Imp)-TZ2
+4;1.0.1.6.3.255;0;MD-W(Imp)-TZ3
+4;1.0.1.6.4.255;0;MD-W(Imp)-TZ4
+4;1.0.1.6.5.255;0;MD-W(Imp)-TZ5
+4;1.0.1.6.6.255;0;MD-W(Imp)-TZ6
+4;1.0.1.6.7.255;0;MD-W(Imp)-TZ7
+4;1.0.1.6.8.255;0;MD-W(Imp)-TZ8
+4;1.0.2.6.0.255;0;MD-W(Exp)
+4;1.0.2.6.1.255;0;MD-W(Exp)-TZ1
+4;1.0.2.6.2.255;0;MD-W(Exp)-TZ2
+4;1.0.2.6.3.255;0;MD-W(Exp)-TZ3
+4;1.0.2.6.4.255;0;MD-W(Exp)-TZ4
+4;1.0.2.6.5.255;0;MD-W(Exp)-TZ5
+4;1.0.2.6.6.255;0;MD-W(Exp)-TZ6
+4;1.0.2.6.7.255;0;MD-W(Exp)-TZ7
+4;1.0.2.6.8.255;0;MD-W(Exp)-TZ8
+4;1.0.9.6.0.255;0;MD-VA(Imp)
+4;1.0.9.6.1.255;0;MD-VA(Imp)-TZ1
+4;1.0.9.6.2.255;0;MD-VA(Imp)-TZ2
+4;1.0.9.6.3.255;0;MD-VA(Imp)-TZ3
+4;1.0.9.6.4.255;0;MD-VA(Imp)-TZ4
+4;1.0.9.6.5.255;0;MD-VA(Imp)-TZ5
+4;1.0.9.6.6.255;0;MD-VA(Imp)-TZ6
+4;1.0.9.6.7.255;0;MD-VA(Imp)-TZ7
+4;1.0.9.6.8.255;0;MD-VA(Imp)-TZ8
+4;1.0.10.6.0.255;0;MD-VA(Exp) 
+4;1.0.10.6.1.255;0;MD-VA(Exp)-TZ1
+4;1.0.10.6.2.255;0;MD-VA(Exp)-TZ2
+4;1.0.10.6.3.255;0;MD-VA(Exp)-TZ3
+4;1.0.10.6.4.255;0;MD-VA(Exp)-TZ4
+4;1.0.10.6.5.255;0;MD-VA(Exp)-TZ5
+4;1.0.10.6.6.255;0;MD-VA(Exp)-TZ6
+4;1.0.10.6.7.255;0;MD-VA(Exp)-TZ7
+4;1.0.10.6.8.255;0;MD-VA(Exp)-TZ8
+4;0.1.96.12.5.255;0;Average Signal Strength
 7;0.0.94.91.10.255;1;Nameplate Profile
 7;0.0.99.98.0.255;1;Voltage Related Events Profile
 7;0.0.99.98.1.255;1;Current Related Events Profile
@@ -75,32 +189,33 @@
 7;1.0.94.91.7.255;0;Scaler: Events Profile
 7;1.0.94.91.10.255;0;Name Plate Details
 7;1.0.98.1.0.255;1;Billing Profile
-7;1.0.99.1.0.255;1;Load Profile
+7;1.0.99.1.0.255;1;BlockLoad Profile
 7;1.0.99.2.0.255;1;Daily Load Profile
 8;0.0.1.0.0.255;0;Clock
 9;0.0.10.0.1.255;0;MD Reset Action
+15;0.0.40.0.0.255;0;Current Association
 15;0.0.40.0.1.255;1;PC Association
 15;0.0.40.0.2.255;1;MR Association (LLS)
 15;0.0.40.0.3.255;1;US Association (HLS)
 15;0.0.40.0.4.255;1;Push Association (HLS)
 15;0.0.40.0.5.255;1;Firmware Upgrade Association (HLS)
-15;0.0.40.0.6.255;1;IHD Association (Pre-established, LLS)
+15;0.0.40.0.6.255;1;IHD Association (Pre-established, LLS)
 18;0.0.44.0.0.255;0;Image Activation Info
 20;0.0.13.0.0.255;0;Activity Calendar Active Time
 20;0.0.13.0.0.255;0;Activity Calendar For Time Zones
-22;0.0.15.0.0.255;0;Single-action Schedule for Billing Dates
+22;0.0.15.0.0.255;0;Single Action Schedule for Billing Dates
 22;0.0.15.0.2.255;0;Single Action Schedule for Image Activation
-22;0.0.15.0.4.255;0;Single Action Schedule for PUSH (SM to HES)
-40;0.0.25.9.0.255;1;Push Setup (SM->HES) Data
-40;0.4.25.9.0.255;1;Push Setup (SM-HES) Event
-64;0.0.43.0.3.255;0;Global Key Change - Association 3 (HLS)
-64;0.0.43.0.5.255;0;Global Key Change - Association 4 (Firmware Upgrade)
-70;0.0.96.3.10.255;0;Load Limit Function Status
-71;0.0.17.0.0.255;0;Load Limit Threshold (kW)
-71;0.0.17.0.0.255;0;Load Limit Value (kW)
-3;0.0.94.91.8.255;0;Cumulative power - OFF duration in min
+22;0.0.15.0.4.255;0;Single Action Schedule for PUSH
+40;0.0.25.9.0.255;1;Instant Push Setup
+40;0.4.25.9.0.255;1;Alert Push Setup
 64;0.0.25.9.1.255;0;Periodic Push (SM to HES)
 64;0.0.25.9.2.255;0;Utility Message (HES to IHD)
 64;0.0.25.9.3.255;0;Consumer Message (IHD to HES)
 64;0.0.25.9.4.255;0;Periodic Push (SM to IHD)
 64;0.0.25.9.5.255;0;EventPush (SM to HES)
+64;0.0.43.0.2.255;0;Global Key Change #2 (LLS)
+64;0.0.43.0.3.255;0;Global Key Change #3 (HLS)
+64;0.0.43.0.4.255;0;Global Key Change #4 (Push)
+64;0.0.43.0.5.255;0;Global Key Change #5 (Firmware Upgrade)
+70;0.0.96.3.10.255;0;Load Limit Function Status
+71;0.0.17.0.0.255;0;Load Limit Value (kW)

@@ -897,7 +897,7 @@ class _GXAPDU:
                 xml.append(GXByteBuffer.hex(settings.getStoCChallenge(), False))
                 xml.append(TranslatorGeneralTags.CHAR_STRING, False)
                 xml.append(tag, False)
-                xml.append("\r\n")
+                xml.append("\n")
 
     @classmethod
     def appendClientSystemTitleToXml(cls, settings, xml):

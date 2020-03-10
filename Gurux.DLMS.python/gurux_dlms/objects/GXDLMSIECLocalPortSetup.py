@@ -201,10 +201,10 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         self.password5 = reader.readElementContentAsString("Password5")
 
     def save(self, writer):
-        writer.writeElementString("DefaultMode", self.defaultMode.value)
-        writer.writeElementString("DefaultBaudrate", self.defaultBaudrate)
-        writer.writeElementString("ProposedBaudrate", self.proposedBaudrate)
-        writer.writeElementString("ResponseTime", self.responseTime.value)
+        writer.writeElementString("DefaultMode", int(self.defaultMode.value))
+        writer.writeElementString("DefaultBaudrate", int(self.defaultBaudrate))
+        writer.writeElementString("ProposedBaudrate", int(self.proposedBaudrate))
+        writer.writeElementString("ResponseTime", int(self.responseTime))
         writer.writeElementString("DeviceAddress", self.deviceAddress)
         writer.writeElementString("Password1", self.password1)
         writer.writeElementString("Password2", self.password2)

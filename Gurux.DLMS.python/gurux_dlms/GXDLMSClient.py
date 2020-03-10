@@ -918,7 +918,7 @@ class GXDLMSClient(object):
         if self.autoIncreaseInvokeID:
             self.settings.setInvokeID(int(((self.settings.invokeId + 1) & 0xF)))
         if self.useLogicalNameReferencing:
-            attributeDescriptor.setUInt16(objectType)
+            attributeDescriptor.setUInt16(int(objectType))
             attributeDescriptor.set(_GXCommon.logicalNameToBytes(str(name)))
             attributeDescriptor.setUInt8(attributeOrdinal)
             if not data:

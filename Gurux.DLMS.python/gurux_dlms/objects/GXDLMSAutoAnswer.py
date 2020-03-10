@@ -209,7 +209,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         if self.mode:
-            writer.writeElementString("Mode", self.mode)
+            writer.writeElementString("Mode", int(self.mode))
         if self.listeningWindow:
             writer.writeStartElement("ListeningWindow")
             for k, v in self.listeningWindow:
@@ -219,7 +219,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
                 writer.writeEndElement()
             writer.writeEndElement()
         if self.status:
-            writer.writeElementString("Status", self.status)
+            writer.writeElementString("Status", int(self.status))
         writer.writeElementString("NumberOfCalls", self.numberOfCalls)
         writer.writeElementString("NumberOfRingsInListeningWindow", self.numberOfRingsInListeningWindow)
         writer.writeElementString("NumberOfRingsOutListeningWindow", self.numberOfRingsOutListeningWindow)

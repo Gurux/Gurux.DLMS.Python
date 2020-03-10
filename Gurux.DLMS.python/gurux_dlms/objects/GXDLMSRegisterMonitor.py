@@ -143,7 +143,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionUp.logicalName))
                     #  ScriptSelector
                     _GXCommon.setData(bb, DataType.UINT16, it.actionUp.scriptSelector)
-                    bb.setUInt8(int(DataType.STRUCTURE))
+                    bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
                     #  LN
                     _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionDown.logicalName))
@@ -217,7 +217,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             writer.writeEndElement()
         if self.monitoredValue:
             writer.writeStartElement("MonitoredValue")
-            writer.writeElementString("ObjectType", self.monitoredValue.objectType)
+            writer.writeElementString("ObjectType", int(self.monitoredValue.objectType))
             writer.writeElementString("LN", self.monitoredValue.logicalName)
             writer.writeElementString("Index", self.monitoredValue.attributeIndex)
             writer.writeEndElement()

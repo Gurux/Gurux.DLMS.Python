@@ -600,8 +600,8 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.clientSAP = int(reader.readElementContentAsInt("ClientSAP"))
-        self.serverSAP = int(reader.readElementContentAsInt("ServerSAP"))
+        self.clientSAP = reader.readElementContentAsInt("ClientSAP")
+        self.serverSAP = reader.readElementContentAsInt("ServerSAP")
         if reader.isStartElement("ApplicationContextName", True):
             self.applicationContextName.jointIsoCtt = reader.readElementContentAsInt("JointIsoCtt")
             self.applicationContextName.country = reader.readElementContentAsInt("Country")
@@ -626,7 +626,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             self.authenticationMechanismName.identifiedOrganization = reader.readElementContentAsInt("IdentifiedOrganization")
             self.authenticationMechanismName.dlmsUA = reader.readElementContentAsInt("DlmsUA")
             self.authenticationMechanismName.authenticationMechanismName = reader.readElementContentAsInt("AuthenticationMechanismName")
-            self.authenticationMechanismName.mechanismId = Authentication(reader.readElementContentAsInt("MechanismId"))
+            self.authenticationMechanismName.mechanismId = reader.readElementContentAsInt("MechanismId")
             reader.readEndElement("AuthenticationMechanismName")
         str_ = reader.readElementContentAsString("Secret")
         if str_ is None:
@@ -666,7 +666,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("IdentifiedOrganization", self.authenticationMechanismName.identifiedOrganization)
             writer.writeElementString("DlmsUA", self.authenticationMechanismName.dlmsUA)
             writer.writeElementString("AuthenticationMechanismName", self.authenticationMechanismName.authenticationMechanismName)
-            writer.writeElementString("MechanismId", self.authenticationMechanismName.mechanismId)
+            writer.writeElementString("MechanismId", int(self.authenticationMechanismName.mechanismId))
             writer.writeEndElement()
         writer.writeElementString("Secret", GXByteBuffer.hex(self.secret))
         writer.writeElementString("AssociationStatus", self.associationStatus)

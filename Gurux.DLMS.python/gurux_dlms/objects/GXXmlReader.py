@@ -97,7 +97,10 @@ class GXXmlReader:
     def readElementContentAsInt(self, name, defaultValue=0):
         if name == self.name():
             str_ = self.currentElement.text
-            ret = int(str_)
+            if not str_:
+                ret = 0
+            else:
+                ret = int(str_)
             self.getNext()
             return ret
         return defaultValue

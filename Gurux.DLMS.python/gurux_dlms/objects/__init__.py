@@ -115,3 +115,4 @@ from .GXXmlReader import GXXmlReader
 from .GXXmlWriter import GXXmlWriter
 from .GXXmlWriterSettings import GXXmlWriterSettings
 from .IGXDLMSBase import IGXDLMSBase
+from .GXDLMSUtilityTables import GXDLMSUtilityTables

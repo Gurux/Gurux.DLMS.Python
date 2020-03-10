@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename:        $HeadURL$
+#  Filename: $HeadURL$
 #
-#  Version:         $Revision$,
+#  Version: $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -32,7 +32,54 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums import ObjectType
-#pylint: disable=bad-option-value,too-many-locals, cyclic-import,old-style-class,too-few-public-methods
+#pylint: disable=bad-option-value,too-many-locals,
+#cyclic-import,old-style-class,too-few-public-methods
+from .objects.GXDLMSAssociationLogicalName import GXDLMSAssociationLogicalName
+from .objects.GXDLMSObject import GXDLMSObject
+from .objects.GXDLMSActionSchedule import GXDLMSActionSchedule
+from .objects.GXDLMSActivityCalendar import GXDLMSActivityCalendar
+from .objects.GXDLMSAssociationShortName import GXDLMSAssociationShortName
+from .objects.GXDLMSAutoAnswer import GXDLMSAutoAnswer
+from .objects.GXDLMSAutoConnect import GXDLMSAutoConnect
+from .objects.GXDLMSClock import GXDLMSClock
+from .objects.GXDLMSData import GXDLMSData
+from .objects.GXDLMSDemandRegister import GXDLMSDemandRegister
+from .objects.GXDLMSMacAddressSetup import GXDLMSMacAddressSetup
+from .objects.GXDLMSRegister import GXDLMSRegister
+from .objects.GXDLMSExtendedRegister import GXDLMSExtendedRegister
+from .objects.GXDLMSGprsSetup import GXDLMSGprsSetup
+from .objects.GXDLMSHdlcSetup import GXDLMSHdlcSetup
+from .objects.GXDLMSIECLocalPortSetup import GXDLMSIECLocalPortSetup
+from .objects.GXDLMSIecTwistedPairSetup import GXDLMSIecTwistedPairSetup
+from .objects.GXDLMSIp4Setup import GXDLMSIp4Setup
+from .objects.GXDLMSIp6Setup import GXDLMSIp6Setup
+from .objects.GXDLMSMBusSlavePortSetup import GXDLMSMBusSlavePortSetup
+from .objects.GXDLMSImageTransfer import GXDLMSImageTransfer
+from .objects.GXDLMSSecuritySetup import GXDLMSSecuritySetup
+from .objects.GXDLMSDisconnectControl import GXDLMSDisconnectControl
+from .objects.GXDLMSLimiter import GXDLMSLimiter
+
+from .objects.GXDLMSMBusClient import GXDLMSMBusClient
+from .objects.GXDLMSModemConfiguration import GXDLMSModemConfiguration
+from .objects.GXDLMSPppSetup import GXDLMSPppSetup
+from .objects.GXDLMSProfileGeneric import GXDLMSProfileGeneric
+from .objects.GXDLMSRegisterMonitor import GXDLMSRegisterMonitor
+from .objects.GXDLMSRegisterActivation import GXDLMSRegisterActivation
+from .objects.GXDLMSSapAssignment import GXDLMSSapAssignment
+from .objects.GXDLMSSchedule import GXDLMSSchedule
+from .objects.GXDLMSScriptTable import GXDLMSScriptTable
+from .objects.GXDLMSSpecialDaysTable import GXDLMSSpecialDaysTable
+from .objects.GXDLMSTcpUdpSetup  import GXDLMSTcpUdpSetup
+from .objects.GXDLMSPushSetup import GXDLMSPushSetup
+from .objects.GXDLMSMBusMasterPortSetup import GXDLMSMBusMasterPortSetup
+from .objects.GXDLMSGSMDiagnostic import GXDLMSGSMDiagnostic
+from .objects.GXDLMSAccount import GXDLMSAccount
+from .objects.GXDLMSCredit import GXDLMSCredit
+from .objects.GXDLMSCharge import GXDLMSCharge
+from .objects.GXDLMSTokenGateway import GXDLMSTokenGateway
+from .objects.GXDLMSParameterMonitor import GXDLMSParameterMonitor
+from .objects.GXDLMSUtilityTables import GXDLMSUtilityTables
+
 class _GXObjectFactory:
     #Reserved for internal use.
 
@@ -44,14 +91,6 @@ class _GXObjectFactory:
     @classmethod
     def createObject(cls, ot):
         #pylint: disable=bad-option-value,redefined-variable-type
-        from .objects import GXDLMSObject, GXDLMSActionSchedule, GXDLMSActivityCalendar, GXDLMSAssociationLogicalName,\
-            GXDLMSAssociationShortName, GXDLMSAutoAnswer, GXDLMSAutoConnect, GXDLMSClock, GXDLMSData, GXDLMSDemandRegister,\
-            GXDLMSMacAddressSetup, GXDLMSRegister, GXDLMSExtendedRegister, GXDLMSGprsSetup, GXDLMSHdlcSetup, GXDLMSIECLocalPortSetup,\
-            GXDLMSIecTwistedPairSetup, GXDLMSIp4Setup, GXDLMSIp6Setup, GXDLMSMBusSlavePortSetup, GXDLMSImageTransfer, GXDLMSSecuritySetup,\
-            GXDLMSDisconnectControl, GXDLMSLimiter, GXDLMSMBusClient, GXDLMSModemConfiguration, GXDLMSPppSetup, GXDLMSProfileGeneric,\
-            GXDLMSRegisterMonitor, GXDLMSRegisterActivation, GXDLMSSapAssignment, GXDLMSSchedule, GXDLMSScriptTable, GXDLMSSpecialDaysTable,\
-            GXDLMSTcpUdpSetup, GXDLMSPushSetup, GXDLMSMBusMasterPortSetup, GXDLMSGSMDiagnostic, GXDLMSAccount, GXDLMSCredit, GXDLMSCharge, \
-            GXDLMSTokenGateway, GXDLMSParameterMonitor
         #  If IC is manufacturer specific or unknown.
         if ot is None:
             raise ValueError("Invalid object type.")
@@ -135,7 +174,7 @@ class _GXObjectFactory:
         elif ot == ObjectType.ZIG_BEE_SAS_APS_FRAGMENTATION:
             ret = GXDLMSObject(ot)
         elif ot == ObjectType.UTILITY_TABLES:
-            ret = GXDLMSObject(ot)
+            ret = GXDLMSUtilityTables()
         elif ot == ObjectType.PUSH_SETUP:
             ret = GXDLMSPushSetup()
         elif ot == ObjectType.MBUS_MASTER_PORT_SETUP:

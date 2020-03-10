@@ -146,7 +146,7 @@ class _GXCommon:
     #
     @classmethod
     def addString(cls, value, bb):
-        bb.setUInt8(int(DataType.OCTET_STRING))
+        bb.setUInt8(DataType.OCTET_STRING)
         if not value:
             _GXCommon.setObjectCount(0, bb)
         else:
@@ -243,7 +243,7 @@ class _GXCommon:
         knownType = info.type_ != DataType.NONE
         #  Get data type if it is unknown.
         if not knownType:
-            info.type_ = data.getUInt8()
+            info.type_ = DataType(data.getUInt8())
         if info.type_ == DataType.NONE:
             if info.xml:
                 info.xml.appendLine("<" + info.xml.getDataType(info.type_) + " />")
@@ -1772,11 +1772,11 @@ class _GXCommon:
 
     @classmethod
     def idisSystemTitleToString(cls, st):
-        sb = '\r'
-        sb += "IDIS system title:\r"
+        sb = '\n'
+        sb += "IDIS system title:\n"
         sb += "Manufacturer Code: "
         sb += cls.__getChar(st[0]) + cls.__getChar(st[1]) + cls.__getChar(st[2])
-        sb += "\rFunction type: "
+        sb += "\nFunction type: "
         ft = st[4] >> 4
         add = False
         if (ft & 0x1) != 0:
@@ -1797,15 +1797,15 @@ class _GXCommon:
         sn |= st[5] << 16
         sn |= st[6] << 8
         sn |= st[7]
-        sb += '\r'
+        sb += '\n'
         sb += "Serial number: "
-        sb += str(sn) + '\r'
+        sb += str(sn) + '\n'
         return sb
 
     @classmethod
     def dlmsSystemTitleToString(cls, st):
-        sb = '\r'
-        sb += "IDIS system title:\r"
+        sb = '\n'
+        sb += "IDIS system title:\n"
         sb += "Manufacturer Code: "
         sb += cls.__getChar(st[0]) + cls.__getChar(st[1]) + cls.__getChar(st[2])
         sb += "Serial number: "
@@ -1814,12 +1814,12 @@ class _GXCommon:
 
     @classmethod
     def uniSystemTitleToString(cls, st):
-        sb = '\r'
-        sb += "UNI/TS system title:\r"
+        sb = '\n'
+        sb += "UNI/TS system title:\n"
         sb += "Manufacturer: "
         m = st[0] << 8 | st[1]
         sb += cls.decryptManufacturer(m)
-        sb += "\rSerial number: "
+        sb += "\nSerial number: "
         sb += GXByteBuffer.toHex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
         return sb
 

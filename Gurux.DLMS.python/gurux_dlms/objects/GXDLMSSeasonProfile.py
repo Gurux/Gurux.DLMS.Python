@@ -32,6 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
+from ..GXByteBuffer import GXByteBuffer
+
 ###Python 2 requires this
 #pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXDLMSSeasonProfile:
@@ -49,4 +51,8 @@ class GXDLMSSeasonProfile:
         self.weekName = forWeekName
 
     def __str__(self):
-        return self.name + " " + str(self.start)
+        if GXByteBuffer.isAsciiString(self.name):
+            tmp = self.name.decode("utf-8")
+        else:
+            tmp = GXByteBuffer.toHex(self.name)
+        return tmp + " " + str(self.start)

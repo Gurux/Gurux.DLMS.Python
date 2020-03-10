@@ -52,6 +52,7 @@ from .enums.DataType import DataType
 from .objects.enums.AssociationStatus import AssociationStatus
 from .ConnectionState import ConnectionState
 from .objects.GXDLMSAssociationLogicalName import GXDLMSAssociationLogicalName
+from .objects.GXDLMSSecuritySetup import GXDLMSSecuritySetup
 from .GXDLMS import GXDLMS
 from .GXDLMSLongTransaction import GXDLMSLongTransaction
 from .enums.AccessMode import AccessMode
@@ -655,12 +656,16 @@ class GXDLMSLNCommandHandler:
         p = GXDLMSLNParameters(settings, invokeId, Command.METHOD_RESPONSE, 1, None, bb, error)
         GXDLMS.getLNPdu(p, replyData)
         if isinstance(obj, (GXDLMSAssociationLogicalName,)) and id_ == 1:
-            if (obj).getAssociationStatus() == AssociationStatus.ASSOCIATED:
+            if obj.getAssociationStatus() == AssociationStatus.ASSOCIATED:
                 server.notifyConnected(connectionInfo)
                 settings.setConnected(settings.connected | ConnectionState.DLMS)
             else:
                 server.onInvalidConnection(connectionInfo)
                 settings.setConnected(settings.connected & ~ConnectionState.DLMS)
+
+        #Start to use new keys.
+        if e is not None and error == 0 and isinstance(obj, GXDLMSSecuritySetup) and id_ == 2:
+            obj.applyKeys(settings, e)
 
     @classmethod
     def handleAccessRequest(cls, settings, server, data, reply, xml):

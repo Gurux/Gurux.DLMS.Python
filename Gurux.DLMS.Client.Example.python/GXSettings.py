@@ -53,6 +53,7 @@ class GXSettings:
         self.client = GXDLMSSecureClient(True)
         #  Objects to read.
         self.readObjects = []
+        self.outputFile = None
 
     #
     # Show help.
@@ -76,7 +77,8 @@ class GXSettings:
         print(" -g \"0.0.1.0.0.255:1; 0.0.1.0.0.255:2\" Get selected object(s) with given attribute index.")
         print(" -C Security Level. (None, Authentication, Encrypted, AuthenticationEncryption)")
         print(" -v Invocation counter data object Logical Name. Ex. 0.0.43.1.0.255")
-
+        print(" -I \t Auto increase invoke ID");
+        print(" -o \t Cache association view to make reading faster. Ex. -o C:\\device.xml");
         print("Example:")
         print("Read LG device using TCP/IP connection.")
         print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
@@ -123,7 +125,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:it:a:p:wP:g:S:n:C:v:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:")
         defaultBaudRate = True
         for it in parameters:
             if it.tag == 'w':
@@ -172,6 +174,9 @@ class GXSettings:
                     self.media.bytesize = 7
                     self.media.parity = Parity.EVEN
                     self.media.stopbits = StopBits.ONE
+            elif it.tag == 'I':
+                #AutoIncreaseInvokeID.
+                self.client.autoIncreaseInvokeID = True
             elif it.tag == 'v':
                 from gurux_dlms.objects import GXDLMSObject
                 self.invocationCounter = it.value
@@ -218,7 +223,7 @@ class GXSettings:
                 else:
                     raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
             elif it.tag == 'o':
-                pass
+                self.outputFile = it.value
             elif it.tag == 'c':
                 self.client.clientAddress = int(it.value)
             elif it.tag == 's':

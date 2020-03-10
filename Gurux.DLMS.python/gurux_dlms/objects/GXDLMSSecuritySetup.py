@@ -252,18 +252,19 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                     settings.cipher.security = Security(settings.cipher.security | Security.ENCRYPTION)
         elif e.index == 2:
             from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
+            # if settings.Cipher is null non secure server is used.
+            # Keys are take in action after reply is generated.
             for tmp in e.parameters:
                 item = tmp
                 type_ = GlobalKeyType(item[0])
-                data = int(item[1])
                 if type_ == GlobalKeyType.UNICAST_ENCRYPTION:
-                    pass
+                    GXDLMSSecureClient.decrypt(settings.kek, item[1])
                 elif type_ == GlobalKeyType.BROADCAST_ENCRYPTION:
                     e.error = ErrorCode.READ_WRITE_DENIED
                 elif type_ == GlobalKeyType.AUTHENTICATION:
-                    settings.cipher.setAuthenticationKey(GXDLMSSecureClient.decrypt(settings.getKek(), data))
+                    GXDLMSSecureClient.decrypt(settings.kek, item[1])
                 elif type_ == GlobalKeyType.KEK:
-                    settings.setKek(GXDLMSSecureClient.decrypt(settings.getKek(), data))
+                    GXDLMSSecureClient.decrypt(settings.kek, item[1])
                 else:
                     e.error = ErrorCode.READ_WRITE_DENIED
         elif e.index == 3:
@@ -278,6 +279,25 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
+
+    @classmethod
+    def applyKeys(cls, settings, e):
+        #pylint: disable=bad-option-value,redefined-variable-type
+        from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
+        for tmp in e.parameters:
+            item = tmp
+            type_ = GlobalKeyType(item[0])
+            data = GXDLMSSecureClient.decrypt(settings.kek, item[1])
+            if type_ == GlobalKeyType.UNICAST_ENCRYPTION:
+                settings.cipher.blockCipherKey = data
+            elif type_ == GlobalKeyType.BROADCAST_ENCRYPTION:
+                e.error = ErrorCode.READ_WRITE_DENIED
+            elif type_ == GlobalKeyType.AUTHENTICATION:
+                settings.cipher.authenticationKey = data
+            elif type_ == GlobalKeyType.KEK:
+                settings.kek = data
+            else:
+                e.error = ErrorCode.READ_WRITE_DENIED
 
     def getAttributeIndexToRead(self, all_):
         attributes = list()
@@ -329,15 +349,15 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getCertificatesByteArray(cls, settings):
         bb = GXByteBuffer()
-        bb.setUInt8(int(DataType.ARRAY))
+        bb.setUInt8(DataType.ARRAY)
         _GXCommon.setObjectCount(settings.cipher.certificates.size(), bb)
         for it in settings.cipher.certificates:
-            bb.setUInt8(int(DataType.STRUCTURE))
+            bb.setUInt8(DataType.STRUCTURE)
             _GXCommon.setObjectCount(6, bb)
-            bb.setUInt8(int(DataType.ENUM))
-            bb.setUInt8(int(CertificateEntity.SERVER))
-            bb.setUInt8(int(DataType.ENUM))
-            bb.setUInt8(int(CertificateType.DIGITAL_SIGNATURE))
+            bb.setUInt8(DataType.ENUM)
+            bb.setUInt8(CertificateEntity.SERVER)
+            bb.setUInt8(DataType.ENUM)
+            bb.setUInt8(CertificateType.DIGITAL_SIGNATURE)
             _GXCommon.addString(it.serialNumber, bb)
             _GXCommon.addString(it.issuer, bb)
             _GXCommon.addString(it.subject, bb)
@@ -401,7 +421,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getEphemeralPublicKeyData(cls, keyId, ephemeralKey):
         # pylint: disable=unused-argument
-        #tmp = (GXAsn1Converter.fromByteArray(ephemeralKey.getEncoded())).get(1)
+        #tmp =
+        #(GXAsn1Converter.fromByteArray(ephemeralKey.getEncoded())).get(1)
         #epk = GXByteBuffer(tmp.value)
         #epk.setUInt8(int(keyId), 0)
         #return epk
@@ -434,8 +455,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             reader.readEndElement("Certificates")
 
     def save(self, writer):
-        writer.writeElementString("SecurityPolicy", self.securityPolicy)
-        writer.writeElementString("SecuritySuite", self.securitySuite)
+        writer.writeElementString("SecurityPolicy", int(self.securityPolicy))
+        writer.writeElementString("SecuritySuite", int(self.securitySuite))
         writer.writeElementString("ClientSystemTitle", GXByteBuffer.hex(self.clientSystemTitle))
         writer.writeElementString("ServerSystemTitle", GXByteBuffer.hex(self.serverSystemTitle))
         if self.certificates:

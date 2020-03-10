@@ -68,7 +68,7 @@ class GXDateTime:
 
     @classmethod
     def __get_pattern(cls, loading):
-        tm = datetime.datetime(1900, 2, 3, 13, 14, 15)
+        tm = datetime.datetime(1901, 2, 3, 13, 14, 15)
         pm = tm.strftime('%p')
         date = tm.strftime('%x')
         for s in date:
@@ -87,7 +87,7 @@ class GXDateTime:
                 continue
             dp += sep
             tmp = int(d)
-            if tmp == 1900:
+            if tmp == 1901 or tmp == 1:
                 if loading:
                     dp += "%Y"
                 elif len(d) == 2:

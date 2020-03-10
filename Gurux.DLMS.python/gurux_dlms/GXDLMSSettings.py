@@ -123,6 +123,8 @@ class GXDLMSSettings:
         self.invokeID = 0
         self.receiverFrame = 0
         self.senderFrame = 0
+        self.command = 0
+        self.commandType = 0
 
     #
     # Client to Server challenge.

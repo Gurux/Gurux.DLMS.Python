@@ -195,7 +195,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     def getData(self, settings, e, table, columns):
         data = GXByteBuffer()
         if settings.index == 0:
-            data.setUInt8(int(DataType.ARRAY))
+            data.setUInt8(DataType.ARRAY)
             if e.rowEndIndex != 0:
                 _GXCommon.setObjectCount(e.rowEndIndex - e.rowBeginIndex, data)
             else:
@@ -350,7 +350,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             ret = self.sortMethod.value
         elif e.index == 6:
             data = GXByteBuffer()
-            data.setUInt8(int(DataType.STRUCTURE))
+            data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(int(4))
             if self.sortObject is None:
                 _GXCommon.setData(data, DataType.UINT16, 0)

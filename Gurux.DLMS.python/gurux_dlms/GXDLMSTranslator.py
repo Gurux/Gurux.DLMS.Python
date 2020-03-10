@@ -655,7 +655,7 @@ class GXDLMSTranslator:
                             p = AesGcmParameter(0, st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
                         if p.blockCipherKey:
                             data2 = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, value))
-                            xml.startComment("Decrypt data:")
+                            xml.startComment("Decrypt data: " + str(data2))
                             self.__pduToXml_(xml, data2, omitDeclaration, omitNameSpace, False)
                             xml.endComment()
                 except Exception:
@@ -677,7 +677,7 @@ class GXDLMSTranslator:
                     p.xml = xml
                     tmp = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, tmp))
                     len_ = xml.getXmlLength()
-                    xml.startComment("Decrypt data:")
+                    xml.startComment("Decrypt data: " + str(tmp))
                     self.__pduToXml_(xml, tmp, omitDeclaration, omitNameSpace, False)
                     xml.endComment()
                 except Exception:

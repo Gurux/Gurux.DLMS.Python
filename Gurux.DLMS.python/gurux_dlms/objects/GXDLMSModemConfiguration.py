@@ -194,7 +194,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         if self.communicationSpeed != BaudRate.BAUDRATE_300:
-            writer.writeElementString("CommunicationSpeed", self.communicationSpeed)
+            writer.writeElementString("CommunicationSpeed", int(self.communicationSpeed))
         if self.initialisationStrings:
             writer.writeStartElement("InitialisationStrings")
             for it in self.initialisationStrings:
