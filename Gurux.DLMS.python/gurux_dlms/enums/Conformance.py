@@ -46,7 +46,9 @@ class Conformance(__base):
     and server is using conformance to tell what kind of services it can offer.
 
     All services enumerated here are not necessary supported by the client or the
-    server."""
+    server.
+    https://www.gurux.fi/Gurux.DLMS.Conformance
+    """
     #pylint: disable=too-few-public-methods
 
     #Reserved zero conformance bit.

@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename:        $HeadURL$
+#  Filename: $HeadURL$
 #
-#  Version:         $Revision$,
+#  Version: $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -31,57 +31,18 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
-
-#pylint: disable=no-name-in-module
-if sys.version_info < (3, 0):
-    __base = object
-else:
-    from enum import IntEnum
-    __base = IntEnum
-
-class ErrorCode(__base):
-    """Enumerates all DLMS error codes.
-    https://www.gurux.fi/Gurux.DLMS.ErrorCodes
+#pylint: disable=too-few-public-methods
+class GXCmdParameter():
     """
-    #pylint: disable=too-few-public-methods
-
-    DISCONNECT_MODE = -4
-
-    RECEIVE_NOT_READY = -3
-
-    REJECTED = -2
-
-    UNACCEPTABLE_FRAME = -1
-
-    OK = 0
-
-    HARDWARE_FAULT = 1
-
-    TEMPORARY_FAILURE = 2
-
-    READ_WRITE_DENIED = 3
-
-    UNDEFINED_OBJECT = 4
-
-    INCONSISTENT_CLASS = 9
-
-    UNAVAILABLE_OBJECT = 11
-
-    UNMATCHED_TYPE = 12
-
-    ACCESS_VIOLATED = 13
-
-    DATA_BLOCK_UNAVAILABLE = 14
-
-    LONG_GET_OR_READ_ABORTED = 15
-
-    NO_LONG_GET_OR_READ_IN_PROGRESS = 16
-
-    LONG_SET_OR_WRITE_ABORTED = 17
-
-    NO_LONG_SET_OR_WRITE_IN_PROGRESS = 18
-
-    DATA_BLOCK_NUMBER_INVALID = 19
-
-    OTHER_REASON = 250
+    This class is used to save command line parameters.
+    """
+    def __init__(self):
+        """
+        Constructor.
+        """
+        # Command line parameter tag.
+        self.tag = str
+        # Command line parameter value.
+        self.parameter = str
+        # Parameter is missing.
+        self.missing = None

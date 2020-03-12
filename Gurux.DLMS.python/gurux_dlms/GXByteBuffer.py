@@ -202,7 +202,7 @@ class GXByteBuffer(__base):
             self.size = 0
         else:
             self.move(self.position, 0, self.size - self.position)
-        self.position(0)
+        self.position = 0
 
     #
     #      Push the given byte into this buffer at the current position, and

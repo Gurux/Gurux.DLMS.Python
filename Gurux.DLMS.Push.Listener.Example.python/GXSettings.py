@@ -31,8 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from gurux_dlms.enums import InterfaceType, Authentication, Security
-from gurux_dlms import GXDLMSClient
+from gurux_dlms.enums import InterfaceType
 from gurux_dlms.secure import GXDLMSSecureClient
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits, BaudRate
@@ -48,44 +47,26 @@ class GXSettings:
     def __init__(self):
         self.media = None
         self.trace = TraceLevel.INFO
-        self.iec = False
-        self.invocationCounter = None
         self.client = GXDLMSSecureClient(True)
-        #  Objects to read.
-        self.readObjects = []
-        self.outputFile = None
 
     #
     # Show help.
     #
     @classmethod
     def showHelp(cls):
-        print("GuruxDlmsSample reads data from the DLMS/COSEM device.")
-        print("GuruxDlmsSample -h [Meter IP Address] -p [Meter Port No] -c 16 -s 1 -r SN")
-        print(" -h \t host name or IP address.")
+        print("Gurux.DLMS.Push.Listener.Example waits notify messages from the DLMS/COSEM device.")
+        print("python main -h localhost -p [Meter Port No] -c 16 -s 1 -r SN")
+        print(" -h \t host name or IP address (Example localhost).")
         print(" -p \t port number or name (Example: 1000).")
         print(" -S \t serial port. (Example: COM1 or COM1:9600:8None1)")
-        print(" -i IEC is a start protocol.")
-        print(" -a \t Authentication (None, Low, High).")
-        print(" -P \t Password for authentication.")
-        print(" -c \t Client address. (Default: 16)")
-        print(" -s \t Server address. (Default: 1)")
-        print(" -n \t Server address as serial number.")
         print(" -r [sn, ln]\t Short name or Logical Name (default) referencing is used.")
         print(" -w WRAPPER profile is used. HDLC is default.")
         print(" -t [Error, Warning, Info, Verbose] Trace messages.")
-        print(" -g \"0.0.1.0.0.255:1; 0.0.1.0.0.255:2\" Get selected object(s) with given attribute index.")
-        print(" -C Security Level. (None, Authentication, Encrypted, AuthenticationEncryption)")
-        print(" -v Invocation counter data object Logical Name. Ex. 0.0.43.1.0.255")
-        print(" -I \t Auto increase invoke ID")
-        print(" -o \t Cache association view to make reading faster. Ex. -o C:\\device.xml")
         print("Example:")
-        print("Read LG device using TCP/IP connection.")
-        print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
-        print("Read LG device using serial port connection.")
-        print("GuruxDlmsSample -r SN -c 16 -s 1 -sp COM1 -i")
-        print("Read Indian device using serial port connection.")
-        print("GuruxDlmsSample -S COM1 -c 16 -s 1 -a Low -P [password]")
+        print("Start listener using TCP/IP connection.")
+        print("python main -p [Meter Port No] -w")
+        print("Start listener using serial port connection.")
+        print("GuruxDlmsSample -sp COM1:9600:8None1")
         print("------------------------------------------------------")
         print("Available serial ports:")
         print(GXSerial.getPortNames())
@@ -125,8 +106,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:")
-        defaultBaudRate = True
+        parameters = GXSettings.__getParameters(args, "p:S:r:t:wh:")
         for it in parameters:
             if it.tag == 'w':
                 self.client.interfaceType = InterfaceType.WRAPPER
@@ -141,6 +121,7 @@ class GXSettings:
                 #  Host address.
                 if not self.media:
                     self.media = GXNet(NetworkType.TCP, it.value, 0)
+                    self.media.server = True
                 else:
                     self.media.hostName = it.value
             elif it.tag == 't':
@@ -161,39 +142,14 @@ class GXSettings:
                 #  Port.
                 if not self.media:
                     self.media = GXNet(NetworkType.TCP, None, int(it.value))
+                    self.media.server = True
                 else:
                     self.media.port = int(it.value)
-            elif it.tag == 'P':
-                #  Password
-                self.client.password = it.value
-            elif it.tag == 'i':
-                #  IEC.
-                self.iec = True
-                if not defaultBaudRate:
-                    self.media.baudrate = BaudRate.BAUD_RATE_300
-                    self.media.bytesize = 7
-                    self.media.parity = Parity.EVEN
-                    self.media.stopbits = StopBits.ONE
-            elif it.tag == 'I':
-                #AutoIncreaseInvokeID.
-                self.client.autoIncreaseInvokeID = True
-            elif it.tag == 'v':
-                from gurux_dlms.objects import GXDLMSObject
-                self.invocationCounter = it.value
-                GXDLMSObject.validateLogicalName(self.invocationCounter)
-            elif it.tag == 'g':
-                #  Get (read) selected objects.
-                for o in it.value.split(";,"):
-                    tmp = o.split(":")
-                    if len(tmp) != 2:
-                        raise ValueError("Invalid Logical name or attribute index.")
-                    self.readObjects.append((tmp[0].strip(), int(tmp[1].strip())))
             elif it.tag == 'S':#Serial Port
                 self.media = GXSerial(None)
                 tmp = it.value.split(':')
                 self.media.port = tmp[0]
                 if len(tmp) > 1:
-                    defaultBaudRate = False
                     self.media.baudRate = int(tmp[1])
                     self.media.dataBits = int(tmp[2][0: 1])
                     self.media.parity = Parity[tmp[2][1: len(tmp[2]) - 1].upper()]
@@ -203,46 +159,11 @@ class GXSettings:
                     self.media.bytesize = 8
                     self.media.parity = Parity.NONE
                     self.media.stopbits = StopBits.ONE
-            elif it.tag == 'a':
-                try:
-                    it.value = it.value.upper()
-                    if it.value != "HIGH" and it.value.startswith("HIGH"):
-                        it.value = "HIGH_" + it.value[4:]
-                    self.client.authentication = Authentication[it.value]
-                except Exception:
-                    raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighMd5, HighSha1, HighGMac, HighSha256)")
-            elif it.tag == 'C':
-                if it.value == "None":
-                    self.client.ciphering.security = Security.NONE
-                elif it.value == "Authentication":
-                    self.client.ciphering.security = Security.AUTHENTICATION
-                elif it.value == "Encryption":
-                    self.client.ciphering.security = Security.ENCRYPTION
-                elif it.value == "AuthenticationEncryption":
-                    self.client.ciphering.security = Security.AUTHENTICATION_ENCRYPTION
-                else:
-                    raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
-            elif it.tag == 'o':
-                self.outputFile = it.value
-            elif it.tag == 'c':
-                self.client.clientAddress = int(it.value)
-            elif it.tag == 's':
-                self.client.serverAddress = int(it.value)
-            elif it.tag == 'n':
-                self.client.serverAddress = GXDLMSClient.getServerAddress(int(it.value))
             elif it.tag == '?':
-                if it.tag == 'c':
-                    raise ValueError("Missing mandatory client option.")
-                if it.tag == 's':
-                    raise ValueError("Missing mandatory server option.")
-                if it.tag == 'h':
-                    raise ValueError("Missing mandatory host name option.")
                 if it.tag == 'p':
                     raise ValueError("Missing mandatory port option.")
                 if it.tag == 'r':
                     raise ValueError("Missing mandatory reference option.")
-                if it.tag == 'a':
-                    raise ValueError("Missing mandatory authentication option.")
                 if it.tag == 'S':
                     raise ValueError("Missing mandatory Serial port option.\n")
                 if it.tag == 't':

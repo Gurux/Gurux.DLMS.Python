@@ -39,7 +39,7 @@ from ..GXDLMSChipperingStream import GXDLMSChipperingStream
 #pylint: disable=too-many-arguments
 class GXDLMSSecureClient(GXDLMSClient):
     """
-    GXDLMSSecureClient implements secure client where all_ messages are secured
+    GXDLMSSecureClient implements secure client where all messages are secured
     using transport security.
     """
 

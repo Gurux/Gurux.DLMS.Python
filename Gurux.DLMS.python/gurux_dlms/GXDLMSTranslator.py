@@ -771,7 +771,7 @@ class GXDLMSTranslator:
             pass
         elif tag in (Command.GLO_INITIATE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE,\
            Command.GLO_METHOD_RESPONSE, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,\
-           Command.GLO_EVENT_NOTIFICATION_REQUEST, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
+           Command.GLO_EVENT_NOTIFICATION, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
            Command.DED_METHOD_RESPONSE, Command.DED_EVENT_NOTIFICATION):
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             s.settings.getCipher().setSecurity(Security(tmp[0]))
@@ -1696,7 +1696,7 @@ class GXDLMSTranslator:
         elif s.command == Command.GENERAL_CIPHERING:
             bb.setUInt8(s.command)
             bb.set(s.data)
-        elif s.command == Command.GLO_EVENT_NOTIFICATION_REQUEST:
+        elif s.command == Command.GLO_EVENT_NOTIFICATION:
             pass
         else:
             raise ValueError("Invalid command.")

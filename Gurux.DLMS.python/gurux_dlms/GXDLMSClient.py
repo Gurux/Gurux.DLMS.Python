@@ -365,6 +365,7 @@ class GXDLMSClient(object):
     # Interface type.
     #
     interfaceType = property(__getInterfaceType, __setInterfaceType)
+    """Interface type."""
 
     #
     # Information from the connection size that server can
@@ -1223,7 +1224,7 @@ class GXDLMSClient(object):
             return reply.value
         raise ValueError("Invalid command. " + reply.command)
 
-    def ParsePushObjects(self, data):
+    def parsePushObjects(self, data):
         objects = list()
         if data:
             c = GXDLMSConverter(self.standard)
@@ -1232,7 +1233,7 @@ class GXDLMSClient(object):
                 classID = tmp[0]
                 if classID > 0:
                     comp = None
-                    comp = self.objects.findByLN(ObjectType(classID), _GXCommon.toLogicalName(int(tmp[1])))
+                    comp = self.objects.findByLN(classID, _GXCommon.toLogicalName(tmp[1]))
                     if comp is None:
                         comp = self.__createDLMSObject(classID, 0, 0, tmp[1], None)
                         self.settings.objects.append(comp)

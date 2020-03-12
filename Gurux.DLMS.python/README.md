@@ -20,7 +20,7 @@ Before start
 =========================== 
 
 If you find an issue, please report it here:
-http://www.gurux.fi/project/issues/gurux.dlms.python
+https://www.gurux.fi/project/issues/gurux.dlms.python
 
 
 Simple example

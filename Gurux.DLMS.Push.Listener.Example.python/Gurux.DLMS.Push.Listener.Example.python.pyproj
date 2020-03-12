@@ -2,15 +2,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>1670445f-1a07-481d-a479-ee7c6f617efe</ProjectGuid>
+    <ProjectGuid>893b532f-7e41-4be1-80cc-12a6b86b449d</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>Gurux.DLMS.Client.Example.python</Name>
-    <RootNamespace>Gurux.DLMS.Client.Example.python</RootNamespace>
+    <Name>Gurux.DLMS.Push.Listener.Example.python</Name>
+    <RootNamespace>Gurux.DLMS.Push.Listener.Example.python</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>-h localhost -p 4059 -w</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,18 +24,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="main.py" />
-    <Compile Include="GXCmdParameter.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GXDLMSReader.py" />
+    <Compile Include="GXCmdParameter.py" />
     <Compile Include="GXSettings.py" />
+    <Compile Include="main.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".pylintrc" />
-    <Content Include="Gurux.DLMS.Client.Example.python.sln" />
-    <Content Include="LICENSE" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>

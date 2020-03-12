@@ -1627,7 +1627,7 @@ class GXDLMS:
                 Command.GLO_METHOD_REQUEST, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST):
                 cls.handleGloDedRequest(settings, data)
             elif cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, \
-                Command.GLO_METHOD_RESPONSE, Command.GENERAL_GLO_CIPHERING, Command.GLO_EVENT_NOTIFICATION_REQUEST, \
+                Command.GLO_METHOD_RESPONSE, Command.GENERAL_GLO_CIPHERING, Command.GLO_EVENT_NOTIFICATION, \
                 Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE, Command.GENERAL_DED_CIPHERING, Command.DED_EVENT_NOTIFICATION):
                 cls.handleGloDedResponse(settings, data, index)
             elif cmd == Command.DATA_NOTIFICATION:
@@ -1663,7 +1663,7 @@ class GXDLMS:
                 data.command = Command.NONE
             elif settings.isServer:
                 if cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST, \
-                    Command.GLO_METHOD_REQUEST, Command.GLO_EVENT_NOTIFICATION_REQUEST, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, \
+                    Command.GLO_METHOD_REQUEST, Command.GLO_EVENT_NOTIFICATION, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, \
                     Command.DED_METHOD_REQUEST, Command.DED_EVENT_NOTIFICATION):
                     data.command = (Command.NONE)
                     data.data.position = data.getCipherIndex()
@@ -1851,6 +1851,23 @@ class GXDLMS:
         if target.xml or ((frame_ != 0x13 or moreData) and (frame_ & 0x1) != 0):
             return True
         cls.getPdu(settings, target)
+        if notify and not isNotify:
+            #Check command to make sure it's not notify message.
+            if data.command in (Command.DATA_NOTIFICATION,\
+                Command.GLO_EVENT_NOTIFICATION,\
+                Command.INFORMATION_REPORT,\
+                Command.EVENT_NOTIFICATION,\
+                Command.DED_INFORMATION_REPORT_REQUEST,\
+                Command.DED_EVENT_NOTIFICATION):
+                    isNotify = True
+                    notify.complete = data.complete
+                    notify.command = data.command
+                    data.command = Command.NONE
+                    notify.time = data.time
+                    data.time = None
+                    notify.data.set(data.data)
+                    notify.value = data.value
+                    data.data.trim()
         if isNotify:
             return False
         return True

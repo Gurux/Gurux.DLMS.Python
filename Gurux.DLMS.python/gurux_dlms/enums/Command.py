@@ -203,9 +203,9 @@ class Command(__base):
     GLO_SET_RESPONSE = 0xCD
 
     #
-    # Glo event notification request.
+    # Glo event notification.
     #
-    GLO_EVENT_NOTIFICATION_REQUEST = 0xCA
+    GLO_EVENT_NOTIFICATION = 0xCA
 
     #
     # Glo method request.
@@ -427,8 +427,8 @@ class Command(__base):
             str_ = "GloSetRequest"
         elif value == Command.GLO_SET_RESPONSE:
             str_ = "GloSetResponse"
-        elif value == Command.GLO_EVENT_NOTIFICATION_REQUEST:
-            str_ = "GloEventNotificationRequest"
+        elif value == Command.GLO_EVENT_NOTIFICATION:
+            str_ = "GloEventNotification"
         elif value == Command.GLO_METHOD_REQUEST:
             str_ = "GloMethodRequest"
         elif value == Command.GLO_METHOD_RESPONSE:
@@ -541,8 +541,8 @@ class Command(__base):
             ret = Command.GLO_SET_REQUEST
         elif "GloSetResponse".lower() == value.lower():
             ret = Command.GLO_SET_RESPONSE
-        elif "GloEventNotificationRequest".lower() == value.lower():
-            ret = Command.GLO_EVENT_NOTIFICATION_REQUEST
+        elif "GloEventNotification".lower() == value.lower():
+            ret = Command.GLO_EVENT_NOTIFICATION
         elif "GloMethodRequest".lower() == value.lower():
             ret = Command.GLO_METHOD_REQUEST
         elif "GloMethodResponse".lower() == value.lower():

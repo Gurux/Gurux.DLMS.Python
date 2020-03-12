@@ -173,7 +173,7 @@ class GXDLMSChippering:
                 p.xml.appendComment(_GXCommon.systemTitleToString(0, p.systemTitle))
         elif cmd in (Command.GENERAL_CIPHERING, Command.GLO_INITIATE_REQUEST, Command.GLO_INITIATE_RESPONSE, Command.GLO_READ_REQUEST, Command.GLO_READ_RESPONSE, \
             Command.GLO_WRITE_REQUEST, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_REQUEST, Command.GLO_GET_RESPONSE, Command.GLO_SET_REQUEST, \
-            Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST, Command.GLO_METHOD_RESPONSE, Command.GLO_EVENT_NOTIFICATION_REQUEST,\
+            Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST, Command.GLO_METHOD_RESPONSE, Command.GLO_EVENT_NOTIFICATION,\
             Command.DED_GET_REQUEST, Command.DED_GET_RESPONSE, Command.DED_SET_REQUEST, Command.DED_SET_RESPONSE, Command.DED_METHOD_REQUEST,\
             Command.DED_METHOD_RESPONSE, Command.DED_EVENT_NOTIFICATION):
             pass
