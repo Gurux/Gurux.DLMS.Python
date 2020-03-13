@@ -116,10 +116,10 @@ class GXDLMSNotify(object):
     maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
 
     def __getUseLogicalNameReferencing(self):
-        return self.settings.getUseLogicalNameReferencing()
+        return self.settings.useLogicalNameReferencing
 
     def __setUseLogicalNameReferencing(self, value):
-        self.settings.setUseLogicalNameReferencing(value)
+        self.settings.useLogicalNameReferencing = value
 
     #
     # Determines, whether Logical, or Short name, referencing is used.

@@ -471,7 +471,7 @@ class _GXAPDU:
                     xml.appendLine(TranslatorGeneralTags.VAA_NAME, "Value", xml.integerToHex(tag, 4))
             if tag == 0x0007:
                 if initiateRequest:
-                    settings.setUseLogicalNameReferencing(True)
+                    settings.useLogicalNameReferencing = True
                 else:
                     #  If LN
                     if not settings.useLogicalNameReferencing and xml is None:
@@ -479,7 +479,7 @@ class _GXAPDU:
             elif tag == 0xFA00:
                 #  If SN
                 if initiateRequest:
-                    settings.setUseLogicalNameReferencing(False)
+                    settings.useLogicalNameReferencing = False
                 else:
                     if settings.useLogicalNameReferencing:
                         raise ValueError("Invalid VAA.")
@@ -577,25 +577,25 @@ class _GXAPDU:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "LN")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "1")
-                settings.setUseLogicalNameReferencing(True)
+                settings.useLogicalNameReferencing = True
             elif name == 3:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "LN_WITH_CIPHERING")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "3")
-                settings.setUseLogicalNameReferencing(True)
+                settings.useLogicalNameReferencing = True
             elif name == 2:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "SN")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "2")
-                settings.setUseLogicalNameReferencing(False)
+                settings.useLogicalNameReferencing = False
             elif name == 4:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "SN_WITH_CIPHERING")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "4")
-                settings.setUseLogicalNameReferencing(False)
+                settings.useLogicalNameReferencing = False
             else:
                 return False
             return True

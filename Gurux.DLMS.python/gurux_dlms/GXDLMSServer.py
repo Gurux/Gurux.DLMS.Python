@@ -93,7 +93,7 @@ class GXDLMSServer:
         self.initialized = False
         # When data was received last time.
         self.dataReceived = 0
-        self.settings.setUseLogicalNameReferencing(logicalNameReferencing)
+        self.settings.useLogicalNameReferencing = logicalNameReferencing
         self.settings.interfaceType = interfaceType
         self.hdlc = None
         self.wrapper = None

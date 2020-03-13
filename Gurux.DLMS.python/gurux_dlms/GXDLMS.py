@@ -1853,21 +1853,21 @@ class GXDLMS:
         cls.getPdu(settings, target)
         if notify and not isNotify:
             #Check command to make sure it's not notify message.
-            if data.command in (Command.DATA_NOTIFICATION,\
-                Command.GLO_EVENT_NOTIFICATION,\
-                Command.INFORMATION_REPORT,\
-                Command.EVENT_NOTIFICATION,\
-                Command.DED_INFORMATION_REPORT_REQUEST,\
-                Command.DED_EVENT_NOTIFICATION):
-                    isNotify = True
-                    notify.complete = data.complete
-                    notify.command = data.command
-                    data.command = Command.NONE
-                    notify.time = data.time
-                    data.time = None
-                    notify.data.set(data.data)
-                    notify.value = data.value
-                    data.data.trim()
+            if data.command in (Command.DATA_NOTIFICATION,
+                                Command.GLO_EVENT_NOTIFICATION,
+                                Command.INFORMATION_REPORT,
+                                Command.EVENT_NOTIFICATION,
+                                Command.DED_INFORMATION_REPORT_REQUEST,
+                                Command.DED_EVENT_NOTIFICATION):
+                isNotify = True
+                notify.complete = data.complete
+                notify.command = data.command
+                data.command = Command.NONE
+                notify.time = data.time
+                data.time = None
+                notify.data.set(data.data)
+                notify.value = data.value
+                data.data.trim()
         if isNotify:
             return False
         return True

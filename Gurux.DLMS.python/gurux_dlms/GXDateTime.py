@@ -87,7 +87,7 @@ class GXDateTime:
                 continue
             dp += sep
             tmp = int(d)
-            if tmp == 1901 or tmp == 1:
+            if tmp in(1901, 1):
                 if loading:
                     dp += "%Y"
                 elif len(d) == 2:

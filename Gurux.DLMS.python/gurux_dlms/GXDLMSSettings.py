@@ -88,6 +88,7 @@ class GXDLMSSettings:
         self.clientAddress = 0
         self.serverAddress = 0
         self.serverAddressSize = 0
+        self.__useLogicalNameReferencing = False
         self.useLogicalNameReferencing = True
         self.interfaceType = InterfaceType.HDLC
         self.authentication = Authentication.NONE
@@ -311,20 +312,18 @@ class GXDLMSSettings:
     def increaseBlockIndex(self):
         self.blockIndex += 1
 
-    #
-    # Is Logical Name Referencing used.
-    #
-    def getUseLogicalNameReferencing(self):
-        return self.useLogicalNameReferencing
+    def __getUseLogicalNameReferencing(self):
+        return self.__useLogicalNameReferencing
+
+    def __setUseLogicalNameReferencing(self, value):
+        if self.__useLogicalNameReferencing != value:
+            self.__useLogicalNameReferencing = value
+            self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
 
     #
-    # @param value
     # Is Logical Name Referencing used.
     #
-    def setUseLogicalNameReferencing(self, value):
-        if self.useLogicalNameReferencing != value:
-            self.useLogicalNameReferencing = value
-            self.proposedConformance = GXDLMSSettings.getInitialConformance(self.useLogicalNameReferencing)
+    useLogicalNameReferencing = property(__getUseLogicalNameReferencing, __setUseLogicalNameReferencing)
 
     #
     # Invoke ID.
