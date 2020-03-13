@@ -83,7 +83,7 @@ class sampleclient(IGXMediaListener):
             #Wait input.
             input()
             print("Closing")
-        except Exception as ex:
+        except (KeyboardInterrupt, SystemExit, Exception) as ex:
             print(ex)
         settings.media.close()
         settings.media.removeListener(self)
