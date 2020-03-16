@@ -127,31 +127,33 @@ class sampleclient(IGXMediaListener):
         self.reply.set(e.data)
         data = GXReplyData()
         try:
-            self.client.getData(self.reply, data, self.notify)
-            #If all data is received.
-            if self.notify.complete and not self.notify.isMoreData():
-                #Show received data as XML.
-                xml = self.translator.dataToXml(self.notify.data)
-                print(xml)
-                #Print received data.
-                self.printData(self.notify.value, 0)
+            if not self.client.getData(self.reply, data, self.notify):
+                #If all data is received.
+                if self.notify.complete and not self.notify.isMoreData():
+                    #Show received data as XML.
+                    xml = self.translator.dataToXml(self.notify.data)
+                    print(xml)
+                    #Print received data.
+                    self.printData(self.notify.value, 0)
 
-                #Example is sending list of push messages in first parameter.
-                if isinstance(self.notify.value, list):
-                    objects = self.client.parsePushObjects(self.notify.value[0])
-                    #Remove first item because it's not needed anymore.
-                    objects.pop(0)
-                    Valueindex = 1
-                    for obj, index in objects:
-                        self.client.updateValue(obj, index, self.notify.value[Valueindex])
-                        ++Valueindex
-                        #Print value
-                        print(str(obj.objectType) + " " + obj.logicalName + " " + str(index) + ": " + str(obj.getValues()[index - 1]))
-                print("Server address:" + str(self.notify.serverAddress) + " Client Address:" + str(self.notify.clientAddress))
-                self.notify.clear()
+                    #Example is sending list of push messages in first parameter.
+                    if isinstance(self.notify.value, list):
+                        objects = self.client.parsePushObjects(self.notify.value[0])
+                        #Remove first item because it's not needed anymore.
+                        objects.pop(0)
+                        Valueindex = 1
+                        for obj, index in objects:
+                            self.client.updateValue(obj, index, self.notify.value[Valueindex])
+                            ++Valueindex
+                            #Print value
+                            print(str(obj.objectType) + " " + obj.logicalName + " " + str(index) + ": " + str(obj.getValues()[index - 1]))
+                    print("Server address:" + str(self.notify.serverAddress) + " Client Address:" + str(self.notify.clientAddress))
+                    self.notify.clear()
+                    self.reply.clear()
         except Exception as ex:
             print(ex)
             self.notify.clear()
+            self.reply.clear()
 
     def onMediaStateChange(self, sender, e):
         """Media component sends notification, when its state changes.

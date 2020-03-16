@@ -793,6 +793,8 @@ class GXDLMS:
         crcRead = 0
         if reply.size - reply.position < 9:
             data.complete = False
+            if notify:
+                notify.complete = False
             return 0
         data.complete = True
         if notify:
@@ -806,6 +808,8 @@ class GXDLMS:
             pos += 1
         if reply.position == len(reply):
             data.complete = False
+            if notify:
+                notify.complete = False
             return 0
         frame_ = reply.getUInt8()
         if (frame_ & 0xF0) != 0xA0:
@@ -817,6 +821,8 @@ class GXDLMS:
         frameLen += ch
         if len(reply) - reply.position + 1 < frameLen:
             data.complete = False
+            if notify:
+                notify.complete = False
             reply.position = packetStartID
             return 0
         eopPos = frameLen + packetStartID + 1
@@ -838,6 +844,10 @@ class GXDLMS:
                 isNotify = True
                 notify.clientAddress = addresses[1]
                 notify.serverAddress = addresses[0]
+        # HDLC control fields
+        cf = reply.getUInt8()
+        if cf == 0x13:
+            isNotify = True
         if (frame_ & 0x8) != 0:
             if isNotify:
                 notify.moreData = notify.moreData | RequestTypes.FRAME
@@ -848,8 +858,7 @@ class GXDLMS:
                 notify.moreData = notify.moreData & ~RequestTypes.FRAME
             else:
                 data.moreData = data.moreData & ~RequestTypes.FRAME
-        frame_ = reply.getUInt8()
-        if data.xml is None and not settings.checkFrame(frame_):
+        if data.xml is None and not settings.checkFrame(cf):
             reply.position = eopPos + 1
             return GXDLMS.getHdlcData(server, settings, reply, data, notify)
         crc = _GXFCS16.countFCS16(reply, packetStartID + 1, reply.position - packetStartID - 1)
@@ -872,16 +881,16 @@ class GXDLMS:
                 notify.packetLength = (reply.position + 1)
             else:
                 data.packetLength = (reply.position + 1)
-        if frame_ != 0x13 and (frame_ & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
+        if cf != 0x13 and (cf & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
-            if frame_ == 0x97:
+            if cf == 0x97:
                 data.error = ErrorCode.UNACCEPTABLE_FRAME
-            elif frame_ == 0x1f:
+            elif cf == 0x1f:
                 data.error = ErrorCode.DISCONNECT_MODE
-            data.command = (frame_)
-        elif frame_ != 0x13 and (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
-            tmp = (frame_ >> 2) & 0x3
+            data.command = cf
+        elif cf != 0x13 and (cf & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
+            tmp = (cf >> 2) & 0x3
             if tmp == HdlcControlFrame.REJECT:
                 data.error = ErrorCode.REJECTED
             elif tmp == HdlcControlFrame.RECEIVE_NOT_READY:
@@ -893,12 +902,12 @@ class GXDLMS:
         else:
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
-                if (frame_ & 0x1) == 0x1:
+                if (cf & 0x1) == 0x1:
                     data.moreData = (RequestTypes.FRAME)
             else:
                 if not cls.getLLCBytes(server, reply) and data.xml:
                     cls.getLLCBytes(not server, reply)
-        return frame_
+        return cf
 
     @classmethod
     def getServerAddress(cls, address, logical, physical):
