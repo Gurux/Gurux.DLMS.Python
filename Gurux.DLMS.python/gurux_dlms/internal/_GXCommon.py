@@ -243,7 +243,7 @@ class _GXCommon:
         knownType = info.type_ != DataType.NONE
         #  Get data type if it is unknown.
         if not knownType:
-            info.type_ = DataType(data.getUInt8())
+            info.type_ = data.getUInt8()
         if info.type_ == DataType.NONE:
             if info.xml:
                 info.xml.appendLine("<" + info.xml.getDataType(info.type_) + " />")
@@ -545,7 +545,7 @@ class _GXCommon:
                 deviation = 0x8000
                 skip |= DateTimeSkips.DEVITATION
             status = buff.getUInt8()
-            dt.status = ClockStatus(status)
+            dt.status = status
             if year < 1900 or year == 0xFFFF:
                 skip |= DateTimeSkips.YEAR
                 year = 2000

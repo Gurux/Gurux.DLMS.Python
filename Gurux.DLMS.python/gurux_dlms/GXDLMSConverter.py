@@ -151,7 +151,7 @@ class GXDLMSConverter:
                 tmp.description = it.description
                 codes.append(tmp)
 
-        str_ = pkg_resources.resource_string(__name__, "OBISCodes.txt").decode("utf-8")
+        str_ = pkg_resources.resource_string(__name__, "OBISCodes.txt")
         str_ = str_.replace("\n", "\r")
         rows = str_.split('\r')
         for it in rows:
