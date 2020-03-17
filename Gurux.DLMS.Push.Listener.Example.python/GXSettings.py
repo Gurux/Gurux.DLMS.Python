@@ -153,7 +153,7 @@ class GXSettings:
                     self.media.baudRate = int(tmp[1])
                     self.media.dataBits = int(tmp[2][0: 1])
                     self.media.parity = Parity[tmp[2][1: len(tmp[2]) - 1].upper()]
-                    self.media.stopBits = int(tmp[2][len(tmp[2]) - 1:])
+                    self.media.stopBits = int(tmp[2][len(tmp[2]) - 1:]) - 1
                 else:
                     self.media.baudrate = BaudRate.BAUD_RATE_9600
                     self.media.bytesize = 8

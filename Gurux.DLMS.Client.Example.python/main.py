@@ -82,7 +82,7 @@ class sampleclient():
                     reader.showValue(v, val)
             else:
                 reader.readAll(settings.outputFile)
-        except Exception:
+        except (KeyboardInterrupt, SystemExit, Exception) as ex:
             traceback.print_exc()
         finally:
             if reader:
