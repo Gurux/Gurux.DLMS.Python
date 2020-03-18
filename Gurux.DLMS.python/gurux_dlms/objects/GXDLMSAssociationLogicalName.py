@@ -609,7 +609,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             self.applicationContextName.identifiedOrganization = reader.readElementContentAsInt("IdentifiedOrganization")
             self.applicationContextName.dlmsUA = reader.readElementContentAsInt("DlmsUA")
             self.applicationContextName.applicationContext = reader.readElementContentAsInt("ApplicationContext")
-            self.applicationContextName.contextId = ApplicationContextName(reader.readElementContentAsInt("ContextId"))
+            self.applicationContextName.contextId = reader.readElementContentAsInt("ContextId")
             reader.readEndElement("ApplicationContextName")
         if reader.isStartElement("XDLMSContextInfo", True):
             self.xDLMSContextInfo.conformance = reader.readElementContentAsInt("Conformance")
@@ -633,7 +633,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             self.secret = None
         else:
             self.secret = GXByteBuffer.hexToBytes(str_)
-        self.associationStatus = AssociationStatus(reader.readElementContentAsInt("AssociationStatus"))
+        self.associationStatus = reader.readElementContentAsInt("AssociationStatus")
         self.securitySetupReference = reader.readElementContentAsString("SecuritySetupReference")
 
     def save(self, writer):
