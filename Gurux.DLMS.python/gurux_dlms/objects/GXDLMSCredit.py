@@ -246,7 +246,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("CurrentCreditAmount", self.currentCreditAmount)
         if self.type_:
-            writer.writeElementString("Type", self.type_.value)
+            writer.writeElementString("Type", self.type_)
         writer.writeElementString("Priority", self.priority)
         writer.writeElementString("WarningThreshold", self.warningThreshold)
         writer.writeElementString("Limit", self.limit)

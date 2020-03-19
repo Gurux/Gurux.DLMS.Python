@@ -263,14 +263,14 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             if not e.value:
                 self.primaryDNSAddress = None
             else:
-                self.primaryDNSAddress = socket.inet_ntop(socket.AF_INET6, it)
+                self.primaryDNSAddress = socket.inet_ntop(socket.AF_INET6, e.value)
         elif e.index == 8:
             if not e.value:
                 self.secondaryDNSAddress = None
             else:
                 # This fails in Python 2.7.4. Update to 2.7.6
                 # https://bugs.python.org/issue10212
-                self.secondaryDNSAddress = socket.inet_ntop(socket.AF_INET6, it)
+                self.secondaryDNSAddress = socket.inet_ntop(socket.AF_INET6, e.value)
         elif e.index == 9:
             self.trafficClass = e.value
         elif e.index == 10:

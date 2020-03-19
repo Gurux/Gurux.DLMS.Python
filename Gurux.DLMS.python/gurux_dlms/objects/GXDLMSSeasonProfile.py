@@ -54,5 +54,5 @@ class GXDLMSSeasonProfile:
         if GXByteBuffer.isAsciiString(self.name):
             tmp = self.name.decode("utf-8")
         else:
-            tmp = GXByteBuffer.toHex(self.name)
+            tmp = GXByteBuffer.hex(self.name)
         return tmp + " " + str(self.start)
