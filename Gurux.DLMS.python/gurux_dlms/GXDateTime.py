@@ -179,9 +179,12 @@ class GXDateTime:
                             c = str_[end]
                             while end + 1 < len(str_) and str_[end] == c:
                                 end += 1
-                            v = str(v[0:pos]) + "1" + str(v[pos + 1:])
+                            if str_[end] == 'Y':
+                                v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
+                            else:
+                                v = str(v[0:pos]) + "1" + str(v[pos + 1:])
                             tmp = str_[lastFormatIndex + 1: end + 1].strip()
-                            if tmp.startswith("y"):
+                            if tmp in ("%y", "%-y", "%Y", "%-Y"):
                                 self.skip |= DateTimeSkips.YEAR
                             elif tmp in ("%m", "%-m"):
                                 self.skip |= DateTimeSkips.MONTH
@@ -201,6 +204,7 @@ class GXDateTime:
                         else:
                             lastFormatIndex = str_.find(str(c), lastFormatIndex + 1)
                     pos += 1
+                v = v.replace("Y", "2000")
                 self.value = datetime.datetime.strptime(v, str_)
             self.skip |= DateTimeSkips.SECOND | DateTimeSkips.MILLISECOND
             return datetime.datetime.strptime(v, str_)
@@ -236,6 +240,8 @@ class GXDateTime:
             if self.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%y", "*")
                 str_ = self._replace(str_, "%-y", "*")
+                str_ = self._replace(str_, "%-Y", "*")
+                str_ = self._replace(str_, "%Y", "*")
             if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
                 str_ = self._replace(str_, "%m", "*")
                 str_ = self._replace(str_, "%-m", "*")
@@ -303,6 +309,7 @@ class GXDateTime:
                 str_ = self._remove_(str_, "%Y", True)
                 str_ = self._remove_(str_, "%y", True)
                 str_ = self._remove_(str_, "%-y", True)
+                str_ = self._remove_(str_, "%-Y", True)
             if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
                 str_ = self._remove_(str_, "%m", True)
                 str_ = self._remove_(str_, "%-m", True)

@@ -164,7 +164,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             if self.monitoredValue is None:
                 self.monitoredValue = GXDLMSMonitoredValue()
-            self.monitoredValue.objectType = ObjectType(e.value[0])
+            self.monitoredValue.objectType = e.value[0]
             self.monitoredValue.logicalName = _GXCommon.toLogicalName(e.value[1])
             self.monitoredValue.attributeIndex = e.value[2]
         elif e.index == 4:

@@ -67,7 +67,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         self.buffer = list()
         self.captureObjects = list()
         self.capturePeriod = 0
-        self.sortMethod = SortMethod.LIFO
+        self.sortMethod = SortMethod.FIFO
         self.sortObject = None
         self.entriesInUse = 0
         self.profileEntries = 0
@@ -410,7 +410,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.sortMethod = SortMethod.FIFO
             else:
-                self.sortMethod = SortMethod(e.value)
+                self.sortMethod = e.value
         elif e.index == 6:
             if settings and settings.isServer:
                 self.__reset()
@@ -497,7 +497,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                                 print("Scalar failed for: {}".format(item[0].logicalName))
                     colIndex += 1
                 self.buffer.append(row)
-            self.entriesInUse = len(self.buffer)
+            if e.settings.isServer:
+                self.entriesInUse = len(self.buffer)
 
     def __reset(self):
         self.buffer = []
@@ -535,7 +536,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         self.captureObjects = []
         if reader.isStartElement("CaptureObjects", True):
             while reader.isStartElement("Item", True):
-                ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
+                ot = reader.readElementContentAsInt("ObjectType")
                 ln = reader.readElementContentAsString("LN")
                 ai = reader.readElementContentAsInt("Attribute")
                 di = reader.readElementContentAsInt("Data")
@@ -547,10 +548,10 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                 self.captureObjects.append((obj, co))
             reader.readEndElement("CaptureObjects")
         self.capturePeriod = reader.readElementContentAsInt("CapturePeriod")
-        self.sortMethod = SortMethod(reader.readElementContentAsInt("SortMethod"))
+        self.sortMethod = reader.readElementContentAsInt("SortMethod")
         if reader.isStartElement("SortObject", True):
             self.capturePeriod = reader.readElementContentAsInt("CapturePeriod")
-            ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
+            ot = reader.readElementContentAsInt("ObjectType")
             ln = reader.readElementContentAsString("LN")
             self.sortObject = reader.objects.findByLN(ot, ln)
             reader.readEndElement("SortObject")
@@ -570,17 +571,17 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("CaptureObjects")
             for k, v in self.captureObjects:
                 writer.writeStartElement("Item")
-                writer.writeElementString("ObjectType", k.objectType)
+                writer.writeElementString("ObjectType", int(k.objectType))
                 writer.writeElementString("LN", k.logicalName)
                 writer.writeElementString("Attribute", v.attributeIndex)
                 writer.writeElementString("Data", v.dataIndex)
                 writer.writeEndElement()
             writer.writeEndElement()
         writer.writeElementString("CapturePeriod", self.capturePeriod)
-        writer.writeElementString("SortMethod", self.sortMethod.value)
+        writer.writeElementString("SortMethod", int(self.sortMethod))
         if self.sortObject:
             writer.writeStartElement("SortObject")
-            writer.writeElementString("ObjectType", self.sortObject.objectType)
+            writer.writeElementString("ObjectType", int(self.sortObject.objectType))
             writer.writeElementString("LN", self.sortObject.logicalName)
             writer.writeEndElement()
         writer.writeElementString("EntriesInUse", self.entriesInUse)

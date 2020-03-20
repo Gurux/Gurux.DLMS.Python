@@ -40,6 +40,7 @@ from gurux_net.enums import NetworkType
 from gurux_net import GXNet
 from gurux_serial.GXSerial import GXSerial
 from GXCmdParameter import GXCmdParameter
+from gurux_dlms.GXByteBuffer import GXByteBuffer
 
 class GXSettings:
     #
@@ -79,6 +80,10 @@ class GXSettings:
         print(" -v Invocation counter data object Logical Name. Ex. 0.0.43.1.0.255")
         print(" -I \t Auto increase invoke ID")
         print(" -o \t Cache association view to make reading faster. Ex. -o C:\\device.xml")
+        print(" -T \t System title that is used with chiphering. Ex -D 4775727578313233")
+        print(" -A \t Authentication key that is used with chiphering. Ex -D D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF")
+        print(" -B \t Block cipher key that is used with chiphering. Ex -D 000102030405060708090A0B0C0D0E0F")
+        print(" -D \t Dedicated key that is used with chiphering. Ex -D 00112233445566778899AABBCCDDEEFF")
         print("Example:")
         print("Read LG device using TCP/IP connection.")
         print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
@@ -125,7 +130,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:T:A:B:D:")
         defaultBaudRate = True
         for it in parameters:
             if it.tag == 'w':
@@ -205,10 +210,20 @@ class GXSettings:
                     self.media.stopbits = StopBits.ONE
             elif it.tag == 'a':
                 try:
-                    it.value = it.value.upper()
-                    if it.value != "HIGH" and it.value.startswith("HIGH"):
-                        it.value = "HIGH_" + it.value[4:]
-                    self.client.authentication = Authentication[it.value]
+                    if it.value == "None":
+                        self.client.authentication = Authentication.NONE
+                    elif it.value == "Low":
+                        self.client.authentication = Authentication.LOW
+                    elif it.value == "High":
+                        self.client.authentication = Authentication.HIGH
+                    elif it.value == "HighMd5":
+                        self.client.authentication = Authentication.HIGH_MD5
+                    elif it.value == "HighSha1":
+                        self.client.authentication = Authentication.HIGH_SHA1
+                    elif it.value == "HighGMac":
+                        self.client.authentication = Authentication.HIGH_GMAC
+                    elif it.value == "HighSha256":
+                        self.client.authentication = Authentication.HIGH_SHA256
                 except Exception:
                     raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighMd5, HighSha1, HighGMac, HighSha256)")
             elif it.tag == 'C':
@@ -222,6 +237,14 @@ class GXSettings:
                     self.client.ciphering.security = Security.AUTHENTICATION_ENCRYPTION
                 else:
                     raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
+            elif it.tag == 'T':
+                self.client.ciphering.systemTitle = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'A':
+                self.client.ciphering.authenticationKey = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'B':
+                self.client.ciphering.blockCipherKey = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'D':
+                self.client.ciphering.dedicatedKey = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == 'o':
                 self.outputFile = it.value
             elif it.tag == 'c':
@@ -247,6 +270,20 @@ class GXSettings:
                     raise ValueError("Missing mandatory Serial port option.\n")
                 if it.tag == 't':
                     raise ValueError("Missing mandatory trace option.\n")
+                if it.tag == 'g':
+                    raise ValueError("Missing mandatory OBIS code option.")
+                if it.tag == 'C':
+                    raise ValueError("Missing mandatory Ciphering option.")
+                if it.tag == 'v':
+                    raise ValueError("Missing mandatory invocation counter logical name option.")
+                if it.tag == 'T':
+                    raise ValueError("Missing mandatory system title option.")
+                if it.tag == 'A':
+                    raise ValueError("Missing mandatory authentication key option.")
+                if it.tag == 'B':
+                    raise ValueError("Missing mandatory block cipher key option.")
+                if it.tag == 'D':
+                    raise ValueError("Missing mandatory dedicated key option.")
                 self.showHelp()
                 return 1
             else:

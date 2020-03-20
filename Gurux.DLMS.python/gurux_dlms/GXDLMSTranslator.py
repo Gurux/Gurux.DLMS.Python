@@ -822,20 +822,20 @@ class GXDLMSTranslator:
             if s.outputType == TranslatorOutputType.STANDARD_XML:
                 value = int(node.getFirstChild().getNodeValue())
                 if value == 1:
-                    s.settings.useLogicalNameReferencing = True
+                    s.settings.setUseLogicalNameReferencing(True)
                 elif value == 2:
-                    s.settings.useLogicalNameReferencing = False
+                    s.settings.setUseLogicalNameReferencing(False)
                 elif value == 3:
-                    s.settings.useLogicalNameReferencing = True
+                    s.settings.setUseLogicalNameReferencing(True)
                 elif value == 4:
-                    s.settings.useLogicalNameReferencing = False
+                    s.settings.setUseLogicalNameReferencing(False)
                 else:
                     raise ValueError("Invalid application context name.")
             else:
                 if node.attrib["Value"] == "SN" or node.attrib["Value"] == "SN_WITH_CIPHERING":
-                    s.settings.useLogicalNameReferencing = False
+                    s.settings.setUseLogicalNameReferencing(False)
                 elif node.attrib["Value"] == "LN" or node.attrib["Value"] == "LN_WITH_CIPHERING":
-                    s.settings.useLogicalNameReferencing = True
+                    s.settings.setUseLogicalNameReferencing(True)
                 else:
                     raise ValueError("Invalid Reference type name.")
         elif tag == Command.GLO_INITIATE_REQUEST:
@@ -874,9 +874,9 @@ class GXDLMSTranslator:
         elif tag == 0xBE04:
             str_ = cls.getValue(node, s)
             if int(str_, 16) == 7:
-                s.settings.useLogicalNameReferencing = True
+                s.settings.setUseLogicalNameReferencing(True)
             else:
-                s.settings.useLogicalNameReferencing = False
+                s.settings.setUseLogicalNameReferencing(False)
         elif tag == 0x8B:
             pass
         elif tag == 0x89:

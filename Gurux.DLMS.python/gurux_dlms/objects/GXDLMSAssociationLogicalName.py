@@ -37,7 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import DataType, ObjectType, Authentication, AccessMode, MethodAccessMode
-from .enums import AssociationStatus, ApplicationContextName
+from .enums import AssociationStatus
 from .GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXApplicationContextName import GXApplicationContextName
 from .GXxDLMSContextType import GXxDLMSContextType
@@ -306,7 +306,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             for attributeAccess in buff[0]:
                 id_ = attributeAccess[0]
                 tmp = attributeAccess[1]
-                obj.setAccess(id_, AccessMode(tmp))
+                obj.setAccess(id_, tmp)
             for methodAccess in buff[1]:
                 id_ = methodAccess[0]
                 tmp = 0
@@ -317,7 +317,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                         tmp = 0
                 else:
                     tmp = methodAccess[1]
-                obj.setMethodAccess(id_, MethodAccessMode(tmp))
+                obj.setMethodAccess(id_, tmp)
 
     def getUserList(self, settings):
         data = GXByteBuffer()
@@ -548,7 +548,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.identifiedOrganization = value[4]
                     self.authenticationMechanismName.dlmsUA = value[4]
                     self.authenticationMechanismName.authenticationMechanismName = value[5]
-                    self.authenticationMechanismName.mechanismId = Authentication(value[6])
+                    self.authenticationMechanismName.mechanismId = value[6]
 
     def setValue(self, settings, e):
         if e.index == 1:

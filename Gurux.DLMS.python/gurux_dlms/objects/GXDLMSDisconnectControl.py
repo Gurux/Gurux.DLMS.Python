@@ -139,24 +139,24 @@ class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.controlState = ControlState.DISCONNECTED
             else:
-                self.controlState = ControlState(e.value)
+                self.controlState = e.value
         elif e.index == 4:
             #pylint: disable=bad-option-value,redefined-variable-type
             if e.value is None:
                 self.controlMode = ControlMode.NONE
             else:
-                self.controlMode = ControlMode(e.value)
+                self.controlMode = e.value
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
         self.outputState = reader.readElementContentAsInt("OutputState") != 0
-        self.controlState = ControlState(reader.readElementContentAsInt("ControlState"))
-        self.controlMode = ControlMode(reader.readElementContentAsInt("ControlMode"))
+        self.controlState = reader.readElementContentAsInt("ControlState")
+        self.controlMode = reader.readElementContentAsInt("ControlMode")
 
     def save(self, writer):
         writer.writeElementString("OutputState", self.outputState)
         if self.controlState:
-            writer.writeElementString("ControlState", self.controlState)
+            writer.writeElementString("ControlState", int(self.controlState))
         if self.controlMode:
-            writer.writeElementString("ControlMode", self.controlMode)
+            writer.writeElementString("ControlMode", int(self.controlMode))

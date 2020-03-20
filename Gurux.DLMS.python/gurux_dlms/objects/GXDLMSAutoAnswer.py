@@ -172,7 +172,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.mode = AutoAnswerMode(e.value)
+            self.mode = e.value
         elif e.index == 3:
             self.listeningWindow = []
             if e.value:
@@ -181,7 +181,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
                     end = _GXCommon.changeType(item[1], DataType.DATETIME)
                     self.listeningWindow.append((start, end))
         elif e.index == 4:
-            self.status = AutoAnswerStatus(e.value)
+            self.status = e.value
         elif e.index == 5:
             self.numberOfCalls = e.value
         elif e.index == 6:
@@ -194,7 +194,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.mode = AutoAnswerMode(reader.readElementContentAsInt("Mode"))
+        self.mode = reader.readElementContentAsInt("Mode")
         self.listeningWindow = []
         if reader.isStartElement("ListeningWindow", True):
             while reader.isStartElement("Item", True):
@@ -202,7 +202,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
                 end = GXDateTime(reader.readElementContentAsString("End"))
                 self.listeningWindow.append((start, end))
             reader.readEndElement("ListeningWindow")
-        self.status = AutoAnswerStatus(reader.readElementContentAsInt("Status"))
+        self.status = reader.readElementContentAsInt("Status")
         self.numberOfCalls = reader.readElementContentAsInt("NumberOfCalls")
         self.numberOfRingsInListeningWindow = reader.readElementContentAsInt("NumberOfRingsInListeningWindow")
         self.numberOfRingsOutListeningWindow = reader.readElementContentAsInt("NumberOfRingsOutListeningWindow")

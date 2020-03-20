@@ -67,8 +67,8 @@ class GXDLMSSettings:
     __MAX_RECEIVE_PDU_SIZE = 0xFFFF
 
     @classmethod
-    def getInitialConformance(cls, useLogicalNameReferencing):
-        if useLogicalNameReferencing:
+    def getInitialConformance(cls, useLN):
+        if useLN:
             return Conformance.BLOCK_TRANSFER_WITH_ACTION | Conformance.BLOCK_TRANSFER_WITH_SET_OR_WRITE | Conformance.BLOCK_TRANSFER_WITH_GET_OR_READ | Conformance.SET | Conformance.SELECTIVE_ACCESS | Conformance.ACTION | Conformance.MULTIPLE_REFERENCES | Conformance.GET
         return Conformance.INFORMATION_REPORT | Conformance.READ | Conformance.UN_CONFIRMED_WRITE | Conformance.WRITE | Conformance.PARAMETERIZED_ACCESS | Conformance.MULTIPLE_REFERENCES
 
@@ -88,8 +88,7 @@ class GXDLMSSettings:
         self.clientAddress = 0
         self.serverAddress = 0
         self.serverAddressSize = 0
-        self.__useLogicalNameReferencing = False
-        self.useLogicalNameReferencing = True
+        self.__useLogicalNameReferencing = True
         self.interfaceType = InterfaceType.HDLC
         self.authentication = Authentication.NONE
         self.password = None
@@ -112,7 +111,7 @@ class GXDLMSSettings:
         self.objects = GXDLMSObjectCollection()
         self.limits = GXDLMSLimits()
         self.gateway = None
-        self.proposedConformance = GXDLMSSettings.getInitialConformance(self.useLogicalNameReferencing)
+        self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
         self.resetFrameSequence()
         self.windowSize = 1
         self.userId = -1
@@ -312,18 +311,17 @@ class GXDLMSSettings:
     def increaseBlockIndex(self):
         self.blockIndex += 1
 
-    def __getUseLogicalNameReferencing(self):
+    # Is Logical Name Referencing used.
+    # Don't use property. For some reason Python 2.7 doesn't call it in Rasbperry PI.
+    def getUseLogicalNameReferencing(self):
         return self.__useLogicalNameReferencing
 
-    def __setUseLogicalNameReferencing(self, value):
+    # Is Logical Name Referencing used.
+    # Don't use property. For some reason Python 2.7 doesn't call it in Rasbperry PI.
+    def setUseLogicalNameReferencing(self, value):
         if self.__useLogicalNameReferencing != value:
             self.__useLogicalNameReferencing = value
             self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
-
-    #
-    # Is Logical Name Referencing used.
-    #
-    useLogicalNameReferencing = property(__getUseLogicalNameReferencing, __setUseLogicalNameReferencing)
 
     #
     # Invoke ID.

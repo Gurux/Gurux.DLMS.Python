@@ -172,13 +172,13 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.defaultMode = OpticalProtocolMode(e.value)
+            self.defaultMode = e.value
         elif e.index == 3:
-            self.defaultBaudrate = BaudRate(e.value)
+            self.defaultBaudrate = e.value
         elif e.index == 4:
-            self.proposedBaudrate = BaudRate(e.value)
+            self.proposedBaudrate = e.value
         elif e.index == 5:
-            self.responseTime = LocalPortResponseTime(e.value)
+            self.responseTime = e.value
         elif e.index == 6:
             self.deviceAddress = _GXCommon.changeType(e.value, DataType.STRING)
         elif e.index == 7:
@@ -191,17 +191,17 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.defaultMode = OpticalProtocolMode(reader.readElementContentAsInt("DefaultMode"))
-        self.defaultBaudrate = BaudRate(reader.readElementContentAsInt("DefaultBaudrate"))
-        self.proposedBaudrate = BaudRate(reader.readElementContentAsInt("ProposedBaudrate"))
-        self.responseTime = LocalPortResponseTime(reader.readElementContentAsInt("ResponseTime"))
+        self.defaultMode = reader.readElementContentAsInt("DefaultMode")
+        self.defaultBaudrate = reader.readElementContentAsInt("DefaultBaudrate")
+        self.proposedBaudrate = reader.readElementContentAsInt("ProposedBaudrate")
+        self.responseTime = reader.readElementContentAsInt("ResponseTime")
         self.deviceAddress = reader.readElementContentAsString("DeviceAddress")
         self.password1 = reader.readElementContentAsString("Password1")
         self.password2 = reader.readElementContentAsString("Password2")
         self.password5 = reader.readElementContentAsString("Password5")
 
     def save(self, writer):
-        writer.writeElementString("DefaultMode", int(self.defaultMode.value))
+        writer.writeElementString("DefaultMode", int(self.defaultMode))
         writer.writeElementString("DefaultBaudrate", int(self.defaultBaudrate))
         writer.writeElementString("ProposedBaudrate", int(self.proposedBaudrate))
         writer.writeElementString("ResponseTime", int(self.responseTime))

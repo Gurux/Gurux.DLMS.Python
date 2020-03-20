@@ -75,8 +75,9 @@ class GXDLMSReader:
             reply = GXReplyData()
             try:
                 #Release is call only for secured connections.
-                #All meters are not supporting Release and it's causing problems.
-                if self.client.interfaceType == InterfaceType.WRAPPER or\
+                #All meters are not supporting Release and it's causing
+                #problems.
+                if self.client.interfaceType == InterfaceType.WRAPPER or \
                     (self.client.interfaceType == InterfaceType.HDLC and self.client.ciphering.security != Security.NONE):
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception:
@@ -90,8 +91,9 @@ class GXDLMSReader:
             reply = GXReplyData()
             try:
                 #Release is call only for secured connections.
-                #All meters are not supporting Release and it's causing problems.
-                if self.client.interfaceType == InterfaceType.WRAPPER or\
+                #All meters are not supporting Release and it's causing
+                #problems.
+                if self.client.interfaceType == InterfaceType.WRAPPER or \
                     (self.client.interfaceType == InterfaceType.HDLC and self.client.ciphering.security != Security.NONE):
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception:
@@ -290,6 +292,13 @@ class GXDLMSReader:
                 self.client.ctoSChallenge = challenge
 
     def initializeConnection(self):
+        if self.client.ciphering.security != Security.NONE:
+            print("Security: " + str(self.client.ciphering.security))
+            print("System title: " + GXCommon.toHex(self.client.ciphering.systemTitle))
+            print("Authentication key: " + GXCommon.toHex(self.client.ciphering.authenticationKey))
+            print("Block cipher key: " + GXCommon.toHex(self.client.ciphering.blockCipherKey))
+            if self.client.ciphering.dedicatedKey:
+                print("Dedicated key: " + GXCommon.toHex(self.client.ciphering.dedicatedKey))
         self.updateFrameCounter()
         self.initializeOpticalHead()
         reply = GXReplyData()
@@ -469,7 +478,7 @@ class GXDLMSReader:
                 for rows in cells:
                     for cell in rows:
                         if isinstance(cell, bytearray):
-                            print(GXByteBuffer.hexToBytes(cell) + " | ")
+                            print(GXByteBuffer.hex(cell) + " | ")
                         else:
                             self.writeTrace(str(cell) + " | ", TraceLevel.INFO)
                     self.writeTrace("", TraceLevel.INFO)
@@ -487,7 +496,6 @@ class GXDLMSReader:
             self.initializeConnection()
             if outputFile and os.path.exists(outputFile):
                 try:
-                    self.client.objects.clear()
                     c = GXDLMSObjectCollection.load(outputFile)
                     self.client.objects.extend(c)
                     if self.client.objects:

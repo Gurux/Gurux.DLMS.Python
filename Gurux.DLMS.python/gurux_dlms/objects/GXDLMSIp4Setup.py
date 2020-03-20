@@ -40,7 +40,6 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSIp4SetupIpOption import GXDLMSIp4SetupIpOption
-from .enums.Ip4SetupIpOptionType import Ip4SetupIpOptionType
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
@@ -172,7 +171,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(data, DataType.UINT16, it)
+                    _GXCommon.setData(data, DataType.UINT16, struct.unpack("!I", socket.inet_aton(it))[0])
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -225,7 +224,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             if e.value:
                 for it in e.value:
                     item = GXDLMSIp4SetupIpOption()
-                    item.type_ = Ip4SetupIpOptionType(it[0])
+                    item.type_ = it[0]
                     item.length = it[1]
                     item.data = it[2]
                     self.ipOptions.append(item)
@@ -248,13 +247,13 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         self.multicastIPAddress = []
         if reader.isStartElement("MulticastIPAddress", True):
             while reader.isStartElement("Value", False):
-                self.multicastIPAddress.append(reader.readElementContentAsInt("Value"))
+                self.multicastIPAddress.append(reader.readElementContentAsString("Value"))
             reader.readEndElement("MulticastIPAddress")
         self.ipOptions = []
         if reader.isStartElement("IPOptions", True):
             while reader.isStartElement("IPOptions", True):
                 it = GXDLMSIp4SetupIpOption()
-                it.type = Ip4SetupIpOptionType(reader.readElementContentAsInt("Type"))
+                it.type_ = reader.readElementContentAsInt("Type")
                 it.length = reader.readElementContentAsInt("Length")
                 it.data = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Data"))
                 self.ipOptions.append(it)

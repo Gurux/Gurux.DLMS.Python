@@ -235,7 +235,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.imageTransferStatus = ImageTransferStatus.IMAGE_TRANSFER_NOT_INITIATED
             else:
-                self.imageTransferStatus = ImageTransferStatus(e.value)
+                self.imageTransferStatus = e.value
         elif e.index == 7:
             self.imageActivateInfo = []
             if e.value:
@@ -296,7 +296,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         self.imageTransferredBlocksStatus = reader.readElementContentAsString("ImageTransferredBlocksStatus")
         self.imageFirstNotTransferredBlockNumber = reader.readElementContentAsLong("ImageFirstNotTransferredBlockNumber")
         self.imageTransferEnabled = reader.readElementContentAsInt("ImageTransferEnabled") != 0
-        self.imageTransferStatus = ImageTransferStatus(reader.readElementContentAsInt("ImageTransferStatus"))
+        self.imageTransferStatus = reader.readElementContentAsInt("ImageTransferStatus")
         self.imageActivateInfo = []
         if reader.isStartElement("ImageActivateInfo", True):
             while reader.isStartElement("Item", True):

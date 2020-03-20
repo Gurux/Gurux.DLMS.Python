@@ -93,7 +93,7 @@ class GXDLMSServer:
         self.initialized = False
         # When data was received last time.
         self.dataReceived = 0
-        self.settings.useLogicalNameReferencing = logicalNameReferencing
+        self.settings.setUseLogicalNameReferencing(logicalNameReferencing)
         self.settings.interfaceType = interfaceType
         self.hdlc = None
         self.wrapper = None
@@ -136,10 +136,10 @@ class GXDLMSServer:
     maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
 
     def __getUseLogicalNameReferencing(self):
-        return self.useLogicalNameReferencing
+        return self.settings.getUseLogicalNameReferencing()
 
     def __setUseLogicalNameReferencing(self, value):
-        self.useLogicalNameReferencing = value
+        self.settings.setUseLogicalNameReferencing(value)
 
     #
     # Determines, whether Logical, or Short name, referencing is used.
@@ -802,7 +802,7 @@ class GXDLMSServer:
             cmd = Command.METHOD_RESPONSE
         else:
             cmd = Command.NONE
-        if self.settings.useLogicalNameReferencing:
+        if self.settings.getUseLogicalNameReferencing():
             p = GXDLMSLNParameters(self.settings, 0, cmd, 1, None, None, error)
             GXDLMS.getLNPdu(p, self.replyData)
         else:

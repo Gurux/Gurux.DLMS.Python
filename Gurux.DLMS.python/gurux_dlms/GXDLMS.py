@@ -121,7 +121,7 @@ class GXDLMS:
         if (reply.moreData & RequestTypes.FRAME) != 0:
             id_ = settings.getReceiverReady()
             return GXDLMS.getHdlcFrame(settings, id_, None)
-        if settings.useLogicalNameReferencing:
+        if settings.getUseLogicalNameReferencing():
             if settings.isServer:
                 cmd = Command.GET_RESPONSE
             else:
@@ -142,12 +142,12 @@ class GXDLMS:
         else:
             #  Get next block.
             bb = GXByteBuffer(4)
-            if settings.useLogicalNameReferencing:
+            if settings.getUseLogicalNameReferencing():
                 bb.setUInt32(settings.blockIndex)
             else:
                 bb.setUInt16(settings.blockIndex)
             settings.increaseBlockIndex()
-            if settings.useLogicalNameReferencing:
+            if settings.getUseLogicalNameReferencing():
                 p = GXDLMSLNParameters(settings, 0, cmd, GetCommandType.NEXT_DATA_BLOCK, bb, None, 0xff)
                 reply = GXDLMS.getLnMessages(p)
             else:
@@ -481,7 +481,7 @@ class GXDLMS:
         key = None
         cipher = p.settings.cipher
         if (p.settings.negotiatedConformance & Conformance.GENERAL_PROTECTION) == Conformance.NONE:
-            if (p.settings.connected & ConnectionState.DLMS) != 0 and cipher.dedicatedKey:
+            if cipher.dedicatedKey and (not p.settings.isServer or (p.settings.connected & ConnectionState.DLMS) != 0):
                 cmd = cls.getDedMessage(p.command)
                 key = cipher.dedicatedKey
             else:
@@ -1750,7 +1750,7 @@ class GXDLMS:
             bb = GXByteBuffer(data.data)
             data.data.size = data.data.position = index
             p = None
-            if settings.cipher.dedicatedKey and settings.connected == ConnectionState.DLMS:
+            if settings.cipher.dedicatedKey and (not settings.isServer or settings.connected == ConnectionState.DLMS):
                 p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
             else:
                 p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)

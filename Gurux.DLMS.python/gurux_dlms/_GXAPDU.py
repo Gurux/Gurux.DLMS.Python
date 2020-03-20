@@ -132,7 +132,7 @@ class _GXAPDU:
         data.setUInt8(0x5)
         data.setUInt8(0x8)
         data.setUInt8(0x1)
-        if settings.useLogicalNameReferencing:
+        if settings.getUseLogicalNameReferencing():
             if ciphered:
                 data.setUInt8(3)
             else:
@@ -184,7 +184,7 @@ class _GXAPDU:
             data.setUInt8(0x00)
         else:
             data.setUInt8(1)
-            _GXCommon.setObjectCount(len(settings.Cipher.DedicatedKey), data)
+            _GXCommon.setObjectCount(len(settings.cipher.dedicatedKey), data)
             data.set(settings.cipher.dedicatedKey)
         #  encoding of the response-allowed component (BOOLEAN DEFAULT TRUE)
         #  usage flag (FALSE, default value TRUE conveyed)
@@ -471,17 +471,17 @@ class _GXAPDU:
                     xml.appendLine(TranslatorGeneralTags.VAA_NAME, "Value", xml.integerToHex(tag, 4))
             if tag == 0x0007:
                 if initiateRequest:
-                    settings.useLogicalNameReferencing = True
+                    settings.setUseLogicalNameReferencing(True)
                 else:
                     #  If LN
-                    if not settings.useLogicalNameReferencing and xml is None:
+                    if not settings.getUseLogicalNameReferencing() and xml is None:
                         raise ValueError("Invalid VAA.")
             elif tag == 0xFA00:
                 #  If SN
                 if initiateRequest:
-                    settings.useLogicalNameReferencing = False
+                    settings.setUseLogicalNameReferencing(False)
                 else:
-                    if settings.useLogicalNameReferencing:
+                    if settings.getUseLogicalNameReferencing():
                         raise ValueError("Invalid VAA.")
             else:
                 #  Unknown VAA.
@@ -577,29 +577,29 @@ class _GXAPDU:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "LN")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "1")
-                settings.useLogicalNameReferencing = True
+                settings.setUseLogicalNameReferencing(True)
             elif name == 3:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "LN_WITH_CIPHERING")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "3")
-                settings.useLogicalNameReferencing = True
+                settings.setUseLogicalNameReferencing(True)
             elif name == 2:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "SN")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "2")
-                settings.useLogicalNameReferencing = False
+                settings.setUseLogicalNameReferencing(False)
             elif name == 4:
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, "Value", "SN_WITH_CIPHERING")
                 else:
                     xml.appendLine(TranslatorGeneralTags.APPLICATION_CONTEXT_NAME, None, "4")
-                settings.useLogicalNameReferencing = False
+                settings.setUseLogicalNameReferencing(False)
             else:
                 return False
             return True
-        if settings.useLogicalNameReferencing:
+        if settings.getUseLogicalNameReferencing():
             if name == 1:
                 return True
             #  If ciphering is used.
@@ -981,7 +981,7 @@ class _GXAPDU:
         data.set(bb.subArray(1, 3))
         data.setUInt16(settings.maxPduSize)
         #  VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
-        if settings.useLogicalNameReferencing:
+        if settings.getUseLogicalNameReferencing():
             data.setUInt16(0x0007)
         else:
             data.setUInt16(0xFA00)

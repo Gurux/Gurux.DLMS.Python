@@ -237,7 +237,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 self.dataLinkLayerReference = _GXCommon.toLogicalName(e.value)
         elif e.index == 3:
-            self.addressConfigMode = AddressConfigMode(e.value)
+            self.addressConfigMode = e.value
         elif e.index == 4:
             self.unicastIPAddress = []
             if e.value:
@@ -309,7 +309,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.dataLinkLayerReference = reader.readElementContentAsString("DataLinkLayerReference")
-        self.addressConfigMode = AddressConfigMode(reader.readElementContentAsInt("AddressConfigMode"))
+        self.addressConfigMode = reader.readElementContentAsInt("AddressConfigMode")
         self.unicastIPAddress = self.loadIPAddress(reader, "UnicastIPAddress")
         self.multicastIPAddress = self.loadIPAddress(reader, "MulticastIPAddress")
         self.gatewayIPAddress = self.loadIPAddress(reader, "GatewayIPAddress")

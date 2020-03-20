@@ -42,6 +42,8 @@ from ..GXDateTime import GXDateTime
 from ..GXDLMSConverter import GXDLMSConverter
 from ..internal._GXCommon import _GXCommon
 from ..enums import DataType
+from ..GXArray import GXArray
+from ..GXStructure import GXStructure
 
 ###Python 2 requires this
 #pylint: disable=bad-option-value,old-style-class
@@ -96,13 +98,17 @@ class GXXmlWriter:
                 ET.SubElement(self.getTarget(), name).text = GXByteBuffer.hex(value)
 
     def writeArray(self, data):
-        if isinstance(data, []):
+        if isinstance(data, (list)):
             arr = data
             for tmp in arr:
                 if isinstance(tmp, bytearray):
-                    self.writeElementObject("Item", tmp, False)
-                elif isinstance(tmp, (object,)):
-                    self.writeStartElement("Item", "Type", str(DataType.ARRAY), True)
+                    self.writeElementObject("Item", tmp)
+                elif isinstance(tmp, (GXArray,)):
+                    self.writeStartElement("Item", "Type", str(int(DataType.ARRAY)), True)
+                    self.writeArray(tmp)
+                    self.writeEndElement()
+                elif isinstance(tmp, (GXStructure,)):
+                    self.writeStartElement("Item", "Type", str(int(DataType.STRUCTURE)), True)
                     self.writeArray(tmp)
                     self.writeEndElement()
                 else:
@@ -115,15 +121,19 @@ class GXXmlWriter:
     # Object name.
     # @param value
     # Object value.
-    # @param skipDefaultValue
-    # Is default value serialized.
     #
     # pylint: disable=too-many-arguments
-    def writeElementObject(self, name, value, skipDefaultValue=True, type_=DataType.NONE, uiType=DataType.NONE):
-        if isinstance(value, (Enum, IntEnum)):
+    def writeElementObject(self, name, value, type_=DataType.NONE, uiType=DataType.NONE):
+        isEnum = False
+        try:
+            if isinstance(value, (Enum, IntEnum)):
+                isEnum = True
+        except (Exception):
+            pass
+        if isEnum:
             raise ValueError("Datatype is enum.")
 
-        if value or not skipDefaultValue:
+        if value or not self.skipDefaults:
             if type_ == DataType.OCTET_STRING:
                 if uiType == DataType.STRING:
                     value = str(value)
@@ -132,15 +142,24 @@ class GXXmlWriter:
             elif type_ != DataType.NONE and not isinstance(value, GXDateTime):
                 value = GXDLMSConverter.changeType(value, type_)
 
-            dt = _GXCommon.getDLMSDataType(value)
-            target = self.writeStartElement(name, "Type", str(int(dt)), False)
-            if dt == DataType.ARRAY:
+            if type_ == DataType.NONE:
+                type_ = _GXCommon.getDLMSDataType(value)
+
+            target = self.writeStartElement(name, "Type", str(int(type_)), False)
+            if uiType != DataType.NONE:
+                target.set("UIType", str(int(uiType)))
+            if type_ == DataType.ARRAY:
                 self.writeArray(value)
             else:
                 if isinstance(value, GXDateTime):
                     target.text = value.toFormatString()
                 elif isinstance(value, (bytearray, bytes)):
                     target.text = GXByteBuffer.hex(value)
+                elif isinstance(value, bool):
+                    if value:
+                        target.text = "1"
+                    else:
+                        target.text = "0"
                 else:
                     target.text = str(value)
             self.writeEndElement()

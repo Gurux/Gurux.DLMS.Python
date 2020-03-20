@@ -186,9 +186,9 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
                 for it in e.value:
                     self.descriptions.append(it)
         elif e.index == 5:
-            self.deliveryMethod = TokenDelivery(e.value)
+            self.deliveryMethod = e.value
         elif e.index == 6:
-            self.statusCode = TokenStatusCode(e.value[0])
+            self.statusCode = e.value[0]
             self.dataValue = str(e.value[1])
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -203,8 +203,8 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
             while reader.isStartElement("Item", True):
                 self.descriptions.append(reader.readElementContentAsString("Name"))
             reader.readEndElement("Descriptions")
-        self.deliveryMethod = TokenDelivery(reader.readElementContentAsInt("DeliveryMethod"))
-        self.statusCode = TokenStatusCode(reader.readElementContentAsInt("Status"))
+        self.deliveryMethod = reader.readElementContentAsInt("DeliveryMethod")
+        self.statusCode = reader.readElementContentAsInt("Status")
         self.dataValue = reader.readElementContentAsString("Data")
 
     def save(self, writer):

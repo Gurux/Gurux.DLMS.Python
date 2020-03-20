@@ -1631,6 +1631,8 @@ class _GXCommon:
             ret = DataType.OCTET_STRING
         #elif isinstance(value, (Enum,)):
         #    ret = DataType.ENUM
+        elif isinstance(value, bool):
+            ret = DataType.BOOLEAN
         elif isinstance(value, int):
             ret = DataType.INT32
         elif isinstance(value, GXTime):
@@ -1643,10 +1645,14 @@ class _GXCommon:
             ret = DataType.ARRAY
         elif isinstance(value, str):
             ret = DataType.STRING
-        elif isinstance(value, bool):
-            ret = DataType.BOOLEAN
         elif isinstance(value, float):
             ret = DataType.FLOAT32
+        elif isinstance(value, GXBitString):
+            ret = DataType.BITSTRING
+        elif isinstance(value, long):
+            ret = DataType.INT64
+        elif isinstance(value, unicode):
+            ret = DataType.STRING
         else:
             raise ValueError("Invalid value.")
         return ret

@@ -151,11 +151,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                         self.scripts.append(script)
                         for arr in item[1]:
                             it = GXDLMSScriptAction()
-                            val = arr[0]
-                            type_ = ScriptActionType.NOTHING
-                            if val > 0:
-                                type_ = ScriptActionType(val)
-                            it.type = type_
+                            it.type_ = arr[0]
                             ot = arr[1]
                             ln = _GXCommon.toLogicalName(arr[2])
                             t = settings.objects.findByLN(ot, ln)
@@ -172,8 +168,8 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                     script.id = e.value[0]
                     arr = e.value[1]
                     it = GXDLMSScriptAction()
-                    it.type = ScriptActionType(arr[0])
-                    ot = ObjectType(arr[1])
+                    it.type_ = arr[0]
+                    ot = arr[1]
                     ln = _GXCommon.toLogicalName(arr[2])
                     t = settings.objects.findByLN(ot, ln)
                     if t is None:

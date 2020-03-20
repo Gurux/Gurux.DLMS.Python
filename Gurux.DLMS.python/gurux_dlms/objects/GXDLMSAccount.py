@@ -408,7 +408,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             tmp = e.value
             self.currency.name = str(tmp[0])
             self.currency.scale = tmp[1]
-            self.currency.unit = Currency(tmp[2])
+            self.currency.unit = tmp[2]
         elif e.index == 16:
             self.lowCreditThreshold = e.value
         elif e.index == 17:
@@ -436,7 +436,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 it = GXCreditChargeConfiguration()
                 it.creditReference = reader.readElementContentAsString("Credit")
                 it.chargeReference = reader.readElementContentAsString("Charge")
-                it.collectionConfiguration = CreditCollectionConfiguration(reader.readElementContentAsInt("Configuration"))
+                it.collectionConfiguration = reader.readElementContentAsInt("Configuration")
                 list_.append(it)
             reader.readEndElement("CreditChargeConfigurations")
 
@@ -452,10 +452,10 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             reader.readEndElement("TokenGatewayConfigurations")
 
     def load(self, reader):
-        self.paymentMode = PaymentMode(reader.readElementContentAsInt("PaymentMode"))
-        self.accountStatus = AccountStatus(reader.readElementContentAsInt("AccountStatus"))
-        self.currentCreditInUse = int(reader.readElementContentAsInt("CurrentCreditInUse"))
-        self.currentCreditStatus = AccountCreditStatus(reader.readElementContentAsInt("CurrentCreditStatus"))
+        self.paymentMode = reader.readElementContentAsInt("PaymentMode")
+        self.accountStatus = reader.readElementContentAsInt("AccountStatus")
+        self.currentCreditInUse = reader.readElementContentAsInt("CurrentCreditInUse")
+        self.currentCreditStatus = reader.readElementContentAsInt("CurrentCreditStatus")
         self.availableCredit = reader.readElementContentAsInt("AvailableCredit")
         self.amountToClear = reader.readElementContentAsInt("AmountToClear")
         self.clearanceThreshold = reader.readElementContentAsInt("ClearanceThreshold")
@@ -472,7 +472,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             self.accountClosureTime = GXDateTime(tmp)
         self.currency.name = reader.readElementContentAsString("CurrencyName")
         self.currency.scale = reader.readElementContentAsInt("CurrencyScale")
-        self.currency.unit = Currency(reader.readElementContentAsInt("CurrencyUnit"))
+        self.currency.unit = reader.readElementContentAsInt("CurrencyUnit")
         self.lowCreditThreshold = reader.readElementContentAsInt("LowCreditThreshold")
         self.nextCreditAvailableThreshold = reader.readElementContentAsInt("NextCreditAvailableThreshold")
         self.maxProvision = reader.readElementContentAsInt("MaxProvision")

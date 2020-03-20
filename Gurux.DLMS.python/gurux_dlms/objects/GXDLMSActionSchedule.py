@@ -61,13 +61,16 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         self.type_ = SingleActionScheduleType.SingleActionScheduleType1
         # Script to execute.
         self.target = None
-        self.executedScriptLogicalName = None
         self.executedScriptSelector = 0
         self.executionTime = list()
 
     def getValues(self):
+        if self.target:
+            ln = self.target.logicalName
+        else:
+            ln = ""
         return [self.logicalName,
-                [self.executedScriptLogicalName, self.executedScriptSelector],
+                [ln, self.executedScriptSelector],
                 self.type_,
                 self.executionTime]
 
@@ -126,7 +129,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             bb = GXByteBuffer()
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.executedScriptLogicalName))
+            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.target.LogicalName))
             _GXCommon.setData(bb, DataType.UINT16, int(self.executedScriptSelector))
             return bb.array()
         if e.index == 3:
@@ -157,10 +160,17 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.executedScriptLogicalName = _GXCommon.toLogicalName(e.value[0])
-            self.executedScriptSelector = e.value[1]
+            if e.value:
+                ln = _GXCommon.toLogicalName(e.value[0])
+                self.target = settings.objects.findByLN(ObjectType.SCRIPT_TABLE, ln)
+                if not self.target:
+                    target = GXDLMSScriptTable(ln)
+                self.executedScriptSelector = e.value[1]
+            else:
+                self.target = None
+                self.executedScriptSelector = 0
         elif e.index == 3:
-            self.type_ = SingleActionScheduleType(e.value)
+            self.type_ = e.value
         elif e.index == 4:
             self.executionTime = []
             if e.value:
@@ -184,7 +194,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             if self.target:
                 self.target = GXDLMSScriptTable(ln)
         self.executedScriptSelector = reader.readElementContentAsInt("ExecutedScriptSelector")
-        self.type_ = SingleActionScheduleType(reader.readElementContentAsInt("Type"))
+        self.type_ = reader.readElementContentAsInt("Type")
         self.executionTime = []
         if reader.isStartElement("ExecutionTime", True):
             while reader.isStartElement("Time", False):
@@ -194,10 +204,10 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         if self.target:
-            writer.writeElementString("ObjectType", self.target.objectType)
+            writer.writeElementString("ObjectType", int(self.target.objectType))
             writer.writeElementString("LN", self.target.logicalName)
         writer.writeElementString("ExecutedScriptSelector", self.executedScriptSelector)
-        writer.writeElementString("Type", self.type_.value)
+        writer.writeElementString("Type", int(self.type_))
         if self.executionTime:
             writer.writeStartElement("ExecutionTime")
             for it in self.executionTime:

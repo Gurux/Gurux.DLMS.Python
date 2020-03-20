@@ -181,4 +181,4 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("Unit", self.unit)
         writer.writeElementString("Scaler", self.scaler, 1)
-        writer.writeElementObject("Value", self.value)
+        writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))

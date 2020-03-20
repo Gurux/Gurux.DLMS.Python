@@ -232,8 +232,8 @@ class GXDLMSChippering:
         len_ = _GXCommon.getObjectCount(data)
         p.cipheredContent = data.remaining()
         sc = data.getUInt8()
-        security = Security(sc & 0x30)
-        ss = SecuritySuite(sc & 0x3)
+        security = sc & 0x30
+        ss = sc & 0x3
         if ss != SecuritySuite.AES_GCM_128:
             raise ValueError("Decrypt failed. Invalid security suite.")
         p.security = security

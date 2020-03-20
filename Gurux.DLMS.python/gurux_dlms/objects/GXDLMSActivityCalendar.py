@@ -240,7 +240,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             elif self.isSec:
                 ret = GXByteBuffer.hexToBytes(self.calendarNameActive)
             else:
-                ret = self.calendarNameActive.encode()
+                ret = self.calendarNameActive.encode("utf-8")
         elif e.index == 3:
             ret = self.getSeasonProfile(self.seasonProfileActive)
         elif e.index == 4:
@@ -322,7 +322,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             if self.isSec or not GXByteBuffer.isAsciiString(e.value):
                 self.calendarNameActive = GXByteBuffer.hex(e.value)
             else:
-                self.calendarNameActive = e.value.decode("utf-8").strip()
+                self.calendarNameActive = e.value.decode("utf-8").strip('\x00')
         elif e.index == 3:
             self.seasonProfileActive = self.setSeasonProfile(e.value)
         elif e.index == 4:
@@ -333,7 +333,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             if self.isSec or not GXByteBuffer.isAsciiString(e.value):
                 self.calendarNamePassive = GXByteBuffer.hex(e.value)
             else:
-                self.calendarNamePassive = e.value.decode("utf-8").strip()
+                self.calendarNamePassive = e.value.decode("utf-8").strip('\x00')
         elif e.index == 7:
             self.seasonProfilePassive = self.setSeasonProfile(e.value)
         elif e.index == 8:

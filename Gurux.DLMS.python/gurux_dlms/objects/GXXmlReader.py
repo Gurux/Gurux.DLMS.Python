@@ -80,9 +80,9 @@ class GXXmlReader:
 
     def isStartElement(self, name=None, getNext=False):
         if name is None:
-            ret = isinstance(self.currentElement, ET.Element)
+            ret = isinstance(self.currentElement, (ET.Element, ))
         else:
-            ret = isinstance(self.currentElement, ET.Element) and self.currentElement.tag == name
+            ret = isinstance(self.currentElement, (ET.Element,)) and self.currentElement.tag == name
         if ret and getNext:
             self.getNext()
         return ret
@@ -130,11 +130,10 @@ class GXXmlReader:
         if name == self.name():
             ret = None
             str_ = self.getAttribute(0)
-            tp = DataType(int(str_))
-            if tp == DataType.ARRAY:
+            tp = int(str_)
+            if tp == DataType.ARRAY or tp == DataType.STRUCTURE:
                 self.getNext()
                 ret = self.readArray()
-                self.readEndElement(name)
             else:
                 str_ = self.currentElement.text
                 if tp == DataType.OCTET_STRING:

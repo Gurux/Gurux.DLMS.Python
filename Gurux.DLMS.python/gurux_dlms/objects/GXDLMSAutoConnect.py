@@ -189,7 +189,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.mode = AutoConnectMode(e.value)
+            self.mode = e.value
         elif e.index == 3:
             self.repetitions = e.value
         elif e.index == 4:
@@ -211,7 +211,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.mode = AutoConnectMode(reader.readElementContentAsInt("Mode"))
+        self.mode = reader.readElementContentAsInt("Mode")
         self.repetitions = reader.readElementContentAsInt("Repetitions")
         self.repetitionDelay = reader.readElementContentAsInt("RepetitionDelay")
         self.callingWindow = []

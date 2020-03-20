@@ -162,7 +162,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.communicationSpeed = BaudRate(e.value)
+            self.communicationSpeed = e.value
         elif e.index == 3:
             self.initialisationStrings = []
             if e.value:
@@ -182,7 +182,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.communicationSpeed = BaudRate(reader.readElementContentAsInt("CommunicationSpeed"))
+        self.communicationSpeed = reader.readElementContentAsInt("CommunicationSpeed")
         if reader.isStartElement("InitialisationStrings", True):
             while reader.isStartElement("Initialisation", True):
                 it = GXDLMSModemInitialisation()

@@ -62,7 +62,7 @@ class GXDLMSObjectCollection(list):
     def extend(self, items):
         if not isinstance(items, GXDLMSObjectCollection):
             raise TypeError('items is not of type GXDLMSObjectCollection')
-        for it in self:
+        for it in items:
             super(GXDLMSObjectCollection, self).append(it)
             it.parent = self
 

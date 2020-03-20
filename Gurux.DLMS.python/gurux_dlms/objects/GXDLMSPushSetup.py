@@ -210,7 +210,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             #pylint: disable=broad-except
             if e.value:
-                self.sendDestinationAndMethod.service = ServiceType(e.value[0])
+                self.sendDestinationAndMethod.service = e.value[0]
                 try:
                     if self.sendDestinationAndMethod.service == ServiceType.HDLC:
                         self.sendDestinationAndMethod.destination = _GXCommon.toLogicalName(e.value[1])
@@ -218,7 +218,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                         self.sendDestinationAndMethod.destination = e.value[1].decode()
                 except Exception:
                     self.sendDestinationAndMethod.destination = GXByteBuffer.toHex(e.value[1])
-                self.sendDestinationAndMethod.message = MessageType(e.value[2])
+                self.sendDestinationAndMethod.message = e.value[2]
         elif e.index == 4:
             self.communicationWindow = []
             if e.value:
@@ -239,7 +239,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         self.pushObjectList = []
         if reader.isStartElement("ObjectList", True):
             while reader.isStartElement("Item", True):
-                ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
+                ot = reader.readElementContentAsInt("ObjectType")
                 ln = reader.readElementContentAsString("LN")
                 ai = reader.readElementContentAsInt("AI")
                 di = reader.readElementContentAsInt("DI")
@@ -248,9 +248,9 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 obj = reader.objects.findByLN(ot, ln)
                 self.pushObjectList.append((obj, co))
             reader.readEndElement("ObjectList")
-        self.service = ServiceType(reader.readElementContentAsInt("Service"))
+        self.service = reader.readElementContentAsInt("Service")
         self.destination = reader.readElementContentAsString("Destination")
-        self.message = MessageType(reader.readElementContentAsInt("Message"))
+        self.message = reader.readElementContentAsInt("Message")
         self.communicationWindow = []
         if reader.isStartElement("CommunicationWindow", True):
             while reader.isStartElement("Item", True):

@@ -80,7 +80,7 @@ class GXDLMSClient(object):
     def __init__(self, useLogicalNameReferencing=True, clientAddress=16, serverAddress=1, forAuthentication=Authentication.NONE, password=None, interfaceType=InterfaceType.HDLC):
         # DLMS settings.
         self.settings = GXDLMSSettings(False)
-        self.useLogicalNameReferencing = useLogicalNameReferencing
+        self.settings.setUseLogicalNameReferencing(useLogicalNameReferencing)
         self.clientAddress = clientAddress
         self.serverAddress = serverAddress
         self.authentication = forAuthentication
@@ -203,10 +203,10 @@ class GXDLMSClient(object):
     maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
 
     def __getUseLogicalNameReferencing(self):
-        return self.settings.useLogicalNameReferencing
+        return self.settings.getUseLogicalNameReferencing()
 
     def __setUseLogicalNameReferencing(self, value):
-        self.settings.useLogicalNameReferencing = value
+        self.settings.setUseLogicalNameReferencing(value)
 
     #
     # Determines, whether Logical, or Short name, referencing is used.
@@ -491,7 +491,7 @@ class GXDLMSClient(object):
             self.settings.setCtoSChallenge(None)
         _GXAPDU.generateAarq(self.settings, self.settings.cipher, None, buff)
         reply = None
-        if self.settings.useLogicalNameReferencing:
+        if self.settings.getUseLogicalNameReferencing():
             p = GXDLMSLNParameters(self.settings, 0, Command.AARQ, 0, buff, None, 0xff)
             reply = GXDLMS.getLnMessages(p)
         else:

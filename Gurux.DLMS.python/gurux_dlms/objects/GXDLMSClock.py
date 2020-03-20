@@ -236,7 +236,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.status = ClockStatus.OK
             else:
-                self.status = ClockStatus(e.value)
+                self.status = e.value
         elif e.index == 5:
             if e.value is None:
                 self.begin = GXDateTime()
@@ -265,7 +265,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.clockBase = ClockBase.NONE
             else:
-                self.clockBase = ClockBase(e.value)
+                self.clockBase = e.value
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 

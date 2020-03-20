@@ -258,7 +258,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         charge.chargePerUnitScaling.commodityScale = tmp2[0]
         charge.chargePerUnitScaling.priceScale = tmp2[1]
         tmp2 = tmp[1]
-        ot = ObjectType(tmp2[0])
+        ot = tmp2[0]
         ln = _GXCommon.toLogicalName(tmp2[1])
         charge.commodity.target = settings.objects.findByLN(ot, ln)
         charge.commodity.index = tmp2[2]
@@ -277,7 +277,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.totalAmountPaid = e.value
         elif e.index == 3:
-            self.chargeType = ChargeType(e.value)
+            self.chargeType = e.value
         elif e.index == 4:
             self.priority = e.value
         elif e.index == 5:
