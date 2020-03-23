@@ -846,7 +846,7 @@ class GXDLMS:
                 notify.serverAddress = addresses[0]
         # HDLC control fields
         cf = reply.getUInt8()
-        if cf == 0x13:
+        if notify and cf == 0x13:
             isNotify = True
         if (frame_ & 0x8) != 0:
             if isNotify:

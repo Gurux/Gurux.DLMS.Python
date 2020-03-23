@@ -545,7 +545,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.jointIsoCtt = value[0]
                     self.authenticationMechanismName.country = value[1]
                     self.authenticationMechanismName.countryName = value[2]
-                    self.authenticationMechanismName.identifiedOrganization = value[4]
+                    self.authenticationMechanismName.identifiedOrganization = value[3]
                     self.authenticationMechanismName.dlmsUA = value[4]
                     self.authenticationMechanismName.authenticationMechanismName = value[5]
                     self.authenticationMechanismName.mechanismId = value[6]

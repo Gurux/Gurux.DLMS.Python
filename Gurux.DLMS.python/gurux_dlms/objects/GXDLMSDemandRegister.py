@@ -261,11 +261,11 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.currentAverageValue = reader.readElementContentAsObject("CurrentAverageValue", None)
-        self.lastAverageValue = reader.readElementContentAsObject("LastAverageValue", None)
+        self.currentAverageValue = reader.readElementContentAsObject("CurrentAverageValue", None, self, 2)
+        self.lastAverageValue = reader.readElementContentAsObject("LastAverageValue", None, self, 3)
         self.scaler = reader.readElementContentAsDouble("Scaler", 1)
         self.unit = reader.readElementContentAsInt("Unit")
-        self.status = reader.readElementContentAsObject("Status", None)
+        self.status = reader.readElementContentAsObject("Status", None, self, 5)
         str_ = reader.readElementContentAsString("CaptureTime")
         if str_ is None:
             self.captureTime = None

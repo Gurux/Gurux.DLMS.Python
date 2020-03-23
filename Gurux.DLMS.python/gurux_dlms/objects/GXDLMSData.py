@@ -114,10 +114,7 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.value = reader.readElementContentAsObject("Value", None)
+        self.value = reader.readElementContentAsObject("Value", None, self, 2)
 
     def save(self, writer):
-        if isinstance(self.value, str):
-            writer.writeElementObject("Value", self.value, False, self.getDataType(2), self.getUIDataType(2))
-        else:
-            writer.writeElementObject("Value", self.value)
+        writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))

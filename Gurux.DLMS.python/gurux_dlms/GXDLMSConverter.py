@@ -84,26 +84,39 @@ class GXDLMSConverter:
     #pylint: disable=too-many-boolean-expressions
     @classmethod
     def __updateOBISCodeInfo(cls, codes, it):
-        if it.description:
-            return
         ln = it.logicalName
         code_ = codes.find(ln, it.objectType)[0]
         if code_:
-            it.description = code_.description
+            if not it.description:
+                it.description = code_.description
             if "10" in code_.dataType:
-                code_.dataType = "10"
+                code_.uiDataType = "10"
             elif "25" in code_.dataType or "26" in code_.dataType:
-                code_.dataType = "25"
+                code_.uiDataType = code_.dataType = "25"
             elif "9" in code_.dataType:
                 if (GXStandardObisCodeCollection.equalsMask2("0.0-64.96.7.10-14.255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.0.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.6.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.7.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.13.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.14.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.15.255", ln)):
-                    code_.dataType = "25"
+                    code_.uiDataType = "25"
+                #Local time
                 elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.1.255", ln):
-                    code_.dataType = "27"
+                    code_.uiDataType = "27"
+                #Local date
                 elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.2.255", ln):
-                    code_.dataType = "26"
+                    code_.uiDataType = "26"
+                #Active firmware identifier
+                elif GXStandardObisCodeCollection.equalsMask2("1.0.0.2.0.255", ln):
+                    code_.uiDataType = "10"
+            #Unix time
+            elif it.objectType == ObjectType.DATA and GXStandardObisCodeCollection.equalsMask2("0.0.1.1.0.255", it.logicalName):
+                code_.uiDataType = "25"
+
             if not code_.dataType == "*" and not code_.dataType == "" and "," not in code_.dataType:
-                type_ = code_.dataType
-                it.uiDataType = 2, type_
+                tp = int(code_.dataType)
+                if it.objectType in (ObjectType.DATA, ObjectType.REGISTER, ObjectType.REGISTER_ACTIVATION, ObjectType.EXTENDED_REGISTER):
+                    it.setDataType(2, tp)
+            if code_.uiDataType:
+                tp = int(code_.uiDataType)
+                if it.objectType in (ObjectType.DATA, ObjectType.REGISTER, ObjectType.REGISTER_ACTIVATION, ObjectType.EXTENDED_REGISTER):
+                    it.setUIDataType(2, tp)
         else:
             print("Unknown OBIS Code: " + it.logicalName + " Type: " + it.objectType)
 
@@ -252,7 +265,7 @@ class GXDLMSConverter:
         elif ot == ObjectType.SECURITY_SETUP:
             ret = "SecuritySetup"
         elif ot == ObjectType.IEC_HDLC_SETUP:
-            ret = "HdlcSetup"
+            ret = "IecHdlcSetup"
         elif ot == ObjectType.IEC_LOCAL_PORT_SETUP:
             ret = "IECOpticalPortSetup"
         elif ot == ObjectType.IEC_TWISTED_PAIR_SETUP:
@@ -359,7 +372,7 @@ class GXDLMSConverter:
             ot = ObjectType.GPRS_SETUP
         elif value == "SecuritySetup":
             ot = ObjectType.SECURITY_SETUP
-        elif value == "HdlcSetup":
+        elif value == "IecHdlcSetup" or value == "HdlcSetup":
             ot = ObjectType.IEC_HDLC_SETUP
         elif value == "IECOpticalPortSetup":
             ot = ObjectType.IEC_LOCAL_PORT_SETUP

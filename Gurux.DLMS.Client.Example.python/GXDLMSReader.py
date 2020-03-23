@@ -321,8 +321,9 @@ class GXDLMSReader:
         data = self.client.read(item, attributeIndex)[0]
         reply = GXReplyData()
         self.readDataBlock(data, reply)
+        #Update data type on read.
         if item.getDataType(attributeIndex) == DataType.NONE:
-            item.setDataType(attributeIndex, reply.valueType)
+            item.setDataType(attributeIndex, reply.valueType);
         return self.client.updateValue(item, attributeIndex, reply.value)
 
     def readList(self, list_):

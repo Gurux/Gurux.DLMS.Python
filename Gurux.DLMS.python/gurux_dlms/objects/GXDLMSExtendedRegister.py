@@ -189,13 +189,13 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
     def load(self, reader):
         self.unit = Unit(reader.readElementContentAsInt("Unit", 0))
         self.scaler = reader.readElementContentAsDouble("Scaler", 1)
-        self.value = reader.readElementContentAsObject("Value", None)
-        self.status = reader.readElementContentAsObject("Status", None)
-        self.captureTime = reader.readElementContentAsObject("CaptureTime", None)
+        self.value = reader.readElementContentAsObject("Value", None, self, 2)
+        self.status = reader.readElementContentAsObject("Status", None, self, 4)
+        self.captureTime = reader.readElementContentAsDateTime("CaptureTime")
 
     def save(self, writer):
         writer.writeElementString("Unit", self.unit)
         writer.writeElementString("Scaler", self.scaler, 1)
-        writer.writeElementObject("Value", self.value)
-        writer.writeElementObject("Status", self.status)
-        writer.writeElementObject("CaptureTime", self.captureTime)
+        writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))
+        writer.writeElementObject("Status", self.status, self.getDataType(4), self.getUIDataType(4))
+        writer.writeElementString("CaptureTime", self.captureTime)

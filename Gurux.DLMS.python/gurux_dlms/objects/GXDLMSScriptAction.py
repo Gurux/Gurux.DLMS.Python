@@ -42,7 +42,7 @@ class GXDLMSScriptAction:
     def __init__(self):
         self.type_ = ScriptActionType.NOTHING
         self.objectType = ObjectType.NONE
-        self.parameterType = DataType.NONE
+        self.parameterDataType = DataType.NONE
         # Executed object.
         self.target = None
         self.logicalName = None

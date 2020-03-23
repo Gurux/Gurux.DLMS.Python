@@ -82,8 +82,6 @@ class GXReplyData:
         self.packetLength = 0
         # Try get value.
         self.peek = False
-        # Data type.
-        self.dataType = DataType.NONE
         # Cipher index is position where data is decrypted.
         self.cipherIndex = 0
         # Data notification date time.
@@ -110,7 +108,8 @@ class GXReplyData:
         self.serverAddress = 0
         # Gateway information.
         self.gateway = None
-        self.valueType = 0
+        # Data type.
+        self.valueType = DataType.NONE
 
     def clear(self):
         """"

@@ -80,7 +80,7 @@ class GXXmlReader:
 
     def isStartElement(self, name=None, getNext=False):
         if name is None:
-            ret = isinstance(self.currentElement, (ET.Element, ))
+            ret = isinstance(self.currentElement, (ET.Element,))
         else:
             ret = isinstance(self.currentElement, (ET.Element,)) and self.currentElement.tag == name
         if ret and getNext:
@@ -125,27 +125,41 @@ class GXXmlReader:
             list_.append(self.readElementContentAsObject("Item", None))
         return list_
 
-    def readElementContentAsObject(self, name, defaultValue):
+    def readElementContentAsObject(self, name, defaultValue, obj=None, index=0):
         #pylint: disable=bad-option-value,redefined-variable-type
         if name == self.name():
             ret = None
             str_ = self.getAttribute(0)
-            tp = int(str_)
+            if str_:
+                tp = int(str_)
+            else:
+                tp = 0
+            str_ = self.getAttribute(1)
+            if str_:
+                uiType = int(str_)
+            else:
+                uiType = tp
+            if obj:
+                obj.setDataType(index, tp)
+                if uiType:
+                    obj.setUIDataType(index, uiType)
             if tp == DataType.ARRAY or tp == DataType.STRUCTURE:
                 self.getNext()
                 ret = self.readArray()
             else:
                 str_ = self.currentElement.text
-                if tp == DataType.OCTET_STRING:
+                if uiType == DataType.OCTET_STRING:
                     ret = GXByteBuffer.hexToBytes(str_)
-                elif tp == DataType.DATETIME:
+                elif uiType == DataType.DATETIME:
                     ret = GXDateTime(str_)
-                elif tp == DataType.DATE:
+                elif uiType == DataType.DATE:
                     ret = GXDate(str_)
-                elif tp == DataType.TIME:
+                elif uiType == DataType.TIME:
                     ret = GXTime(str_)
+                elif uiType == DataType.NONE:
+                    ret = str_
                 else:
-                    ret = GXDLMSConverter.changeType(str_, tp)
+                    ret = GXDLMSConverter.changeType(str_, uiType)
                 self.getNext()
             return ret
         return defaultValue
@@ -156,3 +170,11 @@ class GXXmlReader:
             self.getNext()
             return str_
         return defaultValue
+
+    def readElementContentAsDateTime(self, name):
+        if name == self.currentElement.tag:
+            str_ = self.currentElement.text
+            self.getNext()
+            if str_:
+                return GXDateTime(str_)
+        return None

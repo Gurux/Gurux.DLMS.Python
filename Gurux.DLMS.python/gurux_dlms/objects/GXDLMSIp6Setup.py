@@ -344,9 +344,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         self.saveIPAddress(writer, self.unicastIPAddress, "UnicastIPAddress")
         self.saveIPAddress(writer, self.multicastIPAddress, "MulticastIPAddress")
         self.saveIPAddress(writer, self.gatewayIPAddress, "GatewayIPAddress")
-        if self.primaryDNSAddress:
-            writer.writeElementString("PrimaryDNSAddress", self.primaryDNSAddress)
-        if self.secondaryDNSAddress:
-            writer.writeElementString("SecondaryDNSAddress", self.secondaryDNSAddress)
+        writer.writeElementString("PrimaryDNSAddress", self.primaryDNSAddress)
+        writer.writeElementString("SecondaryDNSAddress", self.secondaryDNSAddress)
         writer.writeElementString("TrafficClass", self.trafficClass)
         self.saveNeighborDiscoverySetup(writer, self.neighborDiscoverySetup, "NeighborDiscoverySetup")

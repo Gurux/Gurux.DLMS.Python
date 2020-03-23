@@ -31,7 +31,6 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-
 import xml.etree.cElementTree as ET
 try:
     from enum import Enum, IntEnum
@@ -96,6 +95,8 @@ class GXXmlWriter:
                 ET.SubElement(self.getTarget(), name).text = str(value)
             elif isinstance(value, (bytearray, bytes)):
                 ET.SubElement(self.getTarget(), name).text = GXByteBuffer.hex(value)
+            elif isinstance(value, (float)):
+                ET.SubElement(self.getTarget(), name).text = str(value).replace(",", ".")
 
     def writeArray(self, data):
         if isinstance(data, (list)):
@@ -123,7 +124,7 @@ class GXXmlWriter:
     # Object value.
     #
     # pylint: disable=too-many-arguments
-    def writeElementObject(self, name, value, type_=DataType.NONE, uiType=DataType.NONE):
+    def writeElementObject(self, name, value, dt=DataType.NONE, uiType=DataType.NONE):
         isEnum = False
         try:
             if isinstance(value, (Enum, IntEnum)):
@@ -134,23 +135,29 @@ class GXXmlWriter:
             raise ValueError("Datatype is enum.")
 
         if value or not self.skipDefaults:
-            if type_ == DataType.OCTET_STRING:
+            if value is None:
+                target = self.writeStartElement(name)
+                self.writeEndElement()
+                return
+            if dt == DataType.OCTET_STRING:
                 if uiType == DataType.STRING:
                     value = str(value)
                 elif uiType == DataType.OCTET_STRING:
-                    value = GXByteBuffer.hexToBytes(value)
-            elif type_ != DataType.NONE and not isinstance(value, GXDateTime):
-                value = GXDLMSConverter.changeType(value, type_)
+                    value = GXByteBuffer.hex(value)
+            elif dt != DataType.NONE and not isinstance(value, (float, GXDateTime)):
+                value = GXDLMSConverter.changeType(value, dt)
 
-            if type_ == DataType.NONE:
-                type_ = _GXCommon.getDLMSDataType(value)
+            if dt == DataType.NONE:
+                dt = _GXCommon.getDLMSDataType(value)
 
-            target = self.writeStartElement(name, "Type", str(int(type_)), False)
-            if uiType != DataType.NONE:
+            target = self.writeStartElement(name, "Type", str(int(dt)), False)
+            if uiType != DataType.NONE and uiType != dt and (uiType != DataType.STRING or dt == DataType.OCTET_STRING):
                 target.set("UIType", str(int(uiType)))
-            if type_ == DataType.ARRAY:
+            if dt == DataType.ARRAY:
                 self.writeArray(value)
             else:
+                if isinstance(value, (float)):
+                    target.set("UIType", str(int(DataType.FLOAT64)))
                 if isinstance(value, GXDateTime):
                     target.text = value.toFormatString()
                 elif isinstance(value, (bytearray, bytes)):

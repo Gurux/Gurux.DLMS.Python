@@ -50,6 +50,8 @@ class GXStandardObisCode:
         self.interfaces = forInterfaces
         # Standard data types.
         self.dataType = forDataType
+        #Standard UI data types.
+        self.uiDataType = None
 
     #
     # Convert to string.

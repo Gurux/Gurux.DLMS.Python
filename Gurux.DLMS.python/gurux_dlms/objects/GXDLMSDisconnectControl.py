@@ -156,7 +156,5 @@ class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         writer.writeElementString("OutputState", self.outputState)
-        if self.controlState:
-            writer.writeElementString("ControlState", int(self.controlState))
-        if self.controlMode:
-            writer.writeElementString("ControlMode", int(self.controlMode))
+        writer.writeElementString("ControlState", int(self.controlState))
+        writer.writeElementString("ControlMode", int(self.controlMode))

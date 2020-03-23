@@ -176,7 +176,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def load(self, reader):
         self.unit = reader.readElementContentAsInt("Unit", 0)
         self.scaler = reader.readElementContentAsDouble("Scaler", 1)
-        self.value = reader.readElementContentAsObject("Value", None)
+        self.value = reader.readElementContentAsObject("Value", None, self, 2)
 
     def save(self, writer):
         writer.writeElementString("Unit", self.unit)

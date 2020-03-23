@@ -392,7 +392,7 @@ class _GXCommon:
         value = None
         if len(buff) - buff.position < 4:
             #  If there is not enough data available.
-            info.complete = (False)
+            info.complete = False
             return None
         str_ = None
         if info.xml:
@@ -444,7 +444,7 @@ class _GXCommon:
         value = None
         if len(buff) - buff.position < 5:
             #  If there is not enough data available.
-            info.complete = (False)
+            info.complete = False
             return None
         str_ = None
         if info.xml:
@@ -512,7 +512,7 @@ class _GXCommon:
         extra = DateTimeExtraInfo.NONE
         #  If there is not enough data available.
         if len(buff) - buff.position < 12:
-            info.complete = (False)
+            info.complete = False
             return None
         str_ = None
         if info.xml:
@@ -617,7 +617,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 8:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getDouble()
         if info.xml:
@@ -642,7 +642,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 4:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getFloat()
         if info.xml:
@@ -667,7 +667,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 1:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getUInt8()
         if info.xml:
@@ -688,7 +688,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 8:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getUInt64()
         if info.xml:
@@ -709,7 +709,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 8:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getInt64()
         if info.xml:
@@ -730,7 +730,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 2:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getUInt16()
         if info.xml:
@@ -827,7 +827,7 @@ class _GXCommon:
 
         #  If there is not enough data available.
         if len(buff) - buff.position < 2:
-            info.complete = (False)
+            info.complete = False
             return None
         dt = buff.getUInt8()
         if dt == DataType.ARRAY:
@@ -906,7 +906,7 @@ class _GXCommon:
                 info.xml.appendEndTag(TranslatorTags.CONTENTS_DESCRIPTION)
                 info.xml.appendStartTag(TranslatorTags.ARRAY_CONTENTS, None, None, True)
                 if info.xml.outputType == TranslatorOutputType.STANDARD_XML:
-                    info.xml.append(buff.remainingHexString(False))
+                    info.xml.append(buff.remainingHexStringFalse)
                     info.xml.appendEndTag(TranslatorTags.ARRAY_CONTENTS, True)
                     info.xml.appendEndTag(info.xml.getDataType(DataType.COMPACT_ARRAY))
             cls.getCompactArrayItem(buff, dt, list_, len_)
@@ -937,7 +937,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 1:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getUInt8() & 0xFF
         if info.xml:
@@ -958,7 +958,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 2:
-            info.complete = (False)
+            info.complete = False
             return None
         value = int(buff.getInt16())
         if info.xml:
@@ -979,7 +979,7 @@ class _GXCommon:
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 1:
-            info.complete = (False)
+            info.complete = False
             return None
         value = int(buff.getInt8())
         if info.xml:
@@ -997,7 +997,7 @@ class _GXCommon:
     def getBcd(cls, buff, info):
         #  If there is not enough data available.
         if len(buff) - buff.position < 1:
-            info.complete = (False)
+            info.complete = False
             return None
         value = buff.getUInt8()
         if info.xml:
@@ -1021,7 +1021,7 @@ class _GXCommon:
             len_ = _GXCommon.getObjectCount(buff)
             #  If there is not enough data available.
             if len(buff) - buff.position < len_:
-                info.complete = (False)
+                info.complete = False
                 return None
         if len_ > 0:
             value = buff.getString(buff.position, len_)
@@ -1053,7 +1053,7 @@ class _GXCommon:
             len_ = _GXCommon.getObjectCount(buff)
             #  If there is not enough data available.
             if len(buff) - buff.position < len_:
-                info.complete = (False)
+                info.complete = False
                 return None
         tmp = bytearray(len_)
         buff.get(tmp)
@@ -1110,7 +1110,7 @@ class _GXCommon:
             len_ = _GXCommon.getObjectCount(buff)
             #  If there is not enough data available.
             if len(buff) - buff.position < len_:
-                info.complete = (False)
+                info.complete = False
                 return None
         if len_ > 0:
             value = buff.getString(buff.position, len_)
@@ -1157,7 +1157,7 @@ class _GXCommon:
     def getInt32(cls, buff, info):
         #  If there is not enough data available.
         if len(buff) - buff.position < 4:
-            info.complete = (False)
+            info.complete = False
             return None
         value = int(buff.getInt32())
         if info.xml:
@@ -1183,7 +1183,7 @@ class _GXCommon:
         byteCnt = int(t)
         #  If there is not enough data available.
         if len(buff) - buff.position < byteCnt:
-            info.complete = (False)
+            info.complete = False
             return None
         sb = ""
         while cnt > 0:
@@ -1206,7 +1206,7 @@ class _GXCommon:
     def getBoolean(cls, buff, info):
         #  If there is not enough data available.
         if len(buff) - buff.position < 1:
-            info.complete = (False)
+            info.complete = False
             return None
         value = bool(buff.getUInt8() != 0)
         if info.xml:

@@ -264,7 +264,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     def load(self, reader):
         from .._GXObjectFactory import _GXObjectFactory
         if reader.isStartElement("MonitoredValue", True):
-            ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
+            ot = reader.readElementContentAsInt("ObjectType")
             ln = reader.readElementContentAsString("LN")
             if ot != ObjectType.NONE and ln:
                 self.monitoredValue = reader.objects.findByLN(ot, ln)
@@ -273,14 +273,14 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
                     self.monitoredValue = _GXObjectFactory.createObject(ot)
                     self.monitoredValue.logicalName = ln
             reader.readEndElement("MonitoredValue")
-        self.thresholdActive = reader.readElementContentAsObject("ThresholdActive", None)
-        self.thresholdNormal = reader.readElementContentAsObject("ThresholdNormal", None)
-        self.thresholdEmergency = reader.readElementContentAsObject("ThresholdEmergency", None)
+        self.thresholdActive = reader.readElementContentAsObject("ThresholdActive", None, self, 3)
+        self.thresholdNormal = reader.readElementContentAsObject("ThresholdNormal", None, self, 4)
+        self.thresholdEmergency = reader.readElementContentAsObject("ThresholdEmergency", None, self, 5)
         self.minOverThresholdDuration = reader.readElementContentAsInt("MinOverThresholdDuration")
         self.minUnderThresholdDuration = reader.readElementContentAsInt("MinUnderThresholdDuration")
         if reader.isStartElement("EmergencyProfile", True):
             self.emergencyProfile.id = reader.readElementContentAsInt("ID")
-            self.emergencyProfile.activationTime = reader.readElementContentAsObject("Time", GXDateTime())
+            self.emergencyProfile.activationTime = reader.readElementContentAsDateTime("Time")
             self.emergencyProfile.duration = reader.readElementContentAsInt("Duration")
             reader.readEndElement("EmergencyProfile")
         self.emergencyProfileGroupIDs = []
@@ -301,18 +301,18 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         if self.monitoredValue:
             writer.writeStartElement("MonitoredValue")
-            writer.writeElementString("ObjectType", self.monitoredValue.objectType)
+            writer.writeElementString("ObjectType", int(self.monitoredValue.objectType))
             writer.writeElementString("LN", self.monitoredValue.logicalName)
             writer.writeEndElement()
-        writer.writeElementObject("ThresholdActive", self.thresholdActive)
-        writer.writeElementObject("ThresholdNormal", self.thresholdNormal)
-        writer.writeElementObject("ThresholdEmergency", self.thresholdEmergency)
+        writer.writeElementObject("ThresholdActive", self.thresholdActive, self.getDataType(3), self.getUIDataType(3))
+        writer.writeElementObject("ThresholdNormal", self.thresholdNormal, self.getDataType(4), self.getUIDataType(4))
+        writer.writeElementObject("ThresholdEmergency", self.thresholdEmergency, self.getDataType(5), self.getUIDataType(5))
         writer.writeElementString("MinOverThresholdDuration", self.minOverThresholdDuration)
         writer.writeElementString("MinUnderThresholdDuration", self.minUnderThresholdDuration)
         if self.emergencyProfile:
             writer.writeStartElement("EmergencyProfile")
             writer.writeElementString("ID", self.emergencyProfile.id)
-            writer.writeElementObject("Time", self.emergencyProfile.activationTime)
+            writer.writeElementString("Time", self.emergencyProfile.activationTime)
             writer.writeElementString("Duration", self.emergencyProfile.duration)
             writer.writeEndElement()
         if self.emergencyProfileGroupIDs:

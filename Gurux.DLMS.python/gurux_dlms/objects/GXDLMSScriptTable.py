@@ -131,7 +131,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                         _GXCommon.setData(data, DataType.UINT16, a.target.objectType)
                         _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.target.logicalName))
                     _GXCommon.setData(data, DataType.INT8, a.index)
-                    _GXCommon.setData(data, a.parameterType, a.parameter)
+                    _GXCommon.setData(data, a.parameterDataType, a.parameter)
             return data
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
@@ -161,7 +161,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                             it.target = t
                             it.index = arr[3]
                             it.parameter = arr[4]
-                            it.ParameterDataType = _GXCommon.getDLMSDataType(it.parameter)
+                            it.parameterDataType = _GXCommon.getDLMSDataType(it.parameter)
                             script.actions.append(it)
                 else:
                     script = GXDLMSScript()
@@ -207,8 +207,8 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                             t.logicalName = ln
                         a.target = t
                         a.index = reader.readElementContentAsInt("Index")
-                        dt = DataType(reader.readElementContentAsInt("ParameterDataType"))
-                        a.parameter = reader.readElementContentAsObject("Parameter", None), dt
+                        a.parameterDataType = reader.readElementContentAsInt("ParameterDataType")
+                        a.parameter = reader.readElementContentAsObject("Parameter", None)
                         it.actions.append(a)
                     reader.readEndElement("Actions")
             reader.readEndElement("Scripts")
@@ -233,6 +233,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                         writer.writeElementString("ObjectType", int(a.target.objectType))
                         writer.writeElementString("LN", a.target.logicalName)
                         writer.writeElementString("Index", a.index)
+                        writer.writeElementString("ParameterDataType", int(a.parameterDataType))
                         writer.writeElementObject("Parameter", a.parameter)
                     writer.writeEndElement()
                 writer.writeEndElement()
