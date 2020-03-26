@@ -1101,13 +1101,20 @@ class GXDLMS:
         data = reply.data
         pos = 0
         cnt = reply.getTotalCount()
-        first = reply.getTotalCount() == 0 or reply.getCommandType() == SingleReadResponse.DATA_BLOCK_RESULT
+        first = cnt == 0 or reply.commandType == SingleReadResponse.DATA_BLOCK_RESULT
         if first:
             cnt = _GXCommon.getObjectCount(reply.data)
             reply.totalCount = cnt
         type_ = 0
         values = None
         if cnt != 1:
+            #Parse data after all data is received when readlist is used.
+            if reply.isMoreData():
+                cls.getDataFromBlock(reply.data, 0)
+                return False
+            if not first:
+                reply.data.position = 0
+                first = True
             values = list()
             if isinstance(reply.value, list):
                 values.append(reply.value)
@@ -1115,12 +1122,6 @@ class GXDLMS:
         if reply.xml:
             reply.xml.appendStartTag(Command.READ_RESPONSE, "Qty", reply.xml.integerToHex(cnt, 2))
         while pos != cnt:
-            if data.available() == 0:
-                if cnt != 1:
-                    cls.getDataFromBlock(reply.data, 0)
-                    reply.value = values
-                    reply.readPosition = data.position
-                return False
             if first:
                 type_ = data.getUInt8()
                 reply.commandType = type_
@@ -1144,16 +1145,6 @@ class GXDLMS:
                 else:
                     reply.readPosition = data.position
                     cls.getValueFromData(settings, reply)
-                    if data.position == reply.readPosition:
-                        index2 = index
-                        if cnt != 1 and reply.totalCount == 0:
-                            index2 += 1
-                        reply.totalCount = 0
-                        data.position = index2
-                        cls.getDataFromBlock(reply.data, 0)
-                        reply.value = None
-                        reply.commandType = SingleReadResponse.DATA_BLOCK_RESULT
-                        return False
                     data.position = reply.readPosition
                     values.append(reply.value)
                     reply.value = None
@@ -1684,6 +1675,10 @@ class GXDLMS:
                     Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
                     data.data.position = data.cipherIndex
                     cls.getPdu(settings, data)
+                if cmd == Command.READ_RESPONSE and data.totalCount > 1:
+                    if not cls.handleReadResponse(settings, data, 0):
+                        return
+
         if cmd == Command.READ_RESPONSE and data.commandType == SingleReadResponse.DATA_BLOCK_RESULT and \
             (data.moreData & RequestTypes.FRAME) != 0:
             return

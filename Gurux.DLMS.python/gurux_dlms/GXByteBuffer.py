@@ -418,12 +418,12 @@ class GXByteBuffer(__base):
     #
     @classmethod
     def isAsciiString(cls, value):
+        # pylint: disable=too-many-boolean-expressions
         if value:
             for it in value:
-                if (it < 32 or it > 127) and it != '\r' and it != '\n' and it != 0:
+                if (it < 32 or it > 127) and it != '\r' and it != '\n' and it != '\t' and it != 0:
                     return False
         return True
-
 
     def getString(self, index, count):
         if index is None and count is None:

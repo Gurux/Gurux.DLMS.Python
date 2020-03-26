@@ -164,7 +164,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
                 ln = _GXCommon.toLogicalName(e.value[0])
                 self.target = settings.objects.findByLN(ObjectType.SCRIPT_TABLE, ln)
                 if not self.target:
-                    target = GXDLMSScriptTable(ln)
+                    self.target = GXDLMSScriptTable(ln)
                 self.executedScriptSelector = e.value[1]
             else:
                 self.target = None

@@ -126,8 +126,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     #
-    # Returns collection of attributes to read.  If attribute is static
-    #      and
+    # Returns collection of attributes to read.
+    # If attribute is static and
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
@@ -162,14 +162,12 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
-
         return 8
 
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
-
         return 2
 
     #
@@ -559,16 +557,16 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         self.profileEntries = reader.readElementContentAsInt("ProfileEntries")
 
     def save(self, writer):
+        writer.writeStartElement("Buffer")
         if self.buffer:
-            writer.writeStartElement("Buffer")
             for row in self.buffer:
                 writer.writeStartElement("Row")
                 for it in row:
                     writer.writeElementObject("Cell", it)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
+        writer.writeStartElement("CaptureObjects")
         if self.captureObjects:
-            writer.writeStartElement("CaptureObjects")
             for k, v in self.captureObjects:
                 writer.writeStartElement("Item")
                 writer.writeElementString("ObjectType", int(k.objectType))
@@ -576,7 +574,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("Attribute", v.attributeIndex)
                 writer.writeElementString("Data", v.dataIndex)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
         writer.writeElementString("CapturePeriod", self.capturePeriod)
         writer.writeElementString("SortMethod", int(self.sortMethod))
         if self.sortObject:

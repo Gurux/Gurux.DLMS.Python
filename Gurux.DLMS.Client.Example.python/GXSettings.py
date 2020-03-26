@@ -31,16 +31,17 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from gurux_dlms.enums import InterfaceType, Authentication, Security
+from gurux_dlms.enums import InterfaceType, Authentication, Security, Standard
 from gurux_dlms import GXDLMSClient
 from gurux_dlms.secure import GXDLMSSecureClient
+from gurux_dlms.GXByteBuffer import GXByteBuffer
+from gurux_dlms.objects import GXDLMSObject
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits, BaudRate
 from gurux_net.enums import NetworkType
 from gurux_net import GXNet
 from gurux_serial.GXSerial import GXSerial
 from GXCmdParameter import GXCmdParameter
-from gurux_dlms.GXByteBuffer import GXByteBuffer
 
 class GXSettings:
     #
@@ -84,6 +85,7 @@ class GXSettings:
         print(" -A \t Authentication key that is used with chiphering. Ex -D D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF")
         print(" -B \t Block cipher key that is used with chiphering. Ex -D 000102030405060708090A0B0C0D0E0F")
         print(" -D \t Dedicated key that is used with chiphering. Ex -D 00112233445566778899AABBCCDDEEFF")
+        print(" -d \t Used DLMS standard. Ex -d India (DLMS, India, Italy, Saudi_Arabia, IDIS)")
         print("Example:")
         print("Read LG device using TCP/IP connection.")
         print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
@@ -130,7 +132,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:T:A:B:D:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:T:A:B:D:d:")
         defaultBaudRate = True
         for it in parameters:
             if it.tag == 'w':
@@ -183,7 +185,6 @@ class GXSettings:
                 #AutoIncreaseInvokeID.
                 self.client.autoIncreaseInvokeID = True
             elif it.tag == 'v':
-                from gurux_dlms.objects import GXDLMSObject
                 self.invocationCounter = it.value
                 GXDLMSObject.validateLogicalName(self.invocationCounter)
             elif it.tag == 'g':
@@ -247,6 +248,19 @@ class GXSettings:
                 self.client.ciphering.dedicatedKey = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == 'o':
                 self.outputFile = it.value
+            elif it.tag == 'd':
+                if it.value == "DLMS":
+                    self.client.standard = Standard.DLMS
+                elif it.value == "India":
+                    self.client.standard = Standard.INDIA
+                elif it.value == "Italy":
+                    self.client.standard = Standard.ITALY
+                elif it.value == "SaudiArabia":
+                    self.client.standard = Standard.SAUDI_ARABIA
+                elif it.value == "IDIS":
+                    self.client.standard = Standard.IDIS
+                else:
+                    raise ValueError("Invalid DLMS standard option: '" + it.value + "'. (DLMS, India, Italy, SaudiArabia, IDIS)")
             elif it.tag == 'c':
                 self.client.clientAddress = int(it.value)
             elif it.tag == 's':
@@ -284,6 +298,8 @@ class GXSettings:
                     raise ValueError("Missing mandatory block cipher key option.")
                 if it.tag == 'D':
                     raise ValueError("Missing mandatory dedicated key option.")
+                if it.tag == 'd':
+                    raise ValueError("Missing mandatory DLMS standard option.")
                 self.showHelp()
                 return 1
             else:

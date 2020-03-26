@@ -63,6 +63,15 @@
     <Compile Include="gurux_dlms\enums\VdeStateError.py" />
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
+    <Compile Include="gurux_dlms\GXInt32.py" />
+    <Compile Include="gurux_dlms\GXInt64.py" />
+    <Compile Include="gurux_dlms\GXInt16.py" />
+    <Compile Include="gurux_dlms\GXInt8.py" />
+    <Compile Include="gurux_dlms\GXUInt8.py" />
+    <Compile Include="gurux_dlms\GXUInt16.py" />
+    <Compile Include="gurux_dlms\GXUInt32.py" />
+    <Compile Include="gurux_dlms\GXUInt64.py" />
+    <Compile Include="gurux_dlms\GXEnum.py" />
     <Compile Include="gurux_dlms\GXCiphering.py" />
     <Compile Include="gurux_dlms\GXStructure.py" />
     <Compile Include="gurux_dlms\GXArray.py" />

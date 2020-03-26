@@ -1,2 +1,2 @@
-pytz==2019.2
+pytz==2019.3
 python-dateutil==2.8.0

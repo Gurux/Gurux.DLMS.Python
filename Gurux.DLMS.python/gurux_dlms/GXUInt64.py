@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename: $HeadURL$
+#  Filename:        $HeadURL$
 #
-#  Version: $Revision$,
+#  Version:         $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -31,28 +31,5 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..enums import ObjectType
-from .GXAttributeCollection import GXAttributeCollection
-
-class GXObisCode:
-
-    #
-    # Constructor.
-    #
-    # ln: Logical name.
-    # ot: Object type.
-    # index: Attribute index.
-    #
-    def __init__(self, ln=None, ot=ObjectType.NONE, index=0, desc=None):
-        self.version = 0
-        self.attributeIndex = index
-        self.logicalName = ln
-        self.description = desc
-        self.objectType = ot
-        self.attributes = GXAttributeCollection(self)
-        self.attributes.parent = self
-         #UI data types.
-        self.uiDataType = None
-
-    def __str__(self):
-        return str(self.objectType)
+class GXUInt64(int):
+    """UInt64 class."""

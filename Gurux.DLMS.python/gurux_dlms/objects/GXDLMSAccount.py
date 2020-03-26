@@ -38,7 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
-from .enums import PaymentMode, AccountStatus, AccountCreditStatus, Currency, CreditCollectionConfiguration
+from .enums import PaymentMode, AccountStatus, AccountCreditStatus
 from .GXCurrency import GXCurrency
 from .GXTokenGatewayConfiguration import GXTokenGatewayConfiguration
 from .GXCreditChargeConfiguration import GXCreditChargeConfiguration
@@ -512,11 +512,10 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             writer.writeEndElement()
 
     def save(self, writer):
-        writer.writeElementString("PaymentMode", self.paymentMode)
-        writer.writeElementString("AccountStatus", self.accountStatus)
+        writer.writeElementString("PaymentMode", int(self.paymentMode))
+        writer.writeElementString("AccountStatus", int(self.accountStatus))
         writer.writeElementString("CurrentCreditInUse", self.currentCreditInUse)
-        if self.currentCreditStatus:
-            writer.writeElementString("CurrentCreditStatus", self.currentCreditStatus)
+        writer.writeElementString("CurrentCreditStatus", int(self.currentCreditStatus))
         writer.writeElementString("AvailableCredit", self.availableCredit)
         writer.writeElementString("AmountToClear", self.amountToClear)
         writer.writeElementString("ClearanceThreshold", self.clearanceThreshold)
@@ -525,10 +524,8 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         self.saveReferences(writer, self.chargeReferences, "ChargeReferences")
         self.saveCreditChargeConfigurations(writer, self.creditChargeConfigurations)
         self.saveTokenGatewayConfigurations(writer, self.tokenGatewayConfigurations)
-        if self.accountActivationTime:
-            writer.writeElementString("AccountActivationTime", self.accountActivationTime.toFormatString())
-        if self.accountClosureTime:
-            writer.writeElementString("AccountClosureTime", self.accountClosureTime.toFormatString())
+        writer.writeElementString("AccountActivationTime", self.accountActivationTime)
+        writer.writeElementString("AccountClosureTime", self.accountClosureTime)
         writer.writeElementString("CurrencyName", self.currency.name)
         writer.writeElementString("CurrencyScale", self.currency.scale)
         writer.writeElementString("CurrencyUnit", int(self.currency.unit))

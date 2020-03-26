@@ -31,11 +31,13 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import os
 import sys
 import traceback
 from gurux_serial import GXSerial
 from gurux_net import GXNet
 from gurux_dlms.enums import ObjectType
+from gurux_dlms.objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from GXSettings import GXSettings
 from GXDLMSReader import GXDLMSReader
 
@@ -75,11 +77,23 @@ class sampleclient():
             reader = GXDLMSReader(settings.client, settings.media, settings.trace, settings.invocationCounter, settings.iec)
             settings.media.open()
             if settings.readObjects:
+                read = False
                 reader.initializeConnection()
-                reader.getAssociationView()
+                if settings.outputFile and os.path.exists(settings.outputFile):
+                    try:
+                        c = GXDLMSObjectCollection.load(settings.outputFile)
+                        settings.client.objects.extend(c)
+                        if settings.client.objects:
+                            read = True
+                    except Exception:
+                        read = False
+                if not read:
+                    reader.getAssociationView()
                 for k, v in settings.readObjects:
                     val = reader.read(settings.client.objects.findByLN(ObjectType.NONE, k), v)
                     reader.showValue(v, val)
+                if settings.outputFile:
+                    settings.client.objects.save(settings.outputFile)
             else:
                 reader.readAll(settings.outputFile)
         except (KeyboardInterrupt, SystemExit, Exception) as ex:

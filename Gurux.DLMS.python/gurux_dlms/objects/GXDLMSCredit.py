@@ -62,7 +62,6 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         self.priority = 0
         self.warningThreshold = 0
         self.limit = 0
-        self.creditConfiguration = None
         self.presetCreditAmount = 0
         self.creditAvailableThreshold = 0
         self.period = None
@@ -235,23 +234,20 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         self.priority = reader.readElementContentAsInt("Priority")
         self.warningThreshold = reader.readElementContentAsInt("WarningThreshold")
         self.limit = reader.readElementContentAsInt("Limit")
-        self.creditConfiguration = CreditConfiguration(reader.readElementContentAsInt("CreditConfiguration"))
-        self.status = CreditStatus(reader.readElementContentAsInt("Status"))
+        self.creditConfiguration = reader.readElementContentAsInt("CreditConfiguration")
+        self.status = reader.readElementContentAsInt("Status")
         self.presetCreditAmount = reader.readElementContentAsInt("PresetCreditAmount")
         self.creditAvailableThreshold = reader.readElementContentAsInt("CreditAvailableThreshold")
-        str_ = reader.readElementContentAsString("Period")
-        if str_:
-            self.period = GXDateTime(str_)
+        self.period = reader.readElementContentAsDateTime("Period")
 
     def save(self, writer):
         writer.writeElementString("CurrentCreditAmount", self.currentCreditAmount)
-        if self.type_:
-            writer.writeElementString("Type", self.type_)
+        writer.writeElementString("Type", int(self.type_))
         writer.writeElementString("Priority", self.priority)
         writer.writeElementString("WarningThreshold", self.warningThreshold)
         writer.writeElementString("Limit", self.limit)
-        writer.writeElementString("CreditConfiguration", self.creditConfiguration)
-        writer.writeElementString("Status", self.status)
+        writer.writeElementString("CreditConfiguration", int(self.creditConfiguration))
+        writer.writeElementString("Status", int(self.status))
         writer.writeElementString("PresetCreditAmount", self.presetCreditAmount)
         writer.writeElementString("CreditAvailableThreshold", self.creditAvailableThreshold)
         writer.writeElementString("Period", self.period)

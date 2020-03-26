@@ -147,7 +147,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            if self.scaler != 1 and e.value:
+            if self.scaler != 1 and e.value is not None:
                 try:
                     if settings.isServer:
                         self.value = e.value
@@ -161,15 +161,11 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             #  Set default values.
             if not e.value:
-                self.scaler = 0
+                self.scaler = 1
                 self.unit = 0
             else:
-                if not e.value:
-                    self.scaler = 1
-                    self.unit = 0
-                else:
-                    self.scaler = math.pow(10, e.value[0])
-                    self.unit = e.value[1]
+                self.scaler = math.pow(10, e.value[0])
+                self.unit = e.value[1]
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
@@ -179,6 +175,6 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         self.value = reader.readElementContentAsObject("Value", None, self, 2)
 
     def save(self, writer):
-        writer.writeElementString("Unit", self.unit)
+        writer.writeElementString("Unit", int(self.unit))
         writer.writeElementString("Scaler", self.scaler, 1)
         writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))

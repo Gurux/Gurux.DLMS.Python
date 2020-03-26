@@ -47,9 +47,21 @@ from ..enums import DataType
 from ..enums import DateTimeSkips, DateTimeExtraInfo, ClockStatus
 from ..TranslatorTags import TranslatorTags
 from ..TranslatorOutputType import TranslatorOutputType
-from ..GXStructure import GXStructure
 from ..GXArray import GXArray
+from ..GXStructure import GXStructure
 from ..enums.Standard import Standard
+from ..GXEnum import GXEnum
+from ..GXInt8 import GXInt8
+from ..GXInt16 import GXInt16
+from ..GXInt32 import GXInt32
+from ..GXInt64 import GXInt64
+from ..GXUInt8 import GXUInt8
+from ..GXUInt16 import GXUInt16
+from ..GXUInt32 import GXUInt32
+from ..GXUInt64 import GXUInt64
+from ..GXDateTime import GXDateTime
+from ..GXDate import GXDate
+from ..GXTime import GXTime
 
 # pylint: disable=too-many-public-methods
 class _GXCommon:
@@ -198,15 +210,16 @@ class _GXCommon:
 
     @classmethod
     def changeType(cls, value, type_):
-        from ..GXDateTime import GXDateTime
-        from ..GXDate import GXDate
-        from ..GXTime import GXTime
         if value is None:
             ret = None
         elif type_ == DataType.NONE:
             ret = GXByteBuffer.hex(value, True)
         elif type_ in (DataType.STRING, DataType.OCTET_STRING) and not value:
             ret = ""
+        elif type_ == DataType.OCTET_STRING:
+            ret = GXByteBuffer(value)
+        elif type_ == DataType.STRING and not GXByteBuffer.isAsciiString(value):
+            ret = GXByteBuffer(value)
         elif type_ == DataType.DATETIME and not value:
             ret = GXDateTime(None)
         elif type_ == DataType.DATE and not value:
@@ -366,10 +379,9 @@ class _GXCommon:
                 buff.position = startIndex
                 info.complete = False
                 break
-            else:
-                if info2.count == info2.index:
-                    startIndex = buff.position
-                    value.append(tmp)
+            if info2.count == info2.index:
+                startIndex = buff.position
+                value.append(tmp)
             pos += 1
         if info.xml:
             info.xml.appendEndTag(info.xml.getDataType(info.type_))
@@ -388,7 +400,6 @@ class _GXCommon:
     @classmethod
     def getTime(cls, buff, info):
         # pylint: disable=broad-except
-        from ..GXTime import GXTime
         value = None
         if len(buff) - buff.position < 4:
             #  If there is not enough data available.
@@ -440,7 +451,6 @@ class _GXCommon:
     @classmethod
     def getDate(cls, buff, info):
         # pylint: disable=broad-except
-        from ..GXDate import GXDate
         value = None
         if len(buff) - buff.position < 5:
             #  If there is not enough data available.
@@ -506,7 +516,6 @@ class _GXCommon:
     @classmethod
     def getDateTime(cls, buff, info):
         # pylint: disable=too-many-locals, broad-except
-        from ..GXDateTime import GXDateTime
         value = None
         skip = DateTimeSkips.NONE
         extra = DateTimeExtraInfo.NONE
@@ -672,7 +681,7 @@ class _GXCommon:
         value = buff.getUInt8()
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
-        return value
+        return GXEnum(value)
 
     #
     # Get UInt64 value from DLMS data.
@@ -693,7 +702,7 @@ class _GXCommon:
         value = buff.getUInt64()
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 16))
-        return value
+        return GXUInt64(value)
 
     #
     # Get Int64 value from DLMS data.
@@ -735,7 +744,7 @@ class _GXCommon:
         value = buff.getUInt16()
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 4))
-        return value
+        return GXUInt16(value)
 
     @classmethod
     def getCompactArrayItem(cls, buff, dt, list_, len_):
@@ -942,7 +951,7 @@ class _GXCommon:
         value = buff.getUInt8() & 0xFF
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
-        return value
+        return GXUInt8(value)
 
     #
     # Get Int16 value from DLMS data.
@@ -984,7 +993,7 @@ class _GXCommon:
         value = int(buff.getInt8())
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
-        return value
+        return GXInt8(value)
 
     #
     # Get BCD value from DLMS data.
@@ -1142,7 +1151,7 @@ class _GXCommon:
         value = buff.getUInt32()
         if info.xml:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 8))
-        return value
+        return GXUInt32(value)
 
     #
     # Get Int32 value from DLMS data.
@@ -1253,9 +1262,6 @@ class _GXCommon:
     #
     @classmethod
     def setData(cls, buff, dataType, value):
-        from ..GXDateTime import GXDateTime
-        from ..GXDate import GXDate
-        from ..GXTime import GXTime
         if dataType in (DataType.ARRAY, DataType.STRUCTURE) and isinstance(value, (GXByteBuffer, bytearray, bytes)):
             #  If byte array is added do not add type.
             buff.set(value)
@@ -1399,7 +1405,6 @@ class _GXCommon:
 
     @classmethod
     def __getDateTime(cls, value):
-        from ..GXDateTime import GXDateTime
         dt = None
         if isinstance(value, (GXDateTime)):
             dt = value
@@ -1582,9 +1587,6 @@ class _GXCommon:
 
     @classmethod
     def getDataType(cls, value):
-        from ..GXDateTime import GXDateTime
-        from ..GXDate import GXDate
-        from ..GXTime import GXTime
         if value == DataType.NONE:
             ret = None
         elif value == DataType.OCTET_STRING:
@@ -1622,18 +1624,29 @@ class _GXCommon:
 
     @classmethod
     def getDLMSDataType(cls, value):
-        from ..GXDateTime import GXDateTime
-        from ..GXDate import GXDate
-        from ..GXTime import GXTime
         if value is None:
             ret = DataType.NONE
         elif isinstance(value, (bytes, bytearray, GXByteBuffer)):
             ret = DataType.OCTET_STRING
-        #elif isinstance(value, (Enum,)):
-        #    ret = DataType.ENUM
+        elif isinstance(value, (GXEnum)):
+            ret = DataType.ENUM
+        elif isinstance(value, (GXInt8)):
+            ret = DataType.INT8
+        elif isinstance(value, (GXInt16)):
+            ret = DataType.INT16
+        elif isinstance(value, (GXInt64)):
+            ret = DataType.INT64
+        elif isinstance(value, (GXUInt8)):
+            ret = DataType.UINT8
+        elif isinstance(value, (GXUInt16)):
+            ret = DataType.UINT16
+        elif isinstance(value, (GXUInt32)):
+            ret = DataType.UINT32
+        elif isinstance(value, (GXUInt64)):
+            ret = DataType.UINT64
         elif isinstance(value, bool):
             ret = DataType.BOOLEAN
-        elif isinstance(value, int):
+        elif isinstance(value, (GXInt32, int)):
             ret = DataType.INT32
         elif isinstance(value, GXTime):
             ret = DataType.TIME
@@ -1641,7 +1654,9 @@ class _GXCommon:
             ret = DataType.DATE
         elif isinstance(value, (datetime, GXDateTime)):
             ret = DataType.DATETIME
-        elif isinstance(value, list):
+        elif isinstance(value, GXStructure):
+            ret = DataType.STRUCTURE
+        elif isinstance(value, (GXArray, list)):
             ret = DataType.ARRAY
         elif isinstance(value, str):
             ret = DataType.STRING
@@ -1649,8 +1664,6 @@ class _GXCommon:
             ret = DataType.FLOAT32
         elif isinstance(value, GXBitString):
             ret = DataType.BITSTRING
-        elif isinstance(value, long):
-            ret = DataType.INT64
         elif isinstance(value, unicode):
             ret = DataType.STRING
         else:

@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..enums import DataType, ObjectType, Authentication, AccessMode, MethodAccessMode
+from ..enums import DataType, ObjectType, Authentication
 from .enums import AssociationStatus
 from .GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXApplicationContextName import GXApplicationContextName
@@ -647,11 +647,11 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("IdentifiedOrganization", self.applicationContextName.identifiedOrganization)
             writer.writeElementString("DlmsUA", self.applicationContextName.dlmsUA)
             writer.writeElementString("ApplicationContext", self.applicationContextName.applicationContext)
-            writer.writeElementString("ContextId", self.applicationContextName.contextId)
+            writer.writeElementString("ContextId", int(self.applicationContextName.contextId))
             writer.writeEndElement()
         if self.xDLMSContextInfo:
             writer.writeStartElement("XDLMSContextInfo")
-            writer.writeElementString("Conformance", self.xDLMSContextInfo.conformance)
+            writer.writeElementString("Conformance", int(self.xDLMSContextInfo.conformance))
             writer.writeElementString("MaxReceivePduSize", self.xDLMSContextInfo.maxReceivePduSize)
             writer.writeElementString("MaxSendPduSize", self.xDLMSContextInfo.maxSendPduSize)
             writer.writeElementString("DlmsVersionNumber", self.xDLMSContextInfo.dlmsVersionNumber)
@@ -669,5 +669,5 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("MechanismId", int(self.authenticationMechanismName.mechanismId))
             writer.writeEndElement()
         writer.writeElementString("Secret", GXByteBuffer.hex(self.secret))
-        writer.writeElementString("AssociationStatus", self.associationStatus)
+        writer.writeElementString("AssociationStatus", int(self.associationStatus))
         writer.writeElementString("SecuritySetupReference", self.securitySetupReference)

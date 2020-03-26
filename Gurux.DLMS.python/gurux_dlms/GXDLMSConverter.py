@@ -37,6 +37,15 @@ from .enums import Standard, ObjectType, DataType
 from .GXStandardObisCodeCollection import GXStandardObisCodeCollection
 from .GXStandardObisCode import GXStandardObisCode
 from .internal._GXCommon import _GXCommon
+from .GXEnum import GXEnum
+from .GXInt8 import GXInt8
+from .GXInt16 import GXInt16
+from .GXInt32 import GXInt32
+from .GXInt64 import GXInt64
+from .GXUInt8 import GXUInt8
+from .GXUInt16 import GXUInt16
+from .GXUInt32 import GXUInt32
+from .GXUInt64 import GXUInt64
 from .GXDate import GXDate
 from .GXDateTime import GXDateTime
 from .GXTime import GXTime
@@ -83,31 +92,37 @@ class GXDLMSConverter:
 
     #pylint: disable=too-many-boolean-expressions
     @classmethod
-    def __updateOBISCodeInfo(cls, codes, it):
+    def __updateOBISCodeInfo(cls, codes, it, standard):
         ln = it.logicalName
-        code_ = codes.find(ln, it.objectType)[0]
+        list_ = codes.find(ln, it.objectType)
+        code_ = list_[0]
         if code_:
             if not it.description:
                 it.description = code_.description
-            if "10" in code_.dataType:
-                code_.uiDataType = "10"
-            elif "25" in code_.dataType or "26" in code_.dataType:
-                code_.uiDataType = code_.dataType = "25"
-            elif "9" in code_.dataType:
-                if (GXStandardObisCodeCollection.equalsMask2("0.0-64.96.7.10-14.255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.0.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.6.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.7.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.13.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.14.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.15.255", ln)):
-                    code_.uiDataType = "25"
-                #Local time
-                elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.1.255", ln):
-                    code_.uiDataType = "27"
-                #Local date
-                elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.2.255", ln):
-                    code_.uiDataType = "26"
-                #Active firmware identifier
-                elif GXStandardObisCodeCollection.equalsMask2("1.0.0.2.0.255", ln):
+            #Update data type from DLMS standard.
+            if standard != Standard.DLMS:
+                d = list_[len(list_) - 1]
+                code_.dataType = d.dataType
+            if not code_.uiDataType:
+                if "10" in code_.dataType:
                     code_.uiDataType = "10"
-            #Unix time
-            elif it.objectType == ObjectType.DATA and GXStandardObisCodeCollection.equalsMask2("0.0.1.1.0.255", it.logicalName):
-                code_.uiDataType = "25"
+                elif "25" in code_.dataType or "26" in code_.dataType:
+                    code_.uiDataType = "25"
+                elif "9" in code_.dataType:
+                    if (GXStandardObisCodeCollection.equalsMask2("0.0-64.96.7.10-14.255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.0.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.6.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.7.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.13.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.14.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.15.255", ln)):
+                        code_.uiDataType = "25"
+                    #Local time
+                    elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.1.255", ln):
+                        code_.uiDataType = "27"
+                    #Local date
+                    elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.2.255", ln):
+                        code_.uiDataType = "26"
+                    #Active firmware identifier
+                    elif GXStandardObisCodeCollection.equalsMask2("1.0.0.2.0.255", ln):
+                        code_.uiDataType = "10"
+                #Unix time
+                elif it.objectType == ObjectType.DATA and GXStandardObisCodeCollection.equalsMask2("0.0.1.1.0.255", it.logicalName):
+                    code_.uiDataType = "25"
 
             if not code_.dataType == "*" and not code_.dataType == "" and "," not in code_.dataType:
                 tp = int(code_.dataType)
@@ -125,9 +140,9 @@ class GXDLMSConverter:
             self.__readStandardObisInfo(self.standard, self.codes)
         if isinstance(objects, list):
             for it in objects:
-                self.__updateOBISCodeInfo(self.codes, it)
+                self.__updateOBISCodeInfo(self.codes, it, self.standard)
         else:
-            self.__updateOBISCodeInfo(self.codes, objects)
+            self.__updateOBISCodeInfo(self.codes, objects, self.standard)
 
     @classmethod
     def __getObjects(cls, standard):
@@ -152,6 +167,8 @@ class GXDLMSConverter:
                     desc = items[3]
                     code_ = GXObisCode(ln, ot, 0, desc)
                     code_.version = version
+                    if len(items) > 4:
+                        code_.uiDataType = items[4]
                     codes.append(code_)
         return codes
 
@@ -162,6 +179,7 @@ class GXDLMSConverter:
                 tmp = GXStandardObisCode(it.logicalName.split('.'))
                 tmp.interfaces = str(it.objectType)
                 tmp.description = it.description
+                tmp.uiDataType = it.uiDataType
                 codes.append(tmp)
 
         str_ = pkg_resources.resource_string(__name__, "OBISCodes.txt").decode("utf-8")
@@ -194,19 +212,19 @@ class GXDLMSConverter:
         elif type_ == DataType.DATETIME:
             ret = GXDateTime(value)
         elif type_ == DataType.ENUM:
-            raise ValueError("Can't change enumeration types.")
+            ret = GXEnum(value)
         elif type_ == DataType.FLOAT32:
             ret = float(value)
         elif type_ == DataType.FLOAT64:
             ret = float(value)
         elif type_ == DataType.INT16:
-            ret = int(value)
+            ret = GXInt16(value)
         elif type_ == DataType.INT32:
-            ret = int(value)
+            ret = GXInt32(value)
         elif type_ == DataType.INT64:
-            ret = int(value)
+            ret = GXInt64(value)
         elif type_ == DataType.INT8:
-            ret = int(value)
+            ret = GXInt8(value)
         elif type_ == DataType.NONE:
             ret = None
         elif type_ == DataType.OCTET_STRING:
@@ -225,13 +243,13 @@ class GXDLMSConverter:
         elif type_ == DataType.TIME:
             ret = GXTime(value)
         elif type_ == DataType.UINT16:
-            ret = int(value)
+            ret = GXUInt16(value)
         elif type_ == DataType.UINT32:
-            ret = int(value)
+            ret = GXUInt32(value)
         elif type_ == DataType.UINT64:
-            ret = int(value)
+            ret = GXUInt64(value)
         elif type_ == DataType.UINT8:
-            ret = int(value)
+            ret = GXUInt8(value)
         else:
             raise ValueError('Invalid data type.')
         return ret
@@ -372,7 +390,7 @@ class GXDLMSConverter:
             ot = ObjectType.GPRS_SETUP
         elif value == "SecuritySetup":
             ot = ObjectType.SECURITY_SETUP
-        elif value == "IecHdlcSetup" or value == "HdlcSetup":
+        elif value in ("IecHdlcSetup", "HdlcSetup"):
             ot = ObjectType.IEC_HDLC_SETUP
         elif value == "IECOpticalPortSetup":
             ot = ObjectType.IEC_LOCAL_PORT_SETUP

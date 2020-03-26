@@ -292,6 +292,7 @@ class GXDLMSReader:
                 self.client.ctoSChallenge = challenge
 
     def initializeConnection(self):
+        print("Standard: " + str(self.client.standard))
         if self.client.ciphering.security != Security.NONE:
             print("Security: " + str(self.client.ciphering.security))
             print("System title: " + GXCommon.toHex(self.client.ciphering.systemTitle))
@@ -333,7 +334,8 @@ class GXDLMSReader:
             values = list()
             for it in data:
                 self.readDataBlock(it, reply)
-                values.extend(reply.value)
+                if reply.value:
+                    values.extend(reply.value)
                 reply.clear()
             if len(values) != len(list_):
                 raise ValueError("Invalid reply. Read items count do not match.")
@@ -489,7 +491,12 @@ class GXDLMSReader:
     def getAssociationView(self):
         reply = GXReplyData()
         self.readDataBlock(self.client.getObjectsRequest(), reply)
-        self.client.parseObjects(reply.data, True)
+        self.client.parseObjects(reply.data, True, False)
+        #Access rights must read differently when short Name referencing is used.
+        if not self.client.useLogicalNameReferencing:
+            sn = self.client.objects.findBySN(0xFA00)
+            if sn and sn.version > 0:
+                read(sn, 3)
 
     def readAll(self, outputFile):
         try:

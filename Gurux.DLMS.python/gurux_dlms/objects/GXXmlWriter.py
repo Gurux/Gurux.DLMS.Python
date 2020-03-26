@@ -129,7 +129,7 @@ class GXXmlWriter:
         try:
             if isinstance(value, (Enum, IntEnum)):
                 isEnum = True
-        except (Exception):
+        except Exception:
             pass
         if isEnum:
             raise ValueError("Datatype is enum.")
@@ -153,7 +153,7 @@ class GXXmlWriter:
             target = self.writeStartElement(name, "Type", str(int(dt)), False)
             if uiType != DataType.NONE and uiType != dt and (uiType != DataType.STRING or dt == DataType.OCTET_STRING):
                 target.set("UIType", str(int(uiType)))
-            if dt == DataType.ARRAY:
+            if dt in (DataType.ARRAY, DataType.STRUCTURE):
                 self.writeArray(value)
             else:
                 if isinstance(value, (float)):

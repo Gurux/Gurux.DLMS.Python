@@ -283,7 +283,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
         writer.writeElementObject("CurrentAverageValue", self.currentAverageValue)
         writer.writeElementObject("LastAverageValue", self.lastAverageValue)
         writer.writeElementString("Scaler", self.scaler, 1)
-        writer.writeElementString("Unit", self.unit)
+        writer.writeElementString("Unit", int(self.unit))
         writer.writeElementObject("Status", self.status)
         writer.writeElementString("CaptureTime", self.captureTime)
         writer.writeElementString("StartTimeCurrent", self.startTimeCurrent)

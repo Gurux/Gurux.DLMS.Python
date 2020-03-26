@@ -313,12 +313,12 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("ImageFirstNotTransferredBlockNumber", self.imageFirstNotTransferredBlockNumber)
         writer.writeElementString("ImageTransferEnabled", self.imageTransferEnabled)
         writer.writeElementString("ImageTransferStatus", int(self.imageTransferStatus))
+        writer.writeStartElement("ImageActivateInfo")
         if self.imageActivateInfo:
-            writer.writeStartElement("ImageActivateInfo")
             for it in self.imageActivateInfo:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Size", it.size)
                 writer.writeElementString("Identification", GXByteBuffer.hex(it.identification, False))
                 writer.writeElementString("Signature", GXByteBuffer.hex(it.signature, False))
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()

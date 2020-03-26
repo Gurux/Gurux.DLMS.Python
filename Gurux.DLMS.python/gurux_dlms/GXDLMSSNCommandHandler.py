@@ -312,13 +312,12 @@ class GXDLMSSNCommandHandler:
                     i.item = it
                     i.index = ((sn - it.shortName) / 8) + 1
                     break
-                else:
-                    GXDLMS.getActionInfo(it.objectType, offset, count)
-                    if sn < it.getShortName() + offset[0] + (8 * count[0]):
-                        i.item = it
-                        i.action = True
-                        i.index = (sn - it.shortName - offset[0]) / 8 + 1
-                        break
+                GXDLMS.getActionInfo(it.objectType, offset, count)
+                if sn < it.getShortName() + offset[0] + (8 * count[0]):
+                    i.item = it
+                    i.action = True
+                    i.index = (sn - it.shortName - offset[0]) / 8 + 1
+                    break
         if i.item is None and server:
             i.item = server.onFindObject(ObjectType.NONE, sn, None)
         return i

@@ -51,7 +51,7 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        GXDLMSObject.__init__(self, ObjectType.DATA, ln, sn)
+        GXDLMSObject.__init__(self, ObjectType.UTILITY_TABLES, ln, sn)
         # Table Id.
         self.tableId = 0
         # Contents of the table.

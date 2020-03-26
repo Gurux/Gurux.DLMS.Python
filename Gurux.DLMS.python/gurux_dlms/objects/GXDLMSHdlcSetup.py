@@ -200,7 +200,7 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.communicationSpeed = BaudRate(reader.readElementContentAsInt("Speed"))
+        self.communicationSpeed = reader.readElementContentAsInt("Speed")
         self.windowSizeTransmit = reader.readElementContentAsInt("WindowSizeTx")
         self.windowSizeReceive = reader.readElementContentAsInt("WindowSizeRx")
         self.maximumInfoLengthTransmit = reader.readElementContentAsInt("MaximumInfoLengthTx")
@@ -210,7 +210,7 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
         self.deviceAddress = reader.readElementContentAsInt("DeviceAddress")
 
     def save(self, writer):
-        writer.writeElementString("Speed", self.communicationSpeed)
+        writer.writeElementString("Speed", int(self.communicationSpeed))
         writer.writeElementString("WindowSizeTx", self.windowSizeTransmit)
         writer.writeElementString("WindowSizeRx", self.windowSizeReceive)
         writer.writeElementString("MaximumInfoLengthTx", self.maximumInfoLengthTransmit)

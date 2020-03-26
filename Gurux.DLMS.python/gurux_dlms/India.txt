@@ -1,4 +1,4 @@
-# IC | OBIS | VERSION | DESCRIPTION
+# IC | OBIS | VERSION | DESCRIPTION | Optional UI data type.
 1;0.0.0.1.0.255;0;Cum. Billing Count
 1;0.0.0.1.1.255;0;Available Billing Periods
 1;0.0.42.0.0.255;0;COSEM Logical Device Name
@@ -9,18 +9,18 @@
 1;0.0.43.1.5.255;0;Invocation Counter #5 (FW)
 1;0.0.43.1.6.255;0;Invocation Counter #6 (IHD)
 1;0.0.94.91.0.255;0;Cumulative Tamper Count
-1;0.0.94.91.9.255;0;Meter Type
-1;0.0.94.91.11.255;0;Meter Category
-1;0.0.94.91.12.255;0;Current Rating
+1;0.0.94.91.9.255;0;Meter Type;10
+1;0.0.94.91.11.255;0;Meter Category;10
+1;0.0.94.91.12.255;0;Current Rating;10
 1;0.0.94.91.18.255;0;Event Status Word 1 (ESW-1)
 1;0.0.94.91.26.255;0;ESWF
 1;0.0.94.96.19.255;0;Metering Mode
 1;0.0.94.96.20.255;0;Payment Mode
 1;0.0.94.96.21.255;0;Last Token Recharge Amount
-1;0.0.94.96.22.255;0;Last Token Recharge Time
+1;0.0.94.96.22.255;0;Last Token Recharge Time;25
 1;0.0.94.96.23.255;0;Total Amount At Last Recharge
 1;0.0.94.96.24.255;0;Current Balance Amount
-1;0.0.94.96.25.255;0;Current Balance Time
+1;0.0.94.96.25.255;0;Current Balance Time;25
 1;0.0.96.1.0.255;0;Meter Serial Number
 1;0.0.96.1.1.255;0;Manufacturer Name
 1;0.0.96.1.2.255;0;Device ID
@@ -43,16 +43,16 @@
 1;0.0.96.15.5.255;0;EventLog Seq:Non-Roll Over
 1;0.0.96.15.6.255;0;EventLog Seq:Control
 1;0.0.96.15.128.255;0;Tamper Count for Billing Period
-1;1.0.96.128.25.255;0;Active Relay Time (MF)
-1;1.0.96.128.30.255;0;Passive Relay Time (MF)
+1;1.0.96.128.25.255;0;Active Relay Time (MF);25
+1;1.0.96.128.30.255;0;Passive Relay Time (MF);25
 1;0.0.97.98.0.255;0;Alarm register object?
 1;1.0.0.2.0.255;0;Firmware Version For Meter
 1;1.0.0.4.2.255;0;CTR
 1;1.0.0.4.3.255;0;PTR
 1;1.0.0.8.0.255;0;Demand Integration Period
 1;1.0.0.8.4.255;0;Profile Capture Period
-1;1.0.96.128.25.255;0;Active Relay Time
-1;1.0.96.128.30.255;0;Passive Relay Time
+1;1.0.96.128.25.255;0;Active Relay Time;25
+1;1.0.96.128.30.255;0;Passive Relay Time;25
 3;0.0.0.1.2.255;0;Billing Date
 3;0.0.94.91.8.255;0;Cum. Power Failure Duration
 3;0.0.94.91.13.255;0;Billing Power On Duration
@@ -116,7 +116,7 @@
 3;1.0.13.0.0.255;0;Average Power Factor for Billing Period
 3;1.0.13.7.0.255;0;Signed Power Factor
 3;1.0.14.7.0.255;0;Frequency-Hz
-3;1.0.31.7.0.255;0;L1 Current 
+3;1.0.31.7.0.255;0;L1 Current
 3;1.0.31.27.0.255;0;L1 Current Avg
 3;1.0.32.7.0.255;0;L1 Voltage
 3;1.0.32.27.0.255;0;L1 Voltage Avg
@@ -163,7 +163,7 @@
 4;1.0.9.6.6.255;0;MD-VA(Imp)-TZ6
 4;1.0.9.6.7.255;0;MD-VA(Imp)-TZ7
 4;1.0.9.6.8.255;0;MD-VA(Imp)-TZ8
-4;1.0.10.6.0.255;0;MD-VA(Exp) 
+4;1.0.10.6.0.255;0;MD-VA(Exp)
 4;1.0.10.6.1.255;0;MD-VA(Exp)-TZ1
 4;1.0.10.6.2.255;0;MD-VA(Exp)-TZ2
 4;1.0.10.6.3.255;0;MD-VA(Exp)-TZ3

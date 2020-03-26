@@ -459,8 +459,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("SecuritySuite", int(self.securitySuite))
         writer.writeElementString("ClientSystemTitle", GXByteBuffer.hex(self.clientSystemTitle))
         writer.writeElementString("ServerSystemTitle", GXByteBuffer.hex(self.serverSystemTitle))
+        writer.writeStartElement("Certificates")
         if self.certificates:
-            writer.writeStartElement("Certificates")
             for it in self.certificates:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Entity", it.entity)
@@ -470,4 +470,4 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("Subject", it.subject)
                 writer.writeElementString("SubjectAltName", it.subjectAltName)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()

@@ -102,4 +102,14 @@ from .CountType import CountType
 from .GXCiphering import GXCiphering
 from .GXDLMSChippering import GXDLMSChippering
 from .GXDLMSChipperingStream import GXDLMSChipperingStream
+from .GXEnum import GXEnum
+from .GXInt8 import GXInt8
+from .GXInt16 import GXInt16
+from .GXInt32 import GXInt32
+from .GXInt64 import GXInt64
+from .GXUInt8 import GXUInt8
+from .GXUInt16 import GXUInt16
+from .GXUInt32 import GXUInt32
+from .GXUInt64 import GXUInt64
+
 name = "gurux_dlms"

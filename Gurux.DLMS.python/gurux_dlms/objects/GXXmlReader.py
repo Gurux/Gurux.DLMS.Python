@@ -143,7 +143,7 @@ class GXXmlReader:
                 obj.setDataType(index, tp)
                 if uiType:
                     obj.setUIDataType(index, uiType)
-            if tp == DataType.ARRAY or tp == DataType.STRUCTURE:
+            if tp in (DataType.ARRAY, DataType.STRUCTURE):
                 self.getNext()
                 ret = self.readArray()
             else:

@@ -62,7 +62,7 @@ from .GXDLMSTranslatorStructure import GXDLMSTranslatorStructure
 from .enums.RequestTypes import RequestTypes
 from .SerialnumberCounter import SerialNumberCounter
 
-#pylint: disable=bad-option-value,too-many-instance-attributes,too-many-arguments,too-many-public-methods,useless-object-inheritance
+#pylint:disable=bad-option-value,too-many-instance-attributes,too-many-arguments,too-many-public-methods,useless-object-inheritance
 class GXDLMSClient(object):
     """
     GXDLMS implements methods to communicate with DLMS/COSEM metering devices.
@@ -167,7 +167,8 @@ class GXDLMSClient(object):
 
     #
     # Source system title.
-    # Meter returns system title when ciphered connection is made or GMAC authentication is used.
+    # Meter returns system title when ciphered connection is made or GMAC
+    # authentication is used.
     #
     sourceSystemTitle = property(__getSourceSystemTitle, None)
 
@@ -287,10 +288,13 @@ class GXDLMSClient(object):
     def __getNegotiatedConformance(self):
         return self.settings.negotiatedConformance
 
+    def __setNegotiatedConformance(self, value):
+        self.settings.negotiatedConformance = value
+
     #
     # Functionality what server offers.
     #
-    negotiatedConformance = property(__getNegotiatedConformance)
+    negotiatedConformance = property(__getNegotiatedConformance, __setNegotiatedConformance)
 
 
     def __getProposedConformance(self):
@@ -641,7 +645,7 @@ class GXDLMSClient(object):
         cls.__updateObjectData(obj, type_, version, baseName, ln, accessRights)
         return obj
 
-    def parseSNObjects(self, buff, onlyKnownObjects):
+    def parseSNObjects(self, buff, onlyKnownObjects, ignoreInactiveObjects):
         # pylint: disable=unidiomatic-typecheck
         buff.position = 0
         size = buff.getUInt8()
@@ -661,13 +665,13 @@ class GXDLMSClient(object):
             if len(objects) != 4:
                 raise Exception("Invalid structure format.")
             classID = objects[1]
-            baseName = objects[0]
-            if baseName > 0:
-                comp = self.__createDLMSObject(classID, objects[2], baseName, objects[3], None)
-                if not onlyKnownObjects or type(comp) != GXDLMSObject:
+            baseName = int(objects[0]) & 0xFFFF
+            comp = self.__createDLMSObject(classID, objects[2], baseName, objects[3], None)
+            if (not onlyKnownObjects or type(comp) != GXDLMSObject):
+                if not ignoreInactiveObjects or comp.logicalName != "0.0.127.0.0.0":
                     items.append(comp)
-                else:
-                    print("Unknown object : " + str(classID) + " " + str(baseName))
+            else:
+                print("Unknown object : " + str(classID) + " " + str(baseName))
             objPos += 1
         return items
 
@@ -697,21 +701,21 @@ class GXDLMSClient(object):
             obj.version = version
         obj.logicalName = _GXCommon.toLogicalName(logicalName)
 
-    def parseObjects(self, data, onlyKnownObjects=True):
+    def parseObjects(self, data, onlyKnownObjects=True, ignoreInactiveObjects=True):
         if not data:
             raise Exception("Invalid parameter.")
         objects = None
         if self.useLogicalNameReferencing:
-            objects = self.parseLNObjects(data, onlyKnownObjects)
+            objects = self.parseLNObjects(data, onlyKnownObjects, ignoreInactiveObjects)
         else:
-            objects = self.parseSNObjects(data, onlyKnownObjects)
+            objects = self.parseSNObjects(data, onlyKnownObjects, ignoreInactiveObjects)
         self.settings.objects = objects
 
         c = GXDLMSConverter(self.standard)
         c.updateOBISCodeInformation(objects)
         return objects
 
-    def parseLNObjects(self, buff, onlyKnownObjects):
+    def parseLNObjects(self, buff, onlyKnownObjects, ignoreInactiveObjects):
         # pylint: disable=unidiomatic-typecheck
         size = buff.getInt8()
         if size != 0x01:
@@ -732,8 +736,9 @@ class GXDLMSClient(object):
             classID = objects[0]
             if classID > 0:
                 comp = self.__createDLMSObject(classID, objects[1], 0, objects[2], objects[3])
-                if not onlyKnownObjects or type(comp) != GXDLMSObject:
-                    items.append(comp)
+                if (not onlyKnownObjects or type(comp) != GXDLMSObject):
+                    if not ignoreInactiveObjects or comp.logicalName != "0.0.127.0.0.0":
+                        items.append(comp)
                 else:
                     print("Unknown object : " + str(classID) + " " + _GXCommon.toLogicalName(objects[2]))
             objPos += 1
@@ -784,7 +789,8 @@ class GXDLMSClient(object):
         return self.__method(item.name, item.objectType, index, data, type_)
 
     def __method(self, name, objectType, methodIndex, value, dataType=DataType.NONE):
-        #pylint: disable=bad-option-value,redefined-variable-type,too-many-locals
+        #pylint:
+        #disable=bad-option-value,redefined-variable-type,too-many-locals
         if not name or methodIndex < 1:
             raise ValueError("Invalid parameter")
         self.settings.resetBlockIndex()
@@ -997,6 +1003,7 @@ class GXDLMSClient(object):
             raise ValueError("index")
         if count < 0:
             raise ValueError("count")
+        pg.buffer = list()
         buff = GXByteBuffer(19)
         buff.setUInt8(0x02)
         buff.setUInt8(DataType.STRUCTURE)
@@ -1032,6 +1039,7 @@ class GXDLMSClient(object):
         return self._read(pg.name, ObjectType.PROFILE_GENERIC, 2, buff)
 
     def readRowsByRange(self, pg, start, end, columns=None):
+        pg.buffer = list()
         self.settings.resetBlockIndex()
         if not isinstance(start, GXDateTime):
             start = GXDateTime(start)
