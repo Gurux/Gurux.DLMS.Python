@@ -273,7 +273,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         if self.changedParameter and self.changedParameter.target:
             writer.writeStartElement("ChangedParameter")
-            writer.writeElementString("Type", self.changedParameter.target.objectType)
+            writer.writeElementString("Type", int(self.changedParameter.target.objectType))
             writer.writeElementString("LN", self.changedParameter.target.logicalName)
             writer.writeElementString("Index", self.changedParameter.attributeIndex)
             writer.writeElementObject("Value", self.changedParameter.value)
@@ -284,7 +284,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("Parameters")
             for it in self.parameters:
                 writer.writeStartElement("Item")
-                writer.writeElementString("Type", it.target.objectType)
+                writer.writeElementString("Type", int(it.target.objectType))
                 writer.writeElementString("LN", it.target.logicalName)
                 writer.writeElementString("Index", it.attributeIndex)
                 writer.writeEndElement()

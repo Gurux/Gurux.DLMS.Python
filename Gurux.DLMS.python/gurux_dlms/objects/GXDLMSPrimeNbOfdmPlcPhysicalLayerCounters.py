@@ -36,36 +36,53 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
-from ..GXByteBuffer import GXByteBuffer
 
 # pylint: disable=too-many-instance-attributes
-class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
+class GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
-    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSUtilityTables
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters
     """
 
-    def __init__(self, ln="0.0.65.0.0.255", sn=0):
+    def __init__(self, ln="0.0.28.1.0.255", sn=0):
         """
         Constructor.
 
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        GXDLMSObject.__init__(self, ObjectType.UTILITY_TABLES, ln, sn)
-        # Table Id.
-        self.tableId = 0
-        # Contents of the table.
-        self.buffer = None
+        GXDLMSObject.__init__(self, ObjectType.PRIME_NB_OFDM_PLC_PHYSICAL_LAYER_COUNTERS, ln, sn)
+        # Number of bursts received on the physical layer for which the CRC was incorrect.
+        self.crcIncorrectCount = 0
+        # Number of bursts received on the physical layer for which the CRC
+        # was
+        # correct, but the Protocol field of PHY header had invalid value.
+        self.crcFailedCount = 0
+
+        # Number of times when PHY layer received new data to transmit.
+        self.txDropCount = 0
+        # Number of times when the PHY layer received new data on the
+        # channel.
+        self.rxDropCount = 0
 
     def getValues(self):
-        tmp = 0
-        if self.buffer:
-            tmp = len(self.buffer)
         return [self.logicalName,
-                self.tableId,
-                tmp,
-                self.buffer]
+                self.crcIncorrectCount,
+                self.crcFailedCount,
+                self.txDropCount,
+                self.rxDropCount]
+
+    def reset(self, client):
+        """Reset value."""
+        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+
+    def invoke(self, settings, e):
+        #  Resets the value to the default value.
+        #  The default value is an instance specific constant.
+        if e.index == 1:
+            self.crcIncorrectCount = self.crcFailedCount = self.txDropCount = self.rxDropCount = 0
+        else:
+            e.error = ErrorCode.READ_WRITE_DENIED
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -76,38 +93,37 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
-        #  Table Id.
+        #  CrcIncorrectCount
         if all_ or self.canRead(2):
             attributes.append(2)
-        #Length
+        #  CrcFailedCount
         if all_ or self.canRead(3):
             attributes.append(3)
-        #Buffer
+        #  TxDropCount
         if all_ or self.canRead(4):
             attributes.append(4)
+        #  RxDropCount
+        if all_ or self.canRead(5):
+            attributes.append(5)
         return attributes
 
     #
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
-        return 4
+        return 5
 
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
-        return 0
+        return 1
 
     def getDataType(self, index):
         if index == 1:
             return DataType.OCTET_STRING
-        if index == 2:
+        if index in (2, 3, 4, 5):
             return DataType.UINT16
-        if index == 3:
-            return DataType.UINT32
-        if index == 4:
-            return DataType.OCTET_STRING
         raise ValueError("getDataType failed. Invalid attribute index.")
 
     #
@@ -117,13 +133,13 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             return _GXCommon.logicalNameToBytes(self.logicalName)
         if e.index == 2:
-            return self.tableId
+            return self.crcIncorrectCount
         if e.index == 3:
-            if self.buffer:
-                return len(self.buffer)
-            return 0
+            return self.crcFailedCount
         if e.index == 4:
-            return self.buffer
+            return self.txDropCount
+        if e.index == 5:
+            return self.rxDropCount
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
 
@@ -134,19 +150,24 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.tableId = e.value
+            self.crcIncorrectCount = e.value
         elif e.index == 3:
-            pass
+            self.crcFailedCount = e.value
         elif e.index == 4:
-            self.buffer = e.value
+            self.txDropCount = e.value
+        elif e.index == 5:
+            self.rxDropCount = e.value
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.tableId = reader.readElementContentAsInt("Id", None)
-        self.buffer = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Buffer"))
+        self.crcIncorrectCount = reader.readElementContentAsInt("CrcIncorrectCount")
+        self.crcFailedCount = reader.readElementContentAsInt("CrcFailedCount")
+        self.txDropCount = reader.readElementContentAsInt("TxDropCount")
+        self.rxDropCount = reader.readElementContentAsInt("RxDropCount")
 
     def save(self, writer):
-        writer.writeElementString("Id", self.tableId, False)
-        writer.writeElementString("Buffer", GXByteBuffer.hex(self.buffer))
-
+        writer.writeElementString("CrcIncorrectCount", self.crcIncorrectCount)
+        writer.writeElementString("CrcFailedCount", self.crcFailedCount)
+        writer.writeElementString("TxDropCount", self.txDropCount)
+        writer.writeElementString("RxDropCount", self.rxDropCount)

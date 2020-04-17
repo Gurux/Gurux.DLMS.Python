@@ -237,23 +237,23 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         writer.writeElementString("PHYReference", self.phyReference)
+        writer.writeStartElement("LCPOptions")
         if self.lcpOptions:
-            writer.writeStartElement("LCPOptions")
             for it in self.lcpOptions:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Type", it.type_)
                 writer.writeElementString("Length", it.length)
                 writer.writeElementObject("Data", it.data)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
+        writer.writeStartElement("IPCPOptions")
         if self.ipcpOptions:
-            writer.writeStartElement("IPCPOptions")
             for it in self.ipcpOptions:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Type", it.type_)
                 writer.writeElementString("Length", it.length)
                 writer.writeElementObject("Data", it.data)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
         writer.writeElementString("UserName", GXByteBuffer.hex(self.userName))
         writer.writeElementString("Password", GXByteBuffer.hex(self.password))

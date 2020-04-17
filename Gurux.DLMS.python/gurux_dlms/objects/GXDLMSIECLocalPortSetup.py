@@ -149,11 +149,11 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            ret = self.defaultMode.value
+            ret = self.defaultMode
         elif e.index == 3:
-            ret = self.defaultBaudrate.value
+            ret = self.defaultBaudrate
         elif e.index == 4:
-            ret = self.proposedBaudrate.value
+            ret = self.proposedBaudrate
         elif e.index == 5:
             ret = self.responseTime
         elif e.index == 6:

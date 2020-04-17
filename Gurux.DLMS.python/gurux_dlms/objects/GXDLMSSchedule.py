@@ -18,11 +18,11 @@
 #
 #  This file is a part of Gurux Device Framework.
 #
-#  Gurux Device Framework is Open Source software; you can redistribute it
+#  Gurux Device Framework is Open Source software you can redistribute it
 #  and/or modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; version 2 of the License.
+#  as published by the Free Software Foundation version 2 of the License.
 #  Gurux Device Framework is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  but WITHOUT ANY WARRANTY without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
@@ -37,7 +37,11 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .GXDLMSScheduleEntry import GXDLMSScheduleEntry
-from ..GXDateTime import GXDateTime
+from ..GXDate import GXDate
+from ..GXTime import GXTime
+from ..GXByteBuffer import GXByteBuffer
+from ..GXBitString import GXBitString
+from ..GXUInt8 import GXUInt8
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
@@ -61,6 +65,72 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
                 self.entries]
 
     #
+    # Add entry to entries list.
+    #
+    # client: DLMS client.
+    # entry: Schedule entry.
+    # Returns Action bytes.
+    def insert(self, client, entry):
+        data = GXByteBuffer()
+        self.addEntry(entry, data)
+        return client.method(self, 2, data.array(), DataType.STRUCTURE)
+
+    #
+    # Remove entry from entries list.
+    #
+    # client: DLMS client.
+    # entry: Schedule entry.
+    # Returns Action bytes.
+    def delete(self, client, entry):
+        data = GXByteBuffer()
+        data.setUInt8(DataType.STRUCTURE)
+        #Add structure size.
+        data.SetUInt8(2)
+        #firstIndex
+        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        #lastIndex
+        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        return client.method(self, 3, data.Array(), DataType.STRUCTURE)
+
+    #
+    # Enable entry from entries list.
+    #
+    # client: DLMS client.
+    # entry: Schedule entries.
+    # Returns Action bytes.
+    def enable(self, client, entry):
+        data = GXByteBuffer()
+        data.setUInt8(DataType.STRUCTURE)
+        #Add structure size.
+        data.SetUInt8(4)
+        #firstIndex
+        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        #lastIndex
+        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        _GXCommon.setData(data, DataType.UINT16, 0)
+        _GXCommon.setData(data, DataType.UINT16, 0)
+        return client.method(self, 1, data.Array(), DataType.STRUCTURE)
+
+    #
+    # Disable entry from entries list.
+    #
+    # client: DLMS client.
+    # entry: Schedule entries.
+    # Returns Action bytes.
+    def disable(self, client, entry):
+        data = GXByteBuffer()
+        data.setUInt8(DataType.STRUCTURE)
+        #Add structure size.
+        data.SetUInt8(4)
+        #firstIndex
+        _GXCommon.setData(data, DataType.UINT16, 0)
+        _GXCommon.setData(data, DataType.UINT16, 0)
+        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        #lastIndex
+        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        return client.method(self, 1, data.Array(), DataType.STRUCTURE)
+
+    #
     # Returns collection of attributes to read.  If attribute is static
     #      and
     # already read or device is returned HW error it is not returned.
@@ -79,14 +149,12 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
-
         return 2
 
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
-
         return 3
 
     def getDataType(self, index):
@@ -96,14 +164,71 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
             return DataType.ARRAY
         raise ValueError("getDataType failed. Invalid attribute index.")
 
+    @classmethod
+    def addEntry(cls, it, data):
+        data.setUInt8(DataType.STRUCTURE)
+        data.setUInt8(10)
+        #Add index.
+        data.setUInt8(DataType.UINT16)
+        data.setUInt16(it.index)
+        #Add enable.
+        data.setUInt8(DataType.BOOLEAN)
+        data.setUInt8(it.enable)
+        #Add logical Name.
+        data.setUInt8(DataType.OCTET_STRING)
+        data.setUInt8(6)
+        data.set(_GXCommon.logicalNameToBytes(it.logicalName))
+        #Add script selector.
+        data.setUInt8(DataType.UINT16)
+        data.setUInt16(it.scriptSelector)
+        #Add switch time.
+        _GXCommon.setData(data, DataType.OCTET_STRING, GXTime(it.switchTime))
+        #Add validity window.
+        data.setUInt8(DataType.UINT16)
+        data.setUInt16(it.validityWindow)
+        #Add exec week days.
+        bs = GXBitString(GXUInt8(it.execWeekdays), 7)
+        _GXCommon.setData(data, DataType.BITSTRING, bs)
+        #Add exec spec days.
+        _GXCommon.setData(data, DataType.BITSTRING, it.execSpecDays)
+        #Add begin date.
+        _GXCommon.setData(data, DataType.OCTET_STRING, GXDate(it.beginDate))
+        #Add end date.
+        _GXCommon.setData(data, DataType.OCTET_STRING, GXDate(it.endDate))
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
         if e.index == 1:
             return _GXCommon.logicalNameToBytes(self.logicalName)
+        if e.index == 2:
+            data = GXByteBuffer()
+            data.setUInt8(DataType.ARRAY)
+            _GXCommon.setObjectCount(len(self.entries), data)
+            for it in self.entries:
+                self.addEntry(it, data)
+            return data.array()
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
+
+    #
+    # Create a new entry.
+    #
+    @classmethod
+    def createEntry(cls, it):
+        item = GXDLMSScheduleEntry()
+        item.index = it[0]
+        item.enable = it[1]
+        item.logicalName = _GXCommon.toLogicalName(it[2])
+        item.scriptSelector = it[3]
+        item.switchTime = _GXCommon.changeType(it[4], DataType.TIME)
+        item.validityWindow = it[5]
+        item.execWeekdays = it[6].toByte()
+        item.execSpecDays = it[7]
+        item.beginDate = _GXCommon.changeType(it[8], DataType.DATE)
+        item.endDate = _GXCommon.changeType(it[9], DataType.DATE)
+        return item
 
     #
     # Set value of given attribute.
@@ -114,18 +239,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.entries = []
             for it in e.value:
-                item = GXDLMSScheduleEntry()
-                item.index = it[0]
-                item.enable = it[1]
-                item.logicalName = _GXCommon.changeType(it[2], DataType.OCTET_STRING)
-                item.scriptSelector = it[3]
-                item.switchTime = _GXCommon.changeType(it[4], DataType.DATETIME)
-                item.validityWindow = it[5]
-                item.execWeekdays = it[6]
-                item.execSpecDays = it[7]
-                item.beginDate = _GXCommon.changeType(it[8], DataType.DATETIME)
-                item.endDate = _GXCommon.changeType(it[9], DataType.DATETIME)
-                self.entries.append(item)
+                self.entries.append(self.createEntry(it))
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
@@ -138,12 +252,12 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
                 it.enable = reader.readElementContentAsInt("Enable") != 0
                 it.logicalName = reader.readElementContentAsString("LogicalName")
                 it.scriptSelector = reader.readElementContentAsInt("ScriptSelector")
-                it.switchTime = reader.readElementContentAsObject("SwitchTime", GXDateTime())
+                it.switchTime = reader.readElementContentAsTime("SwitchTime")
                 it.validityWindow = reader.readElementContentAsInt("ValidityWindow")
                 it.execWeekdays = reader.readElementContentAsString("ExecWeekdays")
                 it.execSpecDays = reader.readElementContentAsString("ExecSpecDays")
-                it.beginDate = reader.readElementContentAsObject("BeginDate", GXDateTime())
-                it.endDate = reader.readElementContentAsObject("EndDate", GXDateTime())
+                it.beginDate = reader.readElementContentAsDate("BeginDate")
+                it.endDate = reader.readElementContentAsDate("EndDate")
                 self.entries.append(it)
             reader.readEndElement("Entries")
 
@@ -156,11 +270,11 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("Enable", it.enable)
                 writer.writeElementString("LogicalName", it.logicalName)
                 writer.writeElementString("ScriptSelector", it.scriptSelector)
-                writer.writeElementObject("SwitchTime", it.switchTime)
+                writer.writeElementString("SwitchTime", it.switchTime)
                 writer.writeElementString("ValidityWindow", it.validityWindow)
                 writer.writeElementString("ExecWeekdays", it.execWeekdays)
                 writer.writeElementString("ExecSpecDays", it.execSpecDays)
-                writer.writeElementObject("BeginDate", it.beginDate)
-                writer.writeElementObject("EndDate", it.endDate)
+                writer.writeElementString("BeginDate", it.beginDate)
+                writer.writeElementString("EndDate", it.endDate)
                 writer.writeEndElement()
             writer.writeEndElement()

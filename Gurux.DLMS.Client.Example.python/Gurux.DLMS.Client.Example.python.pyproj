@@ -11,6 +11,9 @@
     <OutputPath>.</OutputPath>
     <Name>Gurux.DLMS.Client.Example.python</Name>
     <RootNamespace>Gurux.DLMS.Client.Example.python</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>-h localhost -p 1000</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

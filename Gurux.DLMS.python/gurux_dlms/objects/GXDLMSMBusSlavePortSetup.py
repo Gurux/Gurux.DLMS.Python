@@ -166,13 +166,13 @@ class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.defaultBaud = BaudRate(reader.readElementContentAsInt("DefaultBaud"))
-        self.availableBaud = BaudRate(reader.readElementContentAsInt("AvailableBaud"))
-        self.addressState = AddressState(reader.readElementContentAsInt("AddressState"))
+        self.defaultBaud = reader.readElementContentAsInt("DefaultBaud")
+        self.availableBaud = reader.readElementContentAsInt("AvailableBaud")
+        self.addressState = reader.readElementContentAsInt("AddressState")
         self.busAddress = reader.readElementContentAsInt("BusAddress")
 
     def save(self, writer):
-        writer.writeElementString("DefaultBaud", self.defaultBaud)
-        writer.writeElementString("AvailableBaud", self.availableBaud)
-        writer.writeElementString("AddressState", self.addressState)
+        writer.writeElementString("DefaultBaud", int(self.defaultBaud))
+        writer.writeElementString("AvailableBaud", int(self.availableBaud))
+        writer.writeElementString("AddressState", int(self.addressState))
         writer.writeElementString("BusAddress", self.busAddress)

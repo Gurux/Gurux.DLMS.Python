@@ -172,7 +172,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.unicastIPAddress), data)
                 for it in self.unicastIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it)
+                    _GXCommon.setData(data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -182,7 +182,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it)
+                    _GXCommon.setData(data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
             ret = data
         elif e.index == 6:
             data = GXByteBuffer()
@@ -192,18 +192,18 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.gatewayIPAddress), data)
                 for it in self.gatewayIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it)
+                    _GXCommon.setData(data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
             ret = data
         elif e.index == 7:
             if not self.primaryDNSAddress:
                 ret = None
             else:
-                ret = self.primaryDNSAddress
+                ret = socket.inet_pton(socket.AF_INET6, self.primaryDNSAddress)
         elif e.index == 8:
             if not self.secondaryDNSAddress:
                 ret = None
             else:
-                ret = self.secondaryDNSAddress
+                ret = socket.inet_pton(socket.AF_INET6, self.secondaryDNSAddress)
         elif e.index == 9:
             ret = self.trafficClass
         elif e.index == 10:

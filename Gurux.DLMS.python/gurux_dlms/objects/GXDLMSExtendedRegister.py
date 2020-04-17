@@ -132,7 +132,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.INT8, int(self.scaler))
+            _GXCommon.setData(data, DataType.INT8, math.floor(math.log(self.scaler, 10)))
             _GXCommon.setData(data, DataType.ENUM, int(self.unit))
             return data.array()
         if e.index == 4:

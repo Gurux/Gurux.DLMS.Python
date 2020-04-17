@@ -99,6 +99,18 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 self.maxProvision,
                 self.maxProvisionPeriod]
 
+    def activate(self, client):
+        """Activate account."""
+        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+
+    def close(self, client):
+        """Close account."""
+        return client.method(self.getName(), self.objectType, 2, 0, DataType.INT8)
+
+    def reset(self, client):
+        """Reset account."""
+        return client.method(self.getName(), self.objectType, 3, 0, DataType.INT8)
+
     #
     # Returns collection of attributes to read.  If attribute is static
     #      and

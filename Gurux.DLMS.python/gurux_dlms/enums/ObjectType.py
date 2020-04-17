@@ -197,6 +197,46 @@ class ObjectType(__base):
     WIRELESS_MODE_Q_CHANNEL = 73
     MBUS_MASTER_PORT_SETUP = 74
 
+    #
+    # Addresses that are provided by the base node during the opening of the
+    # convergence layer.
+    #
+    LLC_SSCS_SETUP = 80
+
+    #
+    # Counters related to the physical layers exchanges.
+    #
+    PRIME_NB_OFDM_PLC_PHYSICAL_LAYER_COUNTERS = 81
+
+    #
+    # A necessary parameters to set up and manage the PRIME NB OFDM PLC MAC
+    # layer.
+    #
+    PRIME_NB_OFDM_PLC_MAC_SETUP = 82
+
+    #
+    # Functional behaviour of MAC.
+    #
+    PRIME_NB_OFDM_PLC_MAC_FUNCTIONAL_PARAMETERS = 83
+
+    #
+    # Statistical information on the operation of the MAC layer for management
+    # purposes.
+    #
+    PRIME_NB_OFDM_PLC_MAC_COUNTERS = 84
+
+    #
+    # Parameters related to the management of the devices connected to the
+    # network.
+    #
+    PRIME_NB_OFDM_PLC_MAC_NETWORK_ADMINISTRATION_DATA = 85
+
+    #
+    # Identification information related to administration and maintenance of
+    # PRIME NB OFDM PLC devices.
+    #
+    PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION = 86
+
     # RegisterTable stores identical attributes of objects, in a selected
     # collection of objects.  All the objects in the collection need to be of
     # the same type.  Also, the value in value groups A to D and F in their

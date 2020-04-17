@@ -350,18 +350,21 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     def getCertificatesByteArray(cls, settings):
         bb = GXByteBuffer()
         bb.setUInt8(DataType.ARRAY)
-        _GXCommon.setObjectCount(settings.cipher.certificates.size(), bb)
-        for it in settings.cipher.certificates:
-            bb.setUInt8(DataType.STRUCTURE)
-            _GXCommon.setObjectCount(6, bb)
-            bb.setUInt8(DataType.ENUM)
-            bb.setUInt8(CertificateEntity.SERVER)
-            bb.setUInt8(DataType.ENUM)
-            bb.setUInt8(CertificateType.DIGITAL_SIGNATURE)
-            _GXCommon.addString(it.serialNumber, bb)
-            _GXCommon.addString(it.issuer, bb)
-            _GXCommon.addString(it.subject, bb)
-            _GXCommon.addString("", bb)
+        if settings.cipher.certificates:
+            _GXCommon.setObjectCount(len(settings.cipher.certificates), bb)
+            for it in settings.cipher.certificates:
+                bb.setUInt8(DataType.STRUCTURE)
+                _GXCommon.setObjectCount(6, bb)
+                bb.setUInt8(DataType.ENUM)
+                bb.setUInt8(CertificateEntity.SERVER)
+                bb.setUInt8(DataType.ENUM)
+                bb.setUInt8(CertificateType.DIGITAL_SIGNATURE)
+                _GXCommon.addString(it.serialNumber, bb)
+                _GXCommon.addString(it.issuer, bb)
+                _GXCommon.addString(it.subject, bb)
+                _GXCommon.addString("", bb)
+        else:
+            bb.setUInt8(0)
         return bb.array()
 
     def getValue(self, settings, e):

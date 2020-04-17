@@ -166,7 +166,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
             self.maskList = []
             if e.value:
                 for it in e.value:
-                    self.maskList.append((it[0], it[0]))
+                    self.maskList.append((it[0], it[1]))
         elif e.index == 4:
             if not e.value:
                 self.activeMask = None
@@ -198,7 +198,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("RegisterAssignment")
             for it in self.registerAssignment:
                 writer.writeStartElement("Item")
-                writer.writeElementString("ObjectType", it.objectType)
+                writer.writeElementString("ObjectType", int(it.objectType))
                 writer.writeElementString("LN", it.logicalName)
                 writer.writeEndElement()
             writer.writeEndElement()

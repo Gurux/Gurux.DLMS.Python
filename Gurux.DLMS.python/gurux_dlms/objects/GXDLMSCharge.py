@@ -226,7 +226,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             ret = self.totalAmountPaid
         elif e.index == 3:
-            ret = self.chargeType.value
+            ret = self.chargeType
         elif e.index == 4:
             ret = self.priority
         elif e.index == 5:
@@ -336,7 +336,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("TotalAmountPaid", self.totalAmountPaid)
         if self.chargeType:
-            writer.writeElementString("ChargeType", self.chargeType.value)
+            writer.writeElementString("ChargeType", self.chargeType)
         writer.writeElementString("Priority", self.priority)
         self.saveUnitChargeActive(writer, "UnitChargeActive", self.unitChargeActive)
         self.saveUnitChargeActive(writer, "UnitChargePassive", self.unitChargePassive)

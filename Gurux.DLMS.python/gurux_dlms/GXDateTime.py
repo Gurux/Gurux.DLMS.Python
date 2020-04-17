@@ -153,20 +153,19 @@ class GXDateTime:
         if value:
             str_ = self.__get_pattern(True)
             str_ = self._remove(str_)
-            v = value
-
             if value.find('BEGIN') != -1:
                 self.extra |= DateTimeExtraInfo.DST_BEGIN
-                v = v.replace("BEGIN", "01")
+                value = value.replace("BEGIN", "01")
             if value.find("END") != -1:
                 self.extra |= DateTimeExtraInfo.DST_END
-                v = v.replace("END", "01")
+                value = value.replace("END", "01")
             if value.find("LASTDAY2") != -1:
                 self.extra |= DateTimeExtraInfo.LAST_DAY2
-                v = v.replace("LASTDAY2", "01")
+                value = value.replace("LASTDAY2", "01")
             if value.find("LASTDAY") != -1:
                 self.extra |= DateTimeExtraInfo.LAST_DAY
-                v = v.replace("LASTDAY", "01")
+                value = value.replace("LASTDAY", "01")
+            v = value
 
             if value.find('*') != -1:
                 lastFormatIndex = -1
@@ -180,6 +179,10 @@ class GXDateTime:
                             while end + 1 < len(str_) and str_[end] == c:
                                 end += 1
                             if str_[end] == 'Y':
+                                v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
+                            elif str_[end] == '%-Y':
+                                v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
+                            elif str_[end] == '%Y':
                                 v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
                             else:
                                 v = str(v[0:pos]) + "1" + str(v[pos + 1:])

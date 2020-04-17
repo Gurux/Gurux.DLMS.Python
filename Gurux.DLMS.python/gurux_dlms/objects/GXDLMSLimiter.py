@@ -315,11 +315,11 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("Time", self.emergencyProfile.activationTime)
             writer.writeElementString("Duration", self.emergencyProfile.duration)
             writer.writeEndElement()
+        writer.writeStartElement("EmergencyProfileGroupIDs")
         if self.emergencyProfileGroupIDs:
-            writer.writeStartElement("EmergencyProfileGroupIDs")
             for it in self.emergencyProfileGroupIDs:
                 writer.writeElementString("Value", it)
-            writer.writeEndElement()
+        writer.writeEndElement()
         writer.writeElementString("Active", self.emergencyProfileActive)
         if self.actionOverThreshold:
             writer.writeStartElement("ActionOverThreshold")

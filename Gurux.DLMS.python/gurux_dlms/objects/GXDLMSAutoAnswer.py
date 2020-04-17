@@ -151,7 +151,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(buff, DataType.OCTET_STRING, it.value)
             ret = buff.array()
         elif e.index == 4:
-            ret = self.status.value
+            ret = self.status
         elif e.index == 5:
             ret = self.numberOfCalls
         elif e.index == 6:
@@ -208,18 +208,16 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         self.numberOfRingsOutListeningWindow = reader.readElementContentAsInt("NumberOfRingsOutListeningWindow")
 
     def save(self, writer):
-        if self.mode:
-            writer.writeElementString("Mode", int(self.mode))
+        writer.writeElementString("Mode", int(self.mode))
+        writer.writeStartElement("ListeningWindow")
         if self.listeningWindow:
-            writer.writeStartElement("ListeningWindow")
             for k, v in self.listeningWindow:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Start", k.toFormatString())
                 writer.writeElementString("End", v.toFormatString())
                 writer.writeEndElement()
-            writer.writeEndElement()
-        if self.status:
-            writer.writeElementString("Status", int(self.status))
+        writer.writeEndElement()
+        writer.writeElementString("Status", int(self.status))
         writer.writeElementString("NumberOfCalls", self.numberOfCalls)
         writer.writeElementString("NumberOfRingsInListeningWindow", self.numberOfRingsInListeningWindow)
         writer.writeElementString("NumberOfRingsOutListeningWindow", self.numberOfRingsOutListeningWindow)

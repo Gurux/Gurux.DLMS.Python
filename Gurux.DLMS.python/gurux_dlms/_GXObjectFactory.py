@@ -79,6 +79,13 @@ from .objects.GXDLMSCharge import GXDLMSCharge
 from .objects.GXDLMSTokenGateway import GXDLMSTokenGateway
 from .objects.GXDLMSParameterMonitor import GXDLMSParameterMonitor
 from .objects.GXDLMSUtilityTables import GXDLMSUtilityTables
+from .objects.GXDLMSLlcSscsSetup import GXDLMSLlcSscsSetup
+from .objects.GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters import GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters
+from .objects.GXDLMSPrimeNbOfdmPlcMacSetup import GXDLMSPrimeNbOfdmPlcMacSetup
+from .objects.GXDLMSPrimeNbOfdmPlcMacFunctionalParameters import GXDLMSPrimeNbOfdmPlcMacFunctionalParameters
+from .objects.GXDLMSPrimeNbOfdmPlcMacCounters import GXDLMSPrimeNbOfdmPlcMacCounters
+from .objects.GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData import GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData
+from .objects.GXDLMSPrimeNbOfdmPlcApplicationsIdentification import GXDLMSPrimeNbOfdmPlcApplicationsIdentification
 
 class _GXObjectFactory:
     #Reserved for internal use.
@@ -191,6 +198,20 @@ class _GXObjectFactory:
             ret = GXDLMSTokenGateway()
         elif ot == ObjectType.PARAMETER_MONITOR:
             ret = GXDLMSParameterMonitor()
+        elif ot == ObjectType.LLC_SSCS_SETUP:
+            ret = GXDLMSLlcSscsSetup()
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_PHYSICAL_LAYER_COUNTERS:
+            ret = GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters()
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_SETUP:
+            ret = GXDLMSPrimeNbOfdmPlcMacSetup()
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_FUNCTIONAL_PARAMETERS:
+            ret = GXDLMSPrimeNbOfdmPlcMacFunctionalParameters()
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_COUNTERS:
+            ret = GXDLMSPrimeNbOfdmPlcMacCounters()
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_NETWORK_ADMINISTRATION_DATA:
+            ret = GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData()
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION:
+            ret = GXDLMSPrimeNbOfdmPlcApplicationsIdentification()
         else:
             ret = GXDLMSObject(ot)
         return ret

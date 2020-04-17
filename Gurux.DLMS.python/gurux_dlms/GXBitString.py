@@ -34,6 +34,8 @@
 #
 #  --------------------------------------------------------------------------
 #
+from .GXUInt8 import GXUInt8
+
 # BitString class is used with Bit strings.
 class GXBitString:
 
@@ -43,8 +45,31 @@ class GXBitString:
     # @param val
     # Bit string value.
     #
-    def __init__(self, val):
+    def __init__(self, val, count=None):
+        if isinstance(val, (GXUInt8)):
+            val = GXBitString._toBitString(val, 8)
+            if count:
+                val = val[0:count]
         self.value = val
+
+    #
+    # Reserved for internal use.
+    #
+    @classmethod
+    def _toBitString(cls, value, count):
+        count2 = count
+        sb = ""
+        if count2 > 0:
+            if count2 > 8:
+                count2 = 8
+            pos = 7
+            while pos != 8 - count2 - 1:
+                if (value & (1 << pos)) != 0:
+                    sb += '1'
+                else:
+                    sb += '0'
+                pos -= 1
+        return sb
     #
     # Bit string value.
     #
@@ -60,3 +85,18 @@ class GXBitString:
 
     def __str__(self):
         return self.value
+
+    #
+    # Bit string value as byte.
+    #
+    def toByte(self):
+        val = 0
+        if self.value:
+            index = 7
+            for it in self.value:
+                if it == '1':
+                    val |= (1 << index)
+                elif it != '0':
+                    raise ValueError("Invalid parameter.")
+                index = index - 1
+        return val

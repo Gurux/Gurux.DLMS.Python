@@ -129,11 +129,11 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             bb = GXByteBuffer()
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.target.LogicalName))
+            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.target.logicalName))
             _GXCommon.setData(bb, DataType.UINT16, int(self.executedScriptSelector))
             return bb.array()
         if e.index == 3:
-            return int(self.type_.value)
+            return self.type_
         if e.index == 4:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)

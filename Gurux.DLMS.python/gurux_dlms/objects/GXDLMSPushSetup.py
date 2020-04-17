@@ -163,12 +163,12 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             buff.setUInt8(DataType.STRUCTURE)
             buff.setUInt8(3)
-            _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.service.value)
+            _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.service)
             if self.sendDestinationAndMethod.destination:
                 _GXCommon.setData(buff, DataType.OCTET_STRING, self.sendDestinationAndMethod.destination.encode())
             else:
                 _GXCommon.setData(buff, DataType.OCTET_STRING, None)
-            _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.message.value)
+            _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.message)
             ret = buff
         elif e.index == 4:
             buff.setUInt8(DataType.ARRAY)
@@ -273,19 +273,17 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("DI", v.dataIndex)
                 writer.writeEndElement()
             writer.writeEndElement()
-        if self.service:
-            writer.writeElementString("Service", self.service.value)
+        writer.writeElementString("Service", self.service.value)
         writer.writeElementString("Destination", self.destination)
-        if self.message:
-            writer.writeElementString("Message", self.message.value)
+        writer.writeElementString("Message", self.message.value)
+        writer.writeStartElement("CommunicationWindow")
         if self.communicationWindow:
-            writer.writeStartElement("CommunicationWindow")
             for k, v in self.communicationWindow:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Start", k.toFormatString())
                 writer.writeElementString("End", v.toFormatString())
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
         writer.writeElementString("RandomisationStartInterval", self.randomisationStartInterval)
         writer.writeElementString("NumberOfRetries", self.numberOfRetries)
         writer.writeElementString("RepetitionDelay", self.repetitionDelay)

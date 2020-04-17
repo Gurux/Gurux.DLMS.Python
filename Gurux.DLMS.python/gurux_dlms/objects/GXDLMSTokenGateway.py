@@ -155,7 +155,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
                 for it in self.descriptions:
                     bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(int(len(it)))
-                    bb.set(it.encode())
+                    bb.set(it)
             ret = bb
         elif e.index == 5:
             ret = self.deliveryMethod

@@ -250,9 +250,9 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.operator = reader.readElementContentAsString("Operator")
-        self.status = GsmStatus(reader.readElementContentAsInt("Status"))
-        self.circuitSwitchStatus = GsmCircuitSwitchStatus(reader.readElementContentAsInt("CircuitSwitchStatus"))
-        self.packetSwitchStatus = GsmPacketSwitchStatus(reader.readElementContentAsInt("PacketSwitchStatus"))
+        self.status = reader.readElementContentAsInt("Status")
+        self.circuitSwitchStatus = reader.readElementContentAsInt("CircuitSwitchStatus")
+        self.packetSwitchStatus = reader.readElementContentAsInt("PacketSwitchStatus")
         if reader.isStartElement("CellInfo", True):
             self.cellInfo.cellId = reader.readElementContentAsLong("CellId")
             self.cellInfo.locationId = reader.readElementContentAsInt("LocationId")
@@ -267,13 +267,13 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                 it.signalQuality = reader.readElementContentAsInt("SignalQuality")
                 self.adjacentCells.append(it)
             reader.readEndElement("AdjacentCells")
-        self.captureTime = GXDateTime(reader.readElementContentAsString("CaptureTime"))
+        self.captureTime = reader.readElementContentAsDateTime("CaptureTime")
 
     def save(self, writer):
         writer.writeElementObject("Operator", self.operator)
-        writer.writeElementString("Status", self.status)
-        writer.writeElementString("CircuitSwitchStatus", self.circuitSwitchStatus)
-        writer.writeElementString("PacketSwitchStatus", self.packetSwitchStatus)
+        writer.writeElementString("Status", int(self.status))
+        writer.writeElementString("CircuitSwitchStatus", int(self.circuitSwitchStatus))
+        writer.writeElementString("PacketSwitchStatus", int(self.packetSwitchStatus))
         if self.cellInfo:
             writer.writeStartElement("CellInfo")
             writer.writeElementString("CellId", self.cellInfo.cellId)
@@ -289,4 +289,4 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("SignalQuality", it.signalQuality)
                 writer.writeEndElement()
             writer.writeEndElement()
-        writer.writeElementObject("CaptureTime", self.captureTime)
+        writer.WriteElementString("CaptureTime", self.captureTime)

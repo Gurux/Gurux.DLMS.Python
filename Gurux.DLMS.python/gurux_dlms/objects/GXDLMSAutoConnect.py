@@ -146,7 +146,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            ret = self.mode.value
+            ret = self.mode
         elif e.index == 3:
             ret = self.repetitions
         elif e.index == 4:

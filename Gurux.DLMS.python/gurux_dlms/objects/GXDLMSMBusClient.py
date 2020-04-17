@@ -304,14 +304,14 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         writer.writeElementString("MBusPortReference", self.mBusPortReference)
+        writer.writeStartElement("CaptureDefinition")
         if self.captureDefinition:
-            writer.writeStartElement("CaptureDefinition")
             for k, v in self.captureDefinition:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Data", k)
                 writer.writeElementString("Value", v)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
         writer.writeElementString("CapturePeriod", self.capturePeriod)
         writer.writeElementString("PrimaryAddress", self.primaryAddress)
         writer.writeElementString("IdentificationNumber", self.identificationNumber)
@@ -319,6 +319,8 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("DataHeaderVersion", self.dataHeaderVersion)
         writer.writeElementString("DeviceType", self.deviceType)
         writer.writeElementString("AccessNumber", self.accessNumber)
+        writer.writeElementString("Status", self.status)
+        writer.writeElementString("Alarm", self.alarm)
         if self.version != 0:
             writer.writeElementString("Configuration", self.configuration)
             writer.writeElementString("EncryptionKeyStatus", self.encryptionKeyStatus)

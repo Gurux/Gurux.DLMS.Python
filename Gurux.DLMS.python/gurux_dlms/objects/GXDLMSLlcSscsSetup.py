@@ -36,36 +36,33 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
-from ..GXByteBuffer import GXByteBuffer
 
 # pylint: disable=too-many-instance-attributes
-class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
+class GXDLMSLlcSscsSetup(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
-    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSUtilityTables
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSLlcSscsSetup
     """
 
-    def __init__(self, ln="0.0.65.0.0.255", sn=0):
+    def __init__(self, ln="0.0.28.0.0.255", sn=0):
         """
         Constructor.
 
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        GXDLMSObject.__init__(self, ObjectType.UTILITY_TABLES, ln, sn)
-        # Table Id.
-        self.tableId = 0
-        # Contents of the table.
-        self.buffer = None
+        GXDLMSObject.__init__(self, ObjectType.LLC_SSCS_SETUP, ln, sn)
+        self.serviceNodeAddress = 0
+        self.baseNodeAddress = 0
 
     def getValues(self):
-        tmp = 0
-        if self.buffer:
-            tmp = len(self.buffer)
         return [self.logicalName,
-                self.tableId,
-                tmp,
-                self.buffer]
+                self.serviceNodeAddress,
+                self.baseNodeAddress]
+
+    def reset(self, client):
+        """Reset value."""
+        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -76,38 +73,39 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
-        #  Table Id.
+        #  ServiceNodeAddress
         if all_ or self.canRead(2):
             attributes.append(2)
-        #Length
+        #  BaseNodeAddress
         if all_ or self.canRead(3):
             attributes.append(3)
-        #Buffer
-        if all_ or self.canRead(4):
-            attributes.append(4)
         return attributes
 
+    def invoke(self, settings, e):
+        #  Resets the value to the default value.
+        #  The default value is an instance specific constant.
+        if e.index == 1:
+            self.serviceNodeAddress = 0xFFE
+            self.baseNodeAddress = 0
+        else:
+            e.error = ErrorCode.READ_WRITE_DENIED
     #
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
-        return 4
+        return 3
 
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
-        return 0
+        return 1
 
     def getDataType(self, index):
         if index == 1:
             return DataType.OCTET_STRING
-        if index == 2:
+        if index in (2, 3):
             return DataType.UINT16
-        if index == 3:
-            return DataType.UINT32
-        if index == 4:
-            return DataType.OCTET_STRING
         raise ValueError("getDataType failed. Invalid attribute index.")
 
     #
@@ -117,13 +115,9 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             return _GXCommon.logicalNameToBytes(self.logicalName)
         if e.index == 2:
-            return self.tableId
+            return self.serviceNodeAddress
         if e.index == 3:
-            if self.buffer:
-                return len(self.buffer)
-            return 0
-        if e.index == 4:
-            return self.buffer
+            return self.baseNodeAddress
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
 
@@ -134,19 +128,16 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.tableId = e.value
+            self.serviceNodeAddress = e.value
         elif e.index == 3:
-            pass
-        elif e.index == 4:
-            self.buffer = e.value
+            self.baseNodeAddress = e.value
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.tableId = reader.readElementContentAsInt("Id", None)
-        self.buffer = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Buffer"))
+        self.serviceNodeAddress = reader.readElementContentAsInt("ServiceNodeAddress")
+        self.baseNodeAddress = reader.readElementContentAsInt("BaseNodeAddress")
 
     def save(self, writer):
-        writer.writeElementString("Id", self.tableId, False)
-        writer.writeElementString("Buffer", GXByteBuffer.hex(self.buffer))
-
+        writer.writeElementString("ServiceNodeAddress", self.serviceNodeAddress)
+        writer.writeElementString("BaseNodeAddress", self.baseNodeAddress)

@@ -429,7 +429,7 @@ class GXByteBuffer(__base):
         if index is None and count is None:
             tmp = self._data[0:self.size]
             if self.isAsciiString(tmp):
-                str_ = tmp.decode("utf-8")
+                str_ = tmp.decode("utf-8").rstrip('\x00')
             else:
                 str_ = self.hex(tmp)
             self.position += count
@@ -439,7 +439,7 @@ class GXByteBuffer(__base):
             raise ValueError("getString")
         tmp = self._data[index:index + count]
         if self.isAsciiString(tmp):
-            return tmp.decode("utf-8")
+            return tmp.decode("utf-8").rstrip('\x00')
         return self.hex(tmp)
 
     def set(self, value, index=None, count=None):
@@ -611,4 +611,4 @@ class GXByteBuffer(__base):
             hexChars += GXByteBuffer.__HEX_ARRAY[it & GXByteBuffer.__LOW_BYTE_PART]
             if addSpace:
                 hexChars += ' '
-        return hexChars
+        return hexChars.strip()

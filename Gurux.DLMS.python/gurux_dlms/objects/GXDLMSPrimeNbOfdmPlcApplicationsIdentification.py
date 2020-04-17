@@ -36,36 +36,34 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
-from ..GXByteBuffer import GXByteBuffer
 
 # pylint: disable=too-many-instance-attributes
-class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
+class GXDLMSPrimeNbOfdmPlcApplicationsIdentification(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
-    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSUtilityTables
+    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSPrimeNbOfdmPlcApplicationsIdentification
     """
 
-    def __init__(self, ln="0.0.65.0.0.255", sn=0):
+    def __init__(self, ln="0.0.28.7.0.255", sn=0):
         """
         Constructor.
 
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        GXDLMSObject.__init__(self, ObjectType.UTILITY_TABLES, ln, sn)
-        # Table Id.
-        self.tableId = 0
-        # Contents of the table.
-        self.buffer = None
+        GXDLMSObject.__init__(self, ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION, ln, sn)
+        # Textual description of the firmware version running on the device.
+        self.firmwareVersion = None
+        # Unique vendor identifier assigned by PRIME Alliance.
+        self.vendorId = 0
+        # Vendor assigned unique identifier for specific product.
+        self.productId = 0
 
     def getValues(self):
-        tmp = 0
-        if self.buffer:
-            tmp = len(self.buffer)
         return [self.logicalName,
-                self.tableId,
-                tmp,
-                self.buffer]
+                self.firmwareVersion,
+                self.vendorId,
+                self.productId]
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -76,13 +74,13 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
-        #  Table Id.
+        #  FirmwareVersion
         if all_ or self.canRead(2):
             attributes.append(2)
-        #Length
+        #  VendorId
         if all_ or self.canRead(3):
             attributes.append(3)
-        #Buffer
+        #  ProductId
         if all_ or self.canRead(4):
             attributes.append(4)
         return attributes
@@ -100,14 +98,10 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getDataType(self, index):
-        if index == 1:
+        if index in (1, 2):
             return DataType.OCTET_STRING
-        if index == 2:
+        if index in (3, 4):
             return DataType.UINT16
-        if index == 3:
-            return DataType.UINT32
-        if index == 4:
-            return DataType.OCTET_STRING
         raise ValueError("getDataType failed. Invalid attribute index.")
 
     #
@@ -115,17 +109,17 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
     #
     def getValue(self, settings, e):
         if e.index == 1:
-            return _GXCommon.logicalNameToBytes(self.logicalName)
-        if e.index == 2:
-            return self.tableId
-        if e.index == 3:
-            if self.buffer:
-                return len(self.buffer)
-            return 0
-        if e.index == 4:
-            return self.buffer
-        e.error = ErrorCode.READ_WRITE_DENIED
-        return None
+            ret = _GXCommon.logicalNameToBytes(self.logicalName)
+        elif e.index == 2:
+            ret = self.firmwareVersion
+        elif e.index == 3:
+            ret = self.vendorId
+        elif e.index == 4:
+            ret = self.productId
+        else:
+            ret = None
+            e.error = ErrorCode.READ_WRITE_DENIED
+        return ret
 
     #
     # Set value of given attribute.
@@ -134,19 +128,20 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.tableId = e.value
+            self.firmwareVersion = e.value
         elif e.index == 3:
-            pass
+            self.vendorId = e.value
         elif e.index == 4:
-            self.buffer = e.value
+            self.productId = e.value
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.tableId = reader.readElementContentAsInt("Id", None)
-        self.buffer = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Buffer"))
+        self.firmwareVersion = reader.readElementContentAsString("FirmwareVersion")
+        self.vendorId = reader.readElementContentAsInt("VendorId")
+        self.productId = reader.readElementContentAsInt("ProductId")
 
     def save(self, writer):
-        writer.writeElementString("Id", self.tableId, False)
-        writer.writeElementString("Buffer", GXByteBuffer.hex(self.buffer))
-
+        writer.writeElementString("FirmwareVersion", self.firmwareVersion)
+        writer.writeElementString("VendorId", self.vendorId)
+        writer.writeElementString("ProductId", self.productId)

@@ -285,7 +285,7 @@ class GXDLMSConverter:
         elif ot == ObjectType.IEC_HDLC_SETUP:
             ret = "IecHdlcSetup"
         elif ot == ObjectType.IEC_LOCAL_PORT_SETUP:
-            ret = "IECOpticalPortSetup"
+            ret = "IecOpticalPortSetup"
         elif ot == ObjectType.IEC_TWISTED_PAIR_SETUP:
             ret = "IEC_TWISTED_PAIR_SETUP"
         elif ot == ObjectType.IP4_SETUP:
@@ -358,6 +358,20 @@ class GXDLMSConverter:
             ret = "CompactData"
         elif ot == ObjectType.IP6_SETUP:
             ret = "Ip6Setup"
+        elif ot == ObjectType.LLC_SSCS_SETUP:
+            ret = "LlcSscsSetup"
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_PHYSICAL_LAYER_COUNTERS:
+            ret = "PrimeNbOfdmPlcPhysicalLayerCounters"
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_SETUP:
+            ret = "PrimeNbOfdmPlcMacSetup"
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_FUNCTIONAL_PARAMETERS:
+            ret = "PrimeNbOfdmPlcMacFunctionalParameters"
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_COUNTERS:
+            ret = "PrimeNbOfdmPlcMacCounters"
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_MAC_NETWORK_ADMINISTRATION_DATA:
+            ret = "PrimeNbOfdmPlcMacNetworkAdministrationData"
+        elif ot == ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION:
+            ret = "PrimeNbOfdmPlcApplicationsIdentification"
         else:
             ret = "Manufacture spesific."
         return ret
@@ -392,7 +406,7 @@ class GXDLMSConverter:
             ot = ObjectType.SECURITY_SETUP
         elif value in ("IecHdlcSetup", "HdlcSetup"):
             ot = ObjectType.IEC_HDLC_SETUP
-        elif value == "IECOpticalPortSetup":
+        elif value == "IecOpticalPortSetup":
             ot = ObjectType.IEC_LOCAL_PORT_SETUP
         elif value == "IEC_TWISTED_PAIR_SETUP":
             ot = ObjectType.IEC_TWISTED_PAIR_SETUP
@@ -466,6 +480,20 @@ class GXDLMSConverter:
             ot = ObjectType.COMPACT_DATA
         elif value == "Ip6Setup":
             ot = ObjectType.IP6_SETUP
+        elif value == "LlcSscsSetup":
+            ot = ObjectType.LLC_SSCS_SETUP
+        elif value == "PrimeNbOfdmPlcPhysicalLayerCounters":
+            ot = ObjectType.PRIME_NB_OFDM_PLC_PHYSICAL_LAYER_COUNTERS
+        elif value == "PrimeNbOfdmPlcMacSetup":
+            ot = ObjectType.PRIME_NB_OFDM_PLC_MAC_SETUP
+        elif value == "PrimeNbOfdmPlcMacFunctionalParameters":
+            ot = ObjectType.PRIME_NB_OFDM_PLC_MAC_FUNCTIONAL_PARAMETERS
+        elif value == "PrimeNbOfdmPlcMacCounters":
+            ot = ObjectType.PRIME_NB_OFDM_PLC_MAC_COUNTERS
+        elif value == "PrimeNbOfdmPlcMacNetworkAdministrationData":
+            ot = ObjectType.PRIME_NB_OFDM_PLC_MAC_NETWORK_ADMINISTRATION_DATA
+        elif value == "PrimeNbOfdmPlcApplicationsIdentification":
+            ot = ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION
         else:
             ot = ObjectType.NONE
         return ot

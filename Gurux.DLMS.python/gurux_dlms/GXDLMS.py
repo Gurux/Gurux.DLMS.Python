@@ -1539,8 +1539,21 @@ class GXDLMS:
         bc = data.data.getUInt8()
         data.streaming = (bc & 0x40) != 0
         windowSize = int(bc & 0x3F)
-        data.blockNumber = data.data.getUInt16()
-        data.blockNumberAck = data.data.getUInt16()
+        bn = data.data.getUInt16()
+        bna = data.data.getUInt16()
+
+        if not data.xml:
+            #Remove existing data when first block is received.
+            if bn == 1:
+                index = 0
+            elif bna != settings.blockIndex - 1:
+                #If this block is already received.
+                data.data.size = index
+                data.command = Command.NONE
+                return
+
+        data.blockNumber = bn
+        data.blockNumberAck = bna
         settings.blockNumberAck = data.blockNumber
         data.command = Command.NONE
         len_ = _GXCommon.getObjectCount(data.data)

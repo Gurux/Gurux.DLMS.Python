@@ -267,20 +267,20 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("DataLinkLayerReference", self.dataLinkLayerReference)
         writer.writeElementString("IPAddress", self.ipAddress)
+        writer.writeStartElement("MulticastIPAddress")
         if self.multicastIPAddress:
-            writer.writeStartElement("MulticastIPAddress")
             for it in self.multicastIPAddress:
                 writer.writeElementString("Value", it)
-            writer.writeEndElement()
+        writer.writeEndElement()
+        writer.writeStartElement("IPOptions")
         if self.ipOptions:
-            writer.writeStartElement("IPOptions")
             for it in self.ipOptions:
                 writer.writeStartElement("IPOptions")
                 writer.writeElementString("Type", it.type_)
                 writer.writeElementString("Length", it.length)
                 writer.writeElementString("Data", GXByteBuffer.hex(it.data))
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
         writer.writeElementString("SubnetMask", self.subnetMask)
         writer.writeElementString("GatewayIPAddress", self.gatewayIPAddress)
         writer.writeElementString("UseDHCP", self.useDHCP)
