@@ -528,7 +528,7 @@ class GXDLMS:
                 assert not p.settings.maxPduSize < len(reply)
             while reply.position != len(reply):
                 if p.settings.interfaceType == InterfaceType.WRAPPER:
-                    messages.append(GXDLMS.getWrapperFrame(p.settings, reply))
+                    messages.append(GXDLMS.getWrapperFrame(p.settings, p.command, reply))
                 elif p.settings.interfaceType == InterfaceType.HDLC:
                     messages.append(GXDLMS.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
@@ -557,7 +557,7 @@ class GXDLMS:
                 assert not p.settings.maxPduSize < len(reply)
             while reply.position != len(reply):
                 if p.settings.interfaceType == InterfaceType.WRAPPER:
-                    messages.append(cls.getWrapperFrame(p.settings, reply))
+                    messages.append(cls.getWrapperFrame(p.settings, p.command, reply))
                 elif p.settings.interfaceType == InterfaceType.HDLC:
                     messages.append(cls.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
@@ -700,12 +700,15 @@ class GXDLMS:
         return bb.array()
 
     @classmethod
-    def getWrapperFrame(cls, settings, data):
+    def getWrapperFrame(cls, settings, command, data):
         bb = GXByteBuffer()
         bb.setUInt16(1)
         if settings.isServer:
             bb.setUInt16(settings.serverAddress)
-            bb.setUInt16(settings.clientAddress)
+            if settings.PushClientAddress != 0 and command in (Command.DATA_NOTIFICATION, Command.EVENT_NOTIFICATION):
+                bb.setUInt16(settings.pushClientAddress)
+            else:
+                bb.setUInt16(settings.clientAddress)
         else:
             bb.setUInt16(settings.clientAddress)
             bb.setUInt16(settings.serverAddress)
@@ -731,7 +734,10 @@ class GXDLMS:
         primaryAddress = None
         secondaryAddress = None
         if settings.isServer:
-            primaryAddress = cls.getAddressBytes(settings.clientAddress, 1)
+            if frame_ == 0x13 and settings.pushClientAddress != 0:
+                primaryAddress = cls.getAddressBytes(settings.pushClientAddress, 1)
+            else:
+                primaryAddress = cls.getAddressBytes(settings.clientAddress, 1)
             secondaryAddress = cls.getAddressBytes(settings.serverAddress, settings.serverAddressSize)
         else:
             primaryAddress = cls.getAddressBytes(settings.serverAddress, settings.serverAddressSize)
@@ -846,8 +852,11 @@ class GXDLMS:
                 notify.serverAddress = addresses[0]
         # HDLC control fields
         cf = reply.getUInt8()
-        if notify and cf == 0x13:
+        if not isNotify and notify and cf == 0x13:
             isNotify = True
+            notify.clientAddress = addresses[1]
+            notify.serverAddress = addresses[0]
+
         if (frame_ & 0x8) != 0:
             if isNotify:
                 notify.moreData = notify.moreData | RequestTypes.FRAME

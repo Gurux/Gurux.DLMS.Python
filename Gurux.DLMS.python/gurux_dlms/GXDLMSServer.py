@@ -71,8 +71,8 @@ from .objects.IGXDLMSBase import IGXDLMSBase
 from .enums.Initiate import Initiate
 from .enums.Security import Security
 
-# pylint: disable=too-many-public-methods,too-many-instance-attributes
-class GXDLMSServer:
+# pylint: disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
+class GXDLMSServer(object):
     __metaclass__ = ABCMeta
     #
     # Constructor.
@@ -113,6 +113,15 @@ class GXDLMSServer:
 
     #Window size.
     windowSize = property(__getWindowSize, __setWindowSize)
+
+    def __getPushClientAddress(self):
+        return self.settings.pushClientAddress
+
+    def __setPushClientAddress(self, value):
+        self.settings.pushClientAddress = value
+
+    #client address for push messages.
+    pushClientAddress = property(__getPushClientAddress, __setPushClientAddress)
 
     def __getLimits(self):
         return self.settings.limits
@@ -785,11 +794,11 @@ class GXDLMSServer:
         self.replyData.setUInt8(e.serviceError)
         self.replyData.setUInt8(e.serviceErrorValue)
         if self.settings.interfaceType == InterfaceType.WRAPPER:
-            return GXDLMS.getWrapperFrame(self.settings, self.replyData)
+            return GXDLMS.getWrapperFrame(self.settings, Command.CONFIRMED_SERVICE_ERROR, self.replyData)
         return GXDLMS.getHdlcFrame(self.settings, int(0), self.replyData)
 
     def reportError(self, command, error):
-        cmd = int()
+        cmd = 0
         if command == Command.READ_REQUEST:
             cmd = Command.READ_RESPONSE
         elif command == Command.WRITE_REQUEST:
@@ -811,7 +820,7 @@ class GXDLMSServer:
             p2 = GXDLMSSNParameters(self.settings, cmd, 1, 1, None, bb)
             GXDLMS.getSNPdu(p2, self.replyData)
         if self.settings.interfaceType == InterfaceType.WRAPPER:
-            return GXDLMS.getWrapperFrame(self.settings, self.replyData)
+            return GXDLMS.getWrapperFrame(self.settings, command, self.replyData)
         return GXDLMS.getHdlcFrame(self.settings, int(0), self.replyData)
 
     def handleCommand(self, cmd, data, sr):
@@ -858,7 +867,7 @@ class GXDLMSServer:
         else:
             raise Exception("Invalid command: " + str(cmd))
         if self.settings.interfaceType == InterfaceType.WRAPPER:
-            reply = GXDLMS.getWrapperFrame(self.settings, self.replyData)
+            reply = GXDLMS.getWrapperFrame(self.settings, cmd, self.replyData)
         else:
             reply = GXDLMS.getHdlcFrame(self.settings, frame_, self.replyData)
         if cmd == Command.DISCONNECT_REQUEST or (self.settings.interfaceType == InterfaceType.WRAPPER and cmd == Command.RELEASE_REQUEST):

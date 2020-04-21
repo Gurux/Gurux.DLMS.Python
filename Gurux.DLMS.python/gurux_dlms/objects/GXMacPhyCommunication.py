@@ -38,6 +38,7 @@ class GXMacPhyCommunication:
     #
     # Constructor.
     #
+    # pylint: disable=too-many-instance-attributes
     def __init__(self):
         # EUI is the EUI-48 of the other device.
         self.eui = None

@@ -35,6 +35,7 @@ from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
+from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums.MacState import MacState
 
@@ -162,22 +163,24 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
 
     def getDataType(self, index):
         if index == 1:
-            return DataType.OCTET_STRING
-        if index == 2:
-            return DataType.INT16
-        if index in (3, 4):
-            return DataType.UINT8
-        if index == 5:
-            return DataType.OCTET_STRING
-        if index == 6:
-            return DataType.ENUM
-        if index == 7:
-            return DataType.INT16
-        if index in (8, 9, 10, 11, 12, 13):
-            return DataType.UINT8
-        if index == 14:
-            return DataType.UINT16
-        raise ValueError("getDataType failed. Invalid attribute index.")
+            ret = DataType.OCTET_STRING
+        elif index == 2:
+            ret = DataType.INT16
+        elif index in (3, 4):
+            ret = DataType.UINT8
+        elif index == 5:
+            ret = DataType.OCTET_STRING
+        elif index == 6:
+            ret = DataType.ENUM
+        elif index == 7:
+            ret = DataType.INT16
+        elif index in (8, 9, 10, 11, 12, 13):
+            ret = DataType.UINT8
+        elif index == 14:
+            ret = DataType.UINT16
+        else:
+            raise ValueError("getDataType failed. Invalid attribute index.")
+        return ret
 
     #
     # Returns value of given attribute.
@@ -255,7 +258,7 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
         self.lnId = reader.readElementContentAsInt("LnId")
         self.lsId = reader.readElementContentAsInt("LsId")
         self.sId = reader.readElementContentAsInt("SId")
-        self.sna = _GXCommon.hexToBytes(reader.readElementContentAsString("SNa"))
+        self.sna = GXByteBuffer.hexToBytes(reader.readElementContentAsString("SNa"))
         self.state = reader.readElementContentAsInt("State")
         self.scpLength = reader.readElementContentAsInt("ScpLength")
         self.nodeHierarchyLevel = reader.readElementContentAsInt("NodeHierarchyLevel")
@@ -270,7 +273,7 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("LnId", self.lnId)
         writer.writeElementString("LsId", self.lsId)
         writer.writeElementString("SId", self.sId)
-        writer.writeElementString("SNa", _GXCommon.toHex(sna))
+        writer.writeElementString("SNa", GXByteBuffer.toHex(self.sna))
         writer.writeElementString("State", self.state)
         writer.writeElementString("ScpLength", self.scpLength)
         writer.writeElementString("NodeHierarchyLevel", self.nodeHierarchyLevel)

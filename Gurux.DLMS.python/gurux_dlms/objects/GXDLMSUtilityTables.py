@@ -149,4 +149,3 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("Id", self.tableId, False)
         writer.writeElementString("Buffer", GXByteBuffer.hex(self.buffer))
-

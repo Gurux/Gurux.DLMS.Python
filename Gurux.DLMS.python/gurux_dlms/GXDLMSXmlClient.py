@@ -223,7 +223,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
             frame_ = 0
             while reply.position != len(reply):
                 if self.settings.interfaceType == InterfaceType.WRAPPER:
-                    messages.append(GXDLMS.getWrapperFrame(self.settings, reply))
+                    messages.append(GXDLMS.getWrapperFrame(self.settings, pdu.command, reply))
                 elif self.settings.interfaceType == InterfaceType.HDLC:
                     if pdu.command == Command.AARQ:
                         frame_ = 0x10

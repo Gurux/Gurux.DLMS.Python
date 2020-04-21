@@ -87,6 +87,7 @@ class GXDLMSSettings:
         self.serviceClass = ServiceClass.CONFIRMED
         self.clientAddress = 0
         self.serverAddress = 0
+        self.pushClientAddress = 0
         self.serverAddressSize = 0
         self.__useLogicalNameReferencing = True
         self.interfaceType = InterfaceType.HDLC
