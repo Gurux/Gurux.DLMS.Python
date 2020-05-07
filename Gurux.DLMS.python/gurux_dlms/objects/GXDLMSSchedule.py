@@ -238,8 +238,9 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             self.entries = []
-            for it in e.value:
-                self.entries.append(self.createEntry(it))
+            if e.value:
+                for it in e.value:
+                    self.entries.append(self.createEntry(it))
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 

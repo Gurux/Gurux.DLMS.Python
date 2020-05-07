@@ -123,6 +123,8 @@ class GXDLMSObjectCollection(list):
                     obj.logicalName = reader.readElementContentAsString("LN")
                 elif "Description".lower() == target.lower():
                     obj.description = reader.readElementContentAsString("Description")
+                elif "Version".lower() == target.lower():
+                    obj.version = reader.readElementContentAsInt("Version")
                 else:
                     obj.load(reader)
                     obj = None
@@ -138,6 +140,8 @@ class GXDLMSObjectCollection(list):
             if it.shortName != 0:
                 ET.SubElement(node, "SN").text = it.shortName
             ET.SubElement(node, "LN").text = it.logicalName
+            if it.version != 0:
+                ET.SubElement(node, "Version").text = it.version
             if it.description:
                 ET.SubElement(node, "Description").text = it.description
             if not settings or settings.values:
