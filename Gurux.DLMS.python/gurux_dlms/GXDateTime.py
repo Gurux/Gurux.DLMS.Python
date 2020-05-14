@@ -54,7 +54,7 @@ class GXDateTime:
         self.dayOfWeek = 0
         if isinstance(value, datetime.datetime):
             if value.tzinfo is None:
-                self.value = datetime.datetime(value.year, value.month, value.day, value.hour, value.minute, value.second, 0, tzinfo=GXTimeZone(int(time.localtime().tm_gmtoff / 60)))
+                self.value = datetime.datetime(value.year, value.month, value.day, value.hour, value.minute, value.second, 0, tzinfo=GXTimeZone(int(-time.altzone / 60)))
             else:
                 self.value = value
         elif isinstance(value, str):

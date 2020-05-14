@@ -227,7 +227,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            ot = ObjectType(e.value[0])
+            ot = e.value[0]
             ln = _GXCommon.toLogicalName(e.value[1])
             self.monitoredAttributeIndex = e.value[2]
             self.monitoredValue = settings.objects.findByLN(ot, ln)
