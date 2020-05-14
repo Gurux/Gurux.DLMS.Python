@@ -71,7 +71,7 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
         self.nodeHierarchyLevel = 0
         #Number of beacon slots provisioned in present frame structure.
         self.beaconSlotCount = 0
-        #Beacon slot in which this device’s switch node transmits its
+        #Beacon slot in which this device's switch node transmits its
         #beacon.
         self.beaconRxSlot = 0
         #Beacon slot in which this device transmits its beacon.
