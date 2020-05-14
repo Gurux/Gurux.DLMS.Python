@@ -166,7 +166,8 @@ class GXDLMS:
             raise ValueError("Invalid Server Address.")
 
     @classmethod
-    def appendData(cls, obj, index, bb, value):
+    #pylint: disable=too-many-arguments
+    def appendData(cls, settings, obj, index, bb, value):
         tp = obj.getDataType(index)
         if tp == DataType.ARRAY:
             if isinstance(value, bytes):
@@ -179,9 +180,9 @@ class GXDLMS:
             if isinstance(value, str) and tp == DataType.OCTET_STRING:
                 ui = obj.getUIDataType(index)
                 if ui == DataType.STRING:
-                    _GXCommon.setData(bb, tp, value.encode())
+                    _GXCommon.setData(settings, bb, tp, value.encode())
                     return
-        _GXCommon.setData(bb, tp, value)
+        _GXCommon.setData(settings, bb, tp, value)
 
     #
     # Get used glo message.
@@ -335,7 +336,7 @@ class GXDLMS:
                     reply.setUInt8(DataType.NONE)
                 else:
                     pos = len(reply)
-                    _GXCommon.setData(reply, DataType.OCTET_STRING, p.getTime())
+                    _GXCommon.setData(p.settings, reply, DataType.OCTET_STRING, p.getTime())
                     if p.command != Command.EVENT_NOTIFICATION:
                         reply.move(pos + 1, pos, len(reply) - pos - 1)
                 cls.multipleBlocks(p, reply, ciphering)
@@ -620,7 +621,7 @@ class GXDLMS:
                 reply.setUInt8(DataType.NONE)
             else:
                 pos = len(reply)
-                _GXCommon.setData(reply, DataType.OCTET_STRING, p.time)
+                _GXCommon.setData(p.settings, reply, DataType.OCTET_STRING, p.time)
                 reply.move(pos + 1, pos, len(reply) - pos - 1)
             _GXCommon.setObjectCount(p.count, reply)
             reply.set(p.attributeDescriptor)
@@ -1145,7 +1146,7 @@ class GXDLMS:
                     reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     di = _GXDataInfo()
                     di.xml = (reply.xml)
-                    _GXCommon.getData(reply.data, di)
+                    _GXCommon.getData(settings, reply.data, di)
                     reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     if standardXml:
                         reply.xml.appendEndTag(TranslatorTags.CHOICE)
@@ -1193,7 +1194,7 @@ class GXDLMS:
         return TranslatorSimpleTags.errorCodeToString(value)
 
     @classmethod
-    def handleMethodResponse(cls, data):
+    def handleMethodResponse(cls, settings, data):
         type_ = int(data.data.getUInt8())
         invoke = data.data.getUInt8()
         if data.xml:
@@ -1234,7 +1235,7 @@ class GXDLMS:
                         data.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                         di = _GXDataInfo()
                         di.xml = (data.xml)
-                        _GXCommon.getData(data.data, di)
+                        _GXCommon.getData(settings, data.data, di)
                         data.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     data.xml.appendEndTag(TranslatorTags.RETURN_PARAMETERS)
                     if standardXml:
@@ -1273,7 +1274,7 @@ class GXDLMS:
         cls.getDataFromBlock(reply.data, index)
 
     @classmethod
-    def handleAccessResponse(cls, reply):
+    def handleAccessResponse(cls, settings, reply):
         data = reply.data
         invokeId = reply.data.getUInt32()
         len_ = reply.data.getUInt8()
@@ -1281,7 +1282,7 @@ class GXDLMS:
         if len_ != 0:
             tmp = bytearray(len_)
             data.get(tmp)
-            reply.time = _GXCommon.changeType(tmp, DataType.DATETIME)
+            reply.time = _GXCommon.changeType(settings, tmp, DataType.DATETIME)
         if reply.xml:
             reply.xml.appendStartTag(Command.ACCESS_RESPONSE)
             reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(invokeId, 8))
@@ -1298,7 +1299,7 @@ class GXDLMS:
                     reply.xml.appendStartTag(Command.WRITE_REQUEST, SingleReadResponse.DATA)
                 di = _GXDataInfo()
                 di.xml = (reply.xml)
-                _GXCommon.getData(reply.data, di)
+                _GXCommon.getData(settings, reply.data, di)
                 if reply.xml.outputType == TranslatorOutputType.STANDARD_XML:
                     reply.xml.appendEndTag(Command.WRITE_REQUEST, SingleReadResponse.DATA)
                 pos += 1
@@ -1342,7 +1343,7 @@ class GXDLMS:
                 dt = DataType.DATE
             info = _GXDataInfo()
             info.type_ = dt
-            reply.time = _GXCommon.getData(GXByteBuffer(tmp), info)
+            reply.time = _GXCommon.getData(settings, GXByteBuffer(tmp), info)
         if reply.xml:
             reply.xml.appendStartTag(Command.DATA_NOTIFICATION)
             reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(invokeId, 8))
@@ -1353,7 +1354,7 @@ class GXDLMS:
             reply.xml.appendStartTag(TranslatorTags.DATA_VALUE)
             di = _GXDataInfo()
             di.xml = (reply.xml)
-            _GXCommon.getData(reply.data, di)
+            _GXCommon.getData(settings, reply.data, di)
             reply.xml.appendEndTag(TranslatorTags.DATA_VALUE)
             reply.xml.appendEndTag(TranslatorTags.NOTIFICATION_BODY)
             reply.xml.appendEndTag(Command.DATA_NOTIFICATION)
@@ -1442,7 +1443,7 @@ class GXDLMS:
                     di = _GXDataInfo()
                     di.xml = (reply.xml)
                     reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
-                    _GXCommon.getData(reply.data, di)
+                    _GXCommon.getData(settings, reply.data, di)
                     reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                 else:
                     reply.readPosition = reply.data.position
@@ -1476,7 +1477,7 @@ class GXDLMS:
                     reply.xml.appendStartTag(TranslatorTags.DATA)
                     di = _GXDataInfo()
                     di.xml = (reply.xml)
-                    _GXCommon.getData(reply.data, di)
+                    _GXCommon.getData(settings, reply.data, di)
                     reply.xml.appendEndTag(TranslatorTags.DATA)
             else:
                 cls.getDataFromBlock(reply.data, 0)
@@ -1628,9 +1629,9 @@ class GXDLMS:
             elif cmd == Command.WRITE_RESPONSE:
                 cls.handleWriteResponse(data)
             elif cmd == Command.METHOD_RESPONSE:
-                cls.handleMethodResponse(data)
+                cls.handleMethodResponse(settings, data)
             elif cmd == Command.ACCESS_RESPONSE:
-                cls.handleAccessResponse(data)
+                cls.handleAccessResponse(settings, data)
             elif cmd == Command.GENERAL_BLOCK_TRANSFER:
                 if data.xml or (not settings.isServer and (data.moreData & RequestTypes.FRAME) == 0):
                     cls.handleGbt(settings, data)
@@ -1821,7 +1822,7 @@ class GXDLMS:
         index = data.position
         data.position = reply.readPosition
         try:
-            value = _GXCommon.getData(data, info)
+            value = _GXCommon.getData(settings, data, info)
             if value is not None:
                 if not isinstance(value, list):
                     reply.valueType = info.type_

@@ -104,9 +104,9 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
         buff = GXByteBuffer(44)
         buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(3)
-        _GXCommon.setData(buff, DataType.OCTET_STRING, presetTime)
-        _GXCommon.setData(buff, DataType.OCTET_STRING, validityIntervalStart)
-        _GXCommon.setData(buff, DataType.OCTET_STRING, validityIntervalEnd)
+        _GXCommon.setData(None, buff, DataType.OCTET_STRING, presetTime)
+        _GXCommon.setData(None, buff, DataType.OCTET_STRING, validityIntervalStart)
+        _GXCommon.setData(None, buff, DataType.OCTET_STRING, validityIntervalEnd)
         return client.method(self, 5, buff.array(), DataType.ARRAY)
 
     #
@@ -224,7 +224,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             if isinstance(e.value, bytearray):
-                self.time = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.time = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
             else:
                 self.time = e.value
         elif e.index == 3:
@@ -241,14 +241,14 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.begin = GXDateTime()
             elif isinstance(e.value, bytearray):
-                self.begin = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.begin = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
             else:
                 self.begin = e.value
         elif e.index == 6:
             if e.value is None:
                 self.end = GXDateTime()
             elif isinstance(e.value, bytearray):
-                self.end = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.end = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
             else:
                 self.end = e.value
         elif e.index == 7:
@@ -270,30 +270,21 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        if reader.name() == "Time":
-            self.time = GXDateTime(reader.readElementContentAsString("Time"))
+        self.time = reader.readElementContentAsDateTime("Time")
         self.timeZone = reader.readElementContentAsInt("TimeZone")
         self.status = ClockStatus(reader.readElementContentAsInt("Status"))
-        str_ = reader.readElementContentAsString("Begin")
-        if str_:
-            self.begin = GXDateTime(str_)
-        str_ = reader.readElementContentAsString("End")
-        if str_:
-            self.end = GXDateTime(str_)
+        self.begin = reader.readElementContentAsDateTime("Begin")
+        self.end = reader.readElementContentAsDateTime("End")
         self.deviation = reader.readElementContentAsInt("Deviation")
         self.enabled = reader.readElementContentAsInt("Enabled") != 0
         self.clockBase = ClockBase(reader.readElementContentAsInt("ClockBase"))
 
     def save(self, writer):
-        if self.time:
-            writer.writeElementString("Time", self.time.toFormatString())
-        if self.timeZone != 0:
-            writer.writeElementString("TimeZone", self.timeZone)
+        writer.writeElementString("Time", self.time)
+        writer.writeElementString("TimeZone", self.timeZone)
         writer.writeElementString("Status", int(self.status))
-        if self.begin:
-            writer.writeElementString("Begin", self.begin.toFormatString())
-        if self.end:
-            writer.writeElementString("End", self.end.toFormatString())
+        writer.writeElementString("Begin", self.begin)
+        writer.writeElementString("End", self.end)
         writer.writeElementString("Deviation", self.deviation)
         writer.writeElementString("Enabled", self.enabled)
         writer.writeElementString("ClockBase", int(self.clockBase))

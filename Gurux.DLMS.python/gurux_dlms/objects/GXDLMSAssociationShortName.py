@@ -127,25 +127,25 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         return 8
 
     @classmethod
-    def __getAccessRights_(cls, item, data):
+    def __getAccessRights_(cls, settings, item, data):
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(3)
-        _GXCommon.setData(data, DataType.UINT16, item.shortName)
+        _GXCommon.setData(settings, data, DataType.UINT16, item.shortName)
         data.setUInt8(DataType.ARRAY)
         data.setUInt8(len(item.attributes))
         for att in item.attributes:
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
-            _GXCommon.setData(data, DataType.INT8, att.index)
-            _GXCommon.setData(data, DataType.ENUM, att.access.value)
-            _GXCommon.setData(data, DataType.NONE, None)
+            _GXCommon.setData(settings, data, DataType.INT8, att.index)
+            _GXCommon.setData(settings, data, DataType.ENUM, att.access.value)
+            _GXCommon.setData(settings, data, DataType.NONE, None)
         data.setUInt8(DataType.ARRAY)
         data.setUInt8(len(item.methodAttributes))
         for it in item.methodAttributes:
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.INT8, it.index)
-            _GXCommon.setData(data, DataType.ENUM, it.getMethodAccess().value)
+            _GXCommon.setData(settings, data, DataType.INT8, it.index)
+            _GXCommon.setData(settings, data, DataType.ENUM, it.getMethodAccess().value)
 
     def getDataType(self, index):
         if index == 1:
@@ -174,10 +174,10 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
                 if not pos <= settings.index:
                     bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(4)
-                    _GXCommon.setData(bb, DataType.INT16, it.shortName)
-                    _GXCommon.setData(bb, DataType.UINT16, it.objectType)
-                    _GXCommon.setData(bb, DataType.UINT8, 0)
-                    _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
+                    _GXCommon.setData(settings, bb, DataType.INT16, it.shortName)
+                    _GXCommon.setData(settings, bb, DataType.UINT16, it.objectType)
+                    _GXCommon.setData(settings, bb, DataType.UINT8, 0)
+                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
                     settings.index = settings.index + 1
                     if settings.isServer:
                         if not e.isSkipMaxPduSize() and len(bb) >= settings.maxPduSize:
@@ -199,9 +199,9 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.ARRAY)
             _GXCommon.setObjectCount(cnt, bb)
             for it in self.objectList:
-                self.__getAccessRights_(it, bb)
+                self.__getAccessRights_(settings, it, bb)
             if not lnExists:
-                self.__getAccessRights_(self, bb)
+                self.__getAccessRights_(settings, self, bb)
             ret = bb.array()
         elif e.index == 4:
             ret = _GXCommon.getBytes(self.securitySetupReference)
@@ -226,6 +226,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
+            #pylint: disable=import-outside-toplevel
             from .._GXObjectFactory import _GXObjectFactory
             self.objectList.clear()
             if e.value:

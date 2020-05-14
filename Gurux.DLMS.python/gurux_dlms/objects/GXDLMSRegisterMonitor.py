@@ -121,11 +121,11 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
             #  ClassID
-            _GXCommon.setData(bb, DataType.UINT16, self.monitoredValue.objectType)
+            _GXCommon.setData(settings, bb, DataType.UINT16, self.monitoredValue.objectType)
             #  LN.
-            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
+            _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
             #  Attribute index.
-            _GXCommon.setData(bb, DataType.INT8, self.monitoredValue.attributeIndex)
+            _GXCommon.setData(settings, bb, DataType.INT8, self.monitoredValue.attributeIndex)
             return bb
         if e.index == 4:
             bb = GXByteBuffer()
@@ -140,15 +140,15 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
                     #  LN
-                    _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionUp.logicalName))
+                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionUp.logicalName))
                     #  ScriptSelector
-                    _GXCommon.setData(bb, DataType.UINT16, it.actionUp.scriptSelector)
+                    _GXCommon.setData(settings, bb, DataType.UINT16, it.actionUp.scriptSelector)
                     bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
                     #  LN
-                    _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionDown.logicalName))
+                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionDown.logicalName))
                     #  ScriptSelector
-                    _GXCommon.setData(bb, DataType.UINT16, it.actionDown.scriptSelector)
+                    _GXCommon.setData(settings, bb, DataType.UINT16, it.actionDown.scriptSelector)
             return bb
         e.error = ErrorCode.READ_WRITE_DENIED
         return None

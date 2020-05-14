@@ -146,8 +146,8 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
             for it in self.multicastEntries:
                 bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(2)
-                _GXCommon.setData(bb, DataType.INT8, it.id)
-                _GXCommon.setData(bb, DataType.INT16, it.members)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.id)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.members)
         return bb.array()
 
     def __getSwitchTable(self, settings):
@@ -158,7 +158,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
         else:
             _GXCommon.setObjectCount(len(self.switchTable), bb)
             for it in self.switchTable:
-                _GXCommon.setData(bb, DataType.INT16, it)
+                _GXCommon.setData(settings, bb, DataType.INT16, it)
         return bb.array()
 
     def __getDirectTable(self, settings):
@@ -171,13 +171,13 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
             for it in self.directTable:
                 bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(7)
-                _GXCommon.setData(bb, DataType.INT16, it.sourceSId)
-                _GXCommon.setData(bb, DataType.INT16, it.sourceLnId)
-                _GXCommon.setData(bb, DataType.INT16, it.sourceLcId)
-                _GXCommon.setData(bb, DataType.INT16, it.destinationSId)
-                _GXCommon.setData(bb, DataType.INT16, it.destinationLnId)
-                _GXCommon.setData(bb, DataType.INT16, it.destinationLcId)
-                _GXCommon.setData(bb, DataType.OCTET_STRING, it.did)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.sourceSId)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.sourceLnId)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.sourceLcId)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.destinationSId)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.destinationLnId)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.destinationLcId)
+                _GXCommon.setData(settings, bb, DataType.OCTET_STRING, it.did)
         return bb.array()
 
     def __getAvailableSwitches(self, settings):
@@ -190,11 +190,11 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
             for it in self.availableSwitches:
                 bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(5)
-                _GXCommon.setData(bb, DataType.OCTET_STRING, it.sna)
-                _GXCommon.setData(bb, DataType.INT16, it.lsId)
-                _GXCommon.setData(bb, DataType.INT8, it.level)
-                _GXCommon.setData(bb, DataType.INT8, it.rxLevel)
-                _GXCommon.setData(bb, DataType.INT8, it.rxSnr)
+                _GXCommon.setData(settings, bb, DataType.OCTET_STRING, it.sna)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.lsId)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.level)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.rxLevel)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.rxSnr)
         return bb.array()
 
     def __getCommunications(self, settings):
@@ -207,15 +207,15 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
             for it in self.communications:
                 bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(9)
-                _GXCommon.setData(bb, DataType.OCTET_STRING, it.eui)
-                _GXCommon.setData(bb, DataType.INT8, it.txPower)
-                _GXCommon.setData(bb, DataType.INT8, it.txCoding)
-                _GXCommon.setData(bb, DataType.INT8, it.rxCoding)
-                _GXCommon.setData(bb, DataType.INT8, it.rxLvl)
-                _GXCommon.setData(bb, DataType.INT8, it.snr)
-                _GXCommon.setData(bb, DataType.INT8, it.txPowerModified)
-                _GXCommon.setData(bb, DataType.INT8, it.txCodingModified)
-                _GXCommon.setData(bb, DataType.INT8, it.rxCodingModified)
+                _GXCommon.setData(settings, bb, DataType.OCTET_STRING, it.eui)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.txPower)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.txCoding)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.rxCoding)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.rxLvl)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.snr)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.txPowerModified)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.txCodingModified)
+                _GXCommon.setData(settings, bb, DataType.INT8, it.rxCodingModified)
         return bb.array()
 
     #

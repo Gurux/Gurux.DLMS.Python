@@ -129,8 +129,8 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             bb = GXByteBuffer()
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.target.logicalName))
-            _GXCommon.setData(bb, DataType.UINT16, int(self.executedScriptSelector))
+            _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.target.logicalName))
+            _GXCommon.setData(settings, bb, DataType.UINT16, int(self.executedScriptSelector))
             return bb.array()
         if e.index == 3:
             return self.type_
@@ -146,9 +146,9 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
                     #  Count
                     bb.setUInt8(2)
                     #  Time
-                    _GXCommon.setData(bb, DataType.OCTET_STRING, GXTime(it))
+                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, GXTime(it))
                     #  Date
-                    _GXCommon.setData(bb, DataType.OCTET_STRING, GXDate(it))
+                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, GXDate(it))
             return bb.array()
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
@@ -175,8 +175,8 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
             self.executionTime = []
             if e.value:
                 for it in e.value:
-                    time = _GXCommon.changeType(it[0], DataType.TIME)
-                    date = _GXCommon.changeType(it[1], DataType.DATE)
+                    time = _GXCommon.changeType(settings, it[0], DataType.TIME)
+                    date = _GXCommon.changeType(settings, it[1], DataType.DATE)
                     tmp = GXDateTime(date)
                     tmp.value = tmp.value.replace(hour=time.value.hour, minute=time.value.minute, second=time.value.second)
                     tmp.skip = (date.skip & (DateTimeSkips.YEAR | DateTimeSkips.MONTH | DateTimeSkips.DAY | DateTimeSkips.DAY_OF_WEEK))
@@ -198,7 +198,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         self.executionTime = []
         if reader.isStartElement("ExecutionTime", True):
             while reader.isStartElement("Time", False):
-                it = GXDateTime(reader.readElementContentAsString("Time"))
+                it = reader.readElementContentAsDateTime("Time")
                 self.executionTime.append(it)
             reader.readEndElement("ExecutionTime")
 
@@ -211,7 +211,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         if self.executionTime:
             writer.writeStartElement("ExecutionTime")
             for it in self.executionTime:
-                writer.writeElementString("Time", it.toFormatString())
+                writer.writeElementString("Time", it)
             writer.writeEndElement()
 
     def postLoad(self, reader):

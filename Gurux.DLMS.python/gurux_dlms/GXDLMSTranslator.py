@@ -808,7 +808,7 @@ class GXDLMSTranslator:
     @classmethod
     def getNodeCount(cls, node):
         cnt = 0
-        for it in node:
+        for _ in node:
             cnt += 1
         return cnt
 
@@ -1448,7 +1448,7 @@ class GXDLMSTranslator:
                     col = 0
                     for it in r.strip().split(";"):
                         tmp.clear()
-                        _GXCommon.setData(tmp, types[len(types)], GXDLMSConverter.changeType(it, types[len(types)]))
+                        _GXCommon.setData(None, tmp, types[len(types)], GXDLMSConverter.changeType(it, types[len(types)]))
                         if len(tmp) == 1:
                             s.data.setUInt8(0)
                         else:
@@ -1485,7 +1485,7 @@ class GXDLMSTranslator:
                     dt = DataType.DATE
                 elif len(tmp) == 4:
                     dt = DataType.TIME
-                s.setTime(_GXCommon.changeType(tmp, dt))
+                s.setTime(_GXCommon.changeType(None, tmp, dt))
         return bb
 
     @classmethod
@@ -1502,62 +1502,62 @@ class GXDLMSTranslator:
             preData = GXByteBuffer(s.data)
             s.data.size = 0
         elif dt == DataType.BCD:
-            _GXCommon.setData(s.data, DataType.BCD, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.BCD, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.BITSTRING:
-            _GXCommon.setData(s.data, DataType.BITSTRING, cls.getValue(node, s))
+            _GXCommon.setData(None, s.data, DataType.BITSTRING, cls.getValue(node, s))
         elif dt == DataType.BOOLEAN:
-            _GXCommon.setData(s.data, DataType.BOOLEAN, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.BOOLEAN, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.DATE:
-            _GXCommon.setData(s.data, DataType.DATE, _GXCommon.changeType(GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.DATE))
+            _GXCommon.setData(None, s.data, DataType.DATE, _GXCommon.changeType(None, GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.DATE))
         elif dt == DataType.DATETIME:
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             if len(tmp) == 5:
                 dt = DataType.DATE
             elif len(tmp) == 4:
                 dt = DataType.TIME
-            _GXCommon.setData(s.data, dt, _GXCommon.changeType(tmp, dt))
+            _GXCommon.setData(None, s.data, dt, _GXCommon.changeType(None, tmp, dt))
         elif dt == DataType.ENUM:
-            _GXCommon.setData(s.data, DataType.ENUM, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.ENUM, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.FLOAT32:
             cls.getFloat32(node, s)
         elif dt == DataType.FLOAT64:
             cls.getFloat64(node, s)
         elif dt == DataType.INT16:
-            _GXCommon.setData(s.data, DataType.INT16, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.INT16, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.INT32:
-            _GXCommon.setData(s.data, DataType.INT32, s.parseInt(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.INT32, s.parseInt(cls.getValue(node, s)))
         elif dt == DataType.INT64:
-            _GXCommon.setData(s.data, DataType.INT64, s.parseLong(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.INT64, s.parseLong(cls.getValue(node, s)))
         elif dt == DataType.INT8:
-            _GXCommon.setData(s.data, DataType.INT8, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.INT8, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.NONE:
-            _GXCommon.setData(s.data, DataType.NONE, None)
+            _GXCommon.setData(None, s.data, DataType.NONE, None)
         elif dt == DataType.OCTET_STRING:
             cls.getOctetString(node, s)
         elif dt == DataType.STRING:
             if s.showStringAsHex:
-                _GXCommon.setData(s.data, DataType.STRING, GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                _GXCommon.setData(None, s.data, DataType.STRING, GXByteBuffer.hexToBytes(cls.getValue(node, s)))
             else:
-                _GXCommon.setData(s.data, DataType.STRING, cls.getValue(node, s))
+                _GXCommon.setData(None, s.data, DataType.STRING, cls.getValue(node, s))
         elif dt == DataType.STRING_UTF8:
             if s.showStringAsHex:
-                _GXCommon.setData(s.data, DataType.STRING_UTF8, GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                _GXCommon.setData(None, s.data, DataType.STRING_UTF8, GXByteBuffer.hexToBytes(cls.getValue(node, s)))
             else:
-                _GXCommon.setData(s.data, DataType.STRING_UTF8, cls.getValue(node, s))
+                _GXCommon.setData(None, s.data, DataType.STRING_UTF8, cls.getValue(node, s))
         elif dt == DataType.STRUCTURE:
             s.data.setUInt8(DataType.STRUCTURE)
             preData = GXByteBuffer(s.data)
             s.data.size = 0
         elif dt == DataType.TIME:
-            _GXCommon.setData(s.data, DataType.TIME, _GXCommon.changeType(GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.TIME))
+            _GXCommon.setData(None, s.data, DataType.TIME, _GXCommon.changeType(None, GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.TIME))
         elif dt == DataType.UINT16:
-            _GXCommon.setData(s.data, DataType.UINT16, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.UINT16, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.UINT32:
-            _GXCommon.setData(s.data, DataType.UINT32, s.parseLong(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.UINT32, s.parseLong(cls.getValue(node, s)))
         elif dt == DataType.UINT64:
-            _GXCommon.setData(s.data, DataType.UINT64, s.parseLong(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.UINT64, s.parseLong(cls.getValue(node, s)))
         elif dt == DataType.UINT8:
-            _GXCommon.setData(s.data, DataType.UINT8, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(None, s.data, DataType.UINT8, s.parseShort(cls.getValue(node, s)))
         elif dt == DataType.COMPACT_ARRAY:
             s.data.setUInt8(dt.value)
         else:
@@ -1568,19 +1568,19 @@ class GXDLMSTranslator:
     def getOctetString(cls, node, s):
         bb = GXByteBuffer()
         bb.setHexString(cls.getValue(node, s))
-        _GXCommon.setData(s.data, DataType.OCTET_STRING, bb.array())
+        _GXCommon.setData(None, s.data, DataType.OCTET_STRING, bb.array())
 
     @classmethod
     def getFloat32(cls, node, s):
         bb = GXByteBuffer()
         bb.setHexString(cls.getValue(node, s))
-        _GXCommon.setData(s.data, DataType.FLOAT32, bb.getFloat())
+        _GXCommon.setData(None, s.data, DataType.FLOAT32, bb.getFloat())
 
     @classmethod
     def getFloat64(cls, node, s):
         bb = GXByteBuffer()
         bb.setHexString(cls.getValue(node, s))
-        _GXCommon.setData(s.data, DataType.FLOAT64, bb.getDouble())
+        _GXCommon.setData(None, s.data, DataType.FLOAT64, bb.getDouble())
 
     def xmlToHexPdu(self, xml, addSpace=False):
         return GXByteBuffer.hex(self.xmlToPdu(xml, None), addSpace)
@@ -1714,7 +1714,7 @@ class GXDLMSTranslator:
         di = _GXDataInfo()
         xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
         di.xml = xml
-        _GXCommon.getData(data, di)
+        _GXCommon.getData(None, data, di)
         return str(di.xml)
 
     def __getAllDataNodes(self, nodes, s):

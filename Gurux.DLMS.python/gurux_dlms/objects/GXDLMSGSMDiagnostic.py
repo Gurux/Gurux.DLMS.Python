@@ -166,17 +166,17 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             if self.version == 0:
                 bb.setUInt8(4)
-                _GXCommon.setData(bb, DataType.UINT16, self.cellInfo.cellId)
+                _GXCommon.setData(settings, bb, DataType.UINT16, self.cellInfo.cellId)
             else:
                 bb.setUInt8(7)
-                _GXCommon.setData(bb, DataType.UINT32, self.cellInfo.cellId)
-            _GXCommon.setData(bb, DataType.UINT16, self.cellInfo.locationId)
-            _GXCommon.setData(bb, DataType.UINT8, self.cellInfo.signalQuality)
-            _GXCommon.setData(bb, DataType.UINT8, self.cellInfo.ber)
+                _GXCommon.setData(settings, bb, DataType.UINT32, self.cellInfo.cellId)
+            _GXCommon.setData(settings, bb, DataType.UINT16, self.cellInfo.locationId)
+            _GXCommon.setData(settings, bb, DataType.UINT8, self.cellInfo.signalQuality)
+            _GXCommon.setData(settings, bb, DataType.UINT8, self.cellInfo.ber)
             if self.version > 0:
-                _GXCommon.setData(bb, DataType.UINT16, self.cellInfo.mobileCountryCode)
-                _GXCommon.setData(bb, DataType.UINT16, self.cellInfo.mobileNetworkCode)
-                _GXCommon.setData(bb, DataType.UINT32, self.cellInfo.channelNumber)
+                _GXCommon.setData(settings, bb, DataType.UINT16, self.cellInfo.mobileCountryCode)
+                _GXCommon.setData(settings, bb, DataType.UINT16, self.cellInfo.mobileNetworkCode)
+                _GXCommon.setData(settings, bb, DataType.UINT32, self.cellInfo.channelNumber)
             ret = bb
         elif e.index == 7:
             bb = GXByteBuffer()
@@ -189,10 +189,10 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                 bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(2)
                 if self.version == 0:
-                    _GXCommon.setData(bb, DataType.UINT16, it.cellId)
+                    _GXCommon.setData(settings, bb, DataType.UINT16, it.cellId)
                 else:
-                    _GXCommon.setData(bb, DataType.UINT32, it.cellId)
-                _GXCommon.setData(bb, DataType.UINT8, it.signalQuality)
+                    _GXCommon.setData(settings, bb, DataType.UINT32, it.cellId)
+                _GXCommon.setData(settings, bb, DataType.UINT8, it.signalQuality)
             ret = bb
         elif e.index == 8:
             ret = self.captureTime
@@ -241,7 +241,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                     self.adjacentCells.append(ac)
         elif e.index == 8:
             if isinstance(e.value, bytearray):
-                self.captureTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.captureTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
             else:
                 self.captureTime = e.value
         else:

@@ -42,7 +42,6 @@ from .GXDLMSSeasonProfile import GXDLMSSeasonProfile
 from .GXDLMSWeekProfile import GXDLMSWeekProfile
 from .GXDLMSDayProfile import GXDLMSDayProfile
 from .GXDLMSDayProfileAction import GXDLMSDayProfileAction
-from ..GXTime import GXTime
 
 # pylint: disable=too-many-public-methods, too-many-instance-attributes
 class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
@@ -162,7 +161,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         return ret
 
     @classmethod
-    def getSeasonProfile(cls, target):
+    def __getSeasonProfile(cls, settings, target):
         data = GXByteBuffer()
         data.setUInt8(DataType.ARRAY)
         if target is None:
@@ -174,13 +173,13 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             for it in target:
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(3)
-                _GXCommon.setData(data, DataType.OCTET_STRING, it.name)
-                _GXCommon.setData(data, DataType.OCTET_STRING, it.start)
-                _GXCommon.setData(data, DataType.OCTET_STRING, it.weekName)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.name)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.start)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.weekName)
         return data.array()
 
     @classmethod
-    def getWeekProfileTable(cls, target):
+    def __getWeekProfileTable(cls, settings, target):
         data = GXByteBuffer()
         data.setUInt8(DataType.ARRAY)
         if target is None:
@@ -192,18 +191,18 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             for it in target:
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(8)
-                _GXCommon.setData(data, DataType.OCTET_STRING, it.name)
-                _GXCommon.setData(data, DataType.UINT8, it.monday)
-                _GXCommon.setData(data, DataType.UINT8, it.tuesday)
-                _GXCommon.setData(data, DataType.UINT8, it.wednesday)
-                _GXCommon.setData(data, DataType.UINT8, it.thursday)
-                _GXCommon.setData(data, DataType.UINT8, it.friday)
-                _GXCommon.setData(data, DataType.UINT8, it.saturday)
-                _GXCommon.setData(data, DataType.UINT8, it.sunday)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.name)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.monday)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.tuesday)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.wednesday)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.thursday)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.friday)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.saturday)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.sunday)
         return data.array()
 
     @classmethod
-    def getDayProfileTable(cls, target):
+    def __getDayProfileTable(cls, settings, target):
         data = GXByteBuffer()
         data.setUInt8(DataType.ARRAY)
         if target is None:
@@ -215,16 +214,16 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             for it in target:
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
-                _GXCommon.setData(data, DataType.UINT8, it.dayId)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.dayId)
                 data.setUInt8(DataType.ARRAY)
                 #  Add count
                 _GXCommon.setObjectCount(len(it.daySchedules), data)
                 for action in it.daySchedules:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, action.startTime)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(action.scriptLogicalName))
-                    _GXCommon.setData(data, DataType.UINT16, int(action.scriptSelector))
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, action.startTime)
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(action.scriptLogicalName))
+                    _GXCommon.setData(settings, data, DataType.UINT16, int(action.scriptSelector))
         return data.array()
 
     #
@@ -242,11 +241,11 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             else:
                 ret = self.calendarNameActive.encode("utf-8")
         elif e.index == 3:
-            ret = self.getSeasonProfile(self.seasonProfileActive)
+            ret = self.__getSeasonProfile(settings, self.seasonProfileActive)
         elif e.index == 4:
-            ret = self.getWeekProfileTable(self.weekProfileTableActive)
+            ret = self.__getWeekProfileTable(settings, self.weekProfileTableActive)
         elif e.index == 5:
-            ret = self.getDayProfileTable(self.dayProfileTableActive)
+            ret = self.__getDayProfileTable(settings, self.dayProfileTableActive)
         elif e.index == 6:
             if self.calendarNamePassive is None:
                 ret = None
@@ -255,11 +254,11 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             else:
                 ret = self.calendarNamePassive.encode()
         elif e.index == 7:
-            ret = self.getSeasonProfile(self.seasonProfilePassive)
+            ret = self.__getSeasonProfile(settings, self.seasonProfilePassive)
         elif e.index == 8:
-            ret = self.getWeekProfileTable(self.weekProfileTablePassive)
+            ret = self.__getWeekProfileTable(settings, self.weekProfileTablePassive)
         elif e.index == 9:
-            ret = self.getDayProfileTable(self.dayProfileTablePassive)
+            ret = self.__getDayProfileTable(settings, self.dayProfileTablePassive)
         elif e.index == 10:
             ret = self.time
         else:
@@ -267,19 +266,19 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         return ret
 
     @classmethod
-    def setSeasonProfile(cls, value):
+    def __setSeasonProfile(cls, settings, value):
         items = list()
         if value:
             for item in value:
                 it = GXDLMSSeasonProfile()
                 it.name = item[0]
-                it.start = _GXCommon.changeType(item[1], DataType.DATETIME)
+                it.start = _GXCommon.changeType(settings, item[1], DataType.DATETIME)
                 it.weekName = item[2]
                 items.append(it)
         return items
 
     @classmethod
-    def setWeekProfileTable(cls, value):
+    def __setWeekProfileTable(cls, value):
         items = list()
         if value:
             for item in value:
@@ -296,7 +295,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         return items
 
     @classmethod
-    def setDayProfileTable(cls, value):
+    def __setDayProfileTable(cls, settings, value):
         items = list()
         if value:
             for item in value:
@@ -305,7 +304,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                 it.daySchedules = list()
                 for it2 in item[1]:
                     ac = GXDLMSDayProfileAction()
-                    ac.startTime = _GXCommon.changeType(it2[0], DataType.TIME)
+                    ac.startTime = _GXCommon.changeType(settings, it2[0], DataType.TIME)
                     ac.scriptLogicalName = _GXCommon.toLogicalName(it2[1])
                     ac.scriptSelector = it2[2]
                     it.daySchedules.append(ac)
@@ -324,27 +323,27 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             else:
                 self.calendarNameActive = e.value.decode("utf-8").strip('\x00')
         elif e.index == 3:
-            self.seasonProfileActive = self.setSeasonProfile(e.value)
+            self.seasonProfileActive = self.__setSeasonProfile(settings, e.value)
         elif e.index == 4:
-            self.weekProfileTableActive = self.setWeekProfileTable(e.value)
+            self.weekProfileTableActive = self.__setWeekProfileTable(e.value)
         elif e.index == 5:
-            self.dayProfileTableActive = self.setDayProfileTable(e.value)
+            self.dayProfileTableActive = self.__setDayProfileTable(settings, e.value)
         elif e.index == 6:
             if self.isSec or not GXByteBuffer.isAsciiString(e.value):
                 self.calendarNamePassive = GXByteBuffer.hex(e.value)
             else:
                 self.calendarNamePassive = e.value.decode("utf-8").strip('\x00')
         elif e.index == 7:
-            self.seasonProfilePassive = self.setSeasonProfile(e.value)
+            self.seasonProfilePassive = self.__setSeasonProfile(settings, e.value)
         elif e.index == 8:
-            self.weekProfileTablePassive = self.setWeekProfileTable(e.value)
+            self.weekProfileTablePassive = self.__setWeekProfileTable(e.value)
         elif e.index == 9:
-            self.dayProfileTablePassive = self.setDayProfileTable(e.value)
+            self.dayProfileTablePassive = self.__setDayProfileTable(settings, e.value)
         elif e.index == 10:
             if isinstance(e.value, GXDateTime):
                 self.time = e.value
             else:
-                self.time = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.time = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
@@ -355,7 +354,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             while reader.isStartElement("Item", True):
                 it = GXDLMSSeasonProfile()
                 it.name = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Name"))
-                it.start = GXDateTime(reader.readElementContentAsString("Start"))
+                it.start = reader.readElementContentAsDateTime("Start")
                 it.weekName = GXByteBuffer.hexToBytes(reader.readElementContentAsString("WeekName"))
                 list_.append(it)
             reader.readEndElement(name)
@@ -393,7 +392,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                     while reader.isStartElement("Action", True):
                         d = GXDLMSDayProfileAction()
                         it.daySchedules.append(d)
-                        d.startTime = GXTime(reader.readElementContentAsString("Start"))
+                        d.startTime = reader.readElementContentAsTime("Start")
                         d.scriptLogicalName = reader.readElementContentAsString("LN")
                         d.scriptSelector = reader.readElementContentAsInt("Selector")
                     reader.readEndElement("Actions")
@@ -409,9 +408,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         self.seasonProfilePassive = self.loadSeasonProfile(reader, "SeasonProfilePassive")
         self.weekProfileTablePassive = self.loadWeekProfileTable(reader, "WeekProfileTablePassive")
         self.dayProfileTablePassive = self.loadDayProfileTable(reader, "DayProfileTablePassive")
-        str_ = reader.readElementContentAsString("Time")
-        if str_:
-            self.time = GXDateTime(str_)
+        self.time = reader.readElementContentAsDateTime("Time")
 
     @classmethod
     def saveSeasonProfile(cls, writer, list_, name):
@@ -423,7 +420,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                 if isinstance(str_, (bytearray, bytes)):
                     str_ = GXByteBuffer.hex(str_)
                 writer.writeElementString("Name", str_)
-                writer.writeElementString("Start", it.start.toFormatString())
+                writer.writeElementString("Start", it.start)
                 writer.writeElementString("WeekName", GXByteBuffer.hex(it.weekName))
                 writer.writeEndElement()
             writer.writeEndElement()
@@ -455,7 +452,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                 writer.writeStartElement("Actions")
                 for d in it.daySchedules:
                     writer.writeStartElement("Action")
-                    writer.writeElementString("Start", d.startTime.toFormatString())
+                    writer.writeElementString("Start", d.startTime)
                     writer.writeElementString("LN", d.scriptLogicalName)
                     writer.writeElementString("Selector", d.scriptSelector)
                     writer.writeEndElement()
@@ -472,5 +469,4 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         self.saveSeasonProfile(writer, self.seasonProfilePassive, "SeasonProfilePassive")
         self.saveWeekProfileTable(writer, self.weekProfileTablePassive, "WeekProfileTablePassive")
         self.saveDayProfileTable(writer, self.dayProfileTablePassive, "DayProfileTablePassive")
-        if self.time:
-            writer.writeElementString("Time", self.time.toFormatString())
+        writer.writeElementString("Time", self.time)

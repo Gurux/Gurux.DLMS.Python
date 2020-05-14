@@ -41,6 +41,7 @@ from .GetCommandType import GetCommandType
 from ._GXAPDU import _GXAPDU
 from .GXBitString import GXBitString
 from .GXByteBuffer import GXByteBuffer
+from .GXTimeZone import GXTimeZone
 from .GXDate import GXDate
 from .GXDateTime import GXDateTime
 from .GXDLMS import GXDLMS

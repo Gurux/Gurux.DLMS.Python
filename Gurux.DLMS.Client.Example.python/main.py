@@ -40,6 +40,12 @@ from gurux_dlms.enums import ObjectType
 from gurux_dlms.objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from GXSettings import GXSettings
 from GXDLMSReader import GXDLMSReader
+from gurux_dlms.GXDLMSClient import GXDLMSClient
+from gurux_common.GXCommon import GXCommon
+from gurux_dlms.enums.DataType import DataType
+import locale
+from gurux_dlms.GXDateTime import GXDateTime
+from gurux_dlms.internal._GXCommon import _GXCommon
 
 try:
     import pkg_resources
@@ -64,6 +70,10 @@ class sampleclient():
         reader = None
         settings = GXSettings()
         try:
+            cls.indianMeterTime()
+            cls.gmtTime()
+            cls.idisMeterTime()
+            cls.gmtTime2()
             # //////////////////////////////////////
             #  Handle command line parameters.
             ret = settings.getParameters(args)

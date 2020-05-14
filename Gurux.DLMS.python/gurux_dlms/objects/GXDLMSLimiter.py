@@ -168,13 +168,13 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
             if self.monitoredValue is None:
-                _GXCommon.setData(data, DataType.INT16, int(0))
-                _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(None))
-                _GXCommon.setData(data, DataType.INT8, 0)
+                _GXCommon.setData(settings, data, DataType.INT16, int(0))
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(None))
+                _GXCommon.setData(settings, data, DataType.INT8, 0)
             else:
-                _GXCommon.setData(data, DataType.INT16, int(self.monitoredValue.objectType))
-                _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
-                _GXCommon.setData(data, DataType.INT8, self.monitoredAttributeIndex)
+                _GXCommon.setData(settings, data, DataType.INT16, int(self.monitoredValue.objectType))
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
+                _GXCommon.setData(settings, data, DataType.INT8, self.monitoredAttributeIndex)
             ret = data
         elif e.index == 3:
             ret = self.thresholdActive
@@ -190,16 +190,16 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
-            _GXCommon.setData(data, DataType.UINT16, self.emergencyProfile.id)
-            _GXCommon.setData(data, DataType.OCTET_STRING, self.emergencyProfile.activationTime)
-            _GXCommon.setData(data, DataType.UINT32, self.emergencyProfile.duration)
+            _GXCommon.setData(settings, data, DataType.UINT16, self.emergencyProfile.id)
+            _GXCommon.setData(settings, data, DataType.OCTET_STRING, self.emergencyProfile.activationTime)
+            _GXCommon.setData(settings, data, DataType.UINT32, self.emergencyProfile.duration)
             ret = data
         elif e.index == 9:
             data = GXByteBuffer()
             data.setUInt8(DataType.ARRAY)
             data.setUInt8(len(self.emergencyProfileGroupIDs))
             for it in self.emergencyProfileGroupIDs:
-                _GXCommon.setData(data, DataType.UINT16, it)
+                _GXCommon.setData(settings, data, DataType.UINT16, it)
             ret = data
         elif e.index == 10:
             ret = self.emergencyProfileActive
@@ -209,12 +209,12 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(2)
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionOverThreshold.logicalName))
-            _GXCommon.setData(data, DataType.UINT16, self.actionOverThreshold.scriptSelector)
+            _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionOverThreshold.logicalName))
+            _GXCommon.setData(settings, data, DataType.UINT16, self.actionOverThreshold.scriptSelector)
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionUnderThreshold.logicalName))
-            _GXCommon.setData(data, DataType.UINT16, self.actionUnderThreshold.scriptSelector)
+            _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionUnderThreshold.logicalName))
+            _GXCommon.setData(settings, data, DataType.UINT16, self.actionUnderThreshold.scriptSelector)
             ret = data
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -243,7 +243,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             self.minUnderThresholdDuration = e.value
         elif e.index == 8:
             self.emergencyProfile.id = e.value[0]
-            self.emergencyProfile.activationTime = _GXCommon.changeType(e.value[1], DataType.DATETIME)
+            self.emergencyProfile.activationTime = _GXCommon.changeType(settings, e.value[1], DataType.DATETIME)
             self.emergencyProfile.duration = e.value[2]
         elif e.index == 9:
             self.emergencyProfileGroupIDs = []
@@ -261,6 +261,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         if reader.isStartElement("MonitoredValue", True):
             ot = reader.readElementContentAsInt("ObjectType")

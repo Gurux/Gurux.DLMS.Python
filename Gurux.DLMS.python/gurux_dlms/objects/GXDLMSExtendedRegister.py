@@ -132,8 +132,8 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.INT8, math.floor(math.log(self.scaler, 10)))
-            _GXCommon.setData(data, DataType.ENUM, int(self.unit))
+            _GXCommon.setData(settings, data, DataType.INT8, math.floor(math.log(self.scaler, 10)))
+            _GXCommon.setData(settings, data, DataType.ENUM, int(self.unit))
             return data.array()
         if e.index == 4:
             return self.status
@@ -180,7 +180,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
                 self.captureTime = GXDateTime()
             else:
                 if isinstance(e.value, bytearray):
-                    self.captureTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    self.captureTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     self.captureTime = e.value
         else:

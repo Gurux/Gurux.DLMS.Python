@@ -38,7 +38,6 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSSpecialDay import GXDLMSSpecialDay
-from ..GXDate import GXDate
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
@@ -76,9 +75,9 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
         for entry in entries:
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
-            _GXCommon.setData(bb, DataType.UINT16, entry.index)
-            _GXCommon.setData(bb, DataType.OCTET_STRING, entry.date)
-            _GXCommon.setData(bb, DataType.UINT8, entry.dayId)
+            _GXCommon.setData(None, bb, DataType.UINT16, entry.index)
+            _GXCommon.setData(None, bb, DataType.OCTET_STRING, entry.date)
+            _GXCommon.setData(None, bb, DataType.UINT8, entry.dayId)
         return client.method(self, 1, bb.array(), DataType.ARRAY)
 
     #
@@ -144,9 +143,9 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     #  Count
-                    _GXCommon.setData(data, DataType.UINT16, it.index)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it.date)
-                    _GXCommon.setData(data, DataType.UINT8, it.dayId)
+                    _GXCommon.setData(settings, data, DataType.UINT16, it.index)
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.date)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.dayId)
             return data
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
@@ -163,7 +162,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
                 for item in e.value:
                     it = GXDLMSSpecialDay()
                     it.index = item[0]
-                    it.date = _GXCommon.changeType(item[1], DataType.DATE)
+                    it.date = _GXCommon.changeType(settings, item[1], DataType.DATE)
                     it.dayId = item[2]
                     self.entries.append(it)
         else:
@@ -180,7 +179,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
                 item = e.parameters
                 it = GXDLMSSpecialDay()
                 it.index = item[0]
-                it.date = _GXCommon.changeType(item[1], DataType.DATE)
+                it.date = _GXCommon.changeType(settings, item[1], DataType.DATE)
                 it.dayId = item[2]
                 for item2 in items:
                     if item2.index == it.index:
@@ -201,7 +200,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
             while reader.isStartElement("Entry", True):
                 it = GXDLMSSpecialDay()
                 it.index = reader.readElementContentAsInt("Index")
-                it.date = GXDate(reader.readElementContentAsString("Date"))
+                it.date = reader.readElementContentAsDate("Date")
                 it.dayId = reader.readElementContentAsInt("DayId")
                 self.entries.append(it)
             reader.readEndElement("Entries")
@@ -212,7 +211,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
             for it in self.entries:
                 writer.writeStartElement("Entry")
                 writer.writeElementString("Index", it.index)
-                writer.writeElementString("Date", it.date.toFormatString())
+                writer.writeElementString("Date", it.date)
                 writer.writeElementString("DayId", it.dayId)
                 writer.writeEndElement()
             writer.writeEndElement()

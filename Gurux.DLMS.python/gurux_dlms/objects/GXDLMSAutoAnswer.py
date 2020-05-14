@@ -36,7 +36,6 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import AutoAnswerMode, AutoAnswerStatus
 
@@ -146,9 +145,9 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
                     #  Count
                     buff.setUInt8(2)
                     #  Start time
-                    _GXCommon.setData(buff, DataType.OCTET_STRING, it.getKey())
+                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, it.getKey())
                     #  End time
-                    _GXCommon.setData(buff, DataType.OCTET_STRING, it.value)
+                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, it.value)
             ret = buff.array()
         elif e.index == 4:
             ret = self.status
@@ -158,8 +157,8 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
             buff = GXByteBuffer()
             buff.setUInt8(DataType.STRUCTURE)
             _GXCommon.setObjectCount(2, buff)
-            _GXCommon.setData(buff, DataType.UINT8, self.numberOfRingsInListeningWindow)
-            _GXCommon.setData(buff, DataType.UINT8, self.numberOfRingsOutListeningWindow)
+            _GXCommon.setData(settings, buff, DataType.UINT8, self.numberOfRingsInListeningWindow)
+            _GXCommon.setData(settings, buff, DataType.UINT8, self.numberOfRingsOutListeningWindow)
             ret = buff.array()
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -177,8 +176,8 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
             self.listeningWindow = []
             if e.value:
                 for item in e.value:
-                    start = _GXCommon.changeType(item[0], DataType.DATETIME)
-                    end = _GXCommon.changeType(item[1], DataType.DATETIME)
+                    start = _GXCommon.changeType(settings, item[0], DataType.DATETIME)
+                    end = _GXCommon.changeType(settings, item[1], DataType.DATETIME)
                     self.listeningWindow.append((start, end))
         elif e.index == 4:
             self.status = e.value
@@ -198,8 +197,8 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         self.listeningWindow = []
         if reader.isStartElement("ListeningWindow", True):
             while reader.isStartElement("Item", True):
-                start = GXDateTime(reader.readElementContentAsString("Start"))
-                end = GXDateTime(reader.readElementContentAsString("End"))
+                start = reader.readElementContentAsDateTime("Start")
+                end = reader.readElementContentAsDateTime("End")
                 self.listeningWindow.append((start, end))
             reader.readEndElement("ListeningWindow")
         self.status = reader.readElementContentAsInt("Status")
@@ -213,8 +212,8 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         if self.listeningWindow:
             for k, v in self.listeningWindow:
                 writer.writeStartElement("Item")
-                writer.writeElementString("Start", k.toFormatString())
-                writer.writeElementString("End", v.toFormatString())
+                writer.writeElementString("Start", k)
+                writer.writeElementString("End", v)
                 writer.writeEndElement()
         writer.writeEndElement()
         writer.writeElementString("Status", int(self.status))

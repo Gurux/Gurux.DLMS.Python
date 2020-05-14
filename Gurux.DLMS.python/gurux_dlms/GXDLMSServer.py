@@ -70,6 +70,7 @@ from .enums.Conformance import Conformance
 from .objects.IGXDLMSBase import IGXDLMSBase
 from .enums.Initiate import Initiate
 from .enums.Security import Security
+from .GXDLMSLNCommandHandler import GXDLMSLNCommandHandler
 
 # pylint: disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
 class GXDLMSServer(object):
@@ -372,7 +373,7 @@ class GXDLMSServer(object):
         dt = obj.getDataType(index)
         if dt == DataType.NONE and value:
             dt = _GXCommon.getDLMSDataType(value)
-        _GXCommon.setData(buff, dt, value)
+        _GXCommon.setData(self.settings, buff, dt, value)
 
     #
     # Generates data notification message.
@@ -824,7 +825,6 @@ class GXDLMSServer(object):
         return GXDLMS.getHdlcFrame(self.settings, int(0), self.replyData)
 
     def handleCommand(self, cmd, data, sr):
-        from .GXDLMSLNCommandHandler import GXDLMSLNCommandHandler
         frame_ = 0
         if self.replyData:
             frame_ = self.settings.getNextSend(False)
@@ -875,7 +875,6 @@ class GXDLMSServer(object):
         return reply
 
     def handleGeneralBlockTransfer(self, data, sr):
-        from .GXDLMSLNCommandHandler import GXDLMSLNCommandHandler
         if self.transaction:
             if self.transaction.command == Command.GET_REQUEST:
                 if sr.count == 0:

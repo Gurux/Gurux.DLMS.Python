@@ -107,8 +107,8 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.STRUCTURE)
         #  Add structure size.
         data.setUInt8(2)
-        _GXCommon.setData(data, DataType.UINT8, id_)
-        _GXCommon.setData(data, DataType.STRING, name)
+        _GXCommon.setData(None, data, DataType.UINT8, id_)
+        _GXCommon.setData(None, data, DataType.STRING, name)
         return client.method(self, 5, data.array(), DataType.STRUCTURE)
 
     #
@@ -127,8 +127,8 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.STRUCTURE)
         #  Add structure size.
         data.setUInt8(2)
-        _GXCommon.setData(data, DataType.UINT8, id_)
-        _GXCommon.setData(data, DataType.STRING, name)
+        _GXCommon.setData(None, data, DataType.UINT8, id_)
+        _GXCommon.setData(None, data, DataType.STRING, name)
         return client.method(self, 6, data.array(), DataType.STRUCTURE)
 
     def getValues(self):
@@ -251,17 +251,17 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             if not pos <= settings.index:
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(4)
-                _GXCommon.setData(data, DataType.UINT16, it.objectType)
-                _GXCommon.setData(data, DataType.UINT8, it.version)
-                _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
-                self.__getAccessRights(it, e.server, data)
+                _GXCommon.setData(settings, data, DataType.UINT16, it.objectType)
+                _GXCommon.setData(settings, data, DataType.UINT8, it.version)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
+                self.__getAccessRights(settings, it, e.server, data)
                 settings.index = settings.index + 1
                 if settings.isServer:
                     if not e.isSkipMaxPduSize and len(data) >= settings.maxPduSize:
                         break
         return data
 
-    def __getAccessRights(self, item, server, data):
+    def __getAccessRights(self, settings, item, server, data):
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(2)
         if server is None:
@@ -280,9 +280,9 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 m = server.onGetAttributeAccess(e)
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(3)
-                _GXCommon.setData(data, DataType.INT8, pos + 1)
-                _GXCommon.setData(data, DataType.ENUM, m)
-                _GXCommon.setData(data, DataType.NONE, None)
+                _GXCommon.setData(settings, data, DataType.INT8, pos + 1)
+                _GXCommon.setData(settings, data, DataType.ENUM, m)
+                _GXCommon.setData(settings, data, DataType.NONE, None)
                 pos += 1
             data.setUInt8(DataType.ARRAY)
             cnt = item.getMethodCount()
@@ -292,12 +292,12 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 e.index = pos + 1
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
-                _GXCommon.setData(data, DataType.INT8, pos + 1)
+                _GXCommon.setData(settings, data, DataType.INT8, pos + 1)
                 m = server.onGetMethodAccess(e)
                 if self.version == 0:
-                    _GXCommon.setData(data, DataType.BOOLEAN, m != 0)
+                    _GXCommon.setData(settings, data, DataType.BOOLEAN, m != 0)
                 else:
-                    _GXCommon.setData(data, DataType.ENUM, m)
+                    _GXCommon.setData(settings, data, DataType.ENUM, m)
                 pos += 1
 
     @classmethod
@@ -332,8 +332,8 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 settings.index = settings.index + 1
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
-                _GXCommon.setData(data, DataType.UINT8, k)
-                _GXCommon.setData(data, DataType.STRING, v)
+                _GXCommon.setData(settings, data, DataType.UINT8, k)
+                _GXCommon.setData(settings, data, DataType.STRING, v)
         return data
 
     def getDataType(self, index):
@@ -383,13 +383,13 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(0x7)
-            _GXCommon.setData(data, DataType.UINT8, self.applicationContextName.jointIsoCtt)
-            _GXCommon.setData(data, DataType.UINT8, self.applicationContextName.country)
-            _GXCommon.setData(data, DataType.UINT16, self.applicationContextName.countryName)
-            _GXCommon.setData(data, DataType.UINT8, self.applicationContextName.identifiedOrganization)
-            _GXCommon.setData(data, DataType.UINT8, self.applicationContextName.dlmsUA)
-            _GXCommon.setData(data, DataType.UINT8, self.applicationContextName.applicationContext)
-            _GXCommon.setData(data, DataType.UINT8, self.applicationContextName.contextId)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.jointIsoCtt)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.country)
+            _GXCommon.setData(settings, data, DataType.UINT16, self.applicationContextName.countryName)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.identifiedOrganization)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.dlmsUA)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.applicationContext)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.contextId)
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -397,24 +397,24 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(6)
             bb = GXByteBuffer()
             bb.setUInt32(self.xDLMSContextInfo.conformance)
-            _GXCommon.setData(data, DataType.BITSTRING, bb.subArray(1, 3))
-            _GXCommon.setData(data, DataType.UINT16, self.xDLMSContextInfo.maxReceivePduSize)
-            _GXCommon.setData(data, DataType.UINT16, self.xDLMSContextInfo.maxSendPduSize)
-            _GXCommon.setData(data, DataType.UINT8, self.xDLMSContextInfo.dlmsVersionNumber)
-            _GXCommon.setData(data, DataType.INT8, self.xDLMSContextInfo.qualityOfService)
-            _GXCommon.setData(data, DataType.OCTET_STRING, self.xDLMSContextInfo.cypheringInfo)
+            _GXCommon.setData(settings, data, DataType.BITSTRING, bb.subArray(1, 3))
+            _GXCommon.setData(settings, data, DataType.UINT16, self.xDLMSContextInfo.maxReceivePduSize)
+            _GXCommon.setData(settings, data, DataType.UINT16, self.xDLMSContextInfo.maxSendPduSize)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.xDLMSContextInfo.dlmsVersionNumber)
+            _GXCommon.setData(settings, data, DataType.INT8, self.xDLMSContextInfo.qualityOfService)
+            _GXCommon.setData(settings, data, DataType.OCTET_STRING, self.xDLMSContextInfo.cypheringInfo)
             ret = data
         elif e.index == 6:
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(0x7)
-            _GXCommon.setData(data, DataType.UINT8, self.authenticationMechanismName.jointIsoCtt)
-            _GXCommon.setData(data, DataType.UINT8, self.authenticationMechanismName.country)
-            _GXCommon.setData(data, DataType.UINT16, self.authenticationMechanismName.countryName)
-            _GXCommon.setData(data, DataType.UINT8, self.authenticationMechanismName.identifiedOrganization)
-            _GXCommon.setData(data, DataType.UINT8, self.authenticationMechanismName.dlmsUA)
-            _GXCommon.setData(data, DataType.UINT8, self.authenticationMechanismName.authenticationMechanismName)
-            _GXCommon.setData(data, DataType.UINT8, self.authenticationMechanismName.mechanismId)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.jointIsoCtt)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.country)
+            _GXCommon.setData(settings, data, DataType.UINT16, self.authenticationMechanismName.countryName)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.identifiedOrganization)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.dlmsUA)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.authenticationMechanismName)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.mechanismId)
             ret = data
         elif e.index == 7:
             ret = self.secret
@@ -429,11 +429,11 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
             if self.currentUser is None:
-                _GXCommon.setData(data, DataType.UINT8, 0)
-                _GXCommon.setData(data, DataType.STRING, None)
+                _GXCommon.setData(settings, data, DataType.UINT8, 0)
+                _GXCommon.setData(settings, data, DataType.STRING, None)
             else:
-                _GXCommon.setData(data, DataType.UINT8, self.currentUser[0])
-                _GXCommon.setData(data, DataType.STRING, self.currentUser[1])
+                _GXCommon.setData(settings, data, DataType.UINT8, self.currentUser[0])
+                _GXCommon.setData(settings, data, DataType.STRING, self.currentUser[1])
             ret = data
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -441,6 +441,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def updateObjectList(cls, settings, target, value):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         target = []
         if value:

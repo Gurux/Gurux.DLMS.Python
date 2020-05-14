@@ -221,7 +221,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
             else:
                 tmp = None
                 if isinstance(e.value, bytearray):
-                    tmp = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    tmp = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     tmp = e.value
                 self.period = tmp

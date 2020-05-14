@@ -87,9 +87,9 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         #Add structure size.
         data.SetUInt8(2)
         #firstIndex
-        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
-        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         return client.method(self, 3, data.Array(), DataType.STRUCTURE)
 
     #
@@ -104,11 +104,11 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         #Add structure size.
         data.SetUInt8(4)
         #firstIndex
-        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
-        _GXCommon.setData(data, DataType.UINT16, entry.index)
-        _GXCommon.setData(data, DataType.UINT16, 0)
-        _GXCommon.setData(data, DataType.UINT16, 0)
+        _GXCommon.setData(None, data, DataType.UINT16, entry.index)
+        _GXCommon.setData(None, data, DataType.UINT16, 0)
+        _GXCommon.setData(None, data, DataType.UINT16, 0)
         return client.method(self, 1, data.Array(), DataType.STRUCTURE)
 
     #
@@ -123,11 +123,11 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         #Add structure size.
         data.SetUInt8(4)
         #firstIndex
-        _GXCommon.setData(data, DataType.UINT16, 0)
-        _GXCommon.setData(data, DataType.UINT16, 0)
-        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        _GXCommon.setData(None, data, DataType.UINT16, 0)
+        _GXCommon.setData(None, data, DataType.UINT16, 0)
+        _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
-        _GXCommon.setData(data, DataType.UINT16, entry.index)
+        _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         return client.method(self, 1, data.Array(), DataType.STRUCTURE)
 
     #
@@ -182,19 +182,19 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.UINT16)
         data.setUInt16(it.scriptSelector)
         #Add switch time.
-        _GXCommon.setData(data, DataType.OCTET_STRING, GXTime(it.switchTime))
+        _GXCommon.setData(None, data, DataType.OCTET_STRING, GXTime(it.switchTime))
         #Add validity window.
         data.setUInt8(DataType.UINT16)
         data.setUInt16(it.validityWindow)
         #Add exec week days.
         bs = GXBitString(GXUInt8(it.execWeekdays), 7)
-        _GXCommon.setData(data, DataType.BITSTRING, bs)
+        _GXCommon.setData(None, data, DataType.BITSTRING, bs)
         #Add exec spec days.
-        _GXCommon.setData(data, DataType.BITSTRING, it.execSpecDays)
+        _GXCommon.setData(None, data, DataType.BITSTRING, it.execSpecDays)
         #Add begin date.
-        _GXCommon.setData(data, DataType.OCTET_STRING, GXDate(it.beginDate))
+        _GXCommon.setData(None, data, DataType.OCTET_STRING, GXDate(it.beginDate))
         #Add end date.
-        _GXCommon.setData(data, DataType.OCTET_STRING, GXDate(it.endDate))
+        _GXCommon.setData(None, data, DataType.OCTET_STRING, GXDate(it.endDate))
 
     #
     # Returns value of given attribute.
@@ -222,12 +222,12 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         item.enable = it[1]
         item.logicalName = _GXCommon.toLogicalName(it[2])
         item.scriptSelector = it[3]
-        item.switchTime = _GXCommon.changeType(it[4], DataType.TIME)
+        item.switchTime = _GXCommon.changeType(None, it[4], DataType.TIME)
         item.validityWindow = it[5]
         item.execWeekdays = it[6].toByte()
         item.execSpecDays = it[7]
-        item.beginDate = _GXCommon.changeType(it[8], DataType.DATE)
-        item.endDate = _GXCommon.changeType(it[9], DataType.DATE)
+        item.beginDate = _GXCommon.changeType(None, it[8], DataType.DATE)
+        item.endDate = _GXCommon.changeType(None, it[9], DataType.DATE)
         return item
 
     #

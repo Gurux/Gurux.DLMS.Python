@@ -33,26 +33,32 @@
 # ---------------------------------------------------------------------------
 import datetime
 import calendar
+import time
 from .enums import DateTimeSkips, ClockStatus, DateTimeExtraInfo
+from .GXTimeZone import GXTimeZone
 
 ###Python 2 requires this
 #pylint: disable=bad-option-value,old-style-class
 class GXDateTime:
-    #
-    # Constructor.
-    #
-    # @param value
-    #            Date value.
-    #
-    def __init__(self, value=None):
+    def __init__(self, value=None, pattern=None):
+        """
+        Constructor.
+
+        value: Date-time value.
+        pattern: Date-time pattern that is used when value is a string.
+        """
         self.extra = DateTimeExtraInfo.NONE
         self.skip = DateTimeSkips.NONE
         self.status = ClockStatus.OK
+        self.timeZone = 0
         self.dayOfWeek = 0
         if isinstance(value, datetime.datetime):
-            self.value = value
+            if value.tzinfo is None:
+                self.value = datetime.datetime(value.year, value.month, value.day, value.hour, value.minute, value.second, 0, tzinfo=GXTimeZone(int(time.localtime().tm_gmtoff / 60)))
+            else:
+                self.value = value
         elif isinstance(value, str):
-            self.value = self.fromString(value)
+            self.value = self.fromString(value, pattern)
         elif isinstance(value, GXDateTime):
             self.value = value.value
             self.skip = value.skip
@@ -87,7 +93,7 @@ class GXDateTime:
                 continue
             dp += sep
             tmp = int(d)
-            if tmp in(1901, 1):
+            if tmp in (1901, 1):
                 if loading:
                     dp += "%Y"
                 elif len(d) == 2:
@@ -137,13 +143,25 @@ class GXDateTime:
             return dp[1:] + " " + tp[1:] + " " + pm
         return dp[1:] + " " + appendPM + " " + tp[1:]
 
+    #Check is time zone included and return index of time zone.
+    @classmethod
+    def __timeZonePosition(cls, value):
+        if len(value) > 5:
+            pos = len(value) - 6
+            sep = value[pos]
+            if sep in('-', '+'):
+                return pos
+            if value[len(value) - 1] == 'Z':
+                return len(value) - 1
+        return -1
+
     #
     # Constructor
     #
     # @param value
     #            Date time value as a string.
     #pylint: disable=too-many-nested-blocks
-    def fromString(self, value):
+    def fromString(self, value, pattern=None):
         if self.skip is None:
             self.skip = DateTimeSkips.NONE
         if self.status is None:
@@ -151,8 +169,9 @@ class GXDateTime:
         if self.extra is None:
             self.extra = DateTimeExtraInfo.NONE
         if value:
-            str_ = self.__get_pattern(True)
-            str_ = self._remove(str_)
+            if not pattern:
+                pattern = self.__get_pattern(True)
+            pattern = self._remove(pattern)
             if value.find('BEGIN') != -1:
                 self.extra |= DateTimeExtraInfo.DST_BEGIN
                 value = value.replace("BEGIN", "01")
@@ -166,7 +185,8 @@ class GXDateTime:
                 self.extra |= DateTimeExtraInfo.LAST_DAY
                 value = value.replace("LASTDAY", "01")
             v = value
-
+            #Time zone is not added to time or date objects.
+            addTimeZone = type(self).__name__ == GXDateTime.__name__
             if value.find('*') != -1:
                 lastFormatIndex = -1
                 pos = 0
@@ -175,42 +195,62 @@ class GXDateTime:
                     if not self.__isNumeric(c):
                         if c == '*':
                             end = lastFormatIndex + 1
-                            c = str_[end]
-                            while end + 1 < len(str_) and str_[end] == c:
+                            c = pattern[end]
+                            while end + 1 < len(pattern) and pattern[end] == c:
                                 end += 1
-                            if str_[end] == 'Y':
+                            if pattern[end] == 'Y':
                                 v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
-                            elif str_[end] == '%-Y':
+                            elif pattern[end] == '%-Y':
                                 v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
-                            elif str_[end] == '%Y':
+                            elif pattern[end] == '%Y':
                                 v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
                             else:
                                 v = str(v[0:pos]) + "1" + str(v[pos + 1:])
-                            tmp = str_[lastFormatIndex + 1: end + 1].strip()
+                            tmp = pattern[lastFormatIndex + 1: end + 1].strip()
                             if tmp in ("%y", "%-y", "%Y", "%-Y"):
+                                addTimeZone = False
                                 self.skip |= DateTimeSkips.YEAR
                             elif tmp in ("%m", "%-m"):
+                                addTimeZone = False
                                 self.skip |= DateTimeSkips.MONTH
                             elif tmp in ("%d", "%-d"):
+                                addTimeZone = False
                                 self.skip |= DateTimeSkips.DAY
                             elif tmp in ("%H", "%-H"):
+                                addTimeZone = False
                                 self.skip |= DateTimeSkips.HOUR
-                                pos2 = str_.find("%p")
+                                pos2 = pattern.find("%p")
                                 if pos2 != -1:
-                                    str_.replace(pos2, pos2 + 1, "")
+                                    pattern.replace(pos2, pos2 + 1, "")
                             elif tmp in ("%M", "%-M"):
+                                addTimeZone = False
                                 self.skip |= DateTimeSkips.MINUTE
                             elif tmp in ("%S", "%-S"):
                                 self.skip |= DateTimeSkips.SECOND
                             elif tmp and not tmp == "G":
                                 raise ValueError("Invalid date time format.")
                         else:
-                            lastFormatIndex = str_.find(str(c), lastFormatIndex + 1)
+                            lastFormatIndex = pattern.find(str(c), lastFormatIndex + 1)
                     pos += 1
                 v = v.replace("Y", "2000")
-                self.value = datetime.datetime.strptime(v, str_)
-            self.skip |= DateTimeSkips.SECOND | DateTimeSkips.MILLISECOND
-            return datetime.datetime.strptime(v, str_)
+            self.skip |= DateTimeSkips.DAY_OF_WEEK | DateTimeSkips.MILLISECOND
+            #If time zone is used.
+            if addTimeZone:
+                pos = self.__timeZonePosition(v)
+                tz = None
+                if pos != -1:
+                    if v[pos] != 'Z':
+                        tz = 60 * int(v[pos + 1:pos + 3]) + int(v[pos + 4:])
+                    else:
+                        tz = 0
+                    v = v[0:pos]
+                tmp = datetime.datetime.strptime(v, pattern)
+                if tz is None:
+                    tmp = datetime.datetime(tmp.year, tmp.month, tmp.day, tmp.hour, tmp.minute, tmp.second, 0)
+                else:
+                    tmp = datetime.datetime(tmp.year, tmp.month, tmp.day, tmp.hour, tmp.minute, tmp.second, 0, tzinfo=GXTimeZone(tz))
+                return tmp
+            return datetime.datetime.strptime(v.strip(), pattern)
         return None
 
      #pylint: disable=no-self-use
@@ -218,70 +258,114 @@ class GXDateTime:
         #Do nothing.
         return format_
 
-    def toFormatString(self):
+    def toFormatString(self, pattern=None):
+        return self.__toFormatString(True, pattern)
+
+    def toFormatMeterString(self, pattern=None):
+        return self.__toFormatString(False, pattern)
+
+    @classmethod
+    def __toLocal(cls, value):
+        #Convert current time to local.
+        if value.tzinfo is None:
+            #If meter is not use time zone.
+            return value
+        timestamp = calendar.timegm(value.utctimetuple())
+        local_dt = datetime.datetime.fromtimestamp(timestamp)
+        assert value.resolution >= datetime.timedelta(microseconds=1)
+        return local_dt.replace(microsecond=value.microsecond)
+
+    def __getTimeZone(self):
+        if self.value.tzinfo:
+            return self.value.tzname()
+        return ""
+#        if self.value.utcoffset() is None:
+#            str_ = ""
+#        else:
+#
+#            offset = int(self.value.utcoffset().seconds / 60)
+#            if offset == 0:
+#                str_ = "Z"
+#            else:
+#                if offset > 0:
+#                    str_ = "+"
+#                else:
+#                    str_ = "-"
+#                str_ += str(int(offset / 60)).zfill(2)
+#                str_ += ":"
+#                str_ += str(offset % 60).zfill(2)#
+#        return str_
+
+    def __toFormatString(self, useLocalTime, pattern=None):
         if not self.value:
             return ""
 
         if self.skip != DateTimeSkips.NONE:
             #  Separate date and time parts.
-            str_ = self.__get_pattern(True)
-            str_ = self._remove(str_)
+            if not pattern:
+                pattern = self.__get_pattern(True)
+            pattern = self._remove(pattern)
 
             if self.extra & DateTimeExtraInfo.DST_BEGIN != 0:
-                str_ = self._replace(str_, "%m", "BEGIN")
-                str_ = self._replace(str_, "%-m", "BEGIN")
+                pattern = self._replace(pattern, "%m", "BEGIN")
+                pattern = self._replace(pattern, "%-m", "BEGIN")
             elif self.extra & DateTimeExtraInfo.DST_END != 0:
-                str_ = self._replace(str_, "%m", "END")
-                str_ = self._replace(str_, "%-m", "END")
+                pattern = self._replace(pattern, "%m", "END")
+                pattern = self._replace(pattern, "%-m", "END")
             elif self.extra & DateTimeExtraInfo.LAST_DAY != 0:
-                str_ = self._replace(str_, "%d", "LASTDAY")
-                str_ = self._replace(str_, "%-d", "LASTDAY")
+                pattern = self._replace(pattern, "%d", "LASTDAY")
+                pattern = self._replace(pattern, "%-d", "LASTDAY")
             elif self.extra & DateTimeExtraInfo.LAST_DAY2 != 0:
-                str_ = self._replace(str_, "%d", "LASTDAY2")
-                str_ = self._replace(str_, "%-d", "LASTDAY2")
+                pattern = self._replace(pattern, "%d", "LASTDAY2")
+                pattern = self._replace(pattern, "%-d", "LASTDAY2")
 
             if self.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%y", "*")
-                str_ = self._replace(str_, "%-y", "*")
-                str_ = self._replace(str_, "%-Y", "*")
-                str_ = self._replace(str_, "%Y", "*")
+                pattern = self._replace(pattern, "%y", "*")
+                pattern = self._replace(pattern, "%-y", "*")
+                pattern = self._replace(pattern, "%-Y", "*")
+                pattern = self._replace(pattern, "%Y", "*")
             if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%m", "*")
-                str_ = self._replace(str_, "%-m", "*")
+                pattern = self._replace(pattern, "%m", "*")
+                pattern = self._replace(pattern, "%-m", "*")
             if self.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%d", "*")
-                str_ = self._replace(str_, "%-d", "*")
+                pattern = self._replace(pattern, "%d", "*")
+                pattern = self._replace(pattern, "%-d", "*")
             if self.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%H", "*")
-                str_ = self._replace(str_, "%-H", "*")
-                str_ = self._replace(str_, "%I", "*")
-                str_ = self._replace(str_, "%-I", "*")
-                str_ = self._remove_(str_, "p", False)
+                pattern = self._replace(pattern, "%H", "*")
+                pattern = self._replace(pattern, "%-H", "*")
+                pattern = self._replace(pattern, "%I", "*")
+                pattern = self._replace(pattern, "%-I", "*")
+                pattern = self._remove_(pattern, "p", False)
             if self.skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%f", "*")
+                pattern = self._replace(pattern, "%f", "*")
             else:
-                index = str_.find("%S")
+                index = pattern.find("%S")
                 if index != -1:
-                    sep = str_[index - 1]
-                    str_.replace("%S", "%S" + sep + "%f")
+                    sep = pattern[index - 1]
+                    pattern.replace("%S", "%S" + sep + "%f")
                 else:
-                    index = str_.find("%-S")
+                    index = pattern.find("%-S")
                     if index != -1:
-                        sep = str_[index - 1]
-                        str_.replace("%-S", "%-S" + sep + "%f")
+                        sep = pattern[index - 1]
+                        pattern.replace("%-S", "%-S" + sep + "%f")
             if self.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%S", "*")
-                str_ = self._replace(str_, "%-S", "*")
+                pattern = self._replace(pattern, "%S", "*")
+                pattern = self._replace(pattern, "%-S", "*")
             else:
-                index = str_.find("%M")
+                index = pattern.find("%M")
                 if index != -1:
-                    sep = str_[index - 1]
-                    str_.replace("%M", "%M" + sep + "%S")
+                    sep = pattern[index - 1]
+                    pattern.replace("%M", "%M" + sep + "%S")
             if self.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
-                str_ = self._replace(str_, "%M", "*")
-                str_ = self._replace(str_, "%-M", "*")
-            return self.value.strftime(str_)
-        return self.value.strftime("%x %X")
+                pattern = self._replace(pattern, "%M", "*")
+                pattern = self._replace(pattern, "%-M", "*")
+
+            if useLocalTime:
+                return self.__toLocal(self.value).strftime(pattern)
+            return self.value.strftime(pattern) + self.__getTimeZone()
+        if useLocalTime:
+            return self.__toLocal(self.value).strftime("%x %X")
+        return self.value.strftime("%x %X") + self.__getTimeZone()
 
     @classmethod
     def _remove_(cls, value, tag, removeSeparator):
@@ -301,58 +385,70 @@ class GXDateTime:
         return value
 
     def __str__(self):
+        #Returns date-time of the meter using local time zone.
+        return self.__toString(True)
+
+    def toMeterString(self, pattern=None):
+        #Returns date-time of the meter using meter time zone.
+        return self.__toString(False, pattern)
+
+    def __toString(self, useLocalTime, pattern=None):
         if not self.value:
             return ""
-        str_ = ""
         if self.skip != DateTimeSkips.NONE:
             #  Separate date and time parts.
-            str_ = self.__get_pattern(False)
-            str_ = self._remove(str_)
+            if not pattern:
+                pattern = self.__get_pattern(False)
+            pattern = self._remove(pattern)
             if self.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%Y", True)
-                str_ = self._remove_(str_, "%y", True)
-                str_ = self._remove_(str_, "%-y", True)
-                str_ = self._remove_(str_, "%-Y", True)
+                pattern = self._remove_(pattern, "%Y", True)
+                pattern = self._remove_(pattern, "%y", True)
+                pattern = self._remove_(pattern, "%-y", True)
+                pattern = self._remove_(pattern, "%-Y", True)
             if self.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%m", True)
-                str_ = self._remove_(str_, "%-m", True)
+                pattern = self._remove_(pattern, "%m", True)
+                pattern = self._remove_(pattern, "%-m", True)
             if self.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%d", True)
-                str_ = self._remove_(str_, "%-d", True)
+                pattern = self._remove_(pattern, "%d", True)
+                pattern = self._remove_(pattern, "%-d", True)
             if self.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%H", True)
-                str_ = self._remove_(str_, "%-H", True)
-                str_ = self._remove_(str_, "%p", True)
+                pattern = self._remove_(pattern, "%H", True)
+                pattern = self._remove_(pattern, "%-H", True)
+                pattern = self._remove_(pattern, "%p", True)
             if self.skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%f", True)
+                pattern = self._remove_(pattern, "%f", True)
             else:
-                index = str_.find("%S")
+                index = pattern.find("%S")
                 if index != -1:
-                    sep = str_[index - 1]
-                    str_ = str_.replace("%S", "%S" + sep + "%f")
+                    sep = pattern[index - 1]
+                    pattern = pattern.replace("%S", "%S" + sep + "%f")
                 else:
-                    index = str_.find("%-S")
+                    index = pattern.find("%-S")
                     if index != -1:
-                        sep = str_[index - 1]
-                        str_ = str_.replace("%-S", "%-S" + sep + "%f")
+                        sep = pattern[index - 1]
+                        pattern = pattern.replace("%-S", "%-S" + sep + "%f")
             if self.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%S", True)
-                str_ = self._remove_(str_, "%-S", True)
+                pattern = self._remove_(pattern, "%S", True)
+                pattern = self._remove_(pattern, "%-S", True)
             else:
-                index = str_.find("%M")
+                index = pattern.find("%M")
                 if index == -1:
-                    index = str_.find("%-M")
+                    index = pattern.find("%-M")
                     if index != -1:
-                        sep = str_[index - 1]
-                        str_.replace("%-M", "%-M" + sep + "-S")
+                        sep = pattern[index - 1]
+                        pattern.replace("%-M", "%-M" + sep + "-S")
                     else:
-                        sep = str_[index - 1]
-                        str_.replace("%M", "%M" + sep + "S")
+                        sep = pattern[index - 1]
+                        pattern.replace("%M", "%M" + sep + "S")
             if self.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
-                str_ = self._remove_(str_, "%M", True)
-                str_ = self._remove_(str_, "%-M", True)
-            return self.value.strftime(str_.strip())
-        return self.value.strftime("%x %X")
+                pattern = self._remove_(pattern, "%M", True)
+                pattern = self._remove_(pattern, "%-M", True)
+            if useLocalTime:
+                return self.__toLocal(self.value).strftime(pattern.strip())
+            return self.value.strftime(pattern.strip()) + self.__getTimeZone()
+        if useLocalTime:
+            return self.value.strftime("%x %X")
+        return self.value.strftime("%x %X") + self.__getTimeZone()
 
     #
     # Get difference between given time and run time in ms.
@@ -445,10 +541,14 @@ class GXDateTime:
     #
     # Convert date time to Epoch time.
     #
-    # @param date
+    # @param value
     #            Date and time.
     # Unix time.
     #
     @classmethod
-    def toUnixTime(cls, date):
-        return int(date.value / 1000)
+    def toUnixTime(cls, value):
+        if isinstance(value, datetime):
+            return value.utctimetuple()
+        if isinstance(value, GXDateTime):
+            return value.value.utctimetuple()
+        return int(value.value / 1000)

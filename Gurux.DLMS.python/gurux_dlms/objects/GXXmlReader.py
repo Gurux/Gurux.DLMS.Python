@@ -151,11 +151,11 @@ class GXXmlReader:
                 if uiType == DataType.OCTET_STRING:
                     ret = GXByteBuffer.hexToBytes(str_)
                 elif uiType == DataType.DATETIME:
-                    ret = GXDateTime(str_)
+                    ret = GXDateTime(str_, "%m/%d/%Y %H:%M:%S")
                 elif uiType == DataType.DATE:
-                    ret = GXDate(str_)
+                    ret = GXDate(str_, "%m/%d/%Y")
                 elif uiType == DataType.TIME:
-                    ret = GXTime(str_)
+                    ret = GXTime(str_, "%H:%M:%S")
                 elif uiType == DataType.NONE:
                     ret = str_
                 else:
@@ -176,5 +176,21 @@ class GXXmlReader:
             str_ = self.currentElement.text
             self.getNext()
             if str_:
-                return GXDateTime(str_)
+                return GXDateTime(str_, "%m/%d/%Y %H:%M:%S")
+        return None
+
+    def readElementContentAsDate(self, name):
+        if name == self.currentElement.tag:
+            str_ = self.currentElement.text
+            self.getNext()
+            if str_:
+                return GXDate(str_, "%m/%d/%Y")
+        return None
+
+    def readElementContentAsTime(self, name):
+        if name == self.currentElement.tag:
+            str_ = self.currentElement.text
+            self.getNext()
+            if str_:
+                return GXTime(str_, "%H:%M:%S")
         return None

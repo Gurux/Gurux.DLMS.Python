@@ -57,6 +57,7 @@ class GXSecure:
     #pylint: disable=too-many-arguments
     @classmethod
     def secure(cls, settings, cipher, ic, data, secret):
+        #pylint: disable=import-outside-toplevel
         from .AesGcmParameter import AesGcmParameter
         if isinstance(secret, str):
             secret = secret.encode()

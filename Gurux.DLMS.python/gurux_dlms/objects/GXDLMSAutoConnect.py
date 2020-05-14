@@ -36,7 +36,6 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import AutoConnectMode
 
@@ -161,9 +160,9 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
                 #  Count
                 data.setUInt8(2)
                 #  Start time
-                _GXCommon.setData(data, DataType.OCTET_STRING, k)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, k)
                 #  End time
-                _GXCommon.setData(data, DataType.OCTET_STRING, v)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, v)
             ret = data.array()
         elif e.index == 6:
             data = GXByteBuffer()
@@ -176,7 +175,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setObjectCount(len(self.destinations), data)
                 #  destination
                 for it in self.destinations:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.getBytes(it))
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(it))
             ret = data.array()
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -198,14 +197,14 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
             self.callingWindow = []
             if e.value:
                 for item in e.value:
-                    start = _GXCommon.changeType(item[0], DataType.DATETIME)
-                    end = _GXCommon.changeType(item[1], DataType.DATETIME)
+                    start = _GXCommon.changeType(settings, item[0], DataType.DATETIME)
+                    end = _GXCommon.changeType(settings, item[1], DataType.DATETIME)
                     self.callingWindow.append((start, end))
         elif e.index == 6:
             self.destinations = []
             if e.value:
                 for item in e.value:
-                    it = _GXCommon.changeType(item, DataType.STRING)
+                    it = _GXCommon.changeType(settings, item, DataType.STRING)
                     self.destinations.append(it)
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -217,8 +216,8 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         self.callingWindow = []
         if reader.isStartElement("CallingWindow", True):
             while reader.isStartElement("Item", True):
-                start = GXDateTime(reader.readElementContentAsString("Start"))
-                end = GXDateTime(reader.readElementContentAsString("End"))
+                start = reader.readElementContentAsDateTime("Start")
+                end = reader.readElementContentAsDateTime("End")
                 self.callingWindow.append((start, end))
             reader.readEndElement("CallingWindow")
         str_ = reader.readElementContentAsString("Destinations", "")
@@ -233,8 +232,8 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("CallingWindow")
             for k, v in self.callingWindow:
                 writer.writeStartElement("Item")
-                writer.writeElementString("Start", k.toFormatString())
-                writer.writeElementString("End", v.toFormatString())
+                writer.writeElementString("Start", k)
+                writer.writeElementString("End", v)
                 writer.writeEndElement()
             writer.writeEndElement()
         if self.destinations:

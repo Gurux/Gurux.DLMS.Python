@@ -139,6 +139,7 @@
     <Compile Include="gurux_dlms\GXXmlLoadSettings.py" />
     <Compile Include="gurux_dlms\HdlcControlFrame.py" />
     <Compile Include="gurux_dlms\_GXObjectFactory.py" />
+    <Compile Include="gurux_dlms\GXTimeZone.py" />
     <Compile Include="gurux_dlms\_HDLCInfo.py" />
     <Compile Include="gurux_dlms\internal\_GXCommon.py" />
     <Compile Include="gurux_dlms\internal\_GXDataInfo.py" />

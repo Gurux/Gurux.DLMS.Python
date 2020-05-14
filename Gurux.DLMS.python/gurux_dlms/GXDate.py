@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename:        $HeadURL$
+#  Filename: $HeadURL$
 #
-#  Version:         $Revision$,
+#  Version: $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -36,13 +36,14 @@ from .GXDateTime import GXDateTime
 from .enums import DateTimeSkips
 
 class GXDate(GXDateTime):
-    def __init__(self, value=None):
+    def __init__(self, value=None, pattern=None):
         """
         Constructor.
 
+        pattern: Date-time pattern that is used when value is a string.
         value: Date value.
         """
-        GXDateTime.__init__(self, value)
+        GXDateTime.__init__(self, value, pattern)
         self.skip |= DateTimeSkips.HOUR
         self.skip |= DateTimeSkips.MINUTE
         self.skip |= DateTimeSkips.SECOND

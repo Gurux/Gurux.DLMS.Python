@@ -172,7 +172,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.unicastIPAddress), data)
                 for it in self.unicastIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -182,7 +182,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
             ret = data
         elif e.index == 6:
             data = GXByteBuffer()
@@ -192,7 +192,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.gatewayIPAddress), data)
                 for it in self.gatewayIPAddress:
-                    _GXCommon.setData(data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
             ret = data
         elif e.index == 7:
             if not self.primaryDNSAddress:
@@ -217,9 +217,9 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
                 for it in self.neighborDiscoverySetup:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.UINT8, it.maxRetry)
-                    _GXCommon.setData(data, DataType.UINT16, it.retryWaitTime)
-                    _GXCommon.setData(data, DataType.UINT32, it.sendPeriod)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.maxRetry)
+                    _GXCommon.setData(settings, data, DataType.UINT16, it.retryWaitTime)
+                    _GXCommon.setData(settings, data, DataType.UINT32, it.sendPeriod)
             ret = data
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -320,23 +320,23 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def saveIPAddress(cls, writer, list_, name):
+        writer.writeStartElement(name)
         if list_:
-            writer.writeStartElement(name)
             for it in list_:
                 writer.writeElementString("Value", it)
-            writer.writeEndElement()
+        writer.writeEndElement()
 
     @classmethod
     def saveNeighborDiscoverySetup(cls, writer, list_, name):
+        writer.writeStartElement(name)
         if list_:
-            writer.writeStartElement(name)
             for it in list_:
                 writer.writeStartElement("Item")
                 writer.writeElementString("MaxRetry", it.maxRetry)
                 writer.writeElementString("RetryWaitTime", it.retryWaitTime)
                 writer.writeElementString("SendPeriod", it.sendPeriod)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
 
     def save(self, writer):
         writer.writeElementString("DataLinkLayerReference", self.dataLinkLayerReference)

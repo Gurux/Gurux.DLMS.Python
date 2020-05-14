@@ -127,8 +127,8 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
                 for it in self.registerAssignment:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(2)
-                    _GXCommon.setData(data, DataType.UINT16, it.objectType)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
+                    _GXCommon.setData(settings, data, DataType.UINT16, it.objectType)
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
             return data
         if e.index == 3:
             data = GXByteBuffer()
@@ -137,11 +137,11 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
             for k, v in self.maskList:
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
-                _GXCommon.setData(data, DataType.OCTET_STRING, k)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, k)
                 data.setUInt8(DataType.ARRAY)
                 data.setUInt8(len(v))
                 for b in v:
-                    _GXCommon.setData(data, DataType.UINT8, b)
+                    _GXCommon.setData(settings, data, DataType.UINT8, b)
             return data
         if e.index == 4:
             return self.activeMask

@@ -210,11 +210,11 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             for k, v in self.captureDefinition:
                 buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(2)
-                _GXCommon.setData(buff, DataType.UINT8, k)
+                _GXCommon.setData(settings, buff, DataType.UINT8, k)
                 if not v:
-                    _GXCommon.setData(buff, DataType.OCTET_STRING, None)
+                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, None)
                 else:
-                    _GXCommon.setData(buff, DataType.OCTET_STRING, v.encode())
+                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, v.encode())
             ret = buff
         elif e.index == 4:
             ret = self.capturePeriod
@@ -254,7 +254,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             self.captureDefinition = []
             if e.value:
                 for it in e.value:
-                    self.captureDefinition.append((_GXCommon.changeType(it[0], DataType.OCTET_STRING), _GXCommon.changeType(it[1], DataType.OCTET_STRING)))
+                    self.captureDefinition.append((_GXCommon.changeType(settings, it[0], DataType.OCTET_STRING), _GXCommon.changeType(settings, it[1], DataType.OCTET_STRING)))
         elif e.index == 4:
             self.capturePeriod = e.value
         elif e.index == 5:

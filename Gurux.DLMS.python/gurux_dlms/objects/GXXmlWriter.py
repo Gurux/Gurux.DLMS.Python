@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import xml.etree.cElementTree as ET
+#pylint: disable=broad-except,no-name-in-module
 try:
     from enum import Enum, IntEnum
 except Exception:
@@ -85,7 +86,7 @@ class GXXmlWriter:
             elif isinstance(value, str):
                 ET.SubElement(self.getTarget(), name).text = value
             elif isinstance(value, GXDateTime):
-                ET.SubElement(self.getTarget(), name).text = value.toFormatString()
+                ET.SubElement(self.getTarget(), name).text = value.toFormatMeterString("%m/%d/%Y %H:%M:%S")
             elif isinstance(value, bool):
                 if value:
                     ET.SubElement(self.getTarget(), name).text = "1"
@@ -159,7 +160,7 @@ class GXXmlWriter:
                 if isinstance(value, (float)):
                     target.set("UIType", str(int(DataType.FLOAT64)))
                 if isinstance(value, GXDateTime):
-                    target.text = value.toFormatString()
+                    target.text = value.toFormatMeterString("%m/%d/%Y %H:%M:%S")
                 elif isinstance(value, (bytearray, bytes)):
                     target.text = GXByteBuffer.hex(value)
                 elif isinstance(value, bool):

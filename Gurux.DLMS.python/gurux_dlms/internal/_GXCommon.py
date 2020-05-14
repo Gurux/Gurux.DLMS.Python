@@ -32,14 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #pylint: disable=broad-except,no-name-in-module
-import time
 from datetime import datetime
-# If E0401: Unable to import 'dateutil.tz'
-# pip install python-dateutil
-from dateutil.tz import tzoffset
-# If E0401: Unable to import 'pytz'
-# pip install pytz
-import pytz
+from ..GXTimeZone import GXTimeZone
 from ._GXDataInfo import _GXDataInfo
 from ..GXByteBuffer import GXByteBuffer
 from ..GXBitString import GXBitString
@@ -209,7 +203,8 @@ class _GXCommon:
         return sb
 
     @classmethod
-    def changeType(cls, value, type_):
+    def changeType(cls, settings, value, type_):
+        #pylint: disable=import-outside-toplevel
         if value is None:
             ret = None
         elif type_ == DataType.NONE:
@@ -229,7 +224,7 @@ class _GXCommon:
         else:
             info = _GXDataInfo()
             info.type_ = type_
-            ret = _GXCommon.getData(GXByteBuffer(value), info)
+            ret = _GXCommon.getData(settings, GXByteBuffer(value), info)
             if not info.complete:
                 raise ValueError("Change type failed. Not enought data.")
             if type_ == DataType.OCTET_STRING and isinstance(ret, bytes):
@@ -246,7 +241,7 @@ class _GXCommon:
     # Received data.
     #
     @classmethod
-    def getData(cls, data, info):
+    def getData(cls, settings, data, info):
         value = None
         startIndex = data.position
         if data.position == len(data):
@@ -265,7 +260,7 @@ class _GXCommon:
             info.complete = False
             return None
         if info.type_ == DataType.ARRAY or info.type_ == DataType.STRUCTURE:
-            value = cls.getArray(data, info, startIndex)
+            value = cls.getArray(settings, data, info, startIndex)
         elif info.type_ == DataType.BOOLEAN:
             value = cls.getBoolean(data, info)
         elif info.type_ == DataType.BITSTRING:
@@ -279,7 +274,7 @@ class _GXCommon:
         elif info.type_ == DataType.STRING_UTF8:
             value = cls.getUtfString(data, info, knownType)
         elif info.type_ == DataType.OCTET_STRING:
-            value = cls.getOctetString(data, info, knownType)
+            value = cls.getOctetString(settings, data, info, knownType)
         elif info.type_ == DataType.BCD:
             value = cls.getBcd(data, info)
         elif info.type_ == DataType.INT8:
@@ -291,7 +286,7 @@ class _GXCommon:
         elif info.type_ == DataType.UINT16:
             value = cls.getUInt16(data, info)
         elif info.type_ == DataType.COMPACT_ARRAY:
-            value = cls.getCompactArray(data, info)
+            value = cls.getCompactArray(settings, data, info)
         elif info.type_ == DataType.INT64:
             value = cls.getInt64(data, info)
         elif info.type_ == DataType.UINT64:
@@ -299,11 +294,11 @@ class _GXCommon:
         elif info.type_ == DataType.ENUM:
             value = cls.getEnum(data, info)
         elif info.type_ == DataType.FLOAT32:
-            value = cls.getFloat(data, info)
+            value = cls.getFloat(settings, data, info)
         elif info.type_ == DataType.FLOAT64:
-            value = cls.getDouble(data, info)
+            value = cls.getDouble(settings, data, info)
         elif info.type_ == DataType.DATETIME:
-            value = cls.getDateTime(data, info)
+            value = cls.getDateTime(settings, data, info)
         elif info.type_ == DataType.DATE:
             value = cls.getDate(data, info)
         elif info.type_ == DataType.TIME:
@@ -354,7 +349,7 @@ class _GXCommon:
     # Object array.
     #
     @classmethod
-    def getArray(cls, buff, info, index):
+    def getArray(cls, settings, buff, info, index):
         value = None
         if info.count == 0:
             info.count = _GXCommon.getObjectCount(buff)
@@ -374,7 +369,7 @@ class _GXCommon:
         while pos != info.count:
             info2 = _GXDataInfo()
             info2.xml = info.xml
-            tmp = cls.getData(buff, info2)
+            tmp = cls.getData(settings, buff, info2)
             if not info2.complete:
                 buff.position = startIndex
                 info.complete = False
@@ -514,7 +509,7 @@ class _GXCommon:
     # Parsed date and time.
     #
     @classmethod
-    def getDateTime(cls, buff, info):
+    def getDateTime(cls, settings, buff, info):
         # pylint: disable=too-many-locals, broad-except
         value = None
         skip = DateTimeSkips.NONE
@@ -595,12 +590,14 @@ class _GXCommon:
                 ms = 0
             tz = None
             if deviation != 0x8000:
-                tz = -deviation
-
-            if tz:
-                dt.value = datetime(year, month, day, hour, minute, second, ms, tzinfo=tzoffset(None, tz))
-            else:
+                if settings.useUtc2NormalTime:
+                    tz = deviation
+                else:
+                    tz = -deviation
+            if tz is None:
                 dt.value = datetime(year, month, day, hour, minute, second, ms)
+            else:
+                dt.value = datetime(year, month, day, hour, minute, second, ms, tzinfo=GXTimeZone(tz))
             dt.skip = skip
             value = dt
         except Exception as ex:
@@ -622,7 +619,7 @@ class _GXCommon:
     # Parsed double value.
     #
     @classmethod
-    def getDouble(cls, buff, info):
+    def getDouble(cls, settings, buff, info):
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 8:
@@ -633,7 +630,7 @@ class _GXCommon:
             if info.xml.comments:
                 info.xml.appendComment("{:.2f}".format(value))
             tmp = GXByteBuffer()
-            cls.setData(tmp, DataType.FLOAT64, value)
+            cls.setData(settings, tmp, DataType.FLOAT64, value)
             info.xml.appendLine(info.xml.getDataType(info.type_), None, GXByteBuffer.toHex(False, 1, len(tmp) - 1))
         return value
 
@@ -647,7 +644,7 @@ class _GXCommon:
     # Parsed float value.
     #
     @classmethod
-    def getFloat(cls, buff, info):
+    def getFloat(cls, settings, buff, info):
         value = None
         #  If there is not enough data available.
         if len(buff) - buff.position < 4:
@@ -658,7 +655,7 @@ class _GXCommon:
             if info.xml.comments:
                 info.xml.appendComment("{:.2f}".format(value))
             tmp = GXByteBuffer()
-            cls.setData(tmp, DataType.FLOAT32, value)
+            cls.setData(settings, tmp, DataType.FLOAT32, value)
             info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))
         return value
 
@@ -746,15 +743,16 @@ class _GXCommon:
             info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 4))
         return GXUInt16(value)
 
+    #pylint: disable=too-many-arguments
     @classmethod
-    def getCompactArrayItem(cls, buff, dt, list_, len_):
+    def getCompactArrayItem(cls, settings, buff, dt, list_, len_):
         if isinstance(dt, list):
             tmp2 = list()
             for it in dt:
                 if isinstance(it, DataType):
-                    cls.getCompactArrayItem(buff, it, tmp2, 1)
+                    cls.getCompactArrayItem(settings, buff, it, tmp2, 1)
                 else:
-                    cls.getCompactArrayItem(buff, it, tmp2, 1)
+                    cls.getCompactArrayItem(settings, buff, it, tmp2, 1)
             list_.append(tmp2)
             return
 
@@ -772,14 +770,14 @@ class _GXCommon:
             while buff.position - start < len_:
                 tmp.clear()
                 tmp.type = dt
-                list_.append(cls.getOctetString(buff, tmp, False))
+                list_.append(cls.getOctetString(settings, buff, tmp, False))
                 if not tmp.complete:
                     break
         else:
             while buff.position - start < len_:
                 tmp.clear()
                 tmp.type_ = dt
-                list_.append(cls.getData(buff, tmp))
+                list_.append(cls.getData(settings, buff, tmp))
                 if not tmp.complete:
                     break
 
@@ -831,7 +829,7 @@ class _GXCommon:
     # parsed UInt16 value.
     #
     @classmethod
-    def getCompactArray(cls, buff, info):
+    def getCompactArray(cls, settings, buff, info):
         # pylint: disable=too-many-nested-blocks
 
         #  If there is not enough data available.
@@ -866,13 +864,13 @@ class _GXCommon:
                 pos = 0
                 while pos != len(cols):
                     if isinstance(cols[pos], GXArray):
-                        cls.getCompactArrayItem(buff, cols[pos], row, 1)
+                        cls.getCompactArrayItem(settings, buff, cols[pos], row, 1)
                     elif isinstance(cols[pos], GXStructure):
                         tmp2 = list()
-                        cls.getCompactArrayItem(buff, cols[pos], tmp2, 1)
+                        cls.getCompactArrayItem(settings, buff, cols[pos], tmp2, 1)
                         row.append(tmp2[0])
                     else:
-                        cls.getCompactArrayItem(buff, cols[pos], row, 1)
+                        cls.getCompactArrayItem(settings, buff, cols[pos], row, 1)
                     if buff.position == len(buff):
                         break
                     pos += 1
@@ -918,7 +916,7 @@ class _GXCommon:
                     info.xml.append(buff.remainingHexStringFalse)
                     info.xml.appendEndTag(TranslatorTags.ARRAY_CONTENTS, True)
                     info.xml.appendEndTag(info.xml.getDataType(DataType.COMPACT_ARRAY))
-            cls.getCompactArrayItem(buff, dt, list_, len_)
+            cls.getCompactArrayItem(settings, buff, dt, list_, len_)
             if info.xml and info.xml.outputType == TranslatorOutputType.SIMPLE_XML:
                 for it in list_:
                     if isinstance(it, bytearray):
@@ -1053,7 +1051,7 @@ class _GXCommon:
     # parsed octet string value.
     #
     @classmethod
-    def getOctetString(cls, buff, info, knownType):
+    def getOctetString(cls, settings, buff, info, knownType):
         # pylint: disable=too-many-nested-blocks,broad-except
         value = None
         if knownType:
@@ -1084,7 +1082,7 @@ class _GXCommon:
                                 type_ = DataType.DATE
                             else:
                                 type_ = DataType.TIME
-                            dt = _GXCommon.changeType(tmp, type_)
+                            dt = _GXCommon.changeType(settings, tmp, type_)
                             year = dt.value.year
                             if 1970 < year > 2100:
                                 info.xml.appendComment(str(dt))
@@ -1253,15 +1251,13 @@ class _GXCommon:
     #
     # Convert object to DLMS bytes.
     #
-    # buff
-    # Byte buffer where data is write.
-    # dataType
-    # Data type.
-    # value
-    # Added Value.
+    # settings: DLMS settings.
+    # buff: Byte buffer where data is write.
+    # dataType: Data type.
+    # value: Added Value.
     #
     @classmethod
-    def setData(cls, buff, dataType, value):
+    def setData(cls, settings, buff, dataType, value):
         if dataType in (DataType.ARRAY, DataType.STRUCTURE) and isinstance(value, (GXByteBuffer, bytearray, bytes)):
             #  If byte array is added do not add type.
             buff.set(value)
@@ -1306,11 +1302,11 @@ class _GXCommon:
                 cls.setTime(buff, value)
             elif isinstance(value, (GXDateTime, datetime)):
                 buff.setUInt8(12)
-                cls.setDateTime(buff, value)
+                cls.setDateTime(settings, buff, value)
             else:
                 cls.setOctetString(buff, value)
         elif dataType in (DataType.ARRAY, DataType.STRUCTURE):
-            cls.setArray(buff, value)
+            cls.setArray(settings, buff, value)
         elif dataType == DataType.BCD:
             cls.setBcd(buff, value)
         elif dataType == DataType.COMPACT_ARRAY:
@@ -1318,7 +1314,7 @@ class _GXCommon:
             #  types of each element.
             raise ValueError("Invalid data type.")
         elif dataType == DataType.DATETIME:
-            cls.setDateTime(buff, value)
+            cls.setDateTime(settings, buff, value)
         elif dataType == DataType.DATE:
             cls.setDate(buff, value)
         elif dataType == DataType.TIME:
@@ -1424,7 +1420,7 @@ class _GXCommon:
     # Added value.
     #
     @classmethod
-    def setDateTime(cls, buff, value):
+    def setDateTime(cls, settings, buff, value):
         dt = cls.__getDateTime(value)
         #  Add year.
         if dt.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
@@ -1484,14 +1480,10 @@ class _GXCommon:
             buff.setUInt16(0x8000)
         else:
             #  Add devitation.
-            if dt.value.tzinfo:
-                val = -dt.value.utcoffset().total_seconds()
-                if dt.value.dst():
-                    val -= 60
-                buff.setUInt16(int(val))
-            else:
-                buff.setUInt16(int(time.timezone / 60))
-
+            d = int(dt.value.utcoffset().seconds / 60)
+            if not (settings and settings.useUtc2NormalTime):
+                d = -d
+            buff.setUInt16(d)
         #  Add clock_status
         if dt.skip & DateTimeSkips.STATUS == DateTimeSkips.NONE:
             if dt.value.dst() or dt.status & ClockStatus.DAYLIGHT_SAVE_ACTIVE != ClockStatus.OK:
@@ -1506,11 +1498,11 @@ class _GXCommon:
         buff.setUInt8(value)
 
     @classmethod
-    def setArray(cls, buff, value):
+    def setArray(cls, settings, buff, value):
         if value:
             _GXCommon.setObjectCount(len(value), buff)
             for it in value:
-                cls.setData(buff, cls.getDLMSDataType(it), it)
+                cls.setData(settings, buff, cls.getDLMSDataType(it), it)
         else:
             _GXCommon.setObjectCount(0, buff)
 
@@ -1664,8 +1656,6 @@ class _GXCommon:
             ret = DataType.FLOAT32
         elif isinstance(value, GXBitString):
             ret = DataType.BITSTRING
-        elif isinstance(value, unicode):
-            ret = DataType.STRING
         else:
             raise ValueError("Invalid value.")
         return ret
@@ -1747,23 +1737,25 @@ class _GXCommon:
         if dateString.endsWith("Z"):
             if len(dateString) > 13:
                 second = int(dateString[12:14])
-            return datetime(year, month, day, hour, minute, second, 0, tzinfo=tzoffset(None, 0))
+            return datetime(year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(0))
 
         if len(dateString) > 17:
             second = int(dateString.substring(12, 14))
         tz = dateString[dateString.length() - 4:]
-        return datetime(year, month, day, hour, minute, second, 0, tzinfo=tzoffset(None, tz))
+        return datetime(year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(tz))
 
     @classmethod
     def generalizedTime(cls, value):
         #Convert to UTC time.
-        value = value.astimezone(pytz.utc)
-        sb = cls.integerString(value.year, 4)
-        sb += cls.integerString(value.month, 2)
-        sb += cls.integerString(value.day, 2)
-        sb += cls.integerString(value.hour, 2)
-        sb += cls.integerString(value.minute, 2)
-        sb += cls.integerString(value.second, 2)
+        if isinstance(value, (GXDateTime)):
+            value = value.value
+        value = value.utctimetuple()
+        sb = cls.integerString(value.tm_year, 4)
+        sb += cls.integerString(value.tm_mon, 2)
+        sb += cls.integerString(value.tm_mday, 2)
+        sb += cls.integerString(value.tm_hour, 2)
+        sb += cls.integerString(value.tm_min, 2)
+        sb += cls.integerString(value.tm_sec, 2)
         #UTC time.
         sb += "Z"
         return sb

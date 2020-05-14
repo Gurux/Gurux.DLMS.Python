@@ -38,7 +38,6 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, Unit
-from ..GXDateTime import GXDateTime
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
@@ -165,8 +164,8 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.INT8, math.floor(math.log(self.scaler, 10)))
-            _GXCommon.setData(data, DataType.ENUM, int(self.unit))
+            _GXCommon.setData(settings, data, DataType.INT8, math.floor(math.log(self.scaler, 10)))
+            _GXCommon.setData(settings, data, DataType.ENUM, int(self.unit))
             ret = data.array()
         elif e.index == 5:
             ret = self.status
@@ -233,7 +232,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             else:
                 tmp = None
                 if isinstance(e.value, bytearray):
-                    tmp = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    tmp = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     tmp = e.value
                 self.captureTime = tmp
@@ -243,7 +242,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             else:
                 tmp = None
                 if isinstance(e.value, bytearray):
-                    tmp = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    tmp = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     tmp = e.value
                 self.startTimeCurrent = tmp
@@ -266,16 +265,8 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
         self.scaler = reader.readElementContentAsDouble("Scaler", 1)
         self.unit = reader.readElementContentAsInt("Unit")
         self.status = reader.readElementContentAsObject("Status", None, self, 5)
-        str_ = reader.readElementContentAsString("CaptureTime")
-        if str_ is None:
-            self.captureTime = None
-        else:
-            self.captureTime = GXDateTime(str_)
-        str_ = reader.readElementContentAsString("StartTimeCurrent")
-        if str_ is None:
-            self.startTimeCurrent = None
-        else:
-            self.startTimeCurrent = GXDateTime(str_)
+        self.captureTime = reader.readElementContentAsDateTime("CaptureTime")
+        self.startTimeCurrent = reader.readElementContentAsDateTime("StartTimeCurrent")
         self.period = reader.readElementContentAsInt("Period")
         self.numberOfPeriods = reader.readElementContentAsInt("NumberOfPeriods")
 

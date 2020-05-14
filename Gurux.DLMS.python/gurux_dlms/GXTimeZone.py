@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename: $HeadURL$
+#  Filename:        $HeadURL$
 #
-#  Version: $Revision$,
+#  Version:         $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -31,29 +31,36 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXDateTime import GXDateTime
-from .enums import DateTimeSkips
+import datetime
 
-class GXTime(GXDateTime):
-    def __init__(self, value=None, pattern=None):
-        """
-        Constructor.
+#  Reserved for internal use.
+#pylint222: disable=bad-option-value,old-style-class,too-few-public-methods
+class GXTimeZone(datetime.tzinfo):
+    """
+    UTC offset from UTC.
 
-        value: Time value.
-        pattern: Date-time pattern that is used when value is a string.
-        """
-        GXDateTime.__init__(self, value, pattern)
-        self.skip |= DateTimeSkips.YEAR
-        self.skip |= DateTimeSkips.MONTH
-        self.skip |= DateTimeSkips.DAY
-        self.skip |= DateTimeSkips.DAY_OF_WEEK
+    :param offset:
+        UTC time zone offset in minutes.
+    """
+    def __init__(self, offset):
+        self._offset = datetime.timedelta(seconds=offset * 60)
+        if offset == 0:
+            self._name = "Z"
+        else:
+            if offset > 0:
+                self._name = "+"
+            else:
+                self._name = "-"
+            self._name += str(int(offset / 60)).zfill(2)
+            self._name += ":"
+            self._name += str(offset % 60).zfill(2)
 
-    def _remove(self, format_):
-        format_ = GXDateTime._remove_(format_, "%Y", True)
-        format_ = GXDateTime._remove_(format_, "%-y", True)
-        format_ = GXDateTime._remove_(format_, "%y", True)
-        format_ = GXDateTime._remove_(format_, "%m", True)
-        format_ = GXDateTime._remove_(format_, "%-m", True)
-        format_ = GXDateTime._remove_(format_, "%d", True)
-        format_ = GXDateTime._remove_(format_, "%-d", True)
-        return format_
+    def utcoffset(self, dt):
+        ###UTC offset in seconds.
+        return self._offset
+
+    def dst(self, dt):
+        return datetime.timedelta(0)
+
+    def tzname(self, dt):
+        return self._name

@@ -108,8 +108,8 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(2)
                     #  Count
-                    _GXCommon.setData(data, DataType.UINT16, k)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.getBytes(v))
+                    _GXCommon.setData(settings, data, DataType.UINT16, k)
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(v))
             return data
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
@@ -126,7 +126,7 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
                 for item in e.value:
                     str_ = None
                     if isinstance(item[1], bytearray):
-                        str_ = _GXCommon.changeType(item[1], DataType.STRING)
+                        str_ = _GXCommon.changeType(settings, item[1], DataType.STRING)
                     else:
                         str_ = str(item[1])
                     self.sapAssignmentList.append((item[0], str_))

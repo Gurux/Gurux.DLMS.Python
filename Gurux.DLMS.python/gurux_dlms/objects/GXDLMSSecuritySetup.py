@@ -93,6 +93,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     # Generated action.
     #
     def globalKeyTransfer(self, client, kek, list_):
+        # pylint: disable=import-outside-toplevel
         from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
         if not list_:
             raise ValueError("Invalid list. It is empty.")
@@ -102,9 +103,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         for it in list_:
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.ENUM, it.getKey())
+            _GXCommon.setData(None, bb, DataType.ENUM, it.getKey())
             tmp = GXDLMSSecureClient.encrypt(kek, it)
-            _GXCommon.setData(bb, DataType.OCTET_STRING, tmp)
+            _GXCommon.setData(None, bb, DataType.OCTET_STRING, tmp)
         return client.method(self, 2, bb.array(), DataType.ARRAY)
 
     #
@@ -126,8 +127,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         for it in list_:
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.ENUM, it.getKey())
-            _GXCommon.setData(bb, DataType.OCTET_STRING, it)
+            _GXCommon.setData(None, bb, DataType.ENUM, it.getKey())
+            _GXCommon.setData(None, bb, DataType.OCTET_STRING, it)
         return client.method(self, 3, bb.array(), DataType.ARRAY)
 
     #
@@ -181,7 +182,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(entity)
         bb.setUInt8(DataType.ENUM)
         bb.setUInt8(type_)
-        _GXCommon.setData(bb, DataType.OCTET_STRING, systemTitle)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, systemTitle)
         return client.method(self, 7, bb.array(), DataType.STRUCTURE)
 
     def exportCertificateBySerial(self, client, serialNumber, issuer):
@@ -192,8 +193,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(1)
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        _GXCommon.setData(bb, DataType.OCTET_STRING, serialNumber.encode())
-        _GXCommon.setData(bb, DataType.OCTET_STRING, issuer.encode())
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, serialNumber.encode())
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, issuer.encode())
         return client.method(self, 7, bb.array(), DataType.STRUCTURE)
 
     def removeCertificateByEntity(self, client, entity, type_, systemTitle):
@@ -208,7 +209,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(entity)
         bb.setUInt8(DataType.ENUM)
         bb.setUInt8(type_)
-        _GXCommon.setData(bb, DataType.OCTET_STRING, systemTitle)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, systemTitle)
         return client.method(self, 8, bb.array(), DataType.STRUCTURE)
 
     def removeCertificateBySerial(self, client, serialNumber, issuer):
@@ -219,8 +220,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(1)
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        _GXCommon.setData(bb, DataType.OCTET_STRING, serialNumber.encode())
-        _GXCommon.setData(bb, DataType.OCTET_STRING, issuer.encode())
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, serialNumber.encode())
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, issuer.encode())
         return client.method(self, 8, bb.array(), DataType.STRUCTURE)
 
     @classmethod
@@ -251,6 +252,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                 if self.securityPolicy & SecurityPolicy.ENCRYPTED_RESPONSE != 0:
                     settings.cipher.security = Security(settings.cipher.security | Security.ENCRYPTION)
         elif e.index == 2:
+            # pylint: disable=import-outside-toplevel
             from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
             # if settings.Cipher is null non secure server is used.
             # Keys are take in action after reply is generated.
@@ -282,7 +284,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def applyKeys(cls, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        #pylint: disable=import-outside-toplevel
         from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
         for tmp in e.parameters:
             item = tmp

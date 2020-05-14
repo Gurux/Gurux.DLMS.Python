@@ -36,7 +36,6 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .GXDLMSTarget import GXDLMSTarget
 
@@ -80,18 +79,18 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
         bb = GXByteBuffer()
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
-        _GXCommon.setData(bb, DataType.UINT16, entry.target.objectType)
-        _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
-        _GXCommon.setData(bb, DataType.INT8, entry.attributeIndex)
+        _GXCommon.setData(None, bb, DataType.UINT16, entry.target.objectType)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
+        _GXCommon.setData(None, bb, DataType.INT8, entry.attributeIndex)
         return client.method(self, 1, bb.array(), DataType.ARRAY)
 
     def delete(self, client, entry):
         bb = GXByteBuffer()
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
-        _GXCommon.setData(bb, DataType.UINT16, entry.target.objectType)
-        _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
-        _GXCommon.setData(bb, DataType.INT8, entry.attributeIndex)
+        _GXCommon.setData(None, bb, DataType.UINT16, entry.target.objectType)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(entry.target.logicalName))
+        _GXCommon.setData(None, bb, DataType.INT8, entry.attributeIndex)
         return client.method(self, 2, bb.array(), DataType.ARRAY)
 
     def invoke(self, settings, e):
@@ -99,6 +98,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
         else:
             if e.index == 1:
+                #pylint: disable=import-outside-toplevel
                 from .._GXObjectFactory import _GXObjectFactory
                 tmp = e.parameters
                 type_ = ObjectType(tmp[0])
@@ -167,15 +167,15 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(4)
             if self.changedParameter is None:
-                _GXCommon.setData(data, DataType.UINT16, 0)
-                _GXCommon.setData(data, DataType.OCTET_STRING, [0, 0, 0, 0, 0, 0])
-                _GXCommon.setData(data, DataType.INT8, 1)
-                _GXCommon.setData(data, DataType.NONE, None)
+                _GXCommon.setData(settings, data, DataType.UINT16, 0)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, [0, 0, 0, 0, 0, 0])
+                _GXCommon.setData(settings, data, DataType.INT8, 1)
+                _GXCommon.setData(settings, data, DataType.NONE, None)
             else:
-                _GXCommon.setData(data, DataType.UINT16, self.changedParameter.target.objectType)
-                _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.changedParameter.target.logicalName))
-                _GXCommon.setData(data, DataType.INT8, self.changedParameter.attributeIndex)
-                _GXCommon.setData(data, _GXCommon.getDLMSDataType(self.changedParameter.value), self.changedParameter.value)
+                _GXCommon.setData(settings, data, DataType.UINT16, self.changedParameter.target.objectType)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.changedParameter.target.logicalName))
+                _GXCommon.setData(settings, data, DataType.INT8, self.changedParameter.attributeIndex)
+                _GXCommon.setData(settings, data, _GXCommon.getDLMSDataType(self.changedParameter.value), self.changedParameter.value)
             ret = data
         elif e.index == 3:
             ret = self.captureTime
@@ -189,15 +189,16 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
                 for it in self.parameters:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.UINT16, it.target.objectType)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.target.logicalName))
-                    _GXCommon.setData(data, DataType.INT8, it.attributeIndex)
+                    _GXCommon.setData(settings, data, DataType.UINT16, it.target.objectType)
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.target.logicalName))
+                    _GXCommon.setData(settings, data, DataType.INT8, it.attributeIndex)
             ret = data
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
     def setValue(self, settings, e):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
@@ -218,7 +219,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
                 self.captureTime = None
             else:
                 if isinstance(e.value, bytearray):
-                    self.captureTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    self.captureTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     self.captureTime = e.value
         elif e.index == 4:
@@ -240,6 +241,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         self.changedParameter = GXDLMSTarget()
         if reader.isStartElement("ChangedParameter", True):
@@ -252,10 +254,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             self.changedParameter.attributeIndex = reader.readElementContentAsInt("Index")
             self.changedParameter.value = reader.readElementContentAsObject("Value", None)
             reader.readEndElement("ChangedParameter")
-        if reader.name() == "Time":
-            self.captureTime = GXDateTime(reader.readElementContentAsString("Time"))
-        else:
-            self.captureTime = None
+        self.captureTime = reader.readElementContentAsDateTime("Time")
         self.parameters = []
         if reader.isStartElement("Parameters", True):
             while reader.isStartElement("Item", True):
@@ -278,14 +277,12 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("Index", self.changedParameter.attributeIndex)
             writer.writeElementObject("Value", self.changedParameter.value)
             writer.writeEndElement()
-        if self.captureTime:
-            writer.writeElementString("Time", self.captureTime)
-        if self.parameters:
-            writer.writeStartElement("Parameters")
-            for it in self.parameters:
-                writer.writeStartElement("Item")
-                writer.writeElementString("Type", int(it.target.objectType))
-                writer.writeElementString("LN", it.target.logicalName)
-                writer.writeElementString("Index", it.attributeIndex)
-                writer.writeEndElement()
+        writer.writeElementString("Time", self.captureTime)
+        writer.writeStartElement("Parameters")
+        for it in self.parameters:
+            writer.writeStartElement("Item")
+            writer.writeElementString("Type", int(it.target.objectType))
+            writer.writeElementString("LN", it.target.logicalName)
+            writer.writeElementString("Index", it.attributeIndex)
             writer.writeEndElement()
+        writer.writeEndElement()

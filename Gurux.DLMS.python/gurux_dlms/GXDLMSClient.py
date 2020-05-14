@@ -61,6 +61,7 @@ from .enums.ErrorCode import ErrorCode
 from .GXDLMSTranslatorStructure import GXDLMSTranslatorStructure
 from .enums.RequestTypes import RequestTypes
 from .SerialnumberCounter import SerialNumberCounter
+from ._GXObjectFactory import _GXObjectFactory
 
 #pylint:disable=bad-option-value,too-many-instance-attributes,too-many-arguments,too-many-public-methods,useless-object-inheritance
 class GXDLMSClient(object):
@@ -574,7 +575,7 @@ class GXDLMSClient(object):
         info = _GXDataInfo()
         equals = False
         ic = 0
-        value = _GXCommon.getData(reply, info)
+        value = _GXCommon.getData(self.settings, reply, info)
         if value:
             if self.settings.authentication == Authentication.HIGH_ECDSA:
                 raise ValueError("ECDSA is not supported.")
@@ -661,7 +662,7 @@ class GXDLMSClient(object):
             info.count = 0
             info.index = 0
             info.type_ = DataType.NONE
-            objects = _GXCommon.getData(buff, info)
+            objects = _GXCommon.getData(self.settings, buff, info)
             if len(objects) != 4:
                 raise Exception("Invalid structure format.")
             classID = objects[1]
@@ -696,9 +697,9 @@ class GXDLMSClient(object):
                     tmp = methodAccess[1]
                 obj.setMethodAccess(id_, tmp)
         if baseName is not None:
-            obj.shortName = baseName
+            obj.shortName = int(baseName)
         if version is not None:
-            obj.version = version
+            obj.version = int(version)
         obj.logicalName = _GXCommon.toLogicalName(logicalName)
 
     def parseObjects(self, data, onlyKnownObjects=True, ignoreInactiveObjects=True):
@@ -730,7 +731,7 @@ class GXDLMSClient(object):
             info.type_ = DataType.NONE
             info.index = 0
             info.count = 0
-            objects = _GXCommon.getData(buff, info)
+            objects = _GXCommon.getData(self.settings, buff, info)
             if len(objects) != 4:
                 raise Exception("Invalid structure format.")
             classID = objects[0]
@@ -751,16 +752,18 @@ class GXDLMSClient(object):
                 type_ = DataType.DATE
                 target.setUIDataType(attributeIndex, type_)
             if type_ != DataType.NONE:
-                value = self.changeType(value, type_)
+                value = self.changeType(value, type_, self.settings.useUtc2NormalTime)
         e = ValueEventArgs(self.settings, target, attributeIndex, 0, parameters)
         e.value = value
         target.setValue(self.settings, e)
         return target.getValues()[attributeIndex - 1]
 
     @classmethod
-    def getValue(cls, data):
+    def getValue(cls, data, useUtc):
+        settings = GXDLMSSettings(False)
+        settings.useUtc2NormalTime = useUtc
         info = _GXDataInfo()
-        return _GXCommon.getData(data, info)
+        return _GXCommon.getData(settings, data, info)
 
 
     def updateValues(self, list_, values):
@@ -772,8 +775,10 @@ class GXDLMSClient(object):
             pos += 1
 
     @classmethod
-    def changeType(cls, value, type_):
-        return _GXCommon.changeType(value, type_)
+    def changeType(cls, value, type_, useUtc=False):
+        settings = GXDLMSSettings(False)
+        settings.useUtc2NormalTime = useUtc
+        return _GXCommon.changeType(settings, value, type_)
 
     def getObjectsRequest(self):
         #pylint: disable=bad-option-value,redefined-variable-type
@@ -803,7 +808,7 @@ class GXDLMSClient(object):
         reply = None
         data = GXByteBuffer()
         attributeDescriptor = GXByteBuffer()
-        _GXCommon.setData(data, type_, value)
+        _GXCommon.setData(self.settings, data, type_, value)
         if self.useLogicalNameReferencing:
             attributeDescriptor.setUInt16(objectType)
             attributeDescriptor.set(_GXCommon.logicalNameToBytes(str(name)))
@@ -856,7 +861,7 @@ class GXDLMSClient(object):
         reply = None
         data = GXByteBuffer()
         attributeDescriptor = GXByteBuffer()
-        _GXCommon.setData(data, type_, value)
+        _GXCommon.setData(self.settings, data, type_, value)
         if self.useLogicalNameReferencing:
             attributeDescriptor.setUInt16(objectType)
             attributeDescriptor.set(_GXCommon.logicalNameToBytes(str(name)))
@@ -906,7 +911,7 @@ class GXDLMSClient(object):
                 type_ = it.target.getDataType(it.index)
                 if type_ == DataType.NONE:
                     raise Exception("Invalid parameter. In python value type must give.")
-            _GXCommon.setData(data, type_, value)
+            _GXCommon.setData(self.settings, data, type_, value)
         if self.useLogicalNameReferencing:
             p = GXDLMSLNParameters(self.settings, 0, Command.SET_REQUEST, SetRequestType.WITH_LIST, bb, data, 0xff)
             reply = GXDLMS.getLnMessages(p)
@@ -1008,11 +1013,11 @@ class GXDLMSClient(object):
         buff.setUInt8(0x02)
         buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
-        _GXCommon.setData(buff, DataType.UINT32, index)
+        _GXCommon.setData(self.settings, buff, DataType.UINT32, index)
         if count == 0:
-            _GXCommon.setData(buff, DataType.UINT32, count)
+            _GXCommon.setData(self.settings, buff, DataType.UINT32, count)
         else:
-            _GXCommon.setData(buff, DataType.UINT32, index + count - 1)
+            _GXCommon.setData(self.settings, buff, DataType.UINT32, index + count - 1)
         columnIndex = 1
         columnCount = 0
         pos = 0
@@ -1034,8 +1039,8 @@ class GXDLMSClient(object):
                         break
                 if not found:
                     raise ValueError("Invalid column: " + c.logicalName)
-        _GXCommon.setData(buff, DataType.UINT16, columnIndex)
-        _GXCommon.setData(buff, DataType.UINT16, columnCount)
+        _GXCommon.setData(self.settings, buff, DataType.UINT16, columnIndex)
+        _GXCommon.setData(self.settings, buff, DataType.UINT16, columnCount)
         return self._read(pg.name, ObjectType.PROFILE_GENERIC, 2, buff)
 
     def readRowsByRange(self, pg, start, end, columns=None):
@@ -1056,16 +1061,16 @@ class GXDLMSClient(object):
         buff.setUInt8(0x04)
         buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
-        _GXCommon.setData(buff, DataType.UINT16, sort.objectType)
-        _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
-        _GXCommon.setData(buff, DataType.INT8, 2)
-        _GXCommon.setData(buff, DataType.UINT16, sort.version)
+        _GXCommon.setData(self.settings, buff, DataType.UINT16, sort.objectType)
+        _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
+        _GXCommon.setData(self.settings, buff, DataType.INT8, 2)
+        _GXCommon.setData(self.settings, buff, DataType.UINT16, sort.version)
         if pg.captureObjects and isinstance(pg.captureObjects[0][0], GXDLMSData) and pg.captureObjects[0][0].logicalName == "0.0.1.1.0.255":
-            _GXCommon.setData(buff, DataType.UINT32, GXDateTime.toUnixTime(start))
-            _GXCommon.setData(buff, DataType.UINT32, GXDateTime.toUnixTime(end))
+            _GXCommon.setData(self.settings, buff, DataType.UINT32, GXDateTime.toUnixTime(start))
+            _GXCommon.setData(self.settings, buff, DataType.UINT32, GXDateTime.toUnixTime(end))
         else:
-            _GXCommon.setData(buff, DataType.OCTET_STRING, start)
-            _GXCommon.setData(buff, DataType.OCTET_STRING, end)
+            _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, start)
+            _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, end)
         buff.setUInt8(DataType.ARRAY)
         if not columns:
             buff.setUInt8(0x00)
@@ -1074,15 +1079,14 @@ class GXDLMSClient(object):
             for it in columns:
                 buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(4)
-                _GXCommon.setData(buff, DataType.UINT16, it[0].objectType)
-                _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it[0].logicalName))
-                _GXCommon.setData(buff, DataType.INT8, it[1].attributeIndex)
-                _GXCommon.setData(buff, DataType.INT16, it[1].dataIndex)
+                _GXCommon.setData(self.settings, buff, DataType.UINT16, it[0].objectType)
+                _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it[0].logicalName))
+                _GXCommon.setData(self.settings, buff, DataType.INT8, it[1].attributeIndex)
+                _GXCommon.setData(self.settings, buff, DataType.INT16, it[1].dataIndex)
         return self._read(pg.name, ObjectType.PROFILE_GENERIC, 2, buff)
 
     @classmethod
     def createObject(cls, type_):
-        from ._GXObjectFactory import _GXObjectFactory
         return _GXObjectFactory.createObject(type_)
 
     def receiverReady(self, type_):
@@ -1183,7 +1187,7 @@ class GXDLMSClient(object):
                 type_ = it.target.getDataType(it.index)
                 if type_ == DataType.NONE:
                     raise Exception("Invalid parameter. In python value type must give.")
-                _GXCommon.setData(bb, type_, value)
+                _GXCommon.setData(self.settings, bb, type_, value)
         p = GXDLMSLNParameters(self.settings, 0, Command.ACCESS_REQUEST, 0xFF, None, bb, 0xff)
         if time:
             p.time = GXDateTime(time)
@@ -1199,7 +1203,7 @@ class GXDLMSClient(object):
         reply = list(cnt)
         while pos != cnt:
             info.clear()
-            value = _GXCommon.getData(data, info)
+            value = _GXCommon.getData(self.settings, data, info)
             values_.append(value)
             pos += 1
         cnt = _GXCommon.getObjectCount(data)

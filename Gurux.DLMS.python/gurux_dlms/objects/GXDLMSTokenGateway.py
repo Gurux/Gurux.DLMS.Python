@@ -36,7 +36,6 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import TokenDelivery, TokenStatusCode
 
@@ -163,8 +162,8 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
             bb = GXByteBuffer()
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(bb, DataType.ENUM, self.statusCode)
-            _GXCommon.setData(bb, DataType.BITSTRING, self.dataValue)
+            _GXCommon.setData(settings, bb, DataType.ENUM, self.statusCode)
+            _GXCommon.setData(settings, bb, DataType.BITSTRING, self.dataValue)
             ret = bb
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -179,7 +178,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             self.token = e.value
         elif e.index == 3:
-            self.time = _GXCommon.changeType(e.value, DataType.DATETIME)
+            self.time = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
         elif e.index == 4:
             self.descriptions = []
             if e.value:
@@ -195,9 +194,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.token = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Token"))
-        tmp = reader.readElementContentAsString("Time")
-        if tmp:
-            self.time = GXDateTime(tmp)
+        self.time = reader.readElementContentAsDateTime("Time")
         self.descriptions = []
         if reader.isStartElement("Descriptions", True):
             while reader.isStartElement("Item", True):

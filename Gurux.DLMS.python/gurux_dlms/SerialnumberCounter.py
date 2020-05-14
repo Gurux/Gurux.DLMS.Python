@@ -99,9 +99,7 @@ class SerialNumberCounter:
         for ch in expression.lower():
             if ch in ('(', ')'):
                 raise ValueError("Invalid serial number formula.")
-            #  Is white space.
-            if ch == ' ':
-                continue
-            else:
+            #  Is not white space.
+            if ch != ' ':
                 sb += ch
         return sb

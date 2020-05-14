@@ -112,7 +112,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                 #  Count
                 data.setUInt8(2)
                 #  Script_identifier:
-                _GXCommon.setData(data, DataType.UINT16, it.id)
+                _GXCommon.setData(settings, data, DataType.UINT16, it.id)
                 data.setUInt8(DataType.ARRAY)
                 #  Count
                 data.setUInt8(len(it.actions))
@@ -120,24 +120,24 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(5)
                     #  service_id
-                    _GXCommon.setData(data, DataType.ENUM, a.type_)
+                    _GXCommon.setData(settings, data, DataType.ENUM, a.type_)
                     if not a.target:
                         #  class_id
-                        _GXCommon.setData(data, DataType.UINT16, a.objectType)
+                        _GXCommon.setData(settings, data, DataType.UINT16, a.objectType)
                         #  logical_name
-                        _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.logicalName))
+                        _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.logicalName))
                     else:
                         #  class_id
-                        _GXCommon.setData(data, DataType.UINT16, a.target.objectType)
-                        _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.target.logicalName))
-                    _GXCommon.setData(data, DataType.INT8, a.index)
-                    _GXCommon.setData(data, a.parameterDataType, a.parameter)
+                        _GXCommon.setData(settings, data, DataType.UINT16, a.target.objectType)
+                        _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(a.target.logicalName))
+                    _GXCommon.setData(settings, data, DataType.INT8, a.index)
+                    _GXCommon.setData(settings, data, a.parameterDataType, a.parameter)
             return data
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
 
     def setValue(self, settings, e):
-        # pylint: disable=bad-option-value,too-many-nested-blocks,redefined-variable-type
+        # pylint: disable=import-outside-toplevel,bad-option-value,too-many-nested-blocks,redefined-variable-type
         from .._GXObjectFactory import _GXObjectFactory
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
@@ -188,6 +188,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 1, script, DataType.UINT16)
 
     def load(self, reader):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         self.scripts = []
         if reader.isStartElement("Scripts", True):

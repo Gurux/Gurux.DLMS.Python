@@ -146,11 +146,11 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
                                                                     if n5.getNodeName() == "OctetString":
                                                                         bb = GXByteBuffer()
                                                                         if start:
-                                                                            _GXCommon.setData(bb, DataType.OCTET_STRING, loadSettings.getStart())
+                                                                            _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.getStart())
                                                                             n5.getAttributes().getNamedItem("Value").setNodeValue(bb.toHex(False, 2))
                                                                             start = False
                                                                         else:
-                                                                            _GXCommon.setData(bb, DataType.OCTET_STRING, loadSettings.getEnd())
+                                                                            _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.getEnd())
                                                                             n5.getAttributes().getNamedItem("Value").setNodeValue(bb.toHex(False, 2))
                                                                             break
                                                                     pos7 += 1

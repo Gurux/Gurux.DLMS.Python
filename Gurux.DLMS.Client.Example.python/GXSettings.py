@@ -253,10 +253,13 @@ class GXSettings:
                     self.client.standard = Standard.DLMS
                 elif it.value == "India":
                     self.client.standard = Standard.INDIA
+                    self.client.useUtc2NormalTime = True
                 elif it.value == "Italy":
                     self.client.standard = Standard.ITALY
+                    self.client.useUtc2NormalTime = True
                 elif it.value == "SaudiArabia":
                     self.client.standard = Standard.SAUDI_ARABIA
+                    self.client.useUtc2NormalTime = True
                 elif it.value == "IDIS":
                     self.client.standard = Standard.IDIS
                 else:

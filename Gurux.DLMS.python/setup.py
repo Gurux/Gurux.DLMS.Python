@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gurux_dlms",
-    version="1.0.69",
+    version="1.0.70",
     author="Gurux Ltd",
     author_email="gurux@gurux.org",
     description="Gurux DLMS library for Python.",
@@ -25,5 +25,5 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
     ],
-    install_requires=['python-dateutil', 'pytz'],
+    install_requires=[],
 )

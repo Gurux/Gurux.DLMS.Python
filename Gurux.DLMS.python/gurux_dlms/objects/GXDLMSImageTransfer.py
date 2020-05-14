@@ -199,9 +199,9 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
                 data.setUInt8(DataType.STRUCTURE)
                 #  Item count.
                 data.setUInt8(int(3))
-                _GXCommon.setData(data, DataType.UINT32, it.size)
-                _GXCommon.setData(data, DataType.OCTET_STRING, it.identification)
-                _GXCommon.setData(data, DataType.OCTET_STRING, it.signature)
+                _GXCommon.setData(settings, data, DataType.UINT32, it.size)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.identification)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.signature)
             ret = data
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -256,8 +256,8 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(2)
-        _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.getBytes(imageIdentifier))
-        _GXCommon.setData(data, DataType.UINT32, forImageSize)
+        _GXCommon.setData(None, data, DataType.OCTET_STRING, _GXCommon.getBytes(imageIdentifier))
+        _GXCommon.setData(None, data, DataType.UINT32, forImageSize)
         return client.method(self, 1, data, DataType.ARRAY)
 
     def imageBlockTransfer(self, client, imageBlockValue, imageBlockCount):
@@ -272,7 +272,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(data, DataType.UINT32, pos)
+            _GXCommon.setData(None, data, DataType.UINT32, pos)
             tmp = None
             len_ = len(imageBlockValue) - ((pos + 1) * self.imageBlockSize)
             #  If last packet
@@ -280,7 +280,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
                 tmp = imageBlockValue[pos * self.imageBlockSize:]
             else:
                 tmp = imageBlockValue[pos * self.imageBlockSize: pos * self.imageBlockSize + self.imageBlockSize]
-            _GXCommon.setData(data, DataType.OCTET_STRING, tmp)
+            _GXCommon.setData(None, data, DataType.OCTET_STRING, tmp)
             packets.append(client.method(self, 2, data, DataType.ARRAY))
             pos += 1
         return packets

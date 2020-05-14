@@ -34,6 +34,8 @@
 from .enums import ScriptActionType
 from ..enums import ObjectType
 from ..enums import DataType
+from ..GXByteBuffer import GXByteBuffer
+
 #pylint: disable=bad-option-value,old-style-class,too-few-public-methods,too-many-instance-attributes
 class GXDLMSScriptAction:
     #
@@ -50,7 +52,6 @@ class GXDLMSScriptAction:
         self.parameter = None
 
     def __str__(self):
-        from ..GXByteBuffer import GXByteBuffer
         tmp = None
         if isinstance(self.parameter, bytearray):
             tmp = GXByteBuffer.hex(self.parameter, True)

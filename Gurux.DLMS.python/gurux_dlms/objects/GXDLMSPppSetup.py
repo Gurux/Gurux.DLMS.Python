@@ -143,9 +143,9 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
                 for it in self.lcpOptions:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.UINT8, it.type_.value)
-                    _GXCommon.setData(data, DataType.UINT8, it.length)
-                    _GXCommon.setData(data, _GXCommon.getDLMSDataType(it.data), it.data)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.type_.value)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.length)
+                    _GXCommon.setData(settings, data, _GXCommon.getDLMSDataType(it.data), it.data)
             ret = data.array()
         elif e.index == 4:
             data = GXByteBuffer()
@@ -157,17 +157,17 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
                 for it in self.ipcpOptions:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.UINT8, it.type_.value)
-                    _GXCommon.setData(data, DataType.UINT8, it.length)
-                    _GXCommon.setData(data, _GXCommon.getDLMSDataType(it.data), it.data)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.type_.value)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.length)
+                    _GXCommon.setData(settings, data, _GXCommon.getDLMSDataType(it.data), it.data)
             ret = data.array()
         elif e.index == 5:
             if self.userName:
                 data = GXByteBuffer()
                 data.setUInt8(DataType.STRUCTURE)
                 data.setUInt8(2)
-                _GXCommon.setData(data, DataType.OCTET_STRING, self.userName)
-                _GXCommon.setData(data, DataType.OCTET_STRING, self.password)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, self.userName)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, self.password)
                 ret = data.array()
             else:
                 ret = None

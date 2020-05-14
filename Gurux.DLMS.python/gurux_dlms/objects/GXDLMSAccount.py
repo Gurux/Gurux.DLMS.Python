@@ -300,7 +300,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.chargeReference))
-                    _GXCommon.setData(bb, DataType.BITSTRING, it.collectionConfiguration)
+                    _GXCommon.setData(settings, bb, DataType.BITSTRING, it.collectionConfiguration)
             ret = bb.array()
         elif e.index == 12:
             bb = GXByteBuffer()
@@ -326,9 +326,9 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             bb = GXByteBuffer()
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
-            _GXCommon.setData(bb, DataType.STRING_UTF8, self.currency.name)
-            _GXCommon.setData(bb, DataType.INT8, self.currency.scale)
-            _GXCommon.setData(bb, DataType.ENUM, self.currency.unit)
+            _GXCommon.setData(settings, bb, DataType.STRING_UTF8, self.currency.name)
+            _GXCommon.setData(settings, bb, DataType.INT8, self.currency.scale)
+            _GXCommon.setData(settings, bb, DataType.ENUM, self.currency.unit)
             ret = bb.array()
         elif e.index == 16:
             ret = self.lowCreditThreshold
@@ -402,7 +402,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             else:
                 tmp = None
                 if isinstance(e.value, bytearray):
-                    tmp = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    tmp = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     tmp = e.value
                 self.accountActivationTime = tmp
@@ -412,7 +412,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             else:
                 tmp = None
                 if isinstance(e.value, bytearray):
-                    tmp = _GXCommon.changeType(e.value, DataType.DATETIME)
+                    tmp = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
                 else:
                     tmp = e.value
                 self.accountClosureTime = tmp
@@ -476,12 +476,8 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         self.loadReferences(reader, "ChargeReferences", self.chargeReferences)
         self.loadCreditChargeConfigurations(reader, self.creditChargeConfigurations)
         self.loadTokenGatewayConfigurations(reader, self.tokenGatewayConfigurations)
-        tmp = reader.readElementContentAsString("AccountActivationTime")
-        if tmp:
-            self.accountActivationTime = GXDateTime(tmp)
-        tmp = reader.readElementContentAsString("AccountClosureTime")
-        if tmp:
-            self.accountClosureTime = GXDateTime(tmp)
+        self.accountActivationTime = reader.readElementContentAsDateTime("AccountActivationTime")
+        self.accountClosureTime = reader.readElementContentAsDateTime("AccountClosureTime")
         self.currency.name = reader.readElementContentAsString("CurrencyName")
         self.currency.scale = reader.readElementContentAsInt("CurrencyScale")
         self.currency.unit = reader.readElementContentAsInt("CurrencyUnit")

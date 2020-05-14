@@ -40,7 +40,6 @@ from ..enums import ObjectType, DataType
 from .GXSendDestinationAndMethod import GXSendDestinationAndMethod
 from .enums import ServiceType, MessageType
 from .GXDLMSCaptureObject import GXDLMSCaptureObject
-from ..GXDateTime import GXDateTime
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
@@ -155,20 +154,20 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             for k, v in self.pushObjectList:
                 buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(4)
-                _GXCommon.setData(buff, DataType.UINT16, k.objectType)
-                _GXCommon.setData(buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
-                _GXCommon.setData(buff, DataType.INT8, v.attributeIndex)
-                _GXCommon.setData(buff, DataType.UINT16, v.dataIndex)
+                _GXCommon.setData(settings, buff, DataType.UINT16, k.objectType)
+                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
+                _GXCommon.setData(settings, buff, DataType.INT8, v.attributeIndex)
+                _GXCommon.setData(settings, buff, DataType.UINT16, v.dataIndex)
             ret = buff
         elif e.index == 3:
             buff.setUInt8(DataType.STRUCTURE)
             buff.setUInt8(3)
-            _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.service)
+            _GXCommon.setData(settings, buff, DataType.ENUM, self.sendDestinationAndMethod.service)
             if self.sendDestinationAndMethod.destination:
-                _GXCommon.setData(buff, DataType.OCTET_STRING, self.sendDestinationAndMethod.destination.encode())
+                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, self.sendDestinationAndMethod.destination.encode())
             else:
-                _GXCommon.setData(buff, DataType.OCTET_STRING, None)
-            _GXCommon.setData(buff, DataType.ENUM, self.sendDestinationAndMethod.message)
+                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, None)
+            _GXCommon.setData(settings, buff, DataType.ENUM, self.sendDestinationAndMethod.message)
             ret = buff
         elif e.index == 4:
             buff.setUInt8(DataType.ARRAY)
@@ -176,8 +175,8 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             for k, v in self.communicationWindow:
                 buff.setUInt8(DataType.STRUCTURE)
                 buff.setUInt8(2)
-                _GXCommon.setData(buff, DataType.OCTET_STRING, k)
-                _GXCommon.setData(buff, DataType.OCTET_STRING, v)
+                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, k)
+                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, v)
             return buff
         elif e.index == 5:
             ret = self.randomisationStartInterval
@@ -194,6 +193,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             self.pushObjectList = []
+            #pylint: disable=import-outside-toplevel
             from .._GXObjectFactory import _GXObjectFactory
             if e.value:
                 for it in e.value:
@@ -223,8 +223,8 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             self.communicationWindow = []
             if e.value:
                 for it in e.value:
-                    start = _GXCommon.changeType(it[0], DataType.DATETIME)
-                    end = _GXCommon.changeType(it[1], DataType.DATETIME)
+                    start = _GXCommon.changeType(settings, it[0], DataType.DATETIME)
+                    end = _GXCommon.changeType(settings, it[1], DataType.DATETIME)
                     self.communicationWindow.append((start, end))
         elif e.index == 5:
             self.randomisationStartInterval = e.value
@@ -254,8 +254,8 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         self.communicationWindow = []
         if reader.isStartElement("CommunicationWindow", True):
             while reader.isStartElement("Item", True):
-                start = GXDateTime(reader.readElementContentAsString("Start"))
-                end = GXDateTime(reader.readElementContentAsString("End"))
+                start = reader.readElementContentAsDateTime("Start")
+                end = reader.readElementContentAsDateTime("End")
                 self.communicationWindow.append((start, end))
             reader.readEndElement("CommunicationWindow")
         self.randomisationStartInterval = reader.readElementContentAsInt("RandomisationStartInterval")
@@ -280,8 +280,8 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         if self.communicationWindow:
             for k, v in self.communicationWindow:
                 writer.writeStartElement("Item")
-                writer.writeElementString("Start", k.toFormatString())
-                writer.writeElementString("End", v.toFormatString())
+                writer.writeElementString("Start", k)
+                writer.writeElementString("End", v)
                 writer.writeEndElement()
         writer.writeEndElement()
         writer.writeElementString("RandomisationStartInterval", self.randomisationStartInterval)

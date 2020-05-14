@@ -132,18 +132,18 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(2)
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(5)
-            _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.precedence)
-            _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.delay)
-            _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.reliability)
-            _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.peakThroughput)
-            _GXCommon.setData(data, DataType.UINT8, self.defaultQualityOfService.meanThroughput)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.precedence)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.delay)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.reliability)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.peakThroughput)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.meanThroughput)
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(5)
-            _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.precedence)
-            _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.delay)
-            _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.reliability)
-            _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.peakThroughput)
-            _GXCommon.setData(data, DataType.UINT8, self.requestedQualityOfService.meanThroughput)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.precedence)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.delay)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.reliability)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.peakThroughput)
+            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.meanThroughput)
             ret = data.array()
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
@@ -159,7 +159,7 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
             if isinstance(e.value, str):
                 self.apn = e.value
             else:
-                self.apn = _GXCommon.changeType(e.value, DataType.STRING)
+                self.apn = _GXCommon.changeType(settings, e.value, DataType.STRING)
         elif e.index == 3:
             self.pinCode = e.value
         elif e.index == 4:

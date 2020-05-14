@@ -126,6 +126,7 @@ class GXDLMSSettings:
         self.senderFrame = 0
         self.command = 0
         self.commandType = 0
+        self.useUtc2NormalTime = False
 
     #
     # Client to Server challenge.

@@ -171,7 +171,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(data, DataType.UINT16, struct.unpack("!I", socket.inet_aton(it))[0])
+                    _GXCommon.setData(settings, data, DataType.UINT16, struct.unpack("!I", socket.inet_aton(it))[0])
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -183,9 +183,9 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
                 for it in self.ipOptions:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(data, DataType.UINT8, it.type_)
-                    _GXCommon.setData(data, DataType.UINT8, it.length)
-                    _GXCommon.setData(data, DataType.OCTET_STRING, it.data)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.type_)
+                    _GXCommon.setData(settings, data, DataType.UINT8, it.length)
+                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.data)
             ret = data.array()
         elif e.index == 6:
             ret = struct.unpack("!I", socket.inet_aton(self.subnetMask))[0]
@@ -251,6 +251,13 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             reader.readEndElement("MulticastIPAddress")
         self.ipOptions = []
         if reader.isStartElement("IPOptions", True):
+            while reader.isStartElement("IPOption", True):
+                it = GXDLMSIp4SetupIpOption()
+                it.type_ = reader.readElementContentAsInt("Type")
+                it.length = reader.readElementContentAsInt("Length")
+                it.data = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Data"))
+                self.ipOptions.append(it)
+            #Old. This can be removed in some point.
             while reader.isStartElement("IPOptions", True):
                 it = GXDLMSIp4SetupIpOption()
                 it.type_ = reader.readElementContentAsInt("Type")
@@ -275,7 +282,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         writer.writeStartElement("IPOptions")
         if self.ipOptions:
             for it in self.ipOptions:
-                writer.writeStartElement("IPOptions")
+                writer.writeStartElement("IPOption")
                 writer.writeElementString("Type", it.type_)
                 writer.writeElementString("Length", it.length)
                 writer.writeElementString("Data", GXByteBuffer.hex(it.data))

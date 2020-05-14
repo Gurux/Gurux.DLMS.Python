@@ -173,7 +173,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     #
     # Returns captured columns.
     #
-    def __getColumns(self):
+    def __getColumns(self, settings):
         cnt = len(self.captureObjects)
         data = GXByteBuffer()
         data.setUInt8(DataType.ARRAY)
@@ -184,10 +184,10 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             #  Count
             data.setUInt8(4)
             #  ClassID
-            _GXCommon.setData(data, DataType.UINT16, k.objectType)
-            _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
-            _GXCommon.setData(data, DataType.INT8, v.attributeIndex)
-            _GXCommon.setData(data, DataType.UINT16, v.dataIndex)
+            _GXCommon.setData(settings, data, DataType.UINT16, k.objectType)
+            _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
+            _GXCommon.setData(settings, data, DataType.INT8, v.attributeIndex)
+            _GXCommon.setData(settings, data, DataType.UINT16, v.dataIndex)
         return data
 
     def getData(self, settings, e, table, columns):
@@ -218,7 +218,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                     if tp == DataType.NONE:
                         tp = _GXCommon.getDLMSDataType(value)
                         types[pos] = tp
-                    _GXCommon.setData(data, tp, value)
+                    _GXCommon.setData(settings, data, tp, value)
                 pos += 1
             settings.setIndex(settings.index + 1)
         if e.getRowEndIndex() != 0:
@@ -281,10 +281,10 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         if e.selector == 1:
             info = _GXDataInfo()
             info.type_ = DataType.DATETIME
-            start = _GXCommon.getData(GXByteBuffer(arr[1]), info).value
+            start = _GXCommon.getData(settings, GXByteBuffer(arr[1]), info).value
             info.clear()
             info.type_ = DataType.DATETIME
-            end = _GXCommon.getData(GXByteBuffer(arr[2]), info).value
+            end = _GXCommon.getData(settings, GXByteBuffer(arr[2]), info).value
             for row in self.buffer:
                 tm = None
                 tmp = (row)[0]
@@ -341,7 +341,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         elif e.index == 2:
             ret = self.__getProfileGenericData(settings, e)
         elif e.index == 3:
-            ret = self.__getColumns()
+            ret = self.__getColumns(settings)
         elif e.index == 4:
             ret = self.capturePeriod
         elif e.index == 5:
@@ -351,15 +351,15 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(int(4))
             if self.sortObject is None:
-                _GXCommon.setData(data, DataType.UINT16, 0)
-                _GXCommon.setData(data, DataType.OCTET_STRING, bytearray(6))
-                _GXCommon.setData(data, DataType.INT8, 0)
-                _GXCommon.setData(data, DataType.UINT16, 0)
+                _GXCommon.setData(settings, data, DataType.UINT16, 0)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, bytearray(6))
+                _GXCommon.setData(settings, data, DataType.INT8, 0)
+                _GXCommon.setData(settings, data, DataType.UINT16, 0)
             else:
-                _GXCommon.setData(data, DataType.UINT16, self.sortObject.objectType)
-                _GXCommon.setData(data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.sortObject.logicalName))
-                _GXCommon.setData(data, DataType.INT8, self.sortObjectAttributeIndex)
-                _GXCommon.setData(data, DataType.UINT16, self.sortObjectDataIndex)
+                _GXCommon.setData(settings, data, DataType.UINT16, self.sortObject.objectType)
+                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.sortObject.logicalName))
+                _GXCommon.setData(settings, data, DataType.INT8, self.sortObjectAttributeIndex)
+                _GXCommon.setData(settings, data, DataType.UINT16, self.sortObjectDataIndex)
             ret = data.array()
         elif e.index == 7:
             ret = self.entriesInUse
@@ -370,11 +370,12 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def setValue(self, settings, e):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.setBuffer(e)
+            self.__setBuffer(settings, e)
         elif e.index == 3:
             self.captureObjects = []
             self.buffer = []
@@ -443,7 +444,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
-    def setBuffer(self, e):
+    def __setBuffer(self, settings, e):
         #pylint: disable=broad-except,too-many-nested-blocks,consider-using-enumerate
         cols = e.parameters
         colIndex = 0
@@ -466,7 +467,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                     data = row[colIndex]
                     type_ = types[colIndex]
                     if type_ != DataType.NONE and isinstance(data, bytearray):
-                        data = _GXCommon.changeType(data, type_)
+                        data = _GXCommon.changeType(settings, data, type_)
                         if isinstance(data, GXDateTime):
                             lastDate = data.value
                         row[colIndex] = data
@@ -522,6 +523,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         srv.onPostAction(args)
 
     def load(self, reader):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         self.buffer = []
         if reader.isStartElement("Buffer", True):

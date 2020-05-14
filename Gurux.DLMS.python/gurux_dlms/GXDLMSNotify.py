@@ -200,7 +200,7 @@ class GXDLMSNotify(object):
         dt = obj.getDataType(index)
         if dt == DataType.NONE and value:
             dt = _GXCommon.getDLMSDataType(value)
-        _GXCommon.setData(buff, dt, value)
+        _GXCommon.setData(self.settings, buff, dt, value)
 
     #
     # Generates data notification message.

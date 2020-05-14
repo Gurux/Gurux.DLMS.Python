@@ -65,6 +65,7 @@ class GXDLMSLNCommandHandler:
     def __init__(self):
         pass
 
+    # pylint: too-many-arguments
     @classmethod
     def handleGetRequest(cls, settings, server, data, replyData, xml):
         #  Return error if connection is not established.
@@ -197,12 +198,12 @@ class GXDLMSLNCommandHandler:
                 xml.appendStartTag(TranslatorTags.ACCESS_SELECTION)
                 xml.appendLine(TranslatorTags.ACCESS_SELECTOR, "Value", xml.integerToHex(selector, 2))
                 xml.appendStartTag(TranslatorTags.ACCESS_PARAMETERS)
-                _GXCommon.getData(data, info)
+                _GXCommon.getData(settings, data, info)
                 xml.appendEndTag(TranslatorTags.ACCESS_PARAMETERS)
                 xml.appendEndTag(TranslatorTags.ACCESS_SELECTION)
             return
         if selection != 0:
-            parameters = _GXCommon.getData(data, info)
+            parameters = _GXCommon.getData(settings, data, info)
         ot = ObjectType(ci)
         obj = settings.objects.findByLN(ot, _GXCommon.toLogicalName(ln))
         if obj is None:
@@ -247,9 +248,9 @@ class GXDLMSLNCommandHandler:
                     value = obj.getValue(settings, e)
                 server.onPostRead()
                 if e.byteArray:
-                    bb.set(int(value))
+                    bb.set(value)
                 else:
-                    GXDLMS.appendData(obj, attributeIndex, bb, value)
+                    GXDLMS.appendData(settings, obj, attributeIndex, bb, value)
                 status = e.error
         GXDLMS.getLNPdu(GXDLMSLNParameters(settings, e.invokeId, Command.GET_RESPONSE, 1, None, bb, status), replyData)
         if settings.count != settings.index or len(bb) != bb.position:
@@ -300,7 +301,7 @@ class GXDLMSLNCommandHandler:
                         if arg.byteArray:
                             bb.set(int(value))
                         else:
-                            GXDLMS.appendData(arg.target, arg.index, bb, value)
+                            GXDLMS.appendData(settings, arg.target, arg.index, bb, value)
                     moreData = settings.index != settings.getCount()
             p.multipleBlocks = True
             GXDLMS.getLNPdu(p, replyData)
@@ -337,7 +338,7 @@ class GXDLMSLNCommandHandler:
             if selection != 0:
                 selector = data.getUInt8()
                 i = _GXDataInfo()
-                parameters = _GXCommon.getData(data, i)
+                parameters = _GXCommon.getData(settings, data, i)
             if xml:
                 xml.appendStartTag(TranslatorTags.ATTRIBUTE_DESCRIPTOR_WITH_SELECTION)
                 xml.appendStartTag(TranslatorTags.ATTRIBUTE_DESCRIPTOR)
@@ -383,7 +384,7 @@ class GXDLMSLNCommandHandler:
                 if it.byteArray:
                     bb.set(value)
                 else:
-                    GXDLMS.appendData(it.target, it.index, bb, value)
+                    GXDLMS.appendData(settings, it.target, it.index, bb, value)
                 p.invokeId = it.invokeId
             except Exception:
                 bb.setUInt8(ErrorCode.HARDWARE_FAULT)
@@ -432,7 +433,7 @@ class GXDLMSLNCommandHandler:
             xml.appendStartTag(TranslatorTags.VALUE)
             di = _GXDataInfo()
             di.xml = (xml)
-            value = _GXCommon.getData(data, di)
+            value = _GXCommon.getData(settings, data, di)
             if not di.complete:
                 value = GXByteBuffer.hex(data.data, False, data.position, len(data) - data.position)
             elif isinstance(value, bytearray):
@@ -441,7 +442,7 @@ class GXDLMSLNCommandHandler:
             return
         if not p.isMultipleBlocks():
             settings.resetBlockIndex()
-            value = _GXCommon.getData(data, reply)
+            value = _GXCommon.getData(settings, data, reply)
         obj = settings.objects.findByLN(ot, _GXCommon.toLogicalName(ln))
         if obj is None:
             obj = server.onFindObject(ot, 0, _GXCommon.toLogicalName(ln))
@@ -462,7 +463,7 @@ class GXDLMSLNCommandHandler:
                     if isinstance(value, bytearray):
                         dt = obj.getDataType(index)
                         if dt not in (DataType.NONE, DataType.OCTET_STRING):
-                            value = _GXCommon.changeType(value, dt)
+                            value = _GXCommon.changeType(settings, value, dt)
                     e.value = value
                     list_ = list(e)
                     if p.isMultipleBlocks():
@@ -501,11 +502,11 @@ class GXDLMSLNCommandHandler:
             server.getTransaction().data.set(data)
             if not p.isMultipleBlocks():
                 try:
-                    value = _GXCommon.getData(server.getTransaction().data, reply)
+                    value = _GXCommon.getData(settings, server.getTransaction().data, reply)
                     if isinstance(value, bytearray):
                         dt = server.transaction.targets[0].target.getDataType(server.transaction.targets[0].index)
                         if dt not in (DataType.NONE, DataType.OCTET_STRING):
-                            value = _GXCommon.changeType(value, dt)
+                            value = _GXCommon.changeType(settings, value, dt)
                     server.transaction.targets[0].setValue(value)
                     server.onPreWrite(server.transaction.targets)
                     if not server.transaction.targets[0].handled and not p.isMultipleBlocks():
@@ -538,7 +539,7 @@ class GXDLMSLNCommandHandler:
                 if selection != 0:
                     selector = data.getUInt8()
                     info = _GXDataInfo()
-                    parameters = _GXCommon.getData(data, info)
+                    parameters = _GXCommon.getData(settings, data, info)
                 if xml:
                     xml.appendStartTag(TranslatorTags.ATTRIBUTE_DESCRIPTOR_WITH_SELECTION)
                     xml.appendStartTag(TranslatorTags.ATTRIBUTE_DESCRIPTOR)
@@ -576,7 +577,7 @@ class GXDLMSLNCommandHandler:
                 di.xml = xml
                 if xml and xml.outputType == TranslatorOutputType.STANDARD_XML:
                     xml.appendStartTag(Command.WRITE_REQUEST, SingleReadResponse.DATA)
-                value = _GXCommon.getData(data, di)
+                value = _GXCommon.getData(settings, data, di)
                 if not di.complete:
                     value = GXByteBuffer.hex(data.data, False, data.position, len(data) - data.position)
                 elif isinstance(value, bytearray):
@@ -614,14 +615,14 @@ class GXDLMSLNCommandHandler:
                     xml.appendStartTag(TranslatorTags.METHOD_INVOCATION_PARAMETERS)
                     di = _GXDataInfo()
                     di.xml = (xml)
-                    _GXCommon.getData(data, di)
+                    _GXCommon.getData(settings, data, di)
                     xml.appendEndTag(TranslatorTags.METHOD_INVOCATION_PARAMETERS)
                 xml.appendEndTag(Command.METHOD_REQUEST, ActionRequestType.NORMAL)
             xml.appendEndTag(Command.METHOD_REQUEST)
             return
         if selection != 0:
             info = _GXDataInfo()
-            parameters = _GXCommon.getData(data, info)
+            parameters = _GXCommon.getData(settings, data, info)
         obj = settings.objects.findByLN(ot, _GXCommon.toLogicalName(ln))
         if not settings.acceptConnection() and (ci != ObjectType.ASSOCIATION_LOGICAL_NAME or id_ != 1):
             replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
@@ -648,7 +649,7 @@ class GXDLMSLNCommandHandler:
                     if e.byteArray:
                         bb.set(actionReply)
                     else:
-                        _GXCommon.setData(bb, _GXCommon.getDLMSDataType(actionReply), actionReply)
+                        _GXCommon.setData(settings, bb, _GXCommon.getDLMSDataType(actionReply), actionReply)
                 else:
                     error = e.error
                     bb.setUInt8(0)
@@ -688,7 +689,7 @@ class GXDLMSLNCommandHandler:
                     dt = DataType.DATE
                 info = _GXDataInfo()
                 info.type = dt
-                _GXCommon.getData(GXByteBuffer(tmp), info)
+                _GXCommon.getData(settings, GXByteBuffer(tmp), info)
         cnt = _GXCommon.getObjectCount(data)
         if xml:
             xml.appendStartTag(Command.ACCESS_REQUEST)
@@ -723,7 +724,7 @@ class GXDLMSLNCommandHandler:
             di.xml = xml
             if xml and xml.outputType == TranslatorOutputType.STANDARD_XML:
                 xml.appendStartTag(Command.WRITE_REQUEST, SingleReadResponse.DATA)
-            value = _GXCommon.getData(data, di)
+            value = _GXCommon.getData(settings, data, di)
             if not di.complete:
                 value = GXByteBuffer.hex(data.data, False, data.position, len(data) - data.position)
             elif isinstance(value, bytearray):
@@ -747,7 +748,7 @@ class GXDLMSLNCommandHandler:
             len_ = data.getUInt8()
             tmp = bytearray(len_)
             data.get(tmp)
-            reply.time = _GXCommon.changeType(tmp, DataType.DATETIME)
+            reply.time = _GXCommon.changeType(settings, tmp, DataType.DATETIME)
         if reply.xml:
             reply.xml.appendStartTag(Command.EVENT_NOTIFICATION)
             if reply.time:
@@ -762,7 +763,7 @@ class GXDLMSLNCommandHandler:
             reply.xml.appendStartTag(TranslatorTags.ATTRIBUTE_VALUE)
         di = _GXDataInfo()
         di.xml = reply.xml
-        value = _GXCommon.getData(reply.data, di)
+        value = _GXCommon.getData(settings, reply.data, di)
         if reply.xml:
             reply.xml.appendEndTag(TranslatorTags.ATTRIBUTE_VALUE)
             reply.xml.appendEndTag(Command.EVENT_NOTIFICATION)

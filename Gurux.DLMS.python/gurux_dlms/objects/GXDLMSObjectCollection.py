@@ -98,6 +98,7 @@ class GXDLMSObjectCollection(list):
 
     @classmethod
     def load(cls, file_):
+        #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
         obj = None
         target = None
@@ -115,6 +116,7 @@ class GXDLMSObjectCollection(list):
                     except Exception:
                         raise ValueError("Invalid object type: " + target + ".")
                     obj = _GXObjectFactory.createObject(type_)
+                    obj.version = 0
                     reader.objects.append(obj)
                     reader.getNext()
                 elif "SN".lower() == target.lower():
@@ -138,10 +140,10 @@ class GXDLMSObjectCollection(list):
         for it in self:
             node = ET.SubElement(objects, "GXDLMS" + GXDLMSConverter.objectTypeToString(it.objectType))
             if it.shortName != 0:
-                ET.SubElement(node, "SN").text = it.shortName
+                ET.SubElement(node, "SN").text = str(it.shortName)
             ET.SubElement(node, "LN").text = it.logicalName
             if it.version != 0:
-                ET.SubElement(node, "Version").text = it.version
+                ET.SubElement(node, "Version").text = str(it.version)
             if it.description:
                 ET.SubElement(node, "Description").text = it.description
             if not settings or settings.values:

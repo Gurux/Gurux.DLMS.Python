@@ -71,7 +71,7 @@ class GXDLMSSNCommandHandler:
                 di = _GXDataInfo()
                 di.xml = xml
                 xml.appendStartTag(TranslatorTags.PARAMETER)
-                _GXCommon.getData(data, di)
+                _GXCommon.getData(settings, data, di)
                 xml.appendEndTag(TranslatorTags.PARAMETER)
                 xml.appendEndTag(Command.READ_REQUEST, VariableAccessSpecification.PARAMETERISED_ACCESS)
             else:
@@ -86,7 +86,7 @@ class GXDLMSSNCommandHandler:
         if type_ == VariableAccessSpecification.PARAMETERISED_ACCESS:
             e.selector = data.getUInt8()
             di = _GXDataInfo()
-            e.parameters = _GXCommon.getData(data, di)
+            e.parameters = _GXCommon.getData(settings, data, di)
         #  Return error if connection is not established.
         if not settings.acceptConnection() and (not e.action or e.target.shortName != 0xFA00 or e.index != 8):
             replyData.set(server.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
@@ -166,9 +166,9 @@ class GXDLMSSNCommandHandler:
                 if not first and list_:
                     data.setUInt8(SingleReadResponse.DATA)
                 if e.action:
-                    _GXCommon.setData(data, _GXCommon.getDLMSDataType(value), value)
+                    _GXCommon.setData(settings, data, _GXCommon.getDLMSDataType(value), value)
                 else:
-                    GXDLMS.appendData(e.target, e.index, data, value)
+                    GXDLMS.appendData(settings, e.target, e.index, data, value)
             else:
                 if not first and list_:
                     data.setUInt8(SingleReadResponse.DATA_ACCESS_ERROR)
@@ -373,7 +373,7 @@ class GXDLMSSNCommandHandler:
             if xml:
                 if xml.outputType == TranslatorOutputType.STANDARD_XML:
                     xml.appendStartTag(Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)
-                value = _GXCommon.getData(data, di)
+                value = _GXCommon.getData(settings, data, di)
                 if not di.complete:
                     value = GXByteBuffer.hex(data.data, False, data.position, len(data) - data.position)
                     xml.appendLine(_GXCommon.DATA_TYPE_OFFSET + di.type, "Value", str(value))
@@ -381,11 +381,11 @@ class GXDLMSSNCommandHandler:
                     xml.appendEndTag(Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)
             elif results.getUInt8(pos) == 0:
                 target = targets[pos]
-                value = _GXCommon.getData(data, di)
+                value = _GXCommon.getData(settings, data, di)
                 if isinstance(value, bytearray):
                     dt = target.getItem().getDataType(target.index)
                     if dt not in (DataType.NONE, DataType.OCTET_STRING):
-                        value = _GXCommon.changeType(value, dt)
+                        value = _GXCommon.changeType(settings, value, dt)
                 e = ValueEventArgs(server, target.getItem(), target.index, 0, None)
                 am = server.onGetAttributeAccess(e)
                 if am not in (AccessMode.WRITE, AccessMode.READ_WRITE):
@@ -424,7 +424,7 @@ class GXDLMSSNCommandHandler:
         if len_ != 0:
             tmp = bytearray(len_)
             data.get(tmp)
-            reply.t = _GXCommon.changeType(tmp, DataType.DATETIME)
+            reply.t = _GXCommon.changeType(settings, tmp, DataType.DATETIME)
         type_ = 0
         ot = TranslatorOutputType.SIMPLE_XML
         if reply.xml:
@@ -469,12 +469,12 @@ class GXDLMSSNCommandHandler:
             if reply.xml:
                 if ot == TranslatorOutputType.STANDARD_XML:
                     reply.xml.appendStartTag(Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)
-                _GXCommon.getData(reply.data, di)
+                _GXCommon.getData(settings, reply.data, di)
                 if ot == TranslatorOutputType.STANDARD_XML:
                     reply.xml.appendEndTag(Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)
             else:
                 v = ValueEventArgs(list_[pos].key, list_[pos].value, 0, None)
-                v.value = _GXCommon.getData(reply.data, di)
+                v.value = _GXCommon.getData(settings, reply.data, di)
                 list_.get(pos).getKey().setValue(settings, v)
             pos += 1
         if reply.xml:

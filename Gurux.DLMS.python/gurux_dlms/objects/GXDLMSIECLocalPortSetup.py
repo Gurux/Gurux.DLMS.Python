@@ -180,13 +180,13 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 5:
             self.responseTime = e.value
         elif e.index == 6:
-            self.deviceAddress = _GXCommon.changeType(e.value, DataType.STRING)
+            self.deviceAddress = _GXCommon.changeType(settings, e.value, DataType.STRING)
         elif e.index == 7:
-            self.password1 = _GXCommon.changeType(e.value, DataType.STRING)
+            self.password1 = _GXCommon.changeType(settings, e.value, DataType.STRING)
         elif e.index == 8:
-            self.password2 = _GXCommon.changeType(e.value, DataType.STRING)
+            self.password2 = _GXCommon.changeType(settings, e.value, DataType.STRING)
         elif e.index == 9:
-            self.password5 = _GXCommon.changeType(e.value, DataType.STRING)
+            self.password5 = _GXCommon.changeType(settings, e.value, DataType.STRING)
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 

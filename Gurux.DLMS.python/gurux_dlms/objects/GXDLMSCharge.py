@@ -36,7 +36,6 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import ChargeType
 from .GXUnitCharge import GXUnitCharge
@@ -182,18 +181,18 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         return super(GXDLMSCharge, self).getUIDataType(index)
 
     @classmethod
-    def getUnitCharge(cls, charge):
+    def getUnitCharge(cls, settings, charge):
         bb = GXByteBuffer()
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        _GXCommon.setData(bb, DataType.INT8, charge.chargePerUnitScaling.commodityScale)
-        _GXCommon.setData(bb, DataType.INT8, charge.chargePerUnitScaling.priceScale)
+        _GXCommon.setData(settings, bb, DataType.INT8, charge.chargePerUnitScaling.commodityScale)
+        _GXCommon.setData(settings, bb, DataType.INT8, charge.chargePerUnitScaling.priceScale)
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(3)
         if charge.commodity.target is None:
-            _GXCommon.setData(bb, DataType.UINT16, 0)
+            _GXCommon.setData(settings, bb, DataType.UINT16, 0)
             bb.setUInt8(DataType.OCTET_STRING)
             bb.setUInt8(6)
             bb.setUInt8(0)
@@ -202,11 +201,11 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(0)
             bb.setUInt8(0)
             bb.setUInt8(0)
-            _GXCommon.setData(bb, DataType.INT8, 0)
+            _GXCommon.setData(settings, bb, DataType.INT8, 0)
         else:
-            _GXCommon.setData(bb, DataType.UINT16, charge.commodity.target.objectType)
-            _GXCommon.setData(bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(charge.commodity.target.logicalName))
-            _GXCommon.setData(bb, DataType.INT8, charge.commodity.index)
+            _GXCommon.setData(settings, bb, DataType.UINT16, charge.commodity.target.objectType)
+            _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(charge.commodity.target.logicalName))
+            _GXCommon.setData(settings, bb, DataType.INT8, charge.commodity.index)
         bb.setUInt8(DataType.ARRAY)
         if charge.chargeTables is None:
             bb.setUInt8(0)
@@ -215,8 +214,8 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
             for it in charge.chargeTables:
                 bb.setUInt8(DataType.STRUCTURE)
                 bb.setUInt8(2)
-                _GXCommon.setData(bb, DataType.OCTET_STRING, it.index)
-                _GXCommon.setData(bb, DataType.INT16, it.chargePerUnit)
+                _GXCommon.setData(settings, bb, DataType.OCTET_STRING, it.index)
+                _GXCommon.setData(settings, bb, DataType.INT16, it.chargePerUnit)
         return bb.array()
 
     def getValue(self, settings, e):
@@ -230,9 +229,9 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 4:
             ret = self.priority
         elif e.index == 5:
-            ret = self.getUnitCharge(self.unitChargeActive)
+            ret = self.getUnitCharge(settings, self.unitChargeActive)
         elif e.index == 6:
-            ret = self.getUnitCharge(self.unitChargePassive)
+            ret = self.getUnitCharge(settings, self.unitChargePassive)
         elif e.index == 7:
             ret = self.unitChargeActivationTime
         elif e.index == 8:
@@ -286,7 +285,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
             self.setUnitCharge(settings, self.unitChargePassive, e.value)
         elif e.index == 7:
             if isinstance(e.value, bytearray):
-                self.unitChargeActivationTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.unitChargeActivationTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
             else:
                 self.unitChargeActivationTime = e.value
         elif e.index == 8:
@@ -295,7 +294,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
             self.chargeConfiguration = str(e.value)
         elif e.index == 10:
             if isinstance(e.value, bytearray):
-                self.lastCollectionTime = _GXCommon.changeType(e.value, DataType.DATETIME)
+                self.lastCollectionTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
             else:
                 self.lastCollectionTime = e.value
         elif e.index == 11:
@@ -317,14 +316,10 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         self.priority = int(reader.readElementContentAsInt("Priority"))
         self.loadUnitChargeActive(reader, "UnitChargeActive", self.unitChargeActive)
         self.loadUnitChargeActive(reader, "UnitChargePassive", self.unitChargePassive)
-        tmp = reader.readElementContentAsString("UnitChargeActivationTime")
-        if tmp:
-            self.unitChargeActivationTime = GXDateTime(tmp)
+        self.unitChargeActivationTime = reader.readElementContentAsDateTime("UnitChargeActivationTime")
         self.period = reader.readElementContentAsInt("Period")
         self.chargeConfiguration = reader.readElementContentAsString("ChargeConfiguration")
-        tmp = reader.readElementContentAsString("LastCollectionTime")
-        if tmp:
-            self.lastCollectionTime = GXDateTime(tmp)
+        self.lastCollectionTime = reader.readElementContentAsDateTime("LastCollectionTime")
         self.lastCollectionAmount = reader.readElementContentAsInt("LastCollectionAmount")
         self.totalAmountRemaining = reader.readElementContentAsInt("TotalAmountRemaining")
         self.proportion = reader.readElementContentAsInt("Proportion")
@@ -335,8 +330,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
 
     def save(self, writer):
         writer.writeElementString("TotalAmountPaid", self.totalAmountPaid)
-        if self.chargeType:
-            writer.writeElementString("ChargeType", self.chargeType)
+        writer.writeElementString("ChargeType", self.chargeType)
         writer.writeElementString("Priority", self.priority)
         self.saveUnitChargeActive(writer, "UnitChargeActive", self.unitChargeActive)
         self.saveUnitChargeActive(writer, "UnitChargePassive", self.unitChargePassive)
