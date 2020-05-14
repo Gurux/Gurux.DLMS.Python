@@ -70,10 +70,6 @@ class sampleclient():
         reader = None
         settings = GXSettings()
         try:
-            cls.indianMeterTime()
-            cls.gmtTime()
-            cls.idisMeterTime()
-            cls.gmtTime2()
             # //////////////////////////////////////
             #  Handle command line parameters.
             ret = settings.getParameters(args)
