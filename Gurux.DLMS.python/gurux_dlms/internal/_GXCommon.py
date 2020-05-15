@@ -1616,6 +1616,7 @@ class _GXCommon:
 
     @classmethod
     def getDLMSDataType(cls, value):
+       # pylint: disable=undefined-variable
         if value is None:
             ret = DataType.NONE
         elif isinstance(value, (bytes, bytearray, GXByteBuffer)):
@@ -1656,8 +1657,10 @@ class _GXCommon:
             ret = DataType.FLOAT32
         elif isinstance(value, GXBitString):
             ret = DataType.BITSTRING
+        elif isinstance(value, unicode):
+            ret = DataType.STRING
         else:
-            raise ValueError("Invalid value.")
+            raise ValueError("Invalid datatype " + type(value) + ".")
         return ret
 
     @classmethod
