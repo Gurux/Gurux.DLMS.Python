@@ -357,8 +357,6 @@ class GXByteBuffer(__base):
         return value
 
     def getFloat(self):
-        if index is None:
-            index = self.position
         tmp = bytearray(4)
         self.get(tmp)
         # Swap bytes.
@@ -371,8 +369,6 @@ class GXByteBuffer(__base):
         return struct.unpack("f", tmp)
 
     def getDouble(self):
-        if index is None:
-            index = self.position
         tmp = bytearray(8)
         self.get(tmp)
         # Swap bytes.

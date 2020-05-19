@@ -43,8 +43,6 @@
 1;0.0.96.15.5.255;0;EventLog Seq:Non-Roll Over
 1;0.0.96.15.6.255;0;EventLog Seq:Control
 1;0.0.96.15.128.255;0;Tamper Count for Billing Period
-1;1.0.96.128.25.255;0;Active Relay Time (MF)
-1;1.0.96.128.30.255;0;Passive Relay Time (MF)
 1;0.0.97.98.0.255;0;Alarm register object?
 1;1.0.0.2.0.255;0;Firmware Version For Meter;10
 1;1.0.0.4.2.255;0;CTR
