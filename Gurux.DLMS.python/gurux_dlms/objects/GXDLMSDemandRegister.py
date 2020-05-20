@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import math
+import datetime
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
@@ -74,6 +75,28 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
                 self.startTimeCurrent,
                 self.period,
                 self.numberOfPeriods]
+
+    def reset(self, client):
+        """Reset value."""
+        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+
+    def nextPeriod(self, client):
+        """Closes the current period and starts a new one."""
+        return client.method(self.getName(), self.objectType, 2, 0, DataType.INT8)
+
+    def invoke(self, settings, e):
+        #  Resets the value to the default value.
+        #  The default value is an instance specific constant.
+        if e.index == 1:
+            self.currentAverageValue = None
+            self.lastAverageValue = None
+            self.startTimeCurrent = self.captureTime = datetime.datetime.now()
+        elif e.index == 2:
+            self.lastAverageValue = self.currentAverageValue
+            self.currentAverageValue = None
+            self.startTimeCurrent = self.captureTime = datetime.datetime.now()
+        else:
+            e.error = ErrorCode.READ_WRITE_DENIED
 
     def isRead(self, index):
         if index == 4:

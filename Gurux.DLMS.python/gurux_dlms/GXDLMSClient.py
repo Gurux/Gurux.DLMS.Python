@@ -99,6 +99,8 @@ class GXDLMSClient(object):
         self.isAuthenticationRequired = False
         # Auto increase Invoke ID.
         self.autoIncreaseInvokeID = False
+        #If protected release is used release is including a ciphered xDLMS Initiate request.
+        self.useProtectedRelease = False
 
     def __getObjects(self):
         return self.settings.objects
@@ -609,16 +611,16 @@ class GXDLMSClient(object):
         if (self.settings.connected & ConnectionState.DLMS) == 0:
             return None
         buff = GXByteBuffer()
-        buff.setUInt8(0)
+        buff.setUInt8(3)
         buff.setUInt8(0x80)
         buff.setUInt8(1)
         buff.setUInt8(00)
-        #Increase IC.
-        if self.settings.cipher and self.settings.cipher.isCiphered:
-            self.settings.cipher.invocationCounter = self.settings.cipher.invocationCounter + 1
-        _GXAPDU.generateUserInformation(self.settings, self.settings.cipher, None, buff)
-        buff.setUInt8(len(buff) - 1, 0)
-        reply = None
+        if self.useProtectedRelease:
+            #Increase IC.
+            if self.settings.cipher and self.settings.cipher.isCiphered:
+                self.settings.cipher.invocationCounter = self.settings.cipher.invocationCounter + 1
+            _GXAPDU.generateUserInformation(self.settings, self.settings.cipher, None, buff)
+            buff.setUInt8(len(buff) - 1, 0)
         if self.useLogicalNameReferencing:
             p = GXDLMSLNParameters(self.settings, 0, Command.RELEASE_REQUEST, 0, buff, None, 0xff)
             reply = GXDLMS.getLnMessages(p)

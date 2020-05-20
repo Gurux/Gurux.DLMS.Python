@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import math
+import datetime
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
@@ -72,6 +73,19 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
                 [self.scaler, self.unit],
                 self.status,
                 self.captureTime]
+
+    def reset(self, client):
+        """Reset value."""
+        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+
+    def invoke(self, settings, e):
+        #  Resets the value to the default value.
+        #  The default value is an instance specific constant.
+        if e.index == 1:
+            self.value = None
+            self.captureTime = datetime.datetime.now()
+        else:
+            e.error = ErrorCode.READ_WRITE_DENIED
 
     #
     #      Returns collection of attributes to read.  If attribute is static
