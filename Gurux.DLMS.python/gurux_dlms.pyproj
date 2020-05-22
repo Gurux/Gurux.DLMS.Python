@@ -64,6 +64,8 @@
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
     <Compile Include="gurux_dlms\GXInt32.py" />
+    <Compile Include="gurux_dlms\GXFloat64.py" />
+    <Compile Include="gurux_dlms\GXFloat32.py" />
     <Compile Include="gurux_dlms\GXInt64.py" />
     <Compile Include="gurux_dlms\GXInt16.py" />
     <Compile Include="gurux_dlms\GXInt8.py" />
