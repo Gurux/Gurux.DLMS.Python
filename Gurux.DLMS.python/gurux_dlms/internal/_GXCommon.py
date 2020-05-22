@@ -56,6 +56,8 @@ from ..GXUInt64 import GXUInt64
 from ..GXDateTime import GXDateTime
 from ..GXDate import GXDate
 from ..GXTime import GXTime
+from ..GXFloat32 import GXFloat32
+from ..GXFloat64 import GXFloat64
 
 # pylint: disable=too-many-public-methods
 class _GXCommon:
@@ -632,7 +634,7 @@ class _GXCommon:
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT64, value)
             info.xml.appendLine(info.xml.getDataType(info.type_), None, GXByteBuffer.toHex(False, 1, len(tmp) - 1))
-        return value
+        return GXFloat64(value)
 
     #
     # Get float value from DLMS data.
@@ -657,7 +659,7 @@ class _GXCommon:
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT32, value)
             info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))
-        return value
+        return GXFloat32(value)
 
     #
     # Get enumeration value from DLMS data.
@@ -1584,8 +1586,7 @@ class _GXCommon:
         elif value == DataType.OCTET_STRING:
             ret = bytes.__class__
         elif value == DataType.ENUM:
-            ret = int.__class__
-            #ret = Enum.__class__
+            ret = GXEnum.__class__
         elif value == DataType.INT8:
             ret = int.__class__
         elif value == DataType.INT16:
@@ -1594,6 +1595,14 @@ class _GXCommon:
             ret = int.__class__
         elif value == DataType.INT64:
             ret = int.__class__
+        elif value == DataType.UINT8:
+            ret = GXUInt8.__class__
+        elif value == DataType.UINT16:
+            ret = GXUInt16.__class__
+        elif value == DataType.UINT32:
+            ret = GXUInt32.__class__
+        elif value == DataType.UINT64:
+            ret = GXUInt64.__class__
         elif value == DataType.TIME:
             ret = GXTime.__class__
         elif value == DataType.DATE:
@@ -1607,16 +1616,16 @@ class _GXCommon:
         elif value == DataType.BOOLEAN:
             ret = bool.__class__
         elif value == DataType.FLOAT32:
-            ret = float.__class__
+            ret = GXFloat32.__class__
         elif value == DataType.FLOAT64:
-            ret = float.__class__
+            ret = GXFloat64.__class__
         else:
             raise ValueError("Invalid value.")
         return ret
 
     @classmethod
     def getDLMSDataType(cls, value):
-       # pylint: disable=undefined-variable
+        # pylint: disable=undefined-variable
         if value is None:
             ret = DataType.NONE
         elif isinstance(value, (bytes, bytearray, GXByteBuffer)):
@@ -1637,30 +1646,39 @@ class _GXCommon:
             ret = DataType.UINT32
         elif isinstance(value, (GXUInt64)):
             ret = DataType.UINT64
-        elif isinstance(value, bool):
+        elif isinstance(value, (bool)):
             ret = DataType.BOOLEAN
         elif isinstance(value, (GXInt32, int)):
             ret = DataType.INT32
-        elif isinstance(value, GXTime):
+        elif isinstance(value, (GXTime)):
             ret = DataType.TIME
-        elif isinstance(value, GXDate):
+        elif isinstance(value, (GXDate)):
             ret = DataType.DATE
         elif isinstance(value, (datetime, GXDateTime)):
             ret = DataType.DATETIME
-        elif isinstance(value, GXStructure):
+        elif isinstance(value, (GXStructure)):
             ret = DataType.STRUCTURE
         elif isinstance(value, (GXArray, list)):
             ret = DataType.ARRAY
-        elif isinstance(value, str):
+        elif isinstance(value, (str)):
             ret = DataType.STRING
-        elif isinstance(value, float):
+        elif isinstance(value, (GXFloat64)):
+            ret = DataType.FLOAT64
+        elif isinstance(value, (GXFloat32, complex, float)):
             ret = DataType.FLOAT32
-        elif isinstance(value, GXBitString):
+        elif isinstance(value, (GXBitString)):
             ret = DataType.BITSTRING
-        elif isinstance(value, unicode):
-            ret = DataType.STRING
         else:
-            raise ValueError("Invalid datatype " + type(value) + ".")
+            ret = None
+        if ret is None:
+            #Python 2.7 uses unicode.
+            try:
+                if isinstance(value, (unicode)):
+                    ret = DataType.STRING
+            except Exception:
+                ret = None
+            if ret is None:
+                raise ValueError("Invalid datatype " + type(value) + ".")
         return ret
 
     @classmethod

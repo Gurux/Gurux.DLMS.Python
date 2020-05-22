@@ -112,5 +112,7 @@ from .GXUInt8 import GXUInt8
 from .GXUInt16 import GXUInt16
 from .GXUInt32 import GXUInt32
 from .GXUInt64 import GXUInt64
+from .GXFloat32 import GXFloat32
+from .GXFloat64 import GXFloat64
 
 name = "gurux_dlms"
