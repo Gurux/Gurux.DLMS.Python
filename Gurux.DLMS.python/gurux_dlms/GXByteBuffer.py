@@ -366,7 +366,7 @@ class GXByteBuffer(__base):
         tmp2 = tmp[1]
         tmp[1] = tmp[2]
         tmp[2] = tmp2
-        return struct.unpack("f", tmp)
+        return struct.unpack("f", tmp)[0]
 
     def getDouble(self):
         tmp = bytearray(8)
@@ -384,7 +384,7 @@ class GXByteBuffer(__base):
         tmp2 = tmp[3]
         tmp[3] = tmp[4]
         tmp[4] = tmp2
-        return struct.unpack("d", tmp)
+        return struct.unpack("d", tmp)[0]
 
     def getInt64(self, index=None):
         if index is None:
