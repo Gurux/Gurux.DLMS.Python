@@ -80,3 +80,4 @@ from .TokenStatusCode import TokenStatusCode
 from .MBusEncryptionKeyStatus import MBusEncryptionKeyStatus
 from .Weekdays import Weekdays
 from .MacState import MacState
+from .ChargeConfiguration import ChargeConfiguration

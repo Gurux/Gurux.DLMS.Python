@@ -31,16 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
+from gurux_dlms.GXIntFlag import GXIntFlag
 
-#pylint: disable=no-name-in-module
-if sys.version_info < (3, 6):
-    __base = object
-else:
-    from enum import IntFlag
-    __base = IntFlag
-
-class AccountCreditStatus(__base):
+class AccountCreditStatus(GXIntFlag):
     """Enumerates account credit status modes.
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
@@ -50,39 +43,39 @@ class AccountCreditStatus(__base):
     #
     # In credit.
     #
-    IN_CREDIT = 0x80
+    IN_CREDIT = 0x1
 
     #
     # Low credit.
     #
-    LOW_CREDIT = 0x40
+    LOW_CREDIT = 0x2
 
     #
     # Next credit enabled.
     #
-    NEXT_CREDIT_ENABLED = 0x20
+    NEXT_CREDIT_ENABLED = 0x4
 
     #
     # Next credit selectable.
     #
-    NEXT_CREDIT_SELECTABLE = 0x10
+    NEXT_CREDIT_SELECTABLE = 0x8
 
     #
     # Credit reference list.
     #
-    CREDIT_REFERENCE_LIST = 0x8
+    CREDIT_REFERENCE_LIST = 0x10
 
     #
     # Selectable credit in use.
     #
-    SELECTABLE_CREDIT_IN_USE = 0x4
+    SELECTABLE_CREDIT_IN_USE = 0x20
 
     #
     # Out of credit.
     #
-    OUT_OF_CREDIT = 0x2
+    OUT_OF_CREDIT = 0x40
 
     #
     # Reserved.
     #
-    RESERVED = 0x1
+    RESERVED = 0x80

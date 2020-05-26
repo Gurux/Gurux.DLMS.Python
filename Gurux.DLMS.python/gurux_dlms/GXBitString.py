@@ -47,41 +47,41 @@ class GXBitString:
     #
     def __init__(self, val, count=None):
         if isinstance(val, (GXUInt8)):
-            val = GXBitString._toBitString(val, 8)
+            val = GXBitString.___toBitString(val, 8)
             if count:
                 val = val[0:count]
         self.value = val
 
-    #
-    # Reserved for internal use.
-    #
     @classmethod
-    def _toBitString(cls, value, count):
-        count2 = count
+    def ___toBitString(cls, value, count):
+        if count > 8:
+            count = 8
+        pos = 0
         sb = ""
-        if count2 > 0:
-            if count2 > 8:
-                count2 = 8
-            pos = 7
-            while pos != 8 - count2 - 1:
-                if (value & (1 << pos)) != 0:
-                    sb += '1'
-                else:
-                    sb += '0'
-                pos -= 1
+        while pos != count:
+            if (value & (1 << pos)) != 0:
+                sb += "1"
+            else:
+                sb += "0"
+            pos = 1 + pos
         return sb
-    #
-    # Bit string value.
-    #
-    def getValue(self):
-        return self.value
 
-    #
-    # @param val
-    # Bit string value.
-    #
-    def setValue(self, val):
-        self.value = val
+    # Convert integer value to BitString.
+    # value: Value to convert.
+    # count: Amount of bits.
+    # Returns: Bitstring.
+    @classmethod
+    def toBitString(cls, value, count):
+        sb = cls.___toBitString(value & 0xFF, count)
+        if count > 8:
+            sb += cls.___toBitString((value >> 8) & 0xFF, count - 8)
+            if count > 16:
+                sb += cls.___toBitString((value >> 16) & 0xFF, count - 16)
+                if count > 24:
+                    sb += cls.___toBitString((value >> 24) & 0xFF, count - 24)
+        if len(sb) > count:
+            return sb[0, count]
+        return sb
 
     def __str__(self):
         return self.value
@@ -89,14 +89,14 @@ class GXBitString:
     #
     # Bit string value as byte.
     #
-    def toByte(self):
+    def toInteger(self):
         val = 0
         if self.value:
-            index = 7
+            pos = 0
             for it in self.value:
                 if it == '1':
-                    val |= (1 << index)
+                    val |= (1 << pos)
                 elif it != '0':
                     raise ValueError("Invalid parameter.")
-                index = index - 1
+                pos = 1 + pos
         return val

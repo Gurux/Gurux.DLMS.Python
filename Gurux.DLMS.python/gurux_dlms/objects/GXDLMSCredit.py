@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import CreditConfiguration, CreditType, CreditStatus
+from ..GXBitString import GXBitString
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
@@ -55,7 +56,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         sn : Short Name of the object.
         """
         GXDLMSObject.__init__(self, ObjectType.CREDIT, ln, sn)
-        self.creditConfiguration = CreditConfiguration.TOKENS
+        self.creditConfiguration = CreditConfiguration.NONE
         self.type_ = CreditType.TOKEN
         self.status = CreditStatus.ENABLED
         self.currentCreditAmount = 0
@@ -176,7 +177,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 6:
             ret = self.limit
         elif e.index == 7:
-            ret = self.creditConfiguration
+            ret = GXBitString.toBitString(self.creditConfiguration, 5)
         elif e.index == 8:
             ret = self.status
         elif e.index == 9:
@@ -206,9 +207,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 6:
             self.limit = e.value
         elif e.index == 7:
-            bb = GXByteBuffer()
-            _GXCommon.setBitString(bb, e.value, False)
-            self.creditConfiguration = bb.getUInt8(0)
+            self.creditConfiguration = CreditConfiguration(e.value.toInteger())
         elif e.index == 8:
             self.status = e.value
         elif e.index == 9:
@@ -234,7 +233,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         self.priority = reader.readElementContentAsInt("Priority")
         self.warningThreshold = reader.readElementContentAsInt("WarningThreshold")
         self.limit = reader.readElementContentAsInt("Limit")
-        self.creditConfiguration = reader.readElementContentAsInt("CreditConfiguration")
+        self.creditConfiguration = CreditConfiguration(reader.readElementContentAsInt("CreditConfiguration"))
         self.status = reader.readElementContentAsInt("Status")
         self.presetCreditAmount = reader.readElementContentAsInt("PresetCreditAmount")
         self.creditAvailableThreshold = reader.readElementContentAsInt("CreditAvailableThreshold")

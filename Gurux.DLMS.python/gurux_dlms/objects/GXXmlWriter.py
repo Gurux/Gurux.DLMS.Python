@@ -44,6 +44,7 @@ from ..internal._GXCommon import _GXCommon
 from ..enums import DataType
 from ..GXArray import GXArray
 from ..GXStructure import GXStructure
+from ..GXIntEnum import GXIntEnum
 
 ###Python 2 requires this
 #pylint: disable=bad-option-value,old-style-class
@@ -128,7 +129,7 @@ class GXXmlWriter:
     def writeElementObject(self, name, value, dt=DataType.NONE, uiType=DataType.NONE):
         isEnum = False
         try:
-            if isinstance(value, (Enum, IntEnum)):
+            if isinstance(value, (GXIntEnum, Enum, IntEnum)):
                 isEnum = True
         except Exception:
             pass

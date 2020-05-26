@@ -114,5 +114,6 @@ from .GXUInt32 import GXUInt32
 from .GXUInt64 import GXUInt64
 from .GXFloat32 import GXFloat32
 from .GXFloat64 import GXFloat64
-
+from .GXIntEnum import GXIntEnum
+from .GXIntFlag import GXIntFlag
 name = "gurux_dlms"

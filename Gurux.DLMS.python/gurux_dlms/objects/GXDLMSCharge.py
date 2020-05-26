@@ -37,9 +37,10 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
-from .enums import ChargeType
+from .enums import ChargeType, ChargeConfiguration
 from .GXUnitCharge import GXUnitCharge
 from .GXChargeTable import GXChargeTable
+from ..GXBitString import GXBitString
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
 class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
@@ -60,7 +61,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         self.priority = 0
         self.unitChargeActivationTime = None
         self.period = 0
-        self.chargeConfiguration = 0
+        self.chargeConfiguration = ChargeConfiguration.NONE
         self.lastCollectionTime = None
         self.lastCollectionAmount = 0
         self.totalAmountRemaining = 0
@@ -237,7 +238,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 8:
             ret = self.period
         elif e.index == 9:
-            ret = self.chargeConfiguration
+            ret = GXBitString.toBitString(self.chargeConfiguration, 2)
         elif e.index == 10:
             ret = self.lastCollectionTime
         elif e.index == 11:
@@ -291,7 +292,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 8:
             self.period = e.value
         elif e.index == 9:
-            self.chargeConfiguration = str(e.value)
+            self.chargeConfiguration = ChargeConfiguration(e.value.toInteger())
         elif e.index == 10:
             if isinstance(e.value, bytearray):
                 self.lastCollectionTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
@@ -318,7 +319,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         self.loadUnitChargeActive(reader, "UnitChargePassive", self.unitChargePassive)
         self.unitChargeActivationTime = reader.readElementContentAsDateTime("UnitChargeActivationTime")
         self.period = reader.readElementContentAsInt("Period")
-        self.chargeConfiguration = reader.readElementContentAsString("ChargeConfiguration")
+        self.chargeConfiguration = ChargeConfiguration(reader.readElementContentAsString("ChargeConfiguration"))
         self.lastCollectionTime = reader.readElementContentAsDateTime("LastCollectionTime")
         self.lastCollectionAmount = reader.readElementContentAsInt("LastCollectionAmount")
         self.totalAmountRemaining = reader.readElementContentAsInt("TotalAmountRemaining")
@@ -336,7 +337,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         self.saveUnitChargeActive(writer, "UnitChargePassive", self.unitChargePassive)
         writer.writeElementString("UnitChargeActivationTime", self.unitChargeActivationTime)
         writer.writeElementString("Period", self.period)
-        writer.writeElementString("ChargeConfiguration", self.chargeConfiguration)
+        writer.writeElementString("ChargeConfiguration", int(self.chargeConfiguration))
         writer.writeElementString("LastCollectionTime", self.lastCollectionTime)
         writer.writeElementString("LastCollectionAmount", self.lastCollectionAmount)
         writer.writeElementString("TotalAmountRemaining", self.totalAmountRemaining)

@@ -1034,6 +1034,7 @@ class _GXCommon:
                 return None
         if len_ > 0:
             value = buff.getString(buff.position, len_)
+            buff.position += len_
         else:
             value = ""
         if info.xml:
@@ -1619,6 +1620,8 @@ class _GXCommon:
             ret = GXFloat32.__class__
         elif value == DataType.FLOAT64:
             ret = GXFloat64.__class__
+        elif value == DataType.BITSTRING:
+            ret = GXBitString.__class__
         else:
             raise ValueError("Invalid value.")
         return ret
@@ -1876,3 +1879,14 @@ class _GXCommon:
             not cls.__getChar(st[6]).isdigit() or not cls.__getChar(st[7]).isdigit():
             return cls.idisSystemTitleToString(st)
         return cls.dlmsSystemTitleToString(st)
+
+    #Reserved for internal use.
+    @classmethod
+    def swapBits(cls, value):
+        ret = 0
+        pos = 0
+        while pos != 8:
+            ret = ret << 1 or value & 0x01
+            value = value >> 1
+            pos = pos + 1
+        return ret

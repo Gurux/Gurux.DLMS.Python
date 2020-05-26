@@ -31,14 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#pylint: disable=broad-except,no-name-in-module
-try:
-    from enum import IntEnum
-    __base = IntEnum
-except Exception:
-    __base = object
+from gurux_dlms.GXIntEnum import GXIntEnum
 
-class PaymentMode(__base):
+class PaymentMode(GXIntEnum):
     """Enumerates payment Modes.
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount

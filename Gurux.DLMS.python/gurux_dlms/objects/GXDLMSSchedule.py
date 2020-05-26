@@ -35,6 +35,7 @@ from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
+from .enums import Weekdays
 from ..enums import ObjectType, DataType
 from .GXDLMSScheduleEntry import GXDLMSScheduleEntry
 from ..GXDate import GXDate
@@ -187,8 +188,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.UINT16)
         data.setUInt16(it.validityWindow)
         #Add exec week days.
-        bs = GXBitString(GXUInt8(it.execWeekdays), 7)
-        _GXCommon.setData(None, data, DataType.BITSTRING, bs)
+        _GXCommon.setData(None, data, DataType.BITSTRING, GXBitString.toBitString(it.execWeekdays, 7))
         #Add exec spec days.
         _GXCommon.setData(None, data, DataType.BITSTRING, it.execSpecDays)
         #Add begin date.
@@ -216,18 +216,18 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
     # Create a new entry.
     #
     @classmethod
-    def createEntry(cls, it):
+    def createEntry(cls, settings, it):
         item = GXDLMSScheduleEntry()
         item.index = it[0]
         item.enable = it[1]
         item.logicalName = _GXCommon.toLogicalName(it[2])
         item.scriptSelector = it[3]
-        item.switchTime = _GXCommon.changeType(None, it[4], DataType.TIME)
+        item.switchTime = _GXCommon.changeType(settings, it[4], DataType.TIME)
         item.validityWindow = it[5]
-        item.execWeekdays = it[6].toByte()
+        item.execWeekdays = Weekdays(it[6].toInteger())
         item.execSpecDays = it[7]
-        item.beginDate = _GXCommon.changeType(None, it[8], DataType.DATE)
-        item.endDate = _GXCommon.changeType(None, it[9], DataType.DATE)
+        item.beginDate = _GXCommon.changeType(settings, it[8], DataType.DATE)
+        item.endDate = _GXCommon.changeType(settings, it[9], DataType.DATE)
         return item
 
     #
@@ -240,7 +240,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
             self.entries = []
             if e.value:
                 for it in e.value:
-                    self.entries.append(self.createEntry(it))
+                    self.entries.append(self.createEntry(settings, it))
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 

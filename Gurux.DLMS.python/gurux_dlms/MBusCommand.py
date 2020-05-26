@@ -31,15 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
+from gurux_dlms.GXIntEnum import GXIntEnum
 
-if sys.version_info < (3, 0):
-    __base = object
-else:
-    from enum import IntEnum
-    __base = IntEnum
-
-class MBusCommand(__base):
+class MBusCommand(GXIntEnum):
     """M-Bus command."""
     SND_NR = 0x44
     SND_UD2 = 0x43

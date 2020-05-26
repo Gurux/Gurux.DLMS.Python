@@ -31,16 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
+from gurux_dlms.GXIntFlag import GXIntFlag
 
-#pylint: disable=no-name-in-module
-if sys.version_info < (3, 6):
-    __base = object
-else:
-    from enum import IntFlag
-    __base = IntFlag
-
-class CreditCollectionConfiguration(__base):
+class CreditCollectionConfiguration(GXIntFlag):
     """
     Defines behavior under specific conditions.
     """
@@ -54,14 +47,14 @@ class CreditCollectionConfiguration(__base):
     #
     # Collect when supply disconnected.
     #
-    DISCONNECTED = 0x80
+    DISCONNECTED = 0x1
 
     #
     # Collect in load limiting periods.
     #
-    LOAD_LIMITING = 0x40
+    LOAD_LIMITING = 0x2
 
     #
     # Collect in friendly credit periods.
     #
-    FRIENDLY_CREDIT = 0x20
+    FRIENDLY_CREDIT = 0x4

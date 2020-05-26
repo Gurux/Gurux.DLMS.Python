@@ -31,14 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
-if sys.version_info < (3, 0):
-    __base = object
-else:
-    from enum import IntEnum
-    __base = IntEnum
+from .GXIntEnum import GXIntEnum
 
-class CountType(__base):
+class CountType(GXIntEnum):
     """
     Enumerate values that are add to counted GMAC.
     """

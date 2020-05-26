@@ -34,14 +34,15 @@
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
+from ..enums import ObjectType, DataType
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
-from ..enums import ObjectType, DataType
-from .enums import PaymentMode, AccountStatus, AccountCreditStatus
+from .enums import PaymentMode, AccountStatus, AccountCreditStatus, CreditCollectionConfiguration
 from .GXCurrency import GXCurrency
 from .GXTokenGatewayConfiguration import GXTokenGatewayConfiguration
 from .GXCreditChargeConfiguration import GXCreditChargeConfiguration
+from ..GXBitString import GXBitString
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
@@ -251,7 +252,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             ret = self.currentCreditInUse
         elif e.index == 4:
-            ret = self.currentCreditStatus
+            ret = GXBitString.toBitString(self.currentCreditStatus, 8)
         elif e.index == 5:
             ret = self.availableCredit
         elif e.index == 6:
@@ -300,7 +301,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.chargeReference))
-                    _GXCommon.setData(settings, bb, DataType.BITSTRING, it.collectionConfiguration)
+                    _GXCommon.setData(settings, bb, DataType.BITSTRING, GXBitString.toBitString(it.collectionConfiguration, 3))
             ret = bb.array()
         elif e.index == 12:
             bb = GXByteBuffer()
@@ -354,9 +355,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             self.currentCreditInUse = e.value
         elif e.index == 4:
-            bb = GXByteBuffer()
-            _GXCommon.setBitString(bb, e.value, False)
-            self.currentCreditStatus = bb.getUInt8(0)
+            self.currentCreditStatus = AccountCreditStatus(e.value.toInteger())
         elif e.index == 5:
             self.availableCredit = e.value
         elif e.index == 6:
@@ -383,9 +382,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     item = GXCreditChargeConfiguration()
                     item.creditReference = _GXCommon.toLogicalName(it[0])
                     item.chargeReference = _GXCommon.toLogicalName(it[1])
-                    bb = GXByteBuffer()
-                    _GXCommon.setBitString(bb, it[2], False)
-                    item.collectionConfiguration = bb.getUInt8(0)
+                    item.collectionConfiguration = CreditCollectionConfiguration(it[2].toInteger())
                     self.creditChargeConfigurations.append(item)
         elif e.index == 12:
             #pylint: disable=bad-option-value,redefined-variable-type

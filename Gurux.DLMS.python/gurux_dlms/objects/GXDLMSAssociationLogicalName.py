@@ -44,6 +44,8 @@ from .GXxDLMSContextType import GXxDLMSContextType
 from .GXAuthenticationMechanismName import GXAuthenticationMechanismName
 from ..ValueEventArgs import ValueEventArgs
 from ..GXSecure import GXSecure
+from ..enums.Conformance import Conformance
+from ..GXBitString import GXBitString
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
@@ -395,9 +397,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(6)
-            bb = GXByteBuffer()
-            bb.setUInt32(self.xDLMSContextInfo.conformance)
-            _GXCommon.setData(settings, data, DataType.BITSTRING, bb.subArray(1, 3))
+            _GXCommon.setData(settings, data, DataType.BITSTRING, GXBitString.toBitString(self.xDLMSContextInfo.conformance, 24))
             _GXCommon.setData(settings, data, DataType.UINT16, self.xDLMSContextInfo.maxReceivePduSize)
             _GXCommon.setData(settings, data, DataType.UINT16, self.xDLMSContextInfo.maxSendPduSize)
             _GXCommon.setData(settings, data, DataType.UINT8, self.xDLMSContextInfo.dlmsVersionNumber)
@@ -564,10 +564,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             self.updateApplicationContextName(e.value)
         elif e.index == 5:
             if e.value:
-                bb = GXByteBuffer()
-                _GXCommon.setBitString(bb, e.value[0], True)
-                bb.setUInt8(0, 0)
-                self.xDLMSContextInfo.conformance = bb.getInt32()
+                self.xDLMSContextInfo.conformance = Conformance(e.value[0].toInteger())
                 self.xDLMSContextInfo.maxReceivePduSize = e.value[1]
                 self.xDLMSContextInfo.maxSendPduSize = e.value[2]
                 self.xDLMSContextInfo.dlmsVersionNumber = e.value[3]

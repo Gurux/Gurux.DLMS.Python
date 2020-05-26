@@ -64,7 +64,7 @@ class _GXAPDU:
     #
     @classmethod
     def getAuthenticationString(cls, settings, data, ignoreAcse):
-        if settings.authentication != Authentication.NONE or\
+        if settings.authentication != Authentication.NONE or \
             (not ignoreAcse and settings.cipher and settings.cipher.security != Security.NONE):
             #  Add sender ACSE-requirements field component.
             data.setUInt8(BerType.CONTEXT | PduType.SENDER_ACSE_REQUIREMENTS)
@@ -165,6 +165,21 @@ class _GXAPDU:
             data.setUInt8(1)
             data.setUInt8(settings.userId)
 
+    # Reserved for internal use.
+    @classmethod
+    def getConformanceToArray(cls, data):
+        ret = _GXCommon.swapBits(data.getUInt8())
+        ret |= _GXCommon.swapBits(data.getUInt8()) << 8
+        ret |= _GXCommon.swapBits(data.getUInt8()) << 16
+        return ret
+
+    # Reserved for internal use.
+    @classmethod
+    def setConformanceToArray(cls, value, data):
+        data.setUInt8(_GXCommon.swapBits(int(value) & 0xFF))
+        data.setUInt8(_GXCommon.swapBits((int(value) >> 8) & 0xFF))
+        data.setUInt8(_GXCommon.swapBits((int(value) >> 16) & 0xFF))
+
     #
     # Generate User information initiate request.
     #
@@ -204,9 +219,7 @@ class _GXAPDU:
         data.setUInt8(0x04)
         #  encoding the number of unused bits in the bit string
         data.setUInt8(0x00)
-        bb = GXByteBuffer(4)
-        bb.setUInt32(settings.proposedConformance)
-        data.set(bb.subArray(1, 3))
+        cls.setConformanceToArray(settings.proposedConformance, data)
         data.setUInt16(settings.maxPduSize)
 
     #
@@ -418,12 +431,7 @@ class _GXAPDU:
         len_ = data.getUInt8()
         #  The number of unused bits in the bit string.
         tag = data.getUInt8()
-        tmp = bytearray(3)
-        bb = GXByteBuffer(4)
-        data.get(tmp)
-        bb.setUInt8(0)
-        bb.set(tmp)
-        v = bb.getInt32()
+        v = cls.getConformanceToArray(data)
         if settings.isServer:
             settings.negotiatedConformance = v & settings.proposedConformance
             if xml:
@@ -492,7 +500,8 @@ class _GXAPDU:
         elif xml:
             xml.appendEndTag(Command.INITIATE_REQUEST)
 
-    #pylint: disable=too-many-function-args, broad-except, too-many-arguments, too-many-locals
+    #pylint: disable=too-many-function-args, broad-except, too-many-arguments,
+    #too-many-locals
     @classmethod
     def parseInitiate(cls, initiateRequest, settings, cipher, data, xml):
         #  Tag for xDLMS-Initate.response
@@ -552,7 +561,8 @@ class _GXAPDU:
     #
     @classmethod
     def parseApplicationContextName(cls, settings, buff, xml):
-        #pylint: disable=too-many-boolean-expressions, too-many-return-statements
+        #pylint: disable=too-many-boolean-expressions,
+        #too-many-return-statements
         #  Get length.
         len_ = buff.getUInt8()
         if len(buff) - buff.position < len_:

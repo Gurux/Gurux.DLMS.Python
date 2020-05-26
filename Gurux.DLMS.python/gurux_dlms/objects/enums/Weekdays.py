@@ -31,14 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#pylint: disable=broad-except,no-name-in-module
-try:
-    from enum import IntFlag
-    __base = IntFlag
-except Exception:
-    __base = object
+from gurux_dlms.GXIntFlag import GXIntFlag
 
-class Weekdays(__base):
+class Weekdays(GXIntFlag):
     """
     Defines the weekdays.
     """
@@ -47,28 +42,33 @@ class Weekdays(__base):
     #
     # Indicates Monday.
     #
-    MONDAY = 0x80
+    NONE = 0x0
+
+    #
+    # Indicates Monday.
+    #
+    MONDAY = 0x1
     #
     # Indicates Tuesday.
     #
-    TUESDAY = 0x40
+    TUESDAY = 0x2
     #
     # Indicates Wednesday.
     #
-    WEDNESDAY = 0x20
+    WEDNESDAY = 0x4
     #
     # Indicates Thursday.
     #
-    THURSDAY = 0x10
+    THURSDAY = 0x8
     #
     # Indicates Friday.
     #
-    FRIDAY = 0x8
+    FRIDAY = 0x10
     #
     # Indicates Saturday.
     #
-    SATURDAY = 0x4
+    SATURDAY = 0x20
     #
     # Indicates Sunday.
     #
-    SUNDAY = 0x2
+    SUNDAY = 0x40

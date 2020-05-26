@@ -31,14 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#pylint: disable=broad-except,no-name-in-module
-try:
-    from enum import IntEnum
-    __base = IntEnum
-except Exception:
-    __base = object
+from gurux_dlms.GXIntFlag import GXIntFlag
 
-class SecurityPolicy(__base):
+class SecurityPolicy(GXIntFlag):
     """
     Security policy Enforces authentication and/or encryption algorithm
     provided with security suite.  This enumeration is used for version 1.
@@ -52,29 +47,29 @@ class SecurityPolicy(__base):
     #
     # Request is authenticated.
     #
-    AUTHENTICATED_REQUEST = 0x20
+    AUTHENTICATED_REQUEST = 0x4
 
     #
     # Request is encrypted.
     #
-    ENCRYPTED_REQUEST = 0x10
+    ENCRYPTED_REQUEST = 0x8
 
     #
     # Request is digitally signed.
     #
-    DIGITALLY_SIGNED_REQUEST = 0x8
+    DIGITALLY_SIGNED_REQUEST = 0x10
 
     #
     # Response authenticated.
     #
-    AUTHENTICATED_RESPONSE = 0x4
+    AUTHENTICATED_RESPONSE = 0x20
 
     #
     # Response encrypted.
     #
-    ENCRYPTED_RESPONSE = 0x2
+    ENCRYPTED_RESPONSE = 0x40
 
     #
     # Response is digitally signed.
     #
-    DIGITALLY_SIGNED_RESPONSE = 0x1
+    DIGITALLY_SIGNED_RESPONSE = 0x80

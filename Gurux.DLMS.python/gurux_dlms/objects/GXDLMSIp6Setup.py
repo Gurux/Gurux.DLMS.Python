@@ -237,7 +237,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 self.dataLinkLayerReference = _GXCommon.toLogicalName(e.value)
         elif e.index == 3:
-            self.addressConfigMode = e.value
+            self.addressConfigMode = AddressConfigMode(e.value)
         elif e.index == 4:
             self.unicastIPAddress = []
             if e.value:

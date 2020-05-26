@@ -409,9 +409,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                 e.error = ErrorCode.READ_WRITE_DENIED
             else:
                 if self.version == 0:
-                    self.securityPolicy = e.value
+                    self.securityPolicy = SecurityPolicy0(e.value)
                 else:
-                    self.securityPolicy = e.value
+                    self.securityPolicy = SecurityPolicy(e.value)
         elif e.index == 3:
             self.securitySuite = e.value
         elif e.index == 4:

@@ -31,16 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
+from gurux_dlms.GXIntFlag import GXIntFlag
 
-#pylint: disable=no-name-in-module
-if sys.version_info < (3, 6):
-    __base = object
-else:
-    from enum import IntFlag
-    __base = IntFlag
-
-class CreditConfiguration(__base):
+class CreditConfiguration(GXIntFlag):
     """
     Enumerated Credit configuration values.
     Online help:
@@ -49,14 +42,19 @@ class CreditConfiguration(__base):
     #pylint: disable=too-few-public-methods
 
 	#
-    # Requires visual indication,
+    # None.
     #
-    VISUAL = 0x10
+    NONE = 0x0
+
+	#
+    # Requires visual indication.
+    #
+    VISUAL = 0x1
 
     #
     # Requires confirmation before it can be selected/invoked
     #
-    CONFIRMATION = 0x8
+    CONFIRMATION = 0x2
 
     #
     # Requires the credit amount to be paid back.
@@ -66,9 +64,9 @@ class CreditConfiguration(__base):
     #
     # Resettable.
     #
-    RESETTABLE = 0x2
+    RESETTABLE = 0x8
 
     #
     # Able to receive credit amounts from tokens.
     #
-    TOKENS = 0x1
+    TOKENS = 0x10
