@@ -191,7 +191,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         if ot != ObjectType.NONE and ln:
             self.target = reader.objects.findByLN(ot, ln)
             #  if object is not load yet.
-            if self.target:
+            if not self.target:
                 self.target = GXDLMSScriptTable(ln)
         self.executedScriptSelector = reader.readElementContentAsInt("ExecutedScriptSelector")
         self.type_ = reader.readElementContentAsInt("Type")
@@ -218,5 +218,5 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
         #  Upload target after load.
         if self.target:
             t = reader.objects.findByLN(ObjectType.SCRIPT_TABLE, self.target.logicalName)
-            if self.target != t:
+            if t and self.target != t:
                 self.target = t

@@ -132,6 +132,8 @@ class GXDLMSObjectCollection(list):
                     obj = None
             else:
                 reader.read()
+        for obj in reader.objects:
+            obj.postLoad(reader)
         return reader.objects
 
     def save(self, name, settings=None):

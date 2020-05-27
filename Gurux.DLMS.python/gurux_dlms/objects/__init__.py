@@ -107,7 +107,6 @@ from .GXDLMSTcpUdpSetup import GXDLMSTcpUdpSetup
 from .GXDLMSTokenGateway import GXDLMSTokenGateway
 from .GXDLMSWeekProfile import GXDLMSWeekProfile
 from .GXNeighborDiscoverySetup import GXNeighborDiscoverySetup
-from .GXSendDestinationAndMethod import GXSendDestinationAndMethod
 from .GXTokenGatewayConfiguration import GXTokenGatewayConfiguration
 from .GXUnitCharge import GXUnitCharge
 from .GXxDLMSContextType import GXxDLMSContextType

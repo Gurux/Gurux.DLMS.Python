@@ -182,7 +182,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.communicationSpeed = reader.readElementContentAsInt("CommunicationSpeed")
+        self.communicationSpeed = BaudRate(reader.readElementContentAsInt("CommunicationSpeed"))
         if reader.isStartElement("InitialisationStrings", True):
             while reader.isStartElement("Initialisation", True):
                 it = GXDLMSModemInitialisation()
@@ -193,16 +193,15 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
         self.modemProfile = reader.readElementContentAsString("ModemProfile", "").split(';')
 
     def save(self, writer):
-        if self.communicationSpeed != BaudRate.BAUDRATE_300:
-            writer.writeElementString("CommunicationSpeed", int(self.communicationSpeed))
+        writer.writeElementString("CommunicationSpeed", int(self.communicationSpeed))
+        writer.writeStartElement("InitialisationStrings")
         if self.initialisationStrings:
-            writer.writeStartElement("InitialisationStrings")
             for it in self.initialisationStrings:
                 writer.writeStartElement("Initialisation")
                 writer.writeElementString("Request", it.request)
                 writer.writeElementString("Response", it.response)
                 writer.writeElementString("Delay", it.delay)
                 writer.writeEndElement()
-            writer.writeEndElement()
+        writer.writeEndElement()
         if self.modemProfile:
             writer.writeElementString("ModemProfile", ';'.join(self.modemProfile))

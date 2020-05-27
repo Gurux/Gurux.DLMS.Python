@@ -238,12 +238,12 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             #  Set default values.
             if e.value is None:
                 self.scaler = 1
-                self.unit = 0
+                self.unit = Unit.NONE
             else:
                 if len(e.value) != 2:
                     raise ValueError("setValue failed. Invalid scaler unit value.")
                 self.scaler = math.pow(10, e.value[0])
-                self.unit = e.value[1]
+                self.unit = Unit(e.value[1])
         elif e.index == 5:
             if e.value is None:
                 self.status = None
@@ -286,7 +286,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
         self.currentAverageValue = reader.readElementContentAsObject("CurrentAverageValue", None, self, 2)
         self.lastAverageValue = reader.readElementContentAsObject("LastAverageValue", None, self, 3)
         self.scaler = reader.readElementContentAsDouble("Scaler", 1)
-        self.unit = reader.readElementContentAsInt("Unit")
+        self.unit = Unit(reader.readElementContentAsInt("Unit"))
         self.status = reader.readElementContentAsObject("Status", None, self, 5)
         self.captureTime = reader.readElementContentAsDateTime("CaptureTime")
         self.startTimeCurrent = reader.readElementContentAsDateTime("StartTimeCurrent")

@@ -288,4 +288,4 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("SignalQuality", it.signalQuality)
                 writer.writeEndElement()
             writer.writeEndElement()
-        writer.WriteElementString("CaptureTime", self.captureTime)
+        writer.writeElementString("CaptureTime", self.captureTime)

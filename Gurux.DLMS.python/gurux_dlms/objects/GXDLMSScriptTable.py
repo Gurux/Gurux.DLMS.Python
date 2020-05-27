@@ -199,7 +199,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
                 if reader.isStartElement("Actions", True):
                     while reader.isStartElement("Action", True):
                         a = GXDLMSScriptAction()
-                        a.type = ScriptActionType(reader.readElementContentAsInt("Type"))
+                        a.type_ = ScriptActionType(reader.readElementContentAsInt("Type"))
                         ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
                         ln = reader.readElementContentAsString("LN")
                         t = reader.objects.findByLN(ot, ln)

@@ -204,8 +204,8 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
                     it.actionUp.scriptSelector = reader.readElementContentAsInt("Selector")
                     reader.readEndElement("Up")
                 if reader.isStartElement("Down", True):
-                    it.actionUp.logicalName = reader.readElementContentAsString("LN", None)
-                    it.actionUp.scriptSelector = reader.readElementContentAsInt("Selector")
+                    it.actionDown.logicalName = reader.readElementContentAsString("LN", None)
+                    it.actionDown.scriptSelector = reader.readElementContentAsInt("Selector")
                     reader.readEndElement("Down")
             reader.readEndElement("Actions")
 

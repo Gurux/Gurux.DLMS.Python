@@ -445,7 +445,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 it = GXCreditChargeConfiguration()
                 it.creditReference = reader.readElementContentAsString("Credit")
                 it.chargeReference = reader.readElementContentAsString("Charge")
-                it.collectionConfiguration = reader.readElementContentAsInt("Configuration")
+                it.collectionConfiguration = CreditCollectionConfiguration(reader.readElementContentAsInt("Configuration"))
                 list_.append(it)
             reader.readEndElement("CreditChargeConfigurations")
 
@@ -501,7 +501,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 writer.writeStartElement("Item")
                 writer.writeElementString("Credit", it.creditReference)
                 writer.writeElementString("Charge", it.chargeReference)
-                writer.writeElementString("Configuration", it.collectionConfiguration)
+                writer.writeElementString("Configuration", int(it.collectionConfiguration))
                 writer.writeEndElement()
             writer.writeEndElement()
 

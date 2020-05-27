@@ -115,5 +115,4 @@ class GXDLMSMBusMasterPortSetup(GXDLMSObject, IGXDLMSBase):
         self.commSpeed = BaudRate(reader.readElementContentAsInt("CommSpeed"))
 
     def save(self, writer):
-        if self.commSpeed != BaudRate.BAUDRATE_2400:
-            writer.writeElementString("CommSpeed", self.commSpeed.value)
+        writer.writeElementString("CommSpeed", int(self.commSpeed))

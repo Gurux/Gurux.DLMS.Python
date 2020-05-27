@@ -374,6 +374,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
                 it.lsId = reader.readElementContentAsInt("LsId")
                 it.level = reader.readElementContentAsInt("Level")
                 it.rxLevel = reader.readElementContentAsInt("RxLevel")
+                it.rxSnr = reader.readElementContentAsInt("RxSnr")
             reader.readEndElement("AvailableSwitches")
         return list_
 

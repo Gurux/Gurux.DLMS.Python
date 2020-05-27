@@ -273,7 +273,7 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("LnId", self.lnId)
         writer.writeElementString("LsId", self.lsId)
         writer.writeElementString("SId", self.sId)
-        writer.writeElementString("SNa", GXByteBuffer.toHex(self.sna))
+        writer.writeElementString("SNa", self.sna)
         writer.writeElementString("State", self.state)
         writer.writeElementString("ScpLength", self.scpLength)
         writer.writeElementString("NodeHierarchyLevel", self.nodeHierarchyLevel)

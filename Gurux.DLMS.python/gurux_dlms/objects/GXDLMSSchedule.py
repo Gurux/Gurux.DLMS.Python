@@ -42,7 +42,6 @@ from ..GXDate import GXDate
 from ..GXTime import GXTime
 from ..GXByteBuffer import GXByteBuffer
 from ..GXBitString import GXBitString
-from ..GXUInt8 import GXUInt8
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
@@ -225,7 +224,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         item.switchTime = _GXCommon.changeType(settings, it[4], DataType.TIME)
         item.validityWindow = it[5]
         item.execWeekdays = Weekdays(it[6].toInteger())
-        item.execSpecDays = it[7]
+        item.execSpecDays = str(it[7])
         item.beginDate = _GXCommon.changeType(settings, it[8], DataType.DATE)
         item.endDate = _GXCommon.changeType(settings, it[9], DataType.DATE)
         return item
@@ -255,7 +254,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
                 it.scriptSelector = reader.readElementContentAsInt("ScriptSelector")
                 it.switchTime = reader.readElementContentAsTime("SwitchTime")
                 it.validityWindow = reader.readElementContentAsInt("ValidityWindow")
-                it.execWeekdays = reader.readElementContentAsString("ExecWeekdays")
+                it.execWeekdays = Weekdays(reader.readElementContentAsInt("ExecWeekdays"))
                 it.execSpecDays = reader.readElementContentAsString("ExecSpecDays")
                 it.beginDate = reader.readElementContentAsDate("BeginDate")
                 it.endDate = reader.readElementContentAsDate("EndDate")
@@ -273,7 +272,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
                 writer.writeElementString("ScriptSelector", it.scriptSelector)
                 writer.writeElementString("SwitchTime", it.switchTime)
                 writer.writeElementString("ValidityWindow", it.validityWindow)
-                writer.writeElementString("ExecWeekdays", it.execWeekdays)
+                writer.writeElementString("ExecWeekdays", int(it.execWeekdays))
                 writer.writeElementString("ExecSpecDays", it.execSpecDays)
                 writer.writeElementString("BeginDate", it.beginDate)
                 writer.writeElementString("EndDate", it.endDate)

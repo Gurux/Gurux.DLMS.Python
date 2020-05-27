@@ -37,7 +37,6 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
-from .GXSendDestinationAndMethod import GXSendDestinationAndMethod
 from .enums import ServiceType, MessageType
 from .GXDLMSCaptureObject import GXDLMSCaptureObject
 
@@ -57,7 +56,6 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         """
         super(GXDLMSPushSetup, self).__init__(ObjectType.PUSH_SETUP, ln, sn)
         self.pushObjectList = list()
-        self.sendDestinationAndMethod = GXSendDestinationAndMethod()
         self.communicationWindow = list()
         self.service = ServiceType.TCP
         self.message = MessageType.COSEM_APDU
@@ -69,7 +67,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
     def getValues(self):
         return [self.logicalName,
                 self.pushObjectList,
-                self.sendDestinationAndMethod,
+                (self.service, self.destination, self.message),
                 self.communicationWindow,
                 self.randomisationStartInterval,
                 self.numberOfRetries,
@@ -162,12 +160,12 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             buff.setUInt8(DataType.STRUCTURE)
             buff.setUInt8(3)
-            _GXCommon.setData(settings, buff, DataType.ENUM, self.sendDestinationAndMethod.service)
-            if self.sendDestinationAndMethod.destination:
-                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, self.sendDestinationAndMethod.destination.encode())
+            _GXCommon.setData(settings, buff, DataType.ENUM, self.service)
+            if self.destination:
+                _GXCommon.setData(settings, buff, DataType.OCTET_STRING, self.destination.encode())
             else:
                 _GXCommon.setData(settings, buff, DataType.OCTET_STRING, None)
-            _GXCommon.setData(settings, buff, DataType.ENUM, self.sendDestinationAndMethod.message)
+            _GXCommon.setData(settings, buff, DataType.ENUM, self.message)
             ret = buff
         elif e.index == 4:
             buff.setUInt8(DataType.ARRAY)
@@ -210,15 +208,15 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             #pylint: disable=broad-except
             if e.value:
-                self.sendDestinationAndMethod.service = e.value[0]
+                self.service = ServiceType(e.value[0])
                 try:
-                    if self.sendDestinationAndMethod.service == ServiceType.HDLC:
-                        self.sendDestinationAndMethod.destination = _GXCommon.toLogicalName(e.value[1])
+                    if self.service == ServiceType.HDLC:
+                        self.destination = _GXCommon.toLogicalName(e.value[1])
                     else:
-                        self.sendDestinationAndMethod.destination = e.value[1].decode()
+                        self.destination = e.value[1].decode()
                 except Exception:
-                    self.sendDestinationAndMethod.destination = GXByteBuffer.toHex(e.value[1])
-                self.sendDestinationAndMethod.message = e.value[2]
+                    self.destination = GXByteBuffer.toHex(e.value[1])
+                self.message = e.value[2]
         elif e.index == 4:
             self.communicationWindow = []
             if e.value:
@@ -239,7 +237,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         self.pushObjectList = []
         if reader.isStartElement("ObjectList", True):
             while reader.isStartElement("Item", True):
-                ot = reader.readElementContentAsInt("ObjectType")
+                ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
                 ln = reader.readElementContentAsString("LN")
                 ai = reader.readElementContentAsInt("AI")
                 di = reader.readElementContentAsInt("DI")
@@ -248,9 +246,9 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 obj = reader.objects.findByLN(ot, ln)
                 self.pushObjectList.append((obj, co))
             reader.readEndElement("ObjectList")
-        self.service = reader.readElementContentAsInt("Service")
+        self.service = ServiceType(reader.readElementContentAsInt("Service"))
         self.destination = reader.readElementContentAsString("Destination")
-        self.message = reader.readElementContentAsInt("Message")
+        self.message = MessageType(reader.readElementContentAsInt("Message"))
         self.communicationWindow = []
         if reader.isStartElement("CommunicationWindow", True):
             while reader.isStartElement("Item", True):
@@ -267,15 +265,15 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("ObjectList")
             for k, v in self.pushObjectList:
                 writer.writeStartElement("Item")
-                writer.writeElementString("ObjectType", k.objectType)
+                writer.writeElementString("ObjectType", int(k.objectType))
                 writer.writeElementString("LN", k.logicalName)
                 writer.writeElementString("AI", v.attributeIndex)
                 writer.writeElementString("DI", v.dataIndex)
                 writer.writeEndElement()
             writer.writeEndElement()
-        writer.writeElementString("Service", self.service.value)
+        writer.writeElementString("Service", int(self.service))
         writer.writeElementString("Destination", self.destination)
-        writer.writeElementString("Message", self.message.value)
+        writer.writeElementString("Message", int(self.message))
         writer.writeStartElement("CommunicationWindow")
         if self.communicationWindow:
             for k, v in self.communicationWindow:

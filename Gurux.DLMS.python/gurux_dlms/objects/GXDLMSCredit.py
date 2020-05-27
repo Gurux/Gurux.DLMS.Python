@@ -35,7 +35,6 @@ from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
-from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import CreditConfiguration, CreditType, CreditStatus

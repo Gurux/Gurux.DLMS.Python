@@ -179,14 +179,14 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
             #  Set default values.
             if not e.value:
                 self.scaler = 0
-                self.unit = 0
+                self.unit = Unit.NONE
             else:
                 if not e.value:
                     self.scaler = 0
-                    self.unit = 0
+                    self.unit = Unit.NONE
                 else:
                     self.scaler = math.pow(10, e.value[0])
-                    self.unit = e.value[1]
+                    self.unit = Unit(e.value[1])
         elif e.index == 4:
             self.status = e.value
         elif e.index == 5:
@@ -208,7 +208,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
         self.captureTime = reader.readElementContentAsDateTime("CaptureTime")
 
     def save(self, writer):
-        writer.writeElementString("Unit", self.unit)
+        writer.writeElementString("Unit", int(self.unit))
         writer.writeElementString("Scaler", self.scaler, 1)
         writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))
         writer.writeElementObject("Status", self.status, self.getDataType(4), self.getUIDataType(4))

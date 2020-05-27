@@ -302,7 +302,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
                 it = GXNeighborDiscoverySetup()
                 list_.append(it)
                 it.maxRetry = reader.readElementContentAsInt("MaxRetry")
-                it.eetryWaitTime = reader.readElementContentAsInt("RetryWaitTime")
+                it.retryWaitTime = reader.readElementContentAsInt("RetryWaitTime")
                 it.sendPeriod = reader.readElementContentAsInt("SendPeriod")
             reader.readEndElement(name)
         return list_

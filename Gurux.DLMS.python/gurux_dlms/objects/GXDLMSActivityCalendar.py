@@ -367,7 +367,6 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             while reader.isStartElement("Item", True):
                 it = GXDLMSWeekProfile()
                 it.name = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Name"))
-                it.name = reader.readElementContentAsString("Name")
                 it.monday = reader.readElementContentAsInt("Monday")
                 it.tuesday = reader.readElementContentAsInt("Tuesday")
                 it.wednesday = reader.readElementContentAsInt("Wednesday")
