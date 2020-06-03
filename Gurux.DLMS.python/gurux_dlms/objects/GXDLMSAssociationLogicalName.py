@@ -610,7 +610,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             self.applicationContextName.contextId = reader.readElementContentAsInt("ContextId")
             reader.readEndElement("ApplicationContextName")
         if reader.isStartElement("XDLMSContextInfo", True):
-            self.xDLMSContextInfo.conformance = reader.readElementContentAsInt("Conformance")
+            self.xDLMSContextInfo.conformance = Conformance(reader.readElementContentAsInt("Conformance"))
             self.xDLMSContextInfo.maxReceivePduSize = reader.readElementContentAsInt("MaxReceivePduSize")
             self.xDLMSContextInfo.maxSendPduSize = reader.readElementContentAsInt("MaxSendPduSize")
             self.xDLMSContextInfo.dlmsVersionNumber = reader.readElementContentAsInt("DlmsVersionNumber")

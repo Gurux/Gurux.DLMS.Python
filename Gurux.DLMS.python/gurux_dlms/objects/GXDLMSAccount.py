@@ -464,7 +464,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         self.paymentMode = reader.readElementContentAsInt("PaymentMode")
         self.accountStatus = reader.readElementContentAsInt("AccountStatus")
         self.currentCreditInUse = reader.readElementContentAsInt("CurrentCreditInUse")
-        self.currentCreditStatus = reader.readElementContentAsInt("CurrentCreditStatus")
+        self.currentCreditStatus = AccountCreditStatus(reader.readElementContentAsInt("CurrentCreditStatus"))
         self.availableCredit = reader.readElementContentAsInt("AvailableCredit")
         self.amountToClear = reader.readElementContentAsInt("AmountToClear")
         self.clearanceThreshold = reader.readElementContentAsInt("ClearanceThreshold")

@@ -285,7 +285,7 @@ class GXDLMSConverter:
         elif ot == ObjectType.IEC_HDLC_SETUP:
             ret = "IecHdlcSetup"
         elif ot == ObjectType.IEC_LOCAL_PORT_SETUP:
-            ret = "IecOpticalPortSetup"
+            ret = "IecLocalPortSetup"
         elif ot == ObjectType.IEC_TWISTED_PAIR_SETUP:
             ret = "IEC_TWISTED_PAIR_SETUP"
         elif ot == ObjectType.IP4_SETUP:
@@ -351,7 +351,7 @@ class GXDLMSConverter:
         elif ot == ObjectType.PARAMETER_MONITOR:
             ret = "ParameterMonitor"
         elif ot == ObjectType.TOKEN_GATEWAY:
-            ret = "TokenGateway"
+            ret = "Token"
         elif ot == ObjectType.GSM_DIAGNOSTIC:
             ret = "GSMDiagnostic"
         elif ot == ObjectType.COMPACT_DATA:
@@ -406,7 +406,7 @@ class GXDLMSConverter:
             ot = ObjectType.SECURITY_SETUP
         elif value in ("IecHdlcSetup", "HdlcSetup"):
             ot = ObjectType.IEC_HDLC_SETUP
-        elif value == "IecOpticalPortSetup":
+        elif value in ("IecLocalPortSetup", "IecOpticalPortSetup"):
             ot = ObjectType.IEC_LOCAL_PORT_SETUP
         elif value == "IEC_TWISTED_PAIR_SETUP":
             ot = ObjectType.IEC_TWISTED_PAIR_SETUP
@@ -472,7 +472,7 @@ class GXDLMSConverter:
             ot = ObjectType.CHARGE
         elif value == "ParameterMonitor":
             ot = ObjectType.PARAMETER_MONITOR
-        elif value == "TokenGateway":
+        elif value in ("Token", "TokenGateway"):
             ot = ObjectType.TOKEN_GATEWAY
         elif value == "GSMDiagnostic":
             ot = ObjectType.GSM_DIAGNOSTIC

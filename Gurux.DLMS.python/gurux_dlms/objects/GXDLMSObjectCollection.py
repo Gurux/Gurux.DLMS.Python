@@ -138,7 +138,7 @@ class GXDLMSObjectCollection(list):
 
     def save(self, name, settings=None):
         writer = GXXmlWriter()
-        objects = ET.Element("objects")
+        objects = ET.Element("Objects")
         for it in self:
             node = ET.SubElement(objects, "GXDLMS" + GXDLMSConverter.objectTypeToString(it.objectType))
             if it.shortName != 0:

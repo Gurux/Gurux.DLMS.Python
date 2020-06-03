@@ -111,7 +111,10 @@ class GXDLMSPrimeNbOfdmPlcApplicationsIdentification(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            ret = self.firmwareVersion
+            if isinstance(value, str):
+                ret = self.firmwareVersion.encode()
+            else:
+                ret = self.firmwareVersion
         elif e.index == 3:
             ret = self.vendorId
         elif e.index == 4:
@@ -128,7 +131,10 @@ class GXDLMSPrimeNbOfdmPlcApplicationsIdentification(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.firmwareVersion = e.value
+            if e.value is None:
+                self.firmwareVersion = None
+            else:
+                self.firmwareVersion = e.value.decode("utf-8").rstrip('\x00')
         elif e.index == 3:
             self.vendorId = e.value
         elif e.index == 4:
