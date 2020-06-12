@@ -482,7 +482,7 @@ class GXDLMS:
         key = None
         cipher = p.settings.cipher
         if (p.settings.negotiatedConformance & Conformance.GENERAL_PROTECTION) == Conformance.NONE:
-            if cipher.dedicatedKey and (not p.settings.isServer or (p.settings.connected & ConnectionState.DLMS) != 0):
+            if cipher.dedicatedKey and (p.settings.connected & ConnectionState.DLMS) != 0:
                 cmd = cls.getDedMessage(p.command)
                 key = cipher.dedicatedKey
             else:
@@ -1768,7 +1768,7 @@ class GXDLMS:
             bb = GXByteBuffer(data.data)
             data.data.size = data.data.position = index
             p = None
-            if settings.cipher.dedicatedKey and (not settings.isServer or settings.connected == ConnectionState.DLMS):
+            if settings.cipher.dedicatedKey and (settings.connected & ConnectionState.DLMS) != 0:
                 p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
             else:
                 p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)

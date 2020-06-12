@@ -559,11 +559,10 @@ class _GXAPDU:
     # @param buff
     #            Received data.
     #
+    #pylint: disable=too-many-boolean-expressions, too-many-return-statements
     @classmethod
     def parseApplicationContextName(cls, settings, buff, xml):
-        #pylint: disable=too-many-boolean-expressions,
-        #too-many-return-statements
-        #  Get length.
+        #Get length.
         len_ = buff.getUInt8()
         if len(buff) - buff.position < len_:
             raise ValueError("Encoding failed. Not enough data.")
@@ -986,9 +985,7 @@ class _GXAPDU:
         data.setUInt8(0x04)
         #  encoding the number of unused bits in the bit string
         data.setUInt8(0x00)
-        bb = GXByteBuffer(4)
-        bb.setUInt32(settings.negotiatedConformance)
-        data.set(bb.subArray(1, 3))
+        cls.setConformanceToArray(settings.negotiatedConformance, data)
         data.setUInt16(settings.maxPduSize)
         #  VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
         if settings.getUseLogicalNameReferencing():
