@@ -496,7 +496,7 @@ class GXDLMSReader:
         if not self.client.useLogicalNameReferencing:
             sn = self.client.objects.findBySN(0xFA00)
             if sn and sn.version > 0:
-                read(sn, 3)
+                self.read(sn, 3)
 
     def readAll(self, outputFile):
         try:

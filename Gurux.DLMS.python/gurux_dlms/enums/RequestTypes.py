@@ -31,9 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..GXIntEnum import GXIntEnum
+from ..GXIntFlag import GXIntFlag
 
-class RequestTypes(GXIntEnum):
+class RequestTypes(GXIntFlag):
     """
     RequestTypes enumerates the replies of the server to a client's request,
     indicating the request type.
