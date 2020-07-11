@@ -409,7 +409,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             if e.value is None:
                 self.sortMethod = SortMethod.FIFO
             else:
-                self.sortMethod = e.value
+                self.sortMethod = SortMethod(e.value)
         elif e.index == 6:
             if settings and settings.isServer:
                 self.__reset()
@@ -548,7 +548,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                 self.captureObjects.append((obj, co))
             reader.readEndElement("CaptureObjects")
         self.capturePeriod = reader.readElementContentAsInt("CapturePeriod")
-        self.sortMethod = reader.readElementContentAsInt("SortMethod")
+        self.sortMethod = SortMethod(reader.readElementContentAsInt("SortMethod"))
         if reader.isStartElement("SortObject", True):
             self.capturePeriod = reader.readElementContentAsInt("CapturePeriod")
             ot = reader.readElementContentAsInt("ObjectType")
