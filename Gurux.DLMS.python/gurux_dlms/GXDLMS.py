@@ -1085,7 +1085,7 @@ class GXDLMS:
             settings.setBlockIndex(number)
         expectedIndex = settings.blockIndex
         if number != expectedIndex:
-            raise Exception("Invalid Block number. It is " + number + " and it should be " + expectedIndex + ".")
+            raise Exception("Invalid Block number. It is " + str(number) + " and it should be " + str(expectedIndex) + ".")
         if (reply.moreData & RequestTypes.FRAME) != 0:
             cls.getDataFromBlock(data, index)
             return False
@@ -1174,7 +1174,7 @@ class GXDLMS:
             elif type_ == SingleReadResponse.BLOCK_NUMBER:
                 number = data.getUInt16()
                 if number != settings.blockIndex:
-                    raise Exception("Invalid Block number. It is " + number + " and it should be " + settings.blockIndex + ".")
+                    raise Exception("Invalid Block number. It is " + str(number) + " and it should be " + str(settings.blockIndex) + ".")
                 settings.increaseBlockIndex()
                 reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
             else:
@@ -1498,7 +1498,7 @@ class GXDLMS:
                     settings.setBlockIndex(0)
                 expectedIndex = settings.blockIndex
                 if number != expectedIndex:
-                    raise ValueError("Invalid Block number. It is " + number + " and it should be " + expectedIndex + ".")
+                    raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(expectedIndex) + ".")
             ch = reply.data.getUInt8()
             if ch != 0:
                 reply.error = reply.data.getUInt8()
