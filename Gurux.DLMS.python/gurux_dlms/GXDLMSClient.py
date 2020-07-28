@@ -1055,7 +1055,9 @@ class GXDLMSClient(object):
         sort = pg.sortObject
         if not sort and pg.captureObjects:
             sort = pg.captureObjects[0][0]
-        if not sort or sort.objectType != ObjectType.CLOCK:
+        #SL 7000 is using manufacturer specific object to save the date for PG 0.0.99.1.0.255.
+        if not sort or not (sort.objectType == ObjectType.CLOCK or\
+            (sort.objectType == ObjectType.DATA and sort.logicalName in ("0.0.1.1.0.255", "0.0.96.55.1.255"))):
             return self.read(pg, 2)
         buff = GXByteBuffer(51)
         buff.setUInt8(0x01)

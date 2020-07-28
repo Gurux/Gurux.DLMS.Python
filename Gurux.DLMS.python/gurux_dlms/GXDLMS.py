@@ -1983,10 +1983,10 @@ class GXDLMS:
     @classmethod
     def parseSnrmUaResponse(cls, data, limits):
         if data.available() == 0:
-            limits.setMaxInfoTX(GXDLMSLimits.DEFAULT_MAX_INFO_TX)
-            limits.setMaxInfoRX(GXDLMSLimits.DEFAULT_MAX_INFO_RX)
-            limits.setWindowSizeTX(GXDLMSLimits.DEFAULT_WINDOWS_SIZE_TX)
-            limits.setWindowSizeRX(GXDLMSLimits.DEFAULT_WINDOWS_SIZE_RX)
+            limits.maxInfoTX = GXDLMSLimits.DEFAULT_MAX_INFO_TX
+            limits.maxInfoRX = GXDLMSLimits.DEFAULT_MAX_INFO_RX
+            limits.windowSizeTX = GXDLMSLimits.DEFAULT_WINDOWS_SIZE_TX
+            limits.windowSizeRX = GXDLMSLimits.DEFAULT_WINDOWS_SIZE_RX
         else:
             data.getUInt8()
             data.getUInt8()
