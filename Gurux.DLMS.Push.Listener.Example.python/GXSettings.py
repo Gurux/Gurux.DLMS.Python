@@ -33,6 +33,8 @@
 # ---------------------------------------------------------------------------
 from gurux_dlms.enums import InterfaceType
 from gurux_dlms.secure import GXDLMSSecureClient
+from gurux_dlms.GXByteBuffer import GXByteBuffer
+
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits, BaudRate
 from gurux_net.enums import NetworkType
