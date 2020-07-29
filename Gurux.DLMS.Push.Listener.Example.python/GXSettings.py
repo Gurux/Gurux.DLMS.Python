@@ -62,6 +62,10 @@ class GXSettings:
         print(" -r [sn, ln]\t Short name or Logical Name (default) referencing is used.")
         print(" -w WRAPPER profile is used. HDLC is default.")
         print(" -t [Error, Warning, Info, Verbose] Trace messages.")
+        print(" -T \t System title that is used with chiphering. Ex -T 4775727578313233")
+        print(" -A \t Authentication key that is used with chiphering. Ex -A D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF")
+        print(" -B \t Block cipher key that is used with chiphering. Ex -B 000102030405060708090A0B0C0D0E0F")
+        print(" -D \t Dedicated key that is used with chiphering. Ex -D 00112233445566778899AABBCCDDEEFF")
         print("Example:")
         print("Start listener using TCP/IP connection.")
         print("python main -p [Meter Port No] -w")
@@ -106,7 +110,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "p:S:r:t:wh:")
+        parameters = GXSettings.__getParameters(args, "p:S:r:t:wh:T:A:B:D:")
         for it in parameters:
             if it.tag == 'w':
                 self.client.interfaceType = InterfaceType.WRAPPER
@@ -159,6 +163,14 @@ class GXSettings:
                     self.media.bytesize = 8
                     self.media.parity = Parity.NONE
                     self.media.stopbits = StopBits.ONE
+            elif it.tag == 'T':
+                self.client.ciphering.systemTitle = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'A':
+                self.client.ciphering.authenticationKey = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'B':
+                self.client.ciphering.blockCipherKey = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'D':
+                self.client.ciphering.dedicatedKey = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == '?':
                 if it.tag == 'p':
                     raise ValueError("Missing mandatory port option.")
