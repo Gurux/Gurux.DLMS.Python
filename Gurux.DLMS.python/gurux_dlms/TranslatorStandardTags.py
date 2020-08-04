@@ -1,5 +1,5 @@
 from .ActionRequestType import ActionRequestType
-from .enums import Command, DataType, Initiate, LoadDataSet, Task, Access, Definition, ApplicationReference, HardwareResource, VdeStateError
+from .enums import Command, DataType, Initiate, LoadDataSet, Task, Access, Definition, ApplicationReference, HardwareResource, VdeStateError, StateError, ExceptionServiceError
 from .TranslatorGeneralTags import TranslatorGeneralTags
 from .TranslatorTags import TranslatorTags
 from .SingleReadResponse import SingleReadResponse
@@ -72,6 +72,9 @@ class TranslatorStandardTags:
         list_[TranslatorGeneralTags.CALLING_AE_INVOCATION_ID] = "calling-AE-invocation-id"
         list_[TranslatorGeneralTags.CALLED_AE_INVOCATION_ID] = "called-AE-invocation-id"
         list_[TranslatorGeneralTags.RESPONDING_AE_INVOCATION_ID] = "responding-AE-invocation-id"
+        list_[Command.EXCEPTION_RESPONSE] = "exception-response"
+        list_[TranslatorTags.STATE_ERROR] = "state-error"
+        list_[TranslatorTags.SERVICE_ERROR] = "service-error"
 
     #
     # Get SN tags.
@@ -823,6 +826,50 @@ class TranslatorStandardTags:
             ret = ReleaseRequestReason.URGENT
         elif "user-defined".lower() == value.lower():
             ret = ReleaseRequestReason.USER_DEFINED
+        else:
+            raise ValueError(value)
+        return ret
+
+    @classmethod
+    def stateErrorToString(cls, value):
+        if value == StateError.SERVICE_NOT_ALLOWED:
+            ret = "service-not-allowed"
+        elif value == StateError.SERVICE_UNKNOWN:
+            ret = "service-unknown"
+        else:
+            raise ValueError(value)
+        return ret
+
+    @classmethod
+    def exceptionServiceErrorToString(cls, value):
+        if value == ExceptionServiceError.OPERATION_NOT_POSSIBLE:
+            ret = "operation-not-possible"
+        elif value == ExceptionServiceError.SERVICE_NOT_SUPPORTED:
+            ret = "service-not-supported"
+        elif value == ExceptionServiceError.OTHER_REASON:
+            ret = "other-reason"
+        else:
+            raise ValueError(value)
+        return ret
+
+    @classmethod
+    def valueofStateError(cls, value):
+        if "service-not-allowed".lower() == value.lower():
+            ret = StateError.SERVICE_NOT_ALLOWED
+        elif "service-unknown".lower() == value.lower():
+            ret = StateError.SERVICE_UNKNOWN
+        else:
+            raise ValueError(value)
+        return ret
+
+    @classmethod
+    def valueOfExceptionServiceError(cls, value):
+        if "operation-not-possible".lower() == value.lower():
+            ret = ExceptionServiceError.OPERATION_NOT_POSSIBLE
+        elif "service-not-supported".lower() == value.lower():
+            ret = ExceptionServiceError.SERVICE_NOT_SUPPORTED
+        elif "other-reason".lower() == value.lower():
+            ret = ExceptionServiceError.OTHER_REASON
         else:
             raise ValueError(value)
         return ret

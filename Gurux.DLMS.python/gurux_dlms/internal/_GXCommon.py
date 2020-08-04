@@ -1424,9 +1424,13 @@ class _GXCommon:
     #
     @classmethod
     def setDateTime(cls, settings, buff, value):
+        skip = dt.skip
         dt = cls.__getDateTime(value)
+        if settings and settings.dateTimeSkips:
+            skip = skip or settings.dateTimeSkips
+
         #  Add year.
-        if dt.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
             buff.setUInt16(0xFFFF)
         else:
             buff.setUInt16(dt.value.year)
@@ -1435,7 +1439,7 @@ class _GXCommon:
             buff.setUInt8(0xFD)
         elif dt.extra & DateTimeExtraInfo.DST_END != 0:
             buff.setUInt8(0xFE)
-        elif dt.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
+        elif skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.month)
@@ -1445,12 +1449,12 @@ class _GXCommon:
             buff.setUInt8(0xFD)
         elif dt.extra & DateTimeExtraInfo.LAST_DAY != DateTimeSkips.NONE:
             buff.setUInt8(0xFE)
-        elif dt.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
+        elif skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.day)
         #  Day of week.
-        if dt.skip & DateTimeSkips.DAY_OF_WEEK != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.DAY_OF_WEEK != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             if dt.dayOfWeek == 0:
@@ -1458,19 +1462,19 @@ class _GXCommon:
             else:
                 buff.setUInt8(dt.dayOfWeek)
         #  Add time.
-        if dt.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.hour)
-        if dt.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.minute)
-        if dt.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
         else:
             buff.setUInt8(dt.value.second)
-        if dt.skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.MILLISECOND != DateTimeSkips.NONE:
             #  Hundredth of seconds is not used.
             buff.setUInt8(0xFF)
         else:
@@ -1479,7 +1483,7 @@ class _GXCommon:
                 ms /= 10000
             buff.setUInt8(int(ms))
         #  devitation not used.
-        if dt.skip & DateTimeSkips.DEVITATION != DateTimeSkips.NONE:
+        if skip & DateTimeSkips.DEVITATION != DateTimeSkips.NONE:
             buff.setUInt16(0x8000)
         else:
             #  Add devitation.
@@ -1488,7 +1492,7 @@ class _GXCommon:
                 d = -d
             buff.setUInt16(d)
         #  Add clock_status
-        if dt.skip & DateTimeSkips.STATUS == DateTimeSkips.NONE:
+        if skip & DateTimeSkips.STATUS == DateTimeSkips.NONE:
             if dt.value.dst() or dt.status & ClockStatus.DAYLIGHT_SAVE_ACTIVE != ClockStatus.OK:
                 buff.setUInt8(dt.status | ClockStatus.DAYLIGHT_SAVE_ACTIVE)
             else:

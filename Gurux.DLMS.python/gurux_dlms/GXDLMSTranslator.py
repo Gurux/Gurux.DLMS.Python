@@ -715,6 +715,10 @@ class GXDLMSTranslator:
             xml.appendLine(TranslatorTags.PHYSICAL_DEVICE_ADDRESS, None, GXByteBuffer.hex(tmp, False, 0, len_))
             self.__pduToXml_(xml, GXByteBuffer(value.remaining()), omitDeclaration, omitNameSpace, allowUnknownCommand)
             xml.appendEndTag(cmd)
+        elif cmd == Command.EXCEPTION_RESPONSE:
+            data.xml = xml
+            data.data = value
+            GXDLMS.handleExceptionResponse(data)
         else:
             if not allowUnknownCommand:
                 raise Exception("Invalid command.")
@@ -754,7 +758,7 @@ class GXDLMSTranslator:
         s.command = tag
         if tag in (Command.SNRM, Command.AARQ, Command.READ_REQUEST, Command.WRITE_REQUEST,\
             Command.GET_REQUEST, Command.SET_REQUEST, Command.RELEASE_REQUEST, Command.METHOD_REQUEST,\
-            Command.ACCESS_REQUEST, Command.INITIATE_REQUEST, Command.CONFIRMED_SERVICE_ERROR):
+            Command.ACCESS_REQUEST, Command.INITIATE_REQUEST, Command.CONFIRMED_SERVICE_ERROR, Command.EXCEPTION_RESPONSE):
             s.settings.server = False
         elif tag in (Command.GLO_INITIATE_REQUEST, Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST,\
             Command.GLO_METHOD_REQUEST, Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST,\
@@ -1414,6 +1418,16 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.PHYSICAL_DEVICE_ADDRESS:
                 s.setPhysicalDeviceAddress(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
                 s.command = (Command.NONE)
+            elif tag == TranslatorTags.STATE_ERROR:
+                if s.outputType == TranslatorOutputType.SIMPLE_XML:
+                    s.attributeDescriptor.setUInt8(TranslatorSimpleTags.valueofStateError(cls.getValue(node, s)))
+                else:
+                    s.attributeDescriptor.setUInt8(TranslatorStandardTags.valueofStateError(cls.getValue(node, s)))
+            elif tag == TranslatorTags.SERVICE_ERROR:
+                if s.outputType == TranslatorOutputType.SIMPLE_XML:
+                    s.attributeDescriptor.setUInt8(TranslatorSimpleTags.valueOfExceptionServiceError(cls.getValue(node, s)))
+                else:
+                    s.attributeDescriptor.setUInt8(TranslatorStandardTags.valueOfExceptionServiceError(cls.getValue(node, s)))
             else:
                 raise ValueError("Invalid node: " + node.tag)
         cnt = 0
@@ -1661,7 +1675,7 @@ class GXDLMSTranslator:
             bb.setUInt8(BerType.CONTEXT)
             bb.setUInt8(1)
             bb.setUInt8(s.reason)
-        elif s.command == Command.CONFIRMED_SERVICE_ERROR:
+        elif s.command in (Command.CONFIRMED_SERVICE_ERROR, Command.EXCEPTION_RESPONSE):
             bb.setUInt8(s.command)
             bb.set(s.attributeDescriptor)
         elif s.command == Command.EXCEPTION_RESPONSE:

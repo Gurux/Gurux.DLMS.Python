@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 from __future__ import print_function
 from .enums import Priority, ServiceClass, InterfaceType, Authentication, Standard, HdlcFrameType, Conformance
+from .enums.DateTimeSkips import DateTimeSkips
 from .ConnectionState import ConnectionState
 from .objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXDLMSLimits import GXDLMSLimits
@@ -119,6 +120,7 @@ class GXDLMSSettings:
         #Quality of service.
         self.qualityOfService = 0
         self.useUtc2NormalTime = False
+        self.dateTimeSkips = DateTimeSkips.NONE
         self.standard = Standard.DLMS
         self.negotiatedConformance = Conformance.NONE
         self.invokeID = 0

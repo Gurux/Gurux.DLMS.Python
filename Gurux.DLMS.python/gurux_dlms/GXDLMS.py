@@ -62,6 +62,7 @@ from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
 from .MBusEncryptionMode import MBusEncryptionMode
 from .MBusCommand import MBusCommand
 from .enums.Standard import Standard
+from .GXDLMSExceptionResponse import GXDLMSExceptionResponse
 
 # pylint: disable=too-many-public-methods,too-many-function-args
 class GXDLMS:
@@ -1710,10 +1711,6 @@ class GXDLMS:
             cls.getValueFromData(settings, data)
 
     @classmethod
-    def handleExceptionResponse(cls, data):
-        raise Exception(StateError(data.data.getUInt8() - 1), ExceptionServiceError(data.data.getUInt8() - 1))
-
-    @classmethod
     def handleConfirmedServiceError(cls, data):
         if data.xml:
             data.xml.appendStartTag(Command.CONFIRMED_SERVICE_ERROR)
@@ -1736,6 +1733,25 @@ class GXDLMS:
             service = ConfirmedServiceError(data.data.getUInt8())
             type_ = data.data.getUInt8()
             raise GXDLMSConfirmedServiceError(service, type_, data.data.getUInt8())
+
+    @classmethod
+    def handleExceptionResponse(cls, data):
+        state = data.data.getUInt8()
+        error = ExceptionServiceError(data.data.getUInt8())
+        value = None
+        if error == ExceptionServiceError.INVOCATION_COUNTER_ERROR and data.data.available() > 3:
+            value = data.data.getUInt32()
+        if data.xml:
+            data.xml.appendStartTag(Command.EXCEPTION_RESPONSE)
+            if data.xml.outputType == TranslatorOutputType.STANDARD_XML:
+                data.xml.appendLine(TranslatorTags.STATE_ERROR, None, TranslatorStandardTags.stateErrorToString(state))
+                data.xml.appendLine(TranslatorTags.SERVICE_ERROR, None, TranslatorStandardTags.exceptionServiceErrorToString(error))
+            else:
+                data.xml.appendLine(TranslatorTags.STATE_ERROR, None, TranslatorSimpleTags.stateErrorToString(state))
+                data.xml.appendLine(TranslatorTags.SERVICE_ERROR, None, TranslatorSimpleTags.exceptionServiceErrorToString(error))
+            data.xml.appendEndTag(Command.EXCEPTION_RESPONSE)
+        else:
+            raise GXDLMSExceptionResponse(state, error, value)
 
     @classmethod
     def handleGloDedRequest(cls, settings, data):

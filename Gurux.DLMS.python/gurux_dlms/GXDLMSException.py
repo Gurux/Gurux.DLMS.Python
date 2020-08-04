@@ -31,7 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .enums import StateError, ServiceError, AssociationResult, ErrorCode, SourceDiagnostic
+from .enums import AssociationResult, ErrorCode, SourceDiagnostic
 
 class GXDLMSException(Exception):
     """
@@ -39,53 +39,13 @@ class GXDLMSException(Exception):
     GetDescription method.
     """
     def __init__(self, errCode, serviceErr=None):
-        if isinstance(errCode, StateError) and isinstance(serviceErr, ServiceError):
-            Exception.__init__(self, "Meter returns " + self.getStateError(errCode) + " exception. " + self.getServiceError(serviceErr))
-        elif isinstance(errCode, AssociationResult):
+        if isinstance(errCode, AssociationResult):
             Exception.__init__(self, "Connection is " + self.getResult(errCode) + "\r\n" + self.getDiagnostic(serviceErr))
             self.result = errCode
             self.diagnostic = serviceErr
         else:
             Exception.__init__(self, self.getDescription(errCode))
         self.errorCode = errCode
-        self.stateError = None
-        self.exceptionServiceError = None
-
-    #
-    # Gets state error description.
-    #
-    # @param stateError
-    #            State error enumerator value.
-    # State error as an string.
-    #
-    @classmethod
-    def getStateError(cls, stateError):
-        if stateError == StateError.SERVICE_NOT_ALLOWED:
-            ret = "Service not allowed"
-        elif stateError == StateError.SERVICE_UNKNOWN:
-            ret = "Service unknown"
-        else:
-            ret = "Invalid error code."
-        return ret
-
-    #
-    # Gets service error description.
-    #
-    # @param serviceError
-    #            Service error enumerator value.
-    # Service error as an string.
-    #
-    @classmethod
-    def getServiceError(cls, serviceError):
-        if serviceError == ServiceError.OPERATION_NOT_POSSIBLE:
-            ret = "Operation not possible"
-        elif serviceError == ServiceError.SERVICE_NOT_SUPPORTED:
-            ret = "Service not supported"
-        elif serviceError == ServiceError.OTHER_REASON:
-            ret = "Other reason"
-        else:
-            ret = "Invalid error code."
-        return ret
 
     #
     # Get result as a string.

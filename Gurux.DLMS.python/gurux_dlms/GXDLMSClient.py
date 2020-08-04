@@ -251,15 +251,22 @@ class GXDLMSClient(object):
         self.settings.useUtc2NormalTime = value
 
     #
-    # Standard says that Time zone is from normal time to UTC in
-    #      minutes.  If
-    # meter is configured to use UTC time (UTC to normal time) set this
-    #      to
-    # true.
+    # Standard says that Time zone is from normal time to UTC in minutes.
+    # If meter is configured to use UTC time (UTC to normal time) set this to true.
     #
     # True, if UTC time is used.
     #
     useUtc2NormalTime = property(__getUseUtc2NormalTime, __setUseUtc2NormalTime)
+
+    def __getDateTimeSkips(self):
+        return self.settings.dateTimeSkips
+
+    def __setDateTimeSkips(self, value):
+        self.settings.dateTimeSkips = value
+
+    dateTimeSkips = property(__getDateTimeSkips, __setDateTimeSkips)
+    """Skipped date time fields. This value can be used if meter can't handle deviation or status."""
+
 
     def __getStandard(self):
         return self.settings.standard
@@ -1055,10 +1062,6 @@ class GXDLMSClient(object):
         sort = pg.sortObject
         if not sort and pg.captureObjects:
             sort = pg.captureObjects[0][0]
-        #SL 7000 is using manufacturer specific object to save the date for PG 0.0.99.1.0.255.
-        if not sort or not (sort.objectType == ObjectType.CLOCK or\
-            (sort.objectType == ObjectType.DATA and sort.logicalName in ("0.0.1.1.0.255", "0.0.96.55.1.255"))):
-            return self.read(pg, 2)
         buff = GXByteBuffer(51)
         buff.setUInt8(0x01)
         buff.setUInt8(DataType.STRUCTURE)
@@ -1069,7 +1072,7 @@ class GXDLMSClient(object):
         _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
         _GXCommon.setData(self.settings, buff, DataType.INT8, 2)
         _GXCommon.setData(self.settings, buff, DataType.UINT16, sort.version)
-        if pg.captureObjects and isinstance(pg.captureObjects[0][0], GXDLMSData) and pg.captureObjects[0][0].logicalName == "0.0.1.1.0.255":
+        if sort and isinstance(sort, GXDLMSData) and sort.logicalName == "0.0.1.1.0.255":
             _GXCommon.setData(self.settings, buff, DataType.UINT32, GXDateTime.toUnixTime(start))
             _GXCommon.setData(self.settings, buff, DataType.UINT32, GXDateTime.toUnixTime(end))
         else:

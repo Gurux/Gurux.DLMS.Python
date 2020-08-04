@@ -329,7 +329,7 @@ class GXStandardObisCodeCollection(list):
         elif value == 89:
             ret = "Sum Li V2h QI+QII+QIII+QIV"
         elif value == 90:
-            ret = "SLi current (algebraic sum of the unsigned value of the currents in all phases)"
+            ret = "SLi current (algebraic sum of the - unsigned - value of the currents in all phases)"
         elif value == 91:
             ret = "Lo Current (neutral)"
         elif value == 92:

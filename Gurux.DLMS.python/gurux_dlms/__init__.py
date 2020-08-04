@@ -48,6 +48,7 @@ from .GXDLMS import GXDLMS
 from .GXDLMSAccessItem import GXDLMSAccessItem
 from .GXDLMSClient import GXDLMSClient
 from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
+from .GXDLMSExceptionResponse import GXDLMSExceptionResponse
 from .GXDLMSConnectionEventArgs import GXDLMSConnectionEventArgs
 from .GXDLMSConverter import GXDLMSConverter
 from .GXDLMSException import GXDLMSException

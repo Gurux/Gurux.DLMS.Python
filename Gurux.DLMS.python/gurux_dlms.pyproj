@@ -63,6 +63,7 @@
     <Compile Include="gurux_dlms\enums\VdeStateError.py" />
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
+    <Compile Include="gurux_dlms\GXDLMSExceptionResponse.py" />
     <Compile Include="gurux_dlms\GXIntFlag.py" />
     <Compile Include="gurux_dlms\GXIntEnum.py" />
     <Compile Include="gurux_dlms\GXInt32.py" />
