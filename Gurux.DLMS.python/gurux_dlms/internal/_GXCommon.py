@@ -1424,8 +1424,8 @@ class _GXCommon:
     #
     @classmethod
     def setDateTime(cls, settings, buff, value):
-        skip = dt.skip
         dt = cls.__getDateTime(value)
+        skip = dt.skip
         if settings and settings.dateTimeSkips:
             skip = skip or settings.dateTimeSkips
 

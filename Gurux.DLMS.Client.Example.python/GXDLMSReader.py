@@ -50,7 +50,7 @@ class GXDLMSReader:
         #pylint: disable=too-many-arguments
         self.replyBuff = bytearray(8 + 1024)
         self.waitTime = 5000
-        self.logFile = open("logFile.txt", "a")
+        self.logFile = open("logFile.txt", "w")
         self.trace = trace
         self.media = media
         self.invocationCounter = invocationCounter
@@ -110,7 +110,7 @@ class GXDLMSReader:
     def writeTrace(self, line, level):
         if self.trace >= level:
             print(line)
-        self.logFile.write(line)
+        self.logFile.write(line + "\n")
 
     def readDLMSPacket(self, data, reply=None):
         if not reply:
