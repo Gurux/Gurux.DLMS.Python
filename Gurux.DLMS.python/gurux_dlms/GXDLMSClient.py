@@ -500,7 +500,8 @@ class GXDLMSClient(object):
             self.settings.setInvokeID(1)
         #  If authentication or ciphering is used.
         if self.authentication > Authentication.LOW:
-            self.settings.ctoSChallenge = GXSecure.generateChallenge()
+            if not self.settings.useCustomChallenge:
+                self.settings.ctoSChallenge = GXSecure.generateChallenge()
         else:
             self.settings.setCtoSChallenge(None)
         _GXAPDU.generateAarq(self.settings, self.settings.cipher, None, buff)
