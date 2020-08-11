@@ -163,8 +163,8 @@ class GXDLMSReader:
                         if rd.size == 0:
                             print("Data send failed.  Try to resend " + str(pos) + "/3")
                             self.media.send(data, None)
-                        rd.set(p.reply)
-                        p.reply = None
+                    rd.set(p.reply)
+                    p.reply = None
             except Exception as e:
                 self.writeTrace("RX: " + self.now() + "\t" + str(rd), TraceLevel.ERROR)
                 raise e
