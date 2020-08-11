@@ -160,9 +160,8 @@ class GXDLMSReader:
                         pos += 1
                         if pos == 3:
                             raise TimeoutException("Failed to receive reply from the device in given time.")
-                        if rd.size == 0:
-                            print("Data send failed.  Try to resend " + str(pos) + "/3")
-                            self.media.send(data, None)
+                        print("Data send failed.  Try to resend " + str(pos) + "/3")
+                        self.media.send(data, None)
                     rd.set(p.reply)
                     p.reply = None
             except Exception as e:
