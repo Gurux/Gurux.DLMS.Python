@@ -258,6 +258,15 @@ class GXDLMSClient(object):
     #
     useUtc2NormalTime = property(__getUseUtc2NormalTime, __setUseUtc2NormalTime)
 
+    def __getIncreaseInvocationCounterForGMacAuthentication(self):
+        return self.settings.increaseInvocationCounterForGMacAuthentication
+
+    def __setIncreaseInvocationCounterForGMacAuthentication(self, value):
+        self.settings.increaseInvocationCounterForGMacAuthentication = value
+
+    increaseInvocationCounterForGMacAuthentication = property(__getIncreaseInvocationCounterForGMacAuthentication, __setIncreaseInvocationCounterForGMacAuthentication)
+    """Some meters expect that Invocation Counter is increased for GMAC Authentication when connection is established."""
+
     def __getDateTimeSkips(self):
         return self.settings.dateTimeSkips
 

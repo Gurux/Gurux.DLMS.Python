@@ -98,7 +98,6 @@ class GXCiphering(GXICipher):
     def encrypt(cls, p, data):
         if p.security != Security.NONE:
             tmp = GXDLMSChippering.encryptAesGcm(p, data)
-            p.invocationCounter = p.invocationCounter + 1
             return tmp
         return data
 

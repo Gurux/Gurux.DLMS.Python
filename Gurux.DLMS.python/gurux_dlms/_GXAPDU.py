@@ -194,7 +194,7 @@ class _GXAPDU:
         data.setUInt8(Command.INITIATE_REQUEST)
         #  Usage field for the response allowed component.
         #  Usage field for dedicated-key component.
-        if not settings.cipher or not settings.cipher.dedicatedKey:
+        if not settings.cipher or settings.cipher.security == Security.NONE or not settings.cipher.dedicatedKey:
             #  Not used
             data.setUInt8(0x00)
         else:
@@ -997,6 +997,9 @@ class _GXAPDU:
             p.security = cipher.security
             p.invocationCounter = cipher.invocationCounter
             return GXCiphering.encrypt(p, data.array())
+
+        if settings.increaseInvocationCounterForGMacAuthentication:
+            cipher.InvocationCounter += 1
         return data.array()
 
     #
