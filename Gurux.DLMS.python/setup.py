@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gurux_dlms",
-    version="1.0.90",
+    version="1.0.91",
     author="Gurux Ltd",
     author_email="gurux@gurux.fi",
     description="Gurux DLMS library for Python.",
@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/gurux/gurux.dlms.python",
     packages=setuptools.find_packages(),
     package_data={'gurux_dlms': ['OBISCodes.txt', 'India.txt', 'Italy.txt', 'SaudiArabia.txt']},
-    data_files = [("", ["LICENSE.txt"])],
+    license='GPLv2',
     classifiers=[
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
