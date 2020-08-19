@@ -129,6 +129,7 @@ class GXDLMSSettings:
         self.senderFrame = 0
         self.command = 0
         self.commandType = 0
+        self.useCustomChallenge = False
 
     #
     # Client to Server challenge.

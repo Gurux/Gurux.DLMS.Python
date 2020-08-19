@@ -1890,7 +1890,7 @@ class _GXCommon:
         ret = 0
         pos = 0
         while pos != 8:
-            ret = ret << 1 or value & 0x01
+            ret = ret << 1 | value & 0x01
             value = value >> 1
             pos = pos + 1
         return ret
