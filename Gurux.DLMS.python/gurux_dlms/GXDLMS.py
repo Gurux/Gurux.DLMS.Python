@@ -38,7 +38,7 @@ from .internal._GXDataInfo import _GXDataInfo
 from ._GXFCS16 import _GXFCS16
 from ._HDLCInfo import _HDLCInfo
 from .enums import Conformance, InterfaceType, RequestTypes, HdlcFrameType, Command, ErrorCode, Priority, ServiceClass, ObjectType
-from .enums import StateError, ExceptionServiceError, Security
+from .enums import ExceptionServiceError, Security
 from .TranslatorSimpleTags import TranslatorSimpleTags
 from .GetCommandType import GetCommandType
 from .GXDLMSLNParameters import GXDLMSLNParameters
@@ -482,7 +482,8 @@ class GXDLMS:
         cmd = 0
         key = None
         cipher = p.settings.cipher
-        if (p.settings.negotiatedConformance & Conformance.GENERAL_PROTECTION) == Conformance.NONE:
+        if ((p.settings.connected & ConnectionState.DLMS) == 0 or (p.settings.negotiatedConformance & Conformance.GENERAL_PROTECTION) == 0) and \
+            (not p.settings.preEstablishedSystemTitle or (p.settings.proposedConformance & Conformance.GENERAL_PROTECTION) == Conformance.NONE):
             if cipher.dedicatedKey and (p.settings.connected & ConnectionState.DLMS) != 0:
                 cmd = cls.getDedMessage(p.command)
                 key = cipher.dedicatedKey
@@ -1652,7 +1653,8 @@ class GXDLMS:
                 cls.handleGloDedRequest(settings, data)
             elif cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, \
                 Command.GLO_METHOD_RESPONSE, Command.GENERAL_GLO_CIPHERING, Command.GLO_EVENT_NOTIFICATION, \
-                Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE, Command.GENERAL_DED_CIPHERING, Command.DED_EVENT_NOTIFICATION):
+                Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE, Command.GENERAL_DED_CIPHERING, Command.DED_EVENT_NOTIFICATION, \
+                Command.GLO_CONFIRMED_SERVICE_ERROR, Command.DED_CONFIRMED_SERVICE_ERROR):
                 cls.handleGloDedResponse(settings, data, index)
             elif cmd == Command.DATA_NOTIFICATION:
                 cls.handleDataNotification(settings, data)

@@ -130,6 +130,7 @@ class GXDLMSSettings:
         self.command = 0
         self.commandType = 0
         self.useCustomChallenge = False
+        self.preEstablishedSystemTitle = None
 
     #
     # Client to Server challenge.

@@ -242,6 +242,11 @@ class Command(GXIntEnum):
     GLO_WRITE_RESPONSE = 45
 
     #
+    # Ded confirmed service error.
+    #
+    GLO_CONFIRMED_SERVICE_ERROR = 46
+
+    #
     # General GLO ciphering.
     #
     GENERAL_GLO_CIPHERING = 0xDB

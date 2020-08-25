@@ -46,6 +46,7 @@ from gurux_dlms.enums.DataType import DataType
 import locale
 from gurux_dlms.GXDateTime import GXDateTime
 from gurux_dlms.internal._GXCommon import _GXCommon
+from gurux_dlms import GXDLMSException, GXDLMSExceptionResponse, GXDLMSConfirmedServiceError
 
 try:
     import pkg_resources
@@ -102,6 +103,8 @@ class sampleclient():
                     settings.client.objects.save(settings.outputFile)
             else:
                 reader.readAll(settings.outputFile)
+        except (GXDLMSException, GXDLMSExceptionResponse, GXDLMSConfirmedServiceError) as ex:
+            print(ex)
         except (KeyboardInterrupt, SystemExit, Exception) as ex:
             traceback.print_exc()
         finally:

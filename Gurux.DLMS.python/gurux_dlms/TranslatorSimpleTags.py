@@ -172,6 +172,7 @@ class TranslatorSimpleTags:
         list_[Command.GLO_WRITE_RESPONSE] = "glo_WriteResponse"
         list_[Command.GENERAL_GLO_CIPHERING] = "GeneralGloCiphering"
         list_[Command.GENERAL_CIPHERING] = "GeneralCiphering"
+        list_[Command.GLO_CONFIRMED_SERVICE_ERROR] = "glo_GloConfirmedServiceError"
 
     #
     # Get ded tags.
@@ -188,7 +189,7 @@ class TranslatorSimpleTags:
         list_[Command.DED_METHOD_REQUEST] = "ded_ActionRequest"
         list_[Command.DED_METHOD_RESPONSE] = "ded_ActionResponse"
         list_[Command.GENERAL_DED_CIPHERING] = "GeneralDedCiphering"
-
+        list_[Command.DED_CONFIRMED_SERVICE_ERROR] = "ded_GloConfirmedServiceError"
     #
     # Get translator tags.
     #

@@ -111,7 +111,7 @@ class GXDLMSPrimeNbOfdmPlcApplicationsIdentification(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            if isinstance(value, str):
+            if isinstance(self.firmwareVersion, str):
                 ret = self.firmwareVersion.encode()
             else:
                 ret = self.firmwareVersion

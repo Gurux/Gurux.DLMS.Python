@@ -576,10 +576,9 @@ class GXDLMSClient(object):
             pw = tmp.array()
         else:
             pw = self.settings.password
-        ic = 0
-        if self.settings.cipher:
-            ic = self.settings.cipher.invocationCounter
-        challenge = GXSecure.secure(self.settings, self.settings.cipher, ic, self.settings.getStoCChallenge(), pw)
+        if self.settings.cipher and self.settings.increaseInvocationCounterForGMacAuthentication:
+            self.settings.cipher.invocationCounter += 1
+        challenge = GXSecure.secure(self.settings, self.settings.cipher, self.settings.cipher.invocationCounter, self.settings.getStoCChallenge(), pw)
         if self.useLogicalNameReferencing:
             return self.__method("0.0.40.0.0.255", ObjectType.ASSOCIATION_LOGICAL_NAME, 1, challenge, DataType.OCTET_STRING)
         return self.__method(0xFA00, ObjectType.ASSOCIATION_SHORT_NAME, 8, challenge, DataType.OCTET_STRING)
