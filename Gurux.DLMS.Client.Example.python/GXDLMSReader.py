@@ -420,10 +420,13 @@ class GXDLMSReader:
                 continue
 
             self.writeTrace("-------- Reading " + str(it.objectType) + " " + str(it.name) + " " + it.description, TraceLevel.INFO)
-            for pos in (it).getAttributeIndexToRead(True):
+            for pos in it.getAttributeIndexToRead(True):
                 try:
-                    val = self.read(it, pos)
-                    self.showValue(pos, val)
+                    if it.canRead(pos):
+                        val = self.read(it, pos)
+                        self.showValue(pos, val)
+                    else:
+                        self.writeTrace("Attribute" + pos + " is not readable.", TraceLevel.INFO)
                 except Exception as ex:
                     self.writeTrace("Error! Index: " + str(pos) + " " + str(ex), TraceLevel.ERROR)
                     self.writeTrace(str(ex), TraceLevel.ERROR)

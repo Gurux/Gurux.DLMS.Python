@@ -127,6 +127,12 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         return 10
 
     #
+    # This method copies all passive properties to the active.
+    #
+    def activatePassiveCalendar(self, client):
+        return client.method(self, 1, int(0), DataType.INT8)
+
+    #
     # Returns amount of methods.
     #
     def getMethodCount(self):
