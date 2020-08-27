@@ -79,7 +79,7 @@ class GXDLMSObject(object):
         return not self.getLastReadTime(index)
 
     def canRead(self, index):
-        return self.getAccess(index) != AccessMode.NO_ACCESS
+        return self.getAccess(index) and AccessMode.READ != 0
 
     #
     # Returns time when attribute was last time read.  -
