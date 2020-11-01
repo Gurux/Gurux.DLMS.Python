@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import math
+from decimal import Decimal
 import datetime
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
@@ -216,7 +217,9 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
                     if settings.isServer:
                         self.currentAverageValue = e.value
                     else:
-                        self.currentAverageValue = e.value * self.scaler
+                        decimals = math.log10(self.scaler)
+                        self.currentAverageValue = round(
+                            Decimal(e.value) * Decimal(self.scaler), decimals)
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.currentAverageValue = e.value

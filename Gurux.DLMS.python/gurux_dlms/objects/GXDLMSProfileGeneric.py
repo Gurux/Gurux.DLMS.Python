@@ -32,7 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
-from datetime import timedelta
+from decimal import Decimal
+import math
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
@@ -484,9 +485,13 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                         scaler_ = item[0].scaler
                         if scaler_ != 1 and data:
                             try:
-                                row[colIndex] = data * scaler_
-                            except Exception:
-                                print("Scalar failed for: {}".format(item[0].logicalName))
+                                decimals = int(-1 * math.log10(scaler_))
+                                row[colIndex] = round(
+                                    Decimal(data) * Decimal(scaler_), decimals)
+                            except Exception as e2:
+                                print("Scalar failed for: {}".format(
+                                    item[0].logicalName))
+                                print("e", e2)
                     elif isinstance(item[0], GXDLMSDemandRegister) and (item[1].attributeIndex == 2 or item[1].attributeIndex == 3):
                         scaler_ = item[0].scaler
                         if scaler_ != 1 and data:

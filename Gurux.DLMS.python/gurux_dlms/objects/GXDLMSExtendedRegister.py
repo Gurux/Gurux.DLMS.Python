@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import math
+from decimal import Decimal
 import datetime
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
@@ -169,7 +170,9 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
                     if settings.isServer:
                         self.value = e.value
                     else:
-                        self.value = e.value * self.scaler
+                        decimals = math.log10(self.scaler)
+                        self.value = round(
+                            Decimal(e.value) * Decimal(self.scaler), decimals)
                 except Exception:
                     #  Sometimes scaler is set for wrong Object type.
                     self.value = e.value
