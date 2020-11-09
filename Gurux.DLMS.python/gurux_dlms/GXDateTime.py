@@ -50,7 +50,6 @@ class GXDateTime:
         self.extra = DateTimeExtraInfo.NONE
         self.skip = DateTimeSkips.NONE
         self.status = ClockStatus.OK
-        self.timeZone = 0
         self.dayOfWeek = 0
         if isinstance(value, datetime.datetime):
             if value.tzinfo is None:

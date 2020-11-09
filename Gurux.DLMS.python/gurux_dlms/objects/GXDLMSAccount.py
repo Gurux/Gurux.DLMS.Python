@@ -245,9 +245,9 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
             bb.setUInt8(DataType.ENUM)
-            bb.setUInt8(self.accountStatus)
-            bb.setUInt8(DataType.ENUM)
             bb.setUInt8(self.paymentMode)
+            bb.setUInt8(DataType.ENUM)
+            bb.setUInt8(self.accountStatus)
             ret = bb.array()
         elif e.index == 3:
             ret = self.currentCreditInUse
@@ -350,8 +350,8 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
-            self.accountStatus = e.value[0]
-            self.paymentMode = e.value[1]
+            self.paymentMode = e.value[0]
+            self.accountStatus = e.value[1]
         elif e.index == 3:
             self.currentCreditInUse = e.value
         elif e.index == 4:

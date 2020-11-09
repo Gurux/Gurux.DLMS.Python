@@ -1080,7 +1080,7 @@ class GXDLMSClient(object):
         _GXCommon.setData(self.settings, buff, DataType.UINT16, sort.objectType)
         _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
         _GXCommon.setData(self.settings, buff, DataType.INT8, 2)
-        _GXCommon.setData(self.settings, buff, DataType.UINT16, sort.version)
+        _GXCommon.setData(self.settings, buff, DataType.UINT16, 0)
         if sort and isinstance(sort, GXDLMSData) and sort.logicalName == "0.0.1.1.0.255":
             _GXCommon.setData(self.settings, buff, DataType.UINT32, GXDateTime.toUnixTime(start))
             _GXCommon.setData(self.settings, buff, DataType.UINT32, GXDateTime.toUnixTime(end))

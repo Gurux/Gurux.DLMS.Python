@@ -89,7 +89,7 @@ class GXDLMSObject(object):
     # Is attribute read only.
     #
     def getLastReadTime(self, attributeIndex):
-        for k, v in self.readTimes:
+        for k, v in self.readTimes.items():
             if k == attributeIndex:
                 return v
         return None

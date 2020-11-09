@@ -1,5 +1,13 @@
 Credits
 =======
+  - Profile generic sortMethod cast from int to SortMethod enum.
+    * [Olav Frengstad](https://github.com/lafka)
+  - getLastReadTime items-issue fixed.
+    * [Olav Frengstad](https://github.com/lafka)
+  - getCiphering parameter issue from GXDLMSTranslator.
+    * [jothikumar mani](https://github.com/jk-arm)
+  - getCiphering parameter issue from GXDLMSTranslator.
+    * [jothikumar mani](https://github.com/jk-arm)
   - getCiphering parameter issue from GXDLMSTranslator.
     * [jothikumar mani](https://github.com/jk-arm)
   - integerToHex wrongly converting negative integers.
