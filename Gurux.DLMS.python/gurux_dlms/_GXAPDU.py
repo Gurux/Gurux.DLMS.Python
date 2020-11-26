@@ -32,7 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
-from .enums import BerType, PduType, Authentication, Command, AssociationResult, SourceDiagnostic, Service
+from .enums import BerType, PduType, Authentication, Command, AssociationResult, SourceDiagnostic, Service, AcseServiceProvider
 from .ConfirmedServiceError import ConfirmedServiceError
 from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
 from .internal._GXCommon import _GXCommon
@@ -710,7 +710,7 @@ class _GXAPDU:
                     #  Get length.
                     if buff.getUInt8() != 1:
                         raise ValueError("Invalid tag.")
-                    resultComponent = buff.getUInt8()
+                    resultComponent = AssociationResult(buff.getUInt8())
                     if xml:
                         if resultComponent != AssociationResult.ACCEPTED:
                             xml.appendComment(resultComponent.__str__())
@@ -810,14 +810,16 @@ class _GXAPDU:
                 _GXAPDU.updatePassword(settings, buff, xml)
             elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.USER_INFORMATION:
                 #  0xBE
-                #  Check result component.  Some meters are returning invalid
-                #  user-information if connection failed.
-                if xml is None and resultComponent != AssociationResult.ACCEPTED and resultDiagnosticValue != SourceDiagnostic.NONE:
-                    raise GXDLMSException(resultComponent, resultDiagnosticValue)
                 try:
                     _GXAPDU.parseUserInformation(settings, cipher, buff, xml)
                 except Exception:
                     if xml is None:
+                        #  Check result component.  Some meters are returning invalid
+                        #  user-information if connection failed.
+                        if xml is None and resultComponent != AssociationResult.ACCEPTED and resultDiagnosticValue != SourceDiagnostic.NONE:
+                            raise GXDLMSException(resultComponent, resultDiagnosticValue)
+                        if xml is None and resultComponent != AssociationResult.ACCEPTED and resultDiagnosticValue != AcseServiceProvider.NONE:
+                            raise GXDLMSException(resultComponent, resultDiagnosticValue)
                         raise GXDLMSException(AssociationResult.PERMANENT_REJECTED, SourceDiagnostic.NO_REASON_GIVEN)
             elif tag == BerType.CONTEXT:
                 #  0x80
@@ -830,7 +832,7 @@ class _GXAPDU:
                     buff.position = buff.position + len_
         #  All meters don't send user-information if connection is failed.
         #  For this reason result component is check again.
-        if xml is None and resultComponent != AssociationResult.ACCEPTED and resultDiagnosticValue != SourceDiagnostic.NONE:
+        if xml is None and resultComponent != AssociationResult.ACCEPTED and isinstance(resultDiagnosticValue, (SourceDiagnostic)) and resultDiagnosticValue != SourceDiagnostic.NONE:
             raise GXDLMSException(resultComponent, resultDiagnosticValue)
         return resultDiagnosticValue
 
@@ -886,7 +888,7 @@ class _GXAPDU:
             len_ = buff.getUInt8()
             if len_ != 1:
                 raise ValueError("Invalid tag.")
-            resultDiagnosticValue = buff.getUInt8()
+            resultDiagnosticValue = SourceDiagnostic(buff.getUInt8())
             if xml:
                 if resultDiagnosticValue != SourceDiagnostic.NONE:
                     xml.appendComment(resultDiagnosticValue.__str__())

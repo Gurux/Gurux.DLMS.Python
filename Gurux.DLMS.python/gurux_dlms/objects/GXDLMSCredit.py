@@ -79,6 +79,18 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
                 self.creditAvailableThreshold,
                 self.period]
 
+    def updateAmount(self, client):
+        """Adjusts the value of the current credit amount attribute."""
+        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+
+    def setAmountToValue(self, client, value):
+        """Sets the value of the current credit amount attribute."""
+        return client.method(self.getName(), self.objectType, 2, value, DataType.INT32)
+
+    def invokeCredit(self, client, value):
+        """Adjusts the value of the current credit amount attribute."""
+        return client.method(self.getName(), self.objectType, 3, value, DataType.UINT8)
+
     #
     # Returns collection of attributes to read.  If attribute is static and
     # already read or device is returned HW error it is not returned.

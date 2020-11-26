@@ -103,7 +103,7 @@ class sampleclient():
                     settings.client.objects.save(settings.outputFile)
             else:
                 reader.readAll(settings.outputFile)
-        except (GXDLMSException, GXDLMSExceptionResponse, GXDLMSConfirmedServiceError) as ex:
+        except (ValueError, GXDLMSException, GXDLMSExceptionResponse, GXDLMSConfirmedServiceError) as ex:
             print(ex)
         except (KeyboardInterrupt, SystemExit, Exception) as ex:
             traceback.print_exc()

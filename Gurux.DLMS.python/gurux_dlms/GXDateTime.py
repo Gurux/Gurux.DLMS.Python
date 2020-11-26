@@ -542,7 +542,7 @@ class GXDateTime:
     #
     # @param value
     #            Date and time.
-    # Unix time.
+    # Returns unix time.
     #
     @classmethod
     def toUnixTime(cls, value):
@@ -551,3 +551,28 @@ class GXDateTime:
         if isinstance(value, GXDateTime):
             return value.value.utctimetuple()
         return int(value.value / 1000)
+
+    #
+    # Get date time from high resolution clock time.
+    #
+    # highResolution:  High resolution clock time is milliseconds since 1970-01-01 00:00:00.
+    # Returns Date and time.
+    #
+    @classmethod
+    def fromHighResolutionTime(cls, unixTime):
+        return GXDateTime(datetime.datetime(unixTime))
+
+    #
+    # Convert date time to high resolution time.
+    #
+    # @param value
+    #            Date and time.
+    # Returns high resolution time.
+    #
+    @classmethod
+    def toHighResolutionTime(cls, value):
+        if isinstance(value, datetime):
+            return value.utctimetuple() * 1000.0
+        if isinstance(value, GXDateTime):
+            return value.value.utctimetuple() * 1000.0
+        return int(value.value)

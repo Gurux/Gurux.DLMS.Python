@@ -39,7 +39,7 @@ from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits
 from gurux_common import ReceiveParameters, GXCommon, TimeoutException
 from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
-from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security
+from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security, AssociationResult, SourceDiagnostic
 from gurux_dlms.objects import GXDLMSObject, GXDLMSObjectCollection, GXDLMSData, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
 from gurux_net import GXNet
 from gurux_serial import GXSerial
@@ -311,9 +311,13 @@ class GXDLMSReader:
         self.client.parseAareResponse(reply.data)
         reply.clear()
         if self.client.authentication > Authentication.LOW:
-            for it in self.client.getApplicationAssociationRequest():
-                self.readDLMSPacket(it, reply)
-            self.client.parseApplicationAssociationResponse(reply.data)
+            try:
+                for it in self.client.getApplicationAssociationRequest():
+                    self.readDLMSPacket(it, reply)
+                self.client.parseApplicationAssociationResponse(reply.data)
+            except GXDLMSException as ex:
+                #Invalid password.
+                raise GXDLMSException(AssociationResult.PERMANENT_REJECTED, SourceDiagnostic.AUTHENTICATION_FAILURE)
 
     def read(self, item, attributeIndex):
         data = self.client.read(item, attributeIndex)[0]

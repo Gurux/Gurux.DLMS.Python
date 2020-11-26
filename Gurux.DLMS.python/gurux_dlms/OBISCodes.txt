@@ -1,19 +1,20 @@
 0.0-64.0.1.0.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (1);;;#$F
 0.0-64.0.1.1.255;1,3,4;6,17,18;Ch. $B;No. of available billing periods (1);;;
-0.0-64.0.1.2.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (1);;;#$F
-0.0-64.0.1.2.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period (1) closed;;;
+0.0-64.0.1.2.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (1);;;#$F
+0.0-64.0.1.2.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period (1) closed;;;
 0.0-64.0.1.3.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (2), VZ;;;#$F
 0.0-64.0.1.4.255;1,3,4;6,17,18;Ch. $B;No. of available billing periods (2);;;
-0.0-64.0.1.5.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (2);;;#$F
-0.0-64.0.1.5.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period (2) closed;;;
+0.0-64.0.1.5.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (2);;;#$F
+0.0-64.0.1.5.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period (2) closed;;;
 0.0-64.0.2.0.255;1,3,4;9,10,17,18;Ch. $B;Active firmware identifier;;;
 0.0-64.0.2.1.255;1,3,4;9,10,17,18;Ch. $B;Active firmware version;;;
 0.0-64.0.2.8.255;1,3,4;9,10,17,18;Ch. $B;Active firmware signature;;;
-0.0-64.0.9.1.255;1,3,4;9;Ch. $B;Local time;;;
-0.0-64.0.9.2.255;1,3,4;9;Ch. $B;Local date;;;
+0.0-64.0.9.1.255;1,3,4;9,27;Ch. $B;Local time;;;
+0.0-64.0.9.2.255;1,3,4;9,26;Ch. $B;Local date;;;
 0.0-64.1.0.0.255;8;;Ch. $B;Clock object;;#$(E+1);
 0.0-64.1.0.1-127.255;8;;Ch. $B;Clock object, nth instance;;#$(E+1);
 0.0-64.1.1.0-127.255;1,3,4;6;Ch. $B;UNIX clock;;#$(E+1);
+0.0-64.1.2.0-127.255;1,3,4;21;Ch. $B;High resolution clock;;#$(E+1);
 0.0-64.2.0.0.255;27;;Ch. $B;Modem configuration;;;
 0.0-64.2.1.0.255;29;;Ch. $B;Auto connect;;;
 0.0-64.2.2.0.255;28;;Ch. $B;Auto answer;;;
@@ -34,11 +35,17 @@
 0.0-64.10.0.105.255;9;;Ch. $B;Power quality measurement management;;;
 0.0-64.10.1-127.105.255;9;;Ch. $B;Power quality measurement management, implementation specific;#$(D+1);;
 0.0-64.10.0.106.255;9;;Ch. $B;Disconnect control;;;
-0.0-64.10.1-127.106.255;9;;Ch. $B;Disconnect control;#$(D+1);;
+0.0-64.10.1-127.106.255;9;;Ch. $B;Disconnect control, implementation specific;#$(D+1);;
 0.0-64.10.0.107.255;9;;Ch. $B;Image activation;;;
 0.0-64.10.1-127.107.255;9;;Ch. $B;Image activation, implementation specific;#$(D+1);;
 0.0-64.10.0.108.255;9;;Ch. $B;Push script table;;;
 0.0-64.10.1-127.108.255;9;;Ch. $B;Push script table, implementation specific;#$(D+1);;
+0.0-64.10.0.109.255;9;;Ch. $B;Load profile control script table;;;
+0.0-64.10.1-127.109.255;9;;Ch. $B;Load profile control script table, implementation specific;#$(D+1);;
+0.0-64.10.0.110.255;9;;Ch. $B;M-Bus profile control script table,;;;
+0.0-64.10.1-127.110.255;9;;Ch. $B;M-Bus profile control script table, implementation specific;#$(D+1);;
+0.0-64.10.0.111.255;9;;Ch. $B;Function control script table;;;
+0.0-64.10.1-127.111.255;9;;Ch. $B;Function control script table, implementation specific;#$(D+1);;
 0.0-64.10.0.125.255;9;;Ch. $B;Broadcast script table;;;
 0.0-64.10.1-127.125.255;9;;Ch. $B;Broadcast script table, implementation specific;#$(D+1);;
 0.0-64.11.0.0-127.255;11;;Ch. $B;Special days table;;#$(E+1);
@@ -48,17 +55,29 @@
 0.0-64.14.0.0.255;6;;Ch. $B;Register activation;;#$(E+1);
 0.0-64.14.0.1-127.255;6;;Ch. $B;Register activation;;#$(E+1);
 0.0-64.15.0.0.255;22;;Ch. $B;End of billing period;;;
-0.0-64.15.1-127.0-127.255;22;;Ch. $B;End of billing period, implementation specific;#$(D+1);#$(E+1);
+0.0-64.15.1-127.0.255;22;;Ch. $B;End of billing period, implementation specific;#$(D+1);;
 0.0-64.15.0.1.255;22;;Ch. $B;Disconnect control;;;
+0.0-64.15.1-127.1.255;22;;Ch. $B;Disconnect control, implementation specific;#$(D+1);;
 0.0-64.15.0.2.255;22;;Ch. $B;Image activation;;;
+0.0-64.15.1-127.2.255;22;;Ch. $B;Image activation, implementation specific;#$(D+1);;
 0.0-64.15.0.3.255;22;;Ch. $B;Output control;;;
+0.0-64.15.1-127.3.255;22;;Ch. $B;Output control, implementation specific;#$(D+1);;
 0.0-64.15.0.4.255;22;;Ch. $B;Push;;;
+0.0-64.15.1-127.4.255;22;;Ch. $B;Push, implementation specific;#$(D+1);;
+0.0-64.15.0.5.255;22;;Ch. $B;Load profile control;;;
+0.0-64.15.1-127.5.255;22;;Ch. $B;Load profile control, implementation specific;#$(D+1);;
+0.0-64.15.0.6.255;22;;Ch. $B;M-Bus profile control;;;
+0.0-64.15.1-127.6.255;22;;Ch. $B;M-Bus profile control, implementation specific;#$(D+1);;
+0.0-64.15.0.7.255;22;;Ch. $B;Function control scheduler;;;
+0.0-64.15.1-127.7.255;22;;Ch. $B;Function control scheduler, implementation specific;#$(D+1);;
 0.0-64.16.0.0.255;21;;Ch. $B;Register monitor;;#$(E+1);
 0.0-64.16.0.1-127.255;21;;Ch. $B;Register monitor;;#$(E+1);
 0.0-64.16.1.0-9.255;21;;Ch. $B;Alarm monitor;;#$(E+1);
 0.0-64.16.2.0-127.255;65;;Ch. $B;Parameter monitor;;#$(E+1);
 0.0-64.17.0.0.255;71;;Ch. $B;Limiter;;#$(E+1);
 0.0-64.17.0.1-127.255;71;;Ch. $B;Limiter;;#$(E+1);
+0.0-64.18.0.0.255;123;;Ch. $B;Array manager;;#$(E+1);
+0.0-64.18.0.1-127.255;123;;Ch. $B;Array manager;;#$(E+1);
 0.0-64.19.0-9.0.255;111;;Ch. $B;Account;;;
 0.0-64.19.10-19.0-127.255;112;;Ch. $B;Credit;#$(D-10);#$(E);
 0.0-64.19.20-29.0-127.255;113;;Ch. $B;Charge;#$(D-20);#$(E);
@@ -78,13 +97,14 @@
 0.0-64.21.0.1-127.255;1;1;Ch. $B;Standard readout parametrization;;#$(E+1);
 0.0-64.22.0.0.255;23;;Ch. $B;IEC HDLC setup;;;
 0.0-64.23.0.0.255;24;;Ch. $B;IEC twisted pair (1) setup;;;
-0.0-64.23.0.1.255;43;;Ch. $B;IEC twisted pair MAC address setup;;;
-0.0-64.23.0.2.255;1,3,4;4,6,9,17,18;Ch. $B;IEC twisted pair fatal error register;;;
+0.0-64.23.1.0.255;43;;Ch. $B;IEC twisted pair MAC address setup;;;
+0.0-64.23.2.0.255;1,3,4;4,6,9,17,18;Ch. $B;IEC twisted pair fatal error register;;;
 0.0-64.23.3.0.255;7;;Ch. $B;IEC 62056-3-1 Short  readout;;;
 0.0-64.23.3.1.255;7;;Ch. $B;IEC 62056-3-1 Long readout;;;
 0.0-64.23.3.2-9.255;7;;Ch. $B;IEC 62056-3-1 Alternate readout profile;;#$(E-2);
+0.0-64.23.3.0-127.255;1;;Ch. $B;IEC 62056-3-1 readout parametrization;;;
 0.0-64.24.0.0.255;25;;Ch. $B;M-Bus slave port setup;;;
-0.0-64.24.1.0-127.255;72;;Ch. $B;M-Bus client;;#$(E+1);
+0.0-64.24.1.0.255;72;;Ch. $B;M-Bus client;;;
 0.0-64.24.2.0-127.255;4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;M-Bus value;;#$(E+1);
 0.0-64.24.3.0-127.255;7;;Ch. $B;M-Bus profile generic;;#$(E+1);
 0.0-64.24.4.0.255;70;;Ch. $B;M-Bus disconnect control;;#$(E+1);
@@ -101,6 +121,8 @@
 0.0-64.25.6.0.255;47;;Ch. $B;GSM diagnostic;;;
 0.0-64.25.7.0.255;48;;Ch. $B;IPv6 setup;;;
 0.0-64.25.9.0.255;40;;Ch. $B;Push setup;;;
+0.0-64.25.10.0.255;100;;Ch. $B;NTP setup;;;
+0.0-64.25.11.0.255;151;;Ch. $B;LTE monitoring;;;
 0.0-64.26.0.0.255;50;;Ch. $B;S-FSK Phy&MAC setup;;;
 0.0-64.26.1.0.255;51;;Ch. $B;S-FSK Active initiator;;;
 0.0-64.26.2.0.255;52;;Ch. $B;S-FSK MAC synchronization timeouts;;;
@@ -121,12 +143,16 @@
 0.0-64.29.0.0.255;90;;Ch. $B;G3-PLC MAC layer counters;;;
 0.0-64.29.1.0.255;91;;Ch. $B;G3-PLC MAC setup;;;
 0.0-64.29.2.0.255;92;;Ch. $B;G3-PLC 6LoWPAN adaptation layer setup;;;
-0.0-64.30.0.0-127.255;101;;Ch. $B;ZigBee(C) SAS startup;;#$(E+1);
-0.0-64.30.1.0-127.255;102;;Ch. $B;ZigBee(C) SAS join;;#$(E+1);
-0.0-64.30.2.0-127.255;103;;Ch. $B;ZigBee(C) SAS APS fragmentation;;#$(E+1);
-0.0-64.30.3.0-127.255;104;;Ch. $B;ZigBee(C) network control;;#$(E+1);
-0.0-64.30.4.0-127.255;105;;Ch. $B;ZigBee(C) tunnel setup;;#$(E+1);
+0.0-64.30.0.0-127.255;101;;Ch. $B;ZigBee® SAS startup;;#$(E+1);
+0.0-64.30.1.0-127.255;102;;Ch. $B;ZigBee® SAS join;;#$(E+1);
+0.0-64.30.2.0-127.255;103;;Ch. $B;ZigBee® SAS APS fragmentation;;#$(E+1);
+0.0-64.30.3.0-127.255;104;;Ch. $B;ZigBee® network control;;#$(E+1);
+0.0-64.30.4.0-127.255;105;;Ch. $B;ZigBee® tunnel setup;;#$(E+1);
 0.0-64.31.0.0.255;73;;Ch. $B;Wireless Mode Q channel;;;
+0.0-64.33.0.0.255;140;;Ch. $B;HS-PLC ISO/IEC 12139-1 MAC setup;;;
+0.0-64.33.1.0.255;141;;Ch. $B;HS-PLC ISO/IEC 12139-1 CPAS setup;;;
+0.0-64.33.2.0.255;142;;Ch. $B;HS-PLC ISO/IEC 12139-1 IP SSAS setup;;;
+0.0-64.33.3.0.255;143;;Ch. $B;HS-PLC ISO/IEC 12139-1 HDLC SSAS setup;;;
 0.0.40.0.0.255;12,15;;Ch. $B;Current association;;;
 0.0.40.0.1.255;12,15;;Ch. $B;Association;;#$E;
 0.0.40.0.2-127.255;12,15;;Ch. $B;Association;;#$E;
@@ -136,6 +162,7 @@
 0.0-64.43.1.0-127.255;1,3,4;6,17,18,21;Ch. $B;Invocation counter;;#$E;
 0.0-64.43.2.0-127.255;30;;Ch. $B;Data protection;;#$E;
 0.0.44.0.0-127.255;18;;Ch. $B;Image transfer;;#$E;
+0.0.44.1.0-127.255;122;;;Function control;;;
 0.0-64.65.0.0-127.255;26;;Ch. $B;Standard tables (D*128+E);$D;#$E;
 0.0-64.65.1-15.0-127.255;26;;Ch. $B;Standard tables (D*128+E);$D;#$E;
 0.0-64.65.16.0-127.255;26;;Ch. $B;Manufacturer tables ((D-16)*128+E);$D;#$E;
@@ -194,6 +221,7 @@
 0,1,7.0-64.94.64.0-255.0-255;*;*;Ch. $B;Identifiers for New Zealand;;;
 0,1,7.0-64.94.65.0-255.0-255;*;*;Ch. $B;Identifiers for Singapore;;;
 0,1,7.0-64.94.66.0-255.0-255;*;*;Ch. $B;Identifiers for Thailand;;;
+0,1,7.0-64.94.71.0-255.0-255;*;*;Ch. $B;Identifiers for Latvia;;;
 0,1,7.0-64.94.73.0-255.0-255;*;*;Ch. $B;Identifiers for Moldova;;;
 0,1,7.0-64.94.75.0-255.0-255;*;*;Ch. $B;Identifiers for Belarus;;;
 0,1,7.0-64.94.81.0-255.0-255;*;*;Ch. $B;Identifiers for Japan;;;
@@ -222,23 +250,23 @@
 0.0-64.96.2.11.255;1,3,4;9,25,26;Ch. $B;Date of last protected configuration program change;;;
 0.0-64.96.2.12.255;1,3,4;9,25,26;Ch. $B;Date (corrected) of last clock synchronisation / setting;;;
 0.0-64.96.2.13.255;1,3,4;9,25,26;Ch. $B;Date of last firmware activation;;;
-0.0-64.96.3.0.255;1,3,4,63,7,61;4,6,9,17,18,21;Ch. $B;State of input/output control signals, global;;;
-0.0-64.96.3.1.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of the input control signals;;(status word #$E);
-0.0-64.96.3.2.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of the output control signals;;(status word #$E);
-0.0-64.96.3.3.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of input/output control signals;;(status word #$E);
-0.0-64.96.3.4.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of input/output control signals;;(status word #$E);
+0.0-64.96.3.0.255;1,3,4,63,7,61;3,4,6,9,17,18,21;Ch. $B;State of input/output control signals, global;;;
+0.0-64.96.3.1.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of the input control signals;;(status word #$E);
+0.0-64.96.3.2.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of the output control signals;;(status word #$E);
+0.0-64.96.3.3.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of input/output control signals;;(status word #$E);
+0.0-64.96.3.4.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of input/output control signals;;(status word #$E);
 0.0-64.96.3.10.255;70;;Ch. $B;Disconnect control;;;
 0.0-64.96.3.20-29.255;68;;Ch. $B;Arbitrator;;#$(E-20);
-0.0-64.96.4.0.255;1,3,4,63,7,61;4,6,9,17,18,21;Ch. $B;State of the internal control signals, global;;;
-0.0-64.96.4.1.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
-0.0-64.96.4.2.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
-0.0-64.96.4.3.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
-0.0-64.96.4.4.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
-0.0-64.96.5.0.255;1,3,4,63,7,61;4,6,9,17,18,21;Ch. $B;Internal operating status, global;;;
-0.0-64.96.5.1.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-0.0-64.96.5.2.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-0.0-64.96.5.3.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-0.0-64.96.5.4.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+0.0-64.96.4.0.255;1,3,4,63,7,61;3,4,6,9,17,18,21;Ch. $B;State of the internal control signals, global;;;
+0.0-64.96.4.1.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
+0.0-64.96.4.2.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
+0.0-64.96.4.3.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
+0.0-64.96.4.4.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;State of the internal control signals;;(status word #$E);
+0.0-64.96.5.0.255;1,3,4,63,7,61;3,4,6,9,17,18,21;Ch. $B;Internal operating status, global;;;
+0.0-64.96.5.1.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+0.0-64.96.5.2.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+0.0-64.96.5.3.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+0.0-64.96.5.4.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
 0.0-64.96.6.0.255;3,1,4;6,17,18,21;Ch. $B;Battery use time counter;;;
 0.0-64.96.6.1.255;3,1,4;6,17,18,21;Ch. $B;Battery charge display;;;
 0.0-64.96.6.2.255;3,1,4;9,25,26;Ch. $B;Date of next battery change;;;
@@ -259,11 +287,11 @@
 0.0-64.96.7.7.255;1,3,4;6,17,18,21;Ch. $B;No. of long power failures;in phase L2;;
 0.0-64.96.7.8.255;1,3,4;6,17,18,21;Ch. $B;No. of long power failures;in phase L3;;
 0.0-64.96.7.9.255;1,3,4;6,17,18,21;Ch. $B;No. of long power failures;in any phase;;
-0.0-64.96.7.10.255;1,3,4;9,25;Ch. $B;Time of power failure;in all three phases;;
-0.0-64.96.7.11.255;1,3,4;9,25;Ch. $B;Time of power failure;in phase L1;;
-0.0-64.96.7.12.255;1,3,4;9,25;Ch. $B;Time of power failure;in phase L2;;
-0.0-64.96.7.13.255;1,3,4;9,25;Ch. $B;Time of power failure;in phase L3;;
-0.0-64.96.7.14.255;1,3,4;9,25;Ch. $B;Time of power failure;in any phase;;
+0.0-64.96.7.10.255;1,3,4;6,9,21,25,;Ch. $B;Time of power failure;in all three phases;;
+0.0-64.96.7.11.255;1,3,4;6,9,21,25,;Ch. $B;Time of power failure;in phase L1;;
+0.0-64.96.7.12.255;1,3,4;6,9,21,25,;Ch. $B;Time of power failure;in phase L2;;
+0.0-64.96.7.13.255;1,3,4;6,9,21,25,;Ch. $B;Time of power failure;in phase L3;;
+0.0-64.96.7.14.255;1,3,4;6,9,21,25,;Ch. $B;Time of power failure;in any phase;;
 0.0-64.96.7.15.255;1,3,4;6,17,18,21;Ch. $B;Duration of long power failure;in all three phases;;
 0.0-64.96.7.16.255;1,3,4;6,17,18,21;Ch. $B;Duration of long power failure;in phase L1;;
 0.0-64.96.7.17.255;1,3,4;6,17,18,21;Ch. $B;Duration of long power failure;in phase L2;;
@@ -358,6 +386,7 @@
 0.0-64.99.15.0-127.255;7;;Ch. $B;Token credit history (Payment metering);;#$(E+1);
 0.0-64.99.16.0-127.255;7;;Ch. $B;Parameter monitor log;;#$(E+1);
 0.0-64.99.17.0-127.255;7;;Ch. $B;Token transfer log (Payment metering);;#$(E+1);
+0.0-64.99.18.0-127.255;7;;Ch. $B;LTE monitoring profile;;#$(E+1);
 0,1,7.0-64.99.98.0-127.255;7;;Ch. $B;Event log;;#$(E+1);
 0,1,7.0-64.127.0-255.0-255.0-255;*;*;Ch. $B;Inactive object;;;
 0,1,7.65-127.0-255.0-255.0-255.0-255;*;*;Ch. $B;Utility specific objects;;;
@@ -365,17 +394,17 @@
 0.0-199,255.128-199,240.0-255.0-255.0-255;*;*;Manufacturer specific;;;;
 0.0-199,255.0-199,255.128-254.0-255.0-255;*;*;Manufacturer specific;;;;
 0.0-199,255.0-199,255.0-255.128-254.0-255;*;*;Manufacturer specific;;;;
-0.0-199,255.0-199,255.0-255.0-255.128-254;*;*;Manufactur-er specific;;;;
+0.0-199,255.0-199,255.0-255.0-255.128-254;*;*;Manufacturer specific;;;;
 1.0-64.0.0.0-9.255;1,3,4;6,9,10,17,18;Ch. $B;Electricity ID;;#$(E+1);
 1.0-64.0.0.255.255;7,61;;Ch. $B;Complete combined electricity ID;;;
 1.0-64.0.1.0.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (1);;;#$F
 1.0-64.0.1.1.255;1,3,4;6,17,18;Ch. $B;No. of available billing periods (1);;;
-1.0-64.0.1.2.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (1);;;#$F
-1.0-64.0.1.2.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period closed (1);;;
+1.0-64.0.1.2.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (1);;;#$F
+1.0-64.0.1.2.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period closed (1);;;
 1.0-64.0.1.3.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (2);;;$F
 1.0-64.0.1.4.255;1,3,4;6,17,18;Ch. $B;No. of available billing periods (2);;;
-1.0-64.0.1.5.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (2);;;#$F
-1.0-64.0.1.5.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period closed (2);;;
+1.0-64.0.1.5.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (2);;;#$F
+1.0-64.0.1.5.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period closed (2);;;
 1.0-64.0.2.0.255;1,3,4;9,10,17,18;Ch. $B;Active firmware identifier;;;
 1.0-64.0.2.1.255;1,3,4;9,10,17,18;Ch. $B;Parameter record number;;;
 1.0-64.0.2.1.1;1,3,4;9,10,17,18;Ch. $B;Parameter number line 1;;;
@@ -427,10 +456,10 @@
 1.0-64.0.8.5.255;3,1,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Recording interval 2, for load profile;;;
 1.0-64.0.8.6.255;3,1,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Billing period (Billing period 1 if there are two billing periods);;;
 1.0-64.0.8.7.255;3,1,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Billing period 2;;;
-1.0-64.0.8.8.255;3,1,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Measurement period 4,  for harmonics;;;
+1.0-64.0.8.8.255;3,1,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Measurement period 4,  for harmonics measurement;;;
 1.0-64.0.9.0.255;3,1,4;6,17,18;Ch. $B;Time expired since last end of billing period;;;
-1.0-64.0.9.1.255;1,3,4;9;Ch. $B;Local time;;;
-1.0-64.0.9.2.255;1,3,4;9;Ch. $B;Local date;;;
+1.0-64.0.9.1.255;1,3,4;9,27;Ch. $B;Local time;;;
+1.0-64.0.9.2.255;1,3,4;9,26;Ch. $B;Local date;;;
 1.0-64.0.9.3.255;1,3,4;;Ch. $B;Reserved for Germany;;;
 1.0-64.0.9.4.255;1,3,4;;Ch. $B;Reserved for Germany;;;
 1.0-64.0.9.5.255;1,3,4;6,15,17,18;Ch. $B;Week day (0...7);;;
@@ -456,173 +485,176 @@
 1.0-64.0.11.5.255;1,3;22;Ch. $B;Measurement algorithm;Apparent power;;
 1.0-64.0.11.6.255;1,3;22;Ch. $B;Measurement algorithm;Apparent energy;;
 1.0-64.0.11.7.255;1,3;22;Ch. $B;Measurement algorithm;Power factor calculation;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.0.0.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.0.1-63.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.0.0-63.0-99;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.0.0-63.101-125;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.0.0-63.126,255;,7;;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.1.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.1.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.1.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.1.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.1.0-63.126,255;,7;;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.2.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.2.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.2.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.2.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.2.0-63.126,255;,7;;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.3.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.3.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.3.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.3.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.3.0-63.126;,7;;Ch. $B;$1;Min. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.4.0-63.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.5.0-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Last avg. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.6.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.6.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.6.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.6.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.6.0-63.126;,7;;Ch. $B;$1;Max. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-13,15-20,21-33,35-40,41-53,55-60,61-73,75-80,84-92.7.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.0.0.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.0.1-63.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.0.0-63.0-99;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.0.0-63.101-125;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.0.0-63.126,255;,7;;Ch. $B;$1;Billing period avg. (since last reset);Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.1.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.1.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.1.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.1.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.1.0-63.126,255;,7;;Ch. $B;$1;Cum. min. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.2.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.2.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.2.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.2.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.2.0-63.126,255;,7;;Ch. $B;$1;Cum. max. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.3.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.3.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.3.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.3.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.3.0-63.126;,7;;Ch. $B;$1;Min. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.4.0-63.255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.5.0-63.255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Last avg. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.6.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.6.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.6.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.6.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.6.0-63.126;,7;;Ch. $B;$1;Max. 1;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-13,15-20,21-33,35-40,41-53,55-60,61-73,75-80,84-92,100-107,124-126.7.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;;
 1.0-64.14,34,54,74.7.0,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.8.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.8.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.8.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.8.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.8.0-63.126,255;,7;;Ch. $B;$1;Time integral 1;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.9.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.9.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.9.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.9.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.9.0-63.126,255;,7;;Ch. $B;$1;Time integral 2;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.10.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.10.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.10.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.10.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.10.0-63.126,255;,7;;Ch. $B;$1;Time integral 3;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.11.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.11.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.11.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.11.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.11.0-63.126,255;,7;;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.12.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.12.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.12.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.12.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.12.0-63.126,255;,7;;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.13.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.13.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.13.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.13.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.13.0-63.126;,7;;Ch. $B;$1;Min. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.14.0-63.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.15.0-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Last avg. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.16.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.16.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.16.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.16.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.16.0-63.126;,7;;Ch. $B;$1;Max. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.17.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 7;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.18.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 8;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.19.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 9;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.20.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 10;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.21.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.21.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.21.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.21.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.21.0-63.126,255;,7;;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.22.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.22.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.22.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.22.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.22.0-63.126,255;,7;;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.23.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.23.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.23.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.23.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.23.0-63.126;,7;;Ch. $B;$1;Min. 3;Rate $E (0 is total);Unspecified number of most recent billing periods
-1.0-64.1-13,15-20,21-33,35-40,41-53,55-60,61-73,75-80,84-92.24.0.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;;
-1.0-64.14,34,54,74.24.0,255.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.25.0-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Last avg. 3;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.26.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.26.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.26.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;Billing period $F
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.26.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;$(F-100). last / $(F-100) last billing period(s)
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.26.0-63.126;,7;;Ch. $B;$1;Max. 3;;Unspecified number of most recent billing periods
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.27.0-63,255.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 5;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.28.0-63,255.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 6;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.29.0-63,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 5;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.30.0-63,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 6;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.51.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. for recording interval 1;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.52.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. for recording interval 2;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.53.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. for recording interval 1;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.54.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. for recording interval 2;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.46.0-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Contracted value;Rate $E (0 is total);
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.55.0,255.255;3,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Test avg.;;
-1.0-64.1-20,21-40,41-60,61-80,82,84-92.58.0,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 4;;
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.31.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit threshold;Rate $E (0 is total);Threshold $F
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.32.0-63.0-99,255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit occurrence counter;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.33.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit duration;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.34.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.35.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit threshold;Rate $E (0 is total);Threshold $F
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.36.0-63.0-99,255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit occurrence counter;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.37.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit duration;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.38.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.39.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing threshold;Rate $E (0 is total);Threshold $F
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.40.0-63.0-99,255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing occurrence counter;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.41.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing duration;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.42.0-63.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.43.0-63.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for under limit;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.44.0-63.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for over limit;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.45.0-63.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold of missing magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.31.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit threshold;Harmonic / Distortion factor $E;Threshold $F
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.33.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit duration;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.34.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.35.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit threshold;Harmonic / Distortion factor $E;Threshold $F
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.36.0-120,124-127.0-99,255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit occurrence counter;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.37.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit duration;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.38.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.39.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing threshold;Harmonic / Distortion factor $E;Threshold $F
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.40.0-120,124-127.0-99,255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing occurrence counter;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.41.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing duration;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.42.0-120,124-127.0-99,255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.43.0-120,124-127.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for under limit;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.44.0-120,124-127.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for over limit;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.45.0-120,124-127.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold of missing magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.31.0-63.0-99,255;21;;Ch. $B;$1;Inst. value, under limit threshold;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.35.0-63.0-99,255;21;;Ch. $B;$1;Inst. value, over limit threshold;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.39.0-63.0-99,255;21;;Ch. $B;$1;Inst. value, missing threshold;Rate $E (0 is total);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.31.0-120,124-127.0-99,255;21;;Ch. $B;$1;Inst. value, under limit threshold;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.35.0-120,124-127.0-99,255;21;;Ch. $B;$1;Inst. value, over limit threshold;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.39.0-120,124-127.0-99,255;21;;Ch. $B;$1;Inst. value, missing threshold;Harmonic / Distortion factor $E;
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.4.0-63.0-99,255;21;;Ch. $B;$1;Current avg. 1;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.5.0-63.0-99,255;21;;;$1;Last avg. 1;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.14.0-63.0-99,255;21;;;$1;Current avg. 2;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.15.0-63.0-99,255;21;;;$1;Last avg. 2;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.24.0-63.0-99,255;21;;;$1;Current avg. 3;Rate $E (0 is total);
-1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89.25.0-63.0-99,255;21;;Ch. $B;$1;Last avg. 3;Rate $E (0 is total);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.4.0-120,124-127.0-99,255;21;;Ch. $B;$1;Current avg. 1;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.5.0-120,124-127.0-99,255;21;;;$1;Last avg. 1;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.14.0-120,124-127.0-99,255;21;;;$1;Current avg. 2;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.15.0-120,124-127.0-99,255;21;;;$1;Last avg. 2;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.24.0-120,124-127.0-99,255;21;;;$1;Current avg. 3;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.25.0-120,124-127.0-99,255;21;;Ch. $B;$1;Last avg. 3;Harmonic / Distortion factor $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.7.1-120.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;Harmonic $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.7.124.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;Total Harmonic Distortion (THD);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.7.125.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;Total Demand Distortion (TDD);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.7.126.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;All harmonics;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.7.127.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;All harmonics to nominal value ratio;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.24.1-120.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;Harmonic $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.24.124.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;Total Harmonic Distortion (THD);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.24.125.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;Total Demand Distortion (TDD);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.24.126.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;All harmonics;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.24.127.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;All harmonics to nominal value ratio;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.56.0.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Fundamental + all harmonics;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.56.1-120.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Harmonic $E;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.56.124.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Total Harmonic Distortion (THD);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.56.125.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Total Demand Distortion (TDD);
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.56.126.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;All harmonics;
-1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92.56.127.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;All harmonics to nominal value ratio;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.8.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.8.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.8.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.8.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 1;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.8.0-63.126,255;,7;;Ch. $B;$1;Time integral 1;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.9.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.9.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.9.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.9.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.9.0-63.126,255;,7;;Ch. $B;$1;Time integral 2;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.10.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.10.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.10.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.10.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.10.0-63.126,255;,7;;Ch. $B;$1;Time integral 3;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.11.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.11.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.11.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.11.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.11.0-63.126,255;,7;;Ch. $B;$1;Cum. min. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.12.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.12.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.12.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.12.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.12.0-63.126,255;,7;;Ch. $B;$1;Cum. max. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.13.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.13.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.13.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.13.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.13.0-63.126;,7;;Ch. $B;$1;Min. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.14.0-63.255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.15.0-63.255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Last avg. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.16.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.16.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.16.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.16.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 2;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.16.0-63.126;,7;;Ch. $B;$1;Max. 2;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.17.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 7;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.18.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 8;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.19.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 9;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.20.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 10;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.21.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.21.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.21.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.21.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.21.0-63.126,255;,7;;Ch. $B;$1;Cum. min. 3;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.22.0.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.22.1-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.22.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.22.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.22.0-63.126,255;,7;;Ch. $B;$1;Cum. max. 3;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.23.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.23.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.23.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.23.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. 3;Rate $E (0 is total);$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.23.0-63.126;,7;;Ch. $B;$1;Min. 3;Rate $E (0 is total);Unspecified number of most recent billing periods
+1.0-64.1-13,15-20,21-33,35-40,41-53,55-60,61-73,75-80,84-92,100-107,124-126.24.0.255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;;
+1.0-64.14,34,54,74.24.0,255.255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.25.0-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Last avg. 3;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.26.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.26.1-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.26.0-63.0-99;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;Billing period $F
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.26.0-63.101-125;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. 3;;$(F-100). last / $(F-100) last billing period(s)
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.26.0-63.126;,7;;Ch. $B;$1;Max. 3;;Unspecified number of most recent billing periods
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.27.0-63,255.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 5;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.28.0-63,255.255;5,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 6;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.29.0-63,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 5;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.30.0-63,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 6;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.49.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Average for recording interval 1;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.50.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Average for recording interval 2;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.51.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. for recording interval 1;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.52.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Min. for recording interval 2;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.53.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. for recording interval 1;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.54.0-63,255.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Max. for recording interval 2;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.46.0-63.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Contracted value;Rate $E (0 is total);
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.55.0,255.255;3,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Test avg.;;
+1.0-64.1-20,21-40,41-60,61-80,82,84-92,100-107,124-126.58.0,255.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Time integral 4;;
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.31.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit threshold;Rate $E (0 is total);Threshold $F
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.32.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit occurrence counter;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.33.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit duration;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.34.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.35.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit threshold;Rate $E (0 is total);Threshold $F
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.36.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit occurrence counter;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.37.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit duration;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.38.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.39.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing threshold;Rate $E (0 is total);Threshold $F
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.40.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing occurrence counter;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.41.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing duration;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.42.0-63.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.43.0-63.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for under limit;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.44.0-63.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for over limit;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.45.0-63.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold of missing magnitude;Rate $E (0 is total);Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.31.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit threshold;Harmonic / Distortion factor $E;Threshold $F
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.32.0-120,124-127.0-99;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit occurrence counter;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.33.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit duration;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.34.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Under limit magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.35.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit threshold;Harmonic / Distortion factor $E;Threshold $F
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.36.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit occurrence counter;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.37.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit duration;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.38.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Over limit magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.39.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing threshold;Harmonic / Distortion factor $E;Threshold $F
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.40.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing occurrence counter;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.41.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing duration;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.42.0-120,124-127.0-99,255;1,3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Missing magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.43.0-120,124-127.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for under limit;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.44.0-120,124-127.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold for over limit;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.45.0-120,124-127.0-99,255;1,3,4;6,15,17,18;Ch. $B;$1;Time threshold of missing magnitude;Harmonic / Distortion factor $E;Billing period  $F (255 is current)
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.31.0-63.0-99,255;21;;Ch. $B;$1;Inst. value, under limit threshold;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.35.0-63.0-99,255;21;;Ch. $B;$1;Inst. value, over limit threshold;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.39.0-63.0-99,255;21;;Ch. $B;$1;Inst. value, missing threshold;Rate $E (0 is total);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.31.0-120,124-127.0-99,255;21;;Ch. $B;$1;Inst. value, under limit threshold;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.35.0-120,124-127.0-99,255;21;;Ch. $B;$1;Inst. value, over limit threshold;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.39.0-120,124-127.0-99,255;21;;Ch. $B;$1;Inst. value, missing threshold;Harmonic / Distortion factor $E;
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.4.0-63.0-99,255;21;;Ch. $B;$1;Current avg. 1;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.5.0-63.0-99,255;21;;;$1;Last avg. 1;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.14.0-63.0-99,255;21;;;$1;Current avg. 2;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.15.0-63.0-99,255;21;;;$1;Last avg. 2;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.24.0-63.0-99,255;21;;;$1;Current avg. 3;Rate $E (0 is total);
+1.0-64.1-10,13,14,16-20,21-30,33,34,36-40,41-50,53,54,56-60,61-70,73,74,76-80,82,84-89,100-107.25.0-63.0-99,255;21;;Ch. $B;$1;Last avg. 3;Rate $E (0 is total);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.4.0-120,124-127.0-99,255;21;;Ch. $B;$1;Current avg. 1;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.5.0-120,124-127.0-99,255;21;;;$1;Last avg. 1;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.14.0-120,124-127.0-99,255;21;;;$1;Current avg. 2;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.15.0-120,124-127.0-99,255;21;;;$1;Last avg. 2;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.24.0-120,124-127.0-99,255;21;;;$1;Current avg. 3;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.25.0-120,124-127.0-99,255;21;;Ch. $B;$1;Last avg. 3;Harmonic / Distortion factor $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.7.1-120.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;Harmonic $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.7.124.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;Total Harmonic Distortion (THD);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.7.125.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;Total Demand Distortion (TDD);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.7.126.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;All harmonics;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.7.127.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Inst. value;All harmonics to nominal value ratio;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.24.1-120.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;Harmonic $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.24.124.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;Total Harmonic Distortion (THD);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.24.125.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;Total Demand Distortion (TDD);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.24.126.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 3;All harmonics;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.24.127.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;All harmonics to nominal value ratio;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.56.0.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Fundamental + all harmonics;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.56.1-120.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Harmonic $E;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.56.124.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Total Harmonic Distortion (THD);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.56.125.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;Total Demand Distortion (TDD);
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.56.126.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;All harmonics;
+1.0-64.11,12,15,31,32,35,51,52,55,71,72,75,90-92,124-126.56.127.255;3,4,5;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Current avg. 4;All harmonics to nominal value ratio;
 1.0-64.81.7.0.255;3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Angle of U(L1) - U(L1);;;
 1.0-64.81.7.1.255;3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Angle of U(L2) - U(L1);;;
 1.0-64.81.7.2.255;3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Angle of U(L3) - U(L1);;;
@@ -673,37 +705,37 @@
 1.0-64.81.7.76.255;3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Angle of I(L3) - I(L0);;;
 1.0-64.81.7.77.255;3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Angle of I(L0) - I(L0);;;
 1.0-64.81.7.255.255;61;;Ch. $B;Summary of phase angles;;;
-1.0-64.12,32,52,72.32.0.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<= 15%, 10ms...<= 100ms;
-1.0-64.12,32,52,72.32.1.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 100ms...<=  500ms;
-1.0-64.12,32,52,72.32.2.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 500ms...<=  1000ms;
-1.0-64.12,32,52,72.32.3.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 1s...<=  3s;
-1.0-64.12,32,52,72.32.4.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 3s...<= 20s;
-1.0-64.12,32,52,72.32.5.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<= 15%, 20s...<= 60s;
-1.0-64.12,32,52,72.32.10.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 10...<= 100ms;
-1.0-64.12,32,52,72.32.11.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 100...<= 500ms;
-1.0-64.12,32,52,72.32.12.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 500...<= 1000ms;
-1.0-64.12,32,52,72.32.13.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 1s...<= 3s;
-1.0-64.12,32,52,72.32.14.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 3s...<= 20s;
-1.0-64.12,32,52,72.32.15.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 20s...<= 60s;
-1.0-64.12,32,52,72.32.20.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 10...<= 100ms;
-1.0-64.12,32,52,72.32.21.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 100...<= 500ms;
-1.0-64.12,32,52,72.32.22.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 500...<= 1000ms;
-1.0-64.12,32,52,72.32.23.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 1s...<= 3s;
-1.0-64.12,32,52,72.32.24.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 3s...<= 20s;
-1.0-64.12,32,52,72.32.25.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 20s...<= 60s;
-1.0-64.12,32,52,72.32.30.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 10...<= 100ms;
-1.0-64.12,32,52,72.32.31.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 100...<= 500ms;
-1.0-64.12,32,52,72.32.32.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 500...<= 1000ms;
-1.0-64.12,32,52,72.32.33.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 1s...<= 3s;
-1.0-64.12,32,52,72.32.34.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 3s...<= 20s;
-1.0-64.12,32,52,72.32.35.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 20s...<= 60s;
-1.0-64.12,32,52,72.32.40.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 10...<= 100ms;
-1.0-64.12,32,52,72.32.41.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 100...<= 500ms;
-1.0-64.12,32,52,72.32.42.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 500...<= 1000ms;
-1.0-64.12,32,52,72.32.43.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 1s...<= 3s;
-1.0-64.12,32,52,72.32.44.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 3s...<= 20s;
-1.0-64.12,32,52,72.32.45.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 20s...<= 90s;
-1.0-64.12,32,52,72.32.255.255;61;;Ch. $B;$1;Unipede voltage dip;Summary;
+1.0-64.12,32,52,72,124-126.32.0.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<= 15%, 10ms...<= 100ms;
+1.0-64.12,32,52,72,124-126.32.1.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 100ms...<=  500ms;
+1.0-64.12,32,52,72,124-126.32.2.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 500ms...<=  1000ms;
+1.0-64.12,32,52,72,124-126.32.3.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 1s...<=  3s;
+1.0-64.12,32,52,72,124-126.32.4.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<=  15%, 3s...<= 20s;
+1.0-64.12,32,52,72,124-126.32.5.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 10...<= 15%, 20s...<= 60s;
+1.0-64.12,32,52,72,124-126.32.10.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 10...<= 100ms;
+1.0-64.12,32,52,72,124-126.32.11.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 100...<= 500ms;
+1.0-64.12,32,52,72,124-126.32.12.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 500...<= 1000ms;
+1.0-64.12,32,52,72,124-126.32.13.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 1s...<= 3s;
+1.0-64.12,32,52,72,124-126.32.14.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 3s...<= 20s;
+1.0-64.12,32,52,72,124-126.32.15.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 15...<= 30%, 20s...<= 60s;
+1.0-64.12,32,52,72,124-126.32.20.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 10...<= 100ms;
+1.0-64.12,32,52,72,124-126.32.21.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 100...<= 500ms;
+1.0-64.12,32,52,72,124-126.32.22.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 500...<= 1000ms;
+1.0-64.12,32,52,72,124-126.32.23.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 1s...<= 3s;
+1.0-64.12,32,52,72,124-126.32.24.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 3s...<= 20s;
+1.0-64.12,32,52,72,124-126.32.25.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 30...<= 60%, 20s...<= 60s;
+1.0-64.12,32,52,72,124-126.32.30.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 10...<= 100ms;
+1.0-64.12,32,52,72,124-126.32.31.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 100...<= 500ms;
+1.0-64.12,32,52,72,124-126.32.32.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 500...<= 1000ms;
+1.0-64.12,32,52,72,124-126.32.33.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 1s...<= 3s;
+1.0-64.12,32,52,72,124-126.32.34.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 3s...<= 20s;
+1.0-64.12,32,52,72,124-126.32.35.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 60...<= 90%, 20s...<= 60s;
+1.0-64.12,32,52,72,124-126.32.40.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 10...<= 100ms;
+1.0-64.12,32,52,72,124-126.32.41.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 100...<= 500ms;
+1.0-64.12,32,52,72,124-126.32.42.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 500...<= 1000ms;
+1.0-64.12,32,52,72,124-126.32.43.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 1s...<= 3s;
+1.0-64.12,32,52,72,124-126.32.44.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 3s...<= 20s;
+1.0-64.12,32,52,72,124-126.32.45.255;1,3;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Unipede voltage dip;Class 90...<= 99%, 20s...<= 90s;
+1.0-64.12,32,52,72,124-126.32.255.255;61;;Ch. $B;$1;Unipede voltage dip;Summary;
 1.0-64.83.0-10,11-16,17-20,21-26,27-30,55,58.1.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Sum Li Active line losses +;$2;;
 1.0-64.83.0-10,11-16,17-20,21-26,27-30,55,58.2.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Sum Li Active line losses -;$2;;
 1.0-64.83.0-10,11-16,17-20,21-26,27-30,55,58.3.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Sum Li Active line losses;$2;;
@@ -794,16 +826,16 @@
 1.0-64.83.0-10,11-16,17-20,21-26,27-30,55,58.90.255;3,4;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;L3 V2h;$2;;
 1.0-64.96.1.0-9.255;1,3;6,9,10,17,18;Ch. $B;Metering point ID;;#$(E+1);
 1.0-64.96.1.255.255;7,61;;Ch. $B;Metering point ID;combined;;
-1.0-64.96.5.0.255;1,3,4,63,7,61;4,6,9,17,18,21;Ch. $B;Internal operating status, global;;;
-1.0-64.96.5.1.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-1.0-64.96.5.2.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-1.0-64.96.5.3.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-1.0-64.96.5.4.255;1,3,4,63;4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-1.0-64.96.5.5.255;1,3,4;4,6,9,17,18,21;Ch. $B;Meter started status flag;;;
-1.0-64.96.10.0.255;1,3,4;4,6,9,17,18,21;Ch. $B;Status information missing voltage;;;
-1.0-64.96.10.1.255;1,3,4;4,6,9,17,18,21;Ch. $B;Status information missing current;;;
-1.0-64.96.10.2.255;1,3,4;4,6,9,17,18,21;Ch. $B;Status information current without voltage;;;
-1.0-64.96.10.3.255;1,3,4;4,6,9,17,18,21;Ch. $B;Status information aux. power supply;;;
+1.0-64.96.5.0.255;1,3,4,63,7,61;3,4,6,9,17,18,21;Ch. $B;Internal operating status, global;;;
+1.0-64.96.5.1.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+1.0-64.96.5.2.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+1.0-64.96.5.3.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+1.0-64.96.5.4.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+1.0-64.96.5.5.255;1,3,4;3,4,6,9,17,18,21;Ch. $B;Meter started status flag;;;
+1.0-64.96.10.0.255;1,3,4;3,4,6,9,17,18,21;Ch. $B;Status information missing voltage;;;
+1.0-64.96.10.1.255;1,3,4;3,4,6,9,17,18,21;Ch. $B;Status information missing current;;;
+1.0-64.96.10.2.255;1,3,4;3,4,6,9,17,18,21;Ch. $B;Status information current without voltage;;;
+1.0-64.96.10.3.255;1,3,4;3,4,6,9,17,18,21;Ch. $B;Status information aux. power supply;;;
 1.0-64.96.50-99.0-255.0-255;1,3,4,7,61,63;*;Ch. $B;Manufacturer specific;;;
 1.0-64.98.1.0-127,255.0-99;7;;Ch. $B;Data of billing period;Scheme 1;#$(E+1);Billing period  $F
 1.0-64.98.1.0-127,255.101-125;7;;Ch. $B;Data of billing period;Scheme 1;#$(E+1);$(F-100) last billing periods
@@ -823,6 +855,7 @@
 1.0-64.99.11.1-120,124-127.255;7;;Ch. $B;Voltage harmonic profile;;# $E;
 1.0-64.99.12.1-120,124-127.255;7;;Ch. $B;Current harmonic profile;;# $E;
 1.0-64.99.13.0.255;7;;Ch. $B;Voltage unbalance profile;;;
+1.0-64.99.14.0-127.255;7;;Ch. $B;Power quality profile;;#$(E+1);
 1.0-64.99.97.0-127.255;7;;Ch. $B;Power failure event log;;#$(E+1);
 1.0-64.99.98.0-127.255;7;;Ch. $B;Event log;;#$(E+1);
 1.0-64.99.99.0-127.255;7;;Ch. $B;Certification data log;;#$(E+1);
@@ -835,20 +868,20 @@
 7.0-64.0.0.255.255;7,61;;Ch. $B;Gas ID;;;
 7.0-64.0.1.0.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (1);;;#$F
 7.0-64.0.1.1.255;1,3;6,17,18;Ch. $B;No. of available billing periods (1);;;
-7.0-64.0.1.2.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period (1);;;
-7.0-64.0.1.2.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (1);;;#$F
+7.0-64.0.1.2.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period (1);;;
+7.0-64.0.1.2.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (1);;;#$F
 7.0-64.0.1.3.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (2);;;#$F
 7.0-64.0.1.4.255;1,3;6,17,18;Ch. $B;No. of available billing periods (2);;;
-7.0-64.0.1.5.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period (2);;;
-7.0-64.0.1.5.0-99;1,3,4;9.25;Ch. $B;Time stamp of the billing period (2) VZ (last reset);;;#$F
+7.0-64.0.1.5.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period (2);;;
+7.0-64.0.1.5.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (2) VZ (last reset);;;#$F
 7.0-64.0.1.6.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (3);;;#$F
 7.0-64.0.1.7.255;1,3;6,17,18;Ch. $B;No. of available billing periods (3);;;
-7.0-64.0.1.8.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period (3);;;
-7.0-64.0.1.8.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (3) VZ (last reset);;;#$F
+7.0-64.0.1.8.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period (3);;;
+7.0-64.0.1.8.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (3) VZ (last reset);;;#$F
 7.0-64.0.1.9.0-99,255;1,3,4;6,17,18;Ch. $B;Billing period counter (4);;;#$F
 7.0-64.0.1.10.255;1,3;6,17,18;Ch. $B;No. of available billing periods (4);;;
-7.0-64.0.1.11.255;1,3,4;9,25;Ch. $B;Time stamp of the most recent billing period (4);;;
-7.0-64.0.1.11.0-99;1,3,4;9,25;Ch. $B;Time stamp of the billing period (4) VZ (last reset);;;#$F
+7.0-64.0.1.11.255;1,3,4;6,9,21,25;Ch. $B;Time stamp of the most recent billing period (4);;;
+7.0-64.0.1.11.0-99;1,3,4;6,9,21,25;Ch. $B;Time stamp of the billing period (4) VZ (last reset);;;#$F
 7.0-64.0.2.0.255;1,3,4;6,9,10,17,18;Ch. $B;Program version;;;
 7.0-64.0.2.1.255;1,3,4;6,9,10,17,18;Ch. $B;Firmware version;;;
 7.0-64.0.2.2.255;1,3,4;6,9,10,17,18;Ch. $B;Software version;;;
@@ -926,8 +959,8 @@
 7.0-64.0.8.34.255;1,3;6,17,18;Ch. $B;Averaging period 10, between two last events;;;
 7.0-64.0.8.35.255;1,3;6,17,18;Ch. $B;Number of sub-periods for averaging period 2;;;
 7.0-64.0.9.0.255;1,3;6,17,18;Ch. $B;No. of days since last reset;;;
-7.0-64.0.9.1.255;1,3,4;9,25;Ch. $B;Local time;;;
-7.0-64.0.9.2.255;1,3,4;9,25;Ch. $B;Local date;;;
+7.0-64.0.9.1.255;1,3,4;9,27;Ch. $B;Local time;;;
+7.0-64.0.9.2.255;1,3,4;9,26;Ch. $B;Local date;;;
 7.0-64.0.9.3.255;1,3,4;9,25;Ch. $B;Start of conventional gas day;;;
 7.0-64.0.9.4.255;1,3,4;5,6,15,16,17,18;Ch. $B;Residual time shift;;;
 7.0-64.0.9.6.255;1,3,4;9,25;Ch. $B;Time of last reset (First billing period scheme if there are more than one);;;
@@ -958,8 +991,8 @@
 7.0-64.0.11.31.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Ambient device temperature, average month;;;
 7.0-64.0.12.8.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Reference pressure of gas analysis;;;
 7.0-64.0.12.9.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Reference temperature of gas analysis;;;
-7.0-64.0.12.10.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Superior Wobbe number 0 C;;;
-7.0-64.0.12.11.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Inferior Wobbe number 0 C;;;
+7.0-64.0.12.10.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Superior Wobbe number 0 °C;;;
+7.0-64.0.12.11.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Inferior Wobbe number 0 °C;;;
 7.0-64.0.12.12.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Methane number;;;
 7.0-64.0.12.13.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Total sulphur;;;
 7.0-64.0.12.14.255;1,3,4;5,6,15,16,17,18,23,24;Ch. $B;Hydrogen sulphide H2S;;;
@@ -1014,7 +1047,7 @@
 7.0-64.0.15.0-127.255;67;;Ch. $B;Sensor manager objects;;#$(E+1);
 7.0-64.1-8,11-16,21-26,31-36,61-66.0.0-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Index, Value at metering conditions, Current;Rate $E (0 is total);Billing period $F (255 is current)
 7.0-64.1-8,11-16,21-26,31-36,61-66.1.0-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Index, Corrected value, Current;Rate $E (0 is total);Billing period $F (255 is current)
-7.0-64.1-8,11-16,21-26,31-36,61-66.2.0-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Index, Value at base conditions/Converted value, Current;Rate $E (0 is total);Billing period $F (255 is current)
+7.0-64.1-8,11-16,21-26,31-36,61-66.2.0-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Index, Value at base conditions / “Converted value”, Current;Rate $E (0 is total);Billing period $F (255 is current)
 7.0-64.1-8,11-16,21-26,31-36,61-66.3.0-63.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Index, Current redundant value at metering conditions, Current;Rate $E (0 is total);Billing period $F (255 is current)
 7.0-64.1-8,11-16,21-26,31-36,61-66.6.0-63.0-99,101-126,255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Value relative to measurement period 1, Index difference, Value at metering conditions, Current period;Rate $E (0 is total);Billing period $F (255 is current)
 7.0-64.1-8,11-16,21-26,31-36,61-66.7.0-63.0-99,101-126,255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Value relative to measurement period 1, Index difference, Corrected value, Current period;Rate $E (0 is total);Billing period $F (255 is current)
@@ -1111,7 +1144,7 @@
 7.0-64.1-8,11-16,21-26,31-36,61-66.98.0-63.0-99,101-126,255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$0;Values relative to billing period 4, Maximum of Index differences over measurement period 3, Value at base conditions;Rate $E (0 is total) (0 is total);Billing period $F (255 is current)
 7.0-64.43.0.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Instantaneous, Current value at metering conditions;;Billing period $F (255 is current)
 7.0-64.43.1.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Instantaneous, Corrected value;;Billing period $F (255 is current)
-7.0-64.43.2.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Instantaneous, Value at base conditions / "Converted value";;Billing period $F (255 is current)
+7.0-64.43.2.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Instantaneous, Value at base conditions / “Converted value”;;Billing period $F (255 is current)
 7.0-64.43.13.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Instantaneous, Value at standard conditions;;Billing period $F (255 is current)
 7.0-64.43.15.0.0-99,101-126,255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Current average for averaging period 1, Value at metering conditions;;Billing period $F (255 is current)
 7.0-64.43.16.0.0-99,101-126,255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Current average for averaging period 1, Corrected value;;Billing period $F (255 is current)
@@ -1170,7 +1203,7 @@
 7.0-64.43.69.0.0-99,101-126,255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Last average for averaging period 4, Value at base conditions;;Billing period $F (255 is current)
 7.0-64.43.70.0.0-99,101-126,255;3,4,5,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Flow rate;Last average for averaging period 4, Value at standard conditions;;Billing period $F (255 is current)
 7.0-64.41,42,44-49.0.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Instantaneous, Current value at metering conditions;;Billing period $F (255 is current)
-7.0-64.41,42,44-49.2.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Instantaneous Value at base conditions / "Converted value";;Billing period $F (255 is current)
+7.0-64.41,42,44-49.2.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Instantaneous Value at base conditions / “Converted value”;;Billing period $F (255 is current)
 7.0-64.41,42,44-49.3.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Instantaneous, Backup value;;Billing period $F (255 is current)
 7.0-64.41,42,44-49.10.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Instantaneous, Actual value;;Billing period $F (255 is current)
 7.0-64.41,42,44-49.11.0.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;$1;Instantaneous, Preset value;;Billing period $F (255 is current)
@@ -1295,16 +1328,16 @@
 7.0-64.70.8-20,60-84.26.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Natural gas analysis;$4;Average, last interval, averaging period 8;Billing period $F (255 is current)
 7.0-64.70.8-20,60-84.27.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Natural gas analysis;$4;Average, averaging period 9, interval since last event;Billing period $F (255 is current)
 7.0-64.70.8-20,60-84.28.255;3,4,7;5,6,9,10,13,15,16,17,18,20,21,23,24;Ch. $B;Natural gas analysis;$4;Average, averaging period 10, interval between last two events;Billing period $F (255 is current)
-7.0-64.96.5.0.255;1,3,4,63,7,61;2,4,6,9,17,18,21;Ch. $B;Internal operating status, global;;;
-7.0-64.96.5.1.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.2.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.3.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.4.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.5.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.6.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.7.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.8.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
-7.0-64.96.5.9.255;1,3,4,63;2,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.0.255;1,3,4,63,7,61;3,4,6,9,17,18,21;Ch. $B;Internal operating status, global;;;
+7.0-64.96.5.1.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.2.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.3.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.4.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.5.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.6.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.7.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.8.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
+7.0-64.96.5.9.255;1,3,4,63;3,4,6,9,17,18,21;Ch. $B;Internal operating status;;(status word #$E);
 7.0-64.96.50-99.0-255.0-255;1,3,4,7,61,63;*;Ch. $B;Manufacturer specific;;;
 7.0-64.98.1.0-127.255;7;;Ch. $B;Gas related data of billing period (with billing period scheme 1 if there are more than one schemes available);;;
 7.0-64.98.2.0-127.255;7;;Ch. $B;Gas related data of billing period (with billing period scheme 2);;;

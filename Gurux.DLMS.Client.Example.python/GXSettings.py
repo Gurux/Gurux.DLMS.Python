@@ -69,7 +69,7 @@ class GXSettings:
         print(" -S \t serial port. (Example: COM1 or COM1:9600:8None1)")
         print(" -i IEC is a start protocol.")
         print(" -a \t Authentication (None, Low, High).")
-        print(" -P \t Password for authentication.")
+        print(" -P \t ASCII password for authentication. Use 0x prefix if hex value is used. Ex. 0x00000000.")
         print(" -c \t Client address. (Default: 16)")
         print(" -s \t Server address. (Default: 1)")
         print(" -n \t Server address as serial number.")
@@ -81,11 +81,11 @@ class GXSettings:
         print(" -v Invocation counter data object Logical Name. Ex. 0.0.43.1.0.255")
         print(" -I \t Auto increase invoke ID")
         print(" -o \t Cache association view to make reading faster. Ex. -o C:\\device.xml")
-        print(" -T \t System title that is used with chiphering. Ex -T 4775727578313233")
-        print(" -A \t Authentication key that is used with chiphering. Ex -A D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF")
-        print(" -B \t Block cipher key that is used with chiphering. Ex -B 000102030405060708090A0B0C0D0E0F")
-        print(" -D \t Dedicated key that is used with chiphering. Ex -D 00112233445566778899AABBCCDDEEFF")
-        print(" -d \t Used DLMS standard. Ex -d India (DLMS, India, Italy, Saudi_Arabia, IDIS)")
+        print(" -T \t System title that is used with chiphering. Ex. -T 4775727578313233")
+        print(" -A \t Authentication key that is used with chiphering. Ex. -A D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF")
+        print(" -B \t Block cipher key that is used with chiphering. Ex. -B 000102030405060708090A0B0C0D0E0F")
+        print(" -D \t Dedicated key that is used with chiphering. Ex. -D 00112233445566778899AABBCCDDEEFF")
+        print(" -d \t Used DLMS standard. Ex. -d India (DLMS, India, Italy, Saudi_Arabia, IDIS)")
         print("Example:")
         print("Read LG device using TCP/IP connection.")
         print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
@@ -172,7 +172,10 @@ class GXSettings:
                     self.media.port = int(it.value)
             elif it.tag == 'P':
                 #  Password
-                self.client.password = it.value
+                if it.value.startswith("0x"):
+                    self.client.password = GXByteBuffer.hexToBytes(it.value[2:])
+                else:
+                    self.client.password = it.value
             elif it.tag == 'i':
                 #  IEC.
                 self.iec = True

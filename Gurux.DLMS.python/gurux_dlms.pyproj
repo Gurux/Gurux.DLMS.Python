@@ -55,6 +55,7 @@
     <Compile Include="gurux_dlms\enums\Service.py" />
     <Compile Include="gurux_dlms\enums\ServiceClass.py" />
     <Compile Include="gurux_dlms\enums\ServiceError.py" />
+    <Compile Include="gurux_dlms\enums\AcseServiceProvider.py" />
     <Compile Include="gurux_dlms\enums\SourceDiagnostic.py" />
     <Compile Include="gurux_dlms\enums\Standard.py" />
     <Compile Include="gurux_dlms\enums\StateError.py" />
