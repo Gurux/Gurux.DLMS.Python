@@ -179,7 +179,7 @@ class GXSettings:
             elif it.tag == 'i':
                 #  IEC.
                 self.iec = True
-                if not defaultBaudRate:
+                if defaultBaudRate:
                     self.media.baudrate = BaudRate.BAUD_RATE_300
                     self.media.bytesize = 7
                     self.media.parity = Parity.EVEN
