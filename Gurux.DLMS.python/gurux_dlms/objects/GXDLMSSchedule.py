@@ -85,7 +85,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         #Add structure size.
-        data.SetUInt8(2)
+        data.setUInt8(2)
         #firstIndex
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
@@ -102,7 +102,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         #Add structure size.
-        data.SetUInt8(4)
+        data.setUInt8(4)
         #firstIndex
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
@@ -121,7 +121,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         #Add structure size.
-        data.SetUInt8(4)
+        data.setUInt8(4)
         #firstIndex
         _GXCommon.setData(None, data, DataType.UINT16, 0)
         _GXCommon.setData(None, data, DataType.UINT16, 0)

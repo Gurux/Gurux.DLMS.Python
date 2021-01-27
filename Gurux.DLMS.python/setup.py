@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gurux_dlms",
-    version="1.0.96",
+    version="1.0.97",
     author="Gurux Ltd",
     author_email="gurux@gurux.fi",
     description="Gurux DLMS library for Python.",

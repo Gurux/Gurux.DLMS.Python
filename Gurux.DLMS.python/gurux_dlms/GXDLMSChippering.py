@@ -109,7 +109,7 @@ class GXDLMSChippering:
                     _GXCommon.setObjectCount(len(p.systemTitle), tmp2)
                     tmp2.set(p.systemTitle)
                 else:
-                    tmp2.SetUInt8(0)
+                    tmp2.setUInt8(0)
             _GXCommon.setObjectCount(len(data), tmp2)
             tmp2.set(data, 0, len(data))
             data = tmp2
