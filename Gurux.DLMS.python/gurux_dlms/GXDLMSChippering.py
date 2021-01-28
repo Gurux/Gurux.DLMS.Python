@@ -244,7 +244,7 @@ class GXDLMSChippering:
         tag = bytearray(12)
         encryptedData = None
         if security == Security.AUTHENTICATION:
-            len_ = len(data) - data.position() - 12
+            len_ = len(data) - data.position - 12
             encryptedData = bytearray(len_)
             data.get(encryptedData)
             data.get(tag)

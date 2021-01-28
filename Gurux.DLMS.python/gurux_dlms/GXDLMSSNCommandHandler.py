@@ -122,7 +122,7 @@ class GXDLMSSNCommandHandler:
             GXDLMS.getSNPdu(GXDLMSSNParameters(settings, Command.READ_RESPONSE, 1, SingleReadResponse.DATA_ACCESS_ERROR, bb, None), replyData)
             settings.resetBlockIndex()
             return
-        if settings.index != settings.count and server.transaction.data.size() < settings.maxPduSize:
+        if settings.index != settings.count and server.transaction.data.size < settings.maxPduSize:
             reads = list()
             actions = list()
             for it in server.transaction.targets:
@@ -143,7 +143,7 @@ class GXDLMSSNCommandHandler:
         p = GXDLMSSNParameters(settings, Command.READ_RESPONSE, 1, SingleReadResponse.DATA_BLOCK_RESULT, bb, server.transaction.data)
         p.multipleBlocks = True
         GXDLMS.getSNPdu(p, replyData)
-        if server.transaction.data.size() == server.transaction.data.position:
+        if server.transaction.data.size == server.transaction.data.position:
             server.transaction = None
             settings.resetBlockIndex()
         else:

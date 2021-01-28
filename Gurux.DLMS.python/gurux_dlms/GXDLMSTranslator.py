@@ -213,7 +213,7 @@ class GXDLMSTranslator:
             raise ValueError("Invalid DLMS frame.")
         if pdu:
             pdu.clear()
-            pdu.set(data, 0, data.size())
+            pdu.set(data, 0, data.size)
         return data.position != len(data)
 
     @classmethod
@@ -438,7 +438,7 @@ class GXDLMSTranslator:
                     xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
                     xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
                     xml.append(tmp)
-                if data.data.size() == 0:
+                if data.data.size == 0:
                     xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
                 else:
                     if not self.pduOnly:
@@ -1079,7 +1079,7 @@ class GXDLMSTranslator:
                     s.attributeDescriptor.setUInt8(TranslatorStandardTags.getError(se, cls.getValue(node, s)))
             else:
                 if tag != TranslatorTags.SERVICE_ERROR:
-                    if s.attributeDescriptor.size() == 0:
+                    if s.attributeDescriptor.size == 0:
                         s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
                     else:
                         se = TranslatorSimpleTags.getServiceError(str_)
@@ -1237,11 +1237,11 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.RETURN_PARAMETERS:
                 s.attributeDescriptor.setUInt8(1)
             elif tag == TranslatorTags.ACCESS_SELECTION:
-                s.attributeDescriptor.setUInt8(s.attributeDescriptor.size() - 1, 1)
+                s.attributeDescriptor.setUInt8(s.attributeDescriptor.size - 1, 1)
             elif tag == TranslatorTags.VALUE:
                 pass
             elif tag == TranslatorTags.SERVICE:
-                if s.attributeDescriptor.size() == 0:
+                if s.attributeDescriptor.size == 0:
                     s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
                 else:
                     s.attributeDescriptor.setUInt8(ServiceError.SERVICE)
@@ -1666,7 +1666,7 @@ class GXDLMSTranslator:
             bb.setUInt8(BerType.CONTEXT)
             bb.setUInt8(1)
             bb.setUInt8(s.reason)
-            if s.data.size() == 0:
+            if s.data.size == 0:
                 bb.setUInt8(0)
             else:
                 bb.set(s.data)

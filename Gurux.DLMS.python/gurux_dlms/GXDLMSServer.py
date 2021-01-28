@@ -485,12 +485,12 @@ class GXDLMSServer(object):
                 raise ValueError("Invalid Logical Name.")
             it.start = self
             if isinstance(it, (GXDLMSAssociationShortName,)) and not self.useLogicalNameReferencing:
-                if (it).objectList.size() == 0:
-                    (it).objectList.append(self.items)
+                if len(it.objectList) == 0:
+                    it.objectList.append(self.items)
                 associationObject = it
             elif isinstance(it, (GXDLMSAssociationLogicalName,)) and self.useLogicalNameReferencing:
                 ln = it
-                if ln.objectList.size() == 0:
+                if len(ln.objectList) == 0:
                     ln.objectList.append(self.items)
                 associationObject = it
                 ln.xDLMSContextInfo.maxReceivePduSize = self.settings.maxServerPDUSize
