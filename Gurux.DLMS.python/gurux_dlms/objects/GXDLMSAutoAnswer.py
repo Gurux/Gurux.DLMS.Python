@@ -145,9 +145,9 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
                     #  Count
                     buff.setUInt8(2)
                     #  Start time
-                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, it.getKey())
+                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, it[0])
                     #  End time
-                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, it.value)
+                    _GXCommon.setData(settings, buff, DataType.OCTET_STRING, it[1])
             ret = buff.array()
         elif e.index == 4:
             ret = self.status
