@@ -517,7 +517,8 @@ class GXDLMSTranslator:
             Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST,\
             Command.GLO_METHOD_RESPONSE, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST,\
             Command.DED_READ_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
-            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE, Command.GLO_CONFIRMED_SERVICE_ERROR, Command.DED_CONFIRMED_SERVICE_ERROR)
+            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE, Command.GLO_CONFIRMED_SERVICE_ERROR,\
+            Command.DED_CONFIRMED_SERVICE_ERROR, Command.GENERAL_CIPHERING)
 
     #
     # Convert bytes to XML.

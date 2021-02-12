@@ -1668,11 +1668,10 @@ class GXDLMS:
                 pass
             elif cmd == Command.GATEWAY_RESPONSE:
                 data.data.getUInt8()
-                len_ = _GXCommon.getObjectCount(data.data)
-                pda = bytearray(len_)
+                pda = bytearray(_GXCommon.getObjectCount(data.data))
                 data.data.get(pda)
-                cls.getDataFromBlock(data, index)
-                data.command = (Command.NONE)
+                cls.getDataFromBlock(data.data, index)
+                data.command = Command.NONE
                 cls.getPdu(settings, data)
             else:
                 raise ValueError("Invalid Command.")
