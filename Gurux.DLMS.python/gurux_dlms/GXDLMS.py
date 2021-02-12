@@ -347,9 +347,9 @@ class GXDLMS:
                 if p.command == Command.SET_REQUEST:
                     if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
                         if p.requestType == 1:
-                            p.setRequestType(2)
+                            p.requestType = 2
                         elif p.requestType == 2:
-                            p.setRequestType(3)
+                            p.requestType = 3
                 if p.command == Command.GET_RESPONSE:
                     if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
                         if p.requestType == 1:
@@ -644,11 +644,11 @@ class GXDLMS:
                         elif not reply:
                             reply.set(_GXCommon.LLC_SEND_BYTES)
                     if p.command == Command.WRITE_REQUEST:
-                        p.setRequestType(VariableAccessSpecification.WRITE_DATA_BLOCK_ACCESS)
+                        p.requestType = VariableAccessSpecification.WRITE_DATA_BLOCK_ACCESS
                     elif p.command == Command.READ_REQUEST:
-                        p.setRequestType(VariableAccessSpecification.READ_DATA_BLOCK_ACCESS)
+                        p.requestType = VariableAccessSpecification.READ_DATA_BLOCK_ACCESS
                     elif p.command == Command.READ_RESPONSE:
-                        p.setRequestType(SingleReadResponse.DATA_BLOCK_RESULT)
+                        p.requestType = SingleReadResponse.DATA_BLOCK_RESULT
                     else:
                         raise ValueError("Invalid command.")
                     reply.setUInt8(p.command)
