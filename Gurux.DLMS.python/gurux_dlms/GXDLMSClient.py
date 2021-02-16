@@ -1188,54 +1188,44 @@ class GXDLMSClient(object):
         for it in list_:
             bb.setUInt8(it.command)
             bb.setUInt16(it.target.objectType)
-            items = ".".split(it.target.logicalName)
-            if len(items) != 6:
-                raise ValueError("Invalid Logical Name.")
-            for it2 in items:
-                bb.setUInt8(it2)
+            bb.set(_GXCommon.logicalNameToBytes(it.target.logicalName))
             bb.setUInt8(it.index)
         _GXCommon.setObjectCount(len(list_), bb)
         for it in list_:
             if it.command == AccessServiceCommandType.GET:
                 bb.setUInt8(0)
-            else:
+            elif it.command in (AccessServiceCommandType.SET, AccessServiceCommandType.ACTION):
                 value = (it.target).getValue(self.settings, ValueEventArgs(it.target, it.index, 0, None))
                 type_ = it.target.getDataType(it.index)
                 if type_ == DataType.NONE:
                     raise Exception("Invalid parameter. In python value type must give.")
                 _GXCommon.setData(self.settings, bb, type_, value)
+            else:
+                raise ValueError("Invalid command.")
+
         p = GXDLMSLNParameters(self.settings, 0, Command.ACCESS_REQUEST, 0xFF, None, bb, 0xff)
         if time:
             p.time = GXDateTime(time)
         return GXDLMS.getLnMessages(p)
 
     def parseAccessResponse(self, list_, data):
-        pos = int()
         info = _GXDataInfo()
         cnt = _GXCommon.getObjectCount(data)
         if len(list_) != cnt:
             raise ValueError("List size and values size do not match.")
-        values_ = list(cnt)
-        reply = list(cnt)
-        while pos != cnt:
-            info.clear()
-            value = _GXCommon.getData(self.settings, data, info)
-            values_.append(value)
-            pos += 1
-        cnt = _GXCommon.getObjectCount(data)
-        if len(values_) != cnt:
-            raise ValueError("List size and values size do not match.")
-        for it in values_:
-            data.getUInt8()
-            reply.append((it, ErrorCode(data.getUInt8())))
-        pos = 0
         for it in list_:
-            if it.command == AccessServiceCommandType.GET and reply[pos].value == ErrorCode.OK:
-                ve = ValueEventArgs(self.settings, it.target, it.index, 0, None)
-                ve.value = values_[pos]
-                (it.target).setValue(self.settings, ve)
-            pos += 1
-        return reply
+            info.clear()
+            it.value = _GXCommon.getData(self.settings, data, info)
+        cnt = _GXCommon.getObjectCount(data)
+        if len(list_) != cnt:
+            raise ValueError("List size and values size do not match.")
+        for it in list_:
+            #Get access type.
+            data.getUInt8()
+            #Get status.
+            it.error = ErrorCode(data.getUInt8())
+            if it.command == AccessServiceCommandType.GET and it.error == ErrorCode.OK:
+                self.updateValue(it.target, it.index, it.value)
 
     @classmethod
     def getInitialConformance(cls, useLogicalNameReferencing):

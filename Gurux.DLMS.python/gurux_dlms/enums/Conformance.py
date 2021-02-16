@@ -76,9 +76,8 @@ class Conformance(GXIntFlag):
     #without confirmation from success to the meter.
     UN_CONFIRMED_WRITE = 0x20
 
-    #Reserved six conformance bit.
-    #Not used at the moment.
-    RESERVED_SIX = 0x40
+    #Delta value encoding.
+    DELTA_VALUE_ENCODING = 0x40
 
     #Reserved seven conformance bit.
     #Not used at the moment.

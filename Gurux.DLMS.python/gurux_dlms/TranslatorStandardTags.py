@@ -709,8 +709,8 @@ class TranslatorStandardTags:
             str_ = "read"
         elif value == Conformance.RESERVED_SEVEN:
             str_ = "reserved-seven"
-        elif value == Conformance.RESERVED_SIX:
-            str_ = "reserved-six"
+        elif value == Conformance.DELTA_VALUE_ENCODING:
+            str_ = "delta-value-encoding"
         elif value == Conformance.RESERVED_ZERO:
             str_ = "reserved-zero"
         elif value == Conformance.SELECTIVE_ACCESS:
@@ -764,8 +764,8 @@ class TranslatorStandardTags:
             ret = Conformance.READ
         elif "reserved-seven".lower() == value.lower():
             ret = Conformance.RESERVED_SEVEN
-        elif "reserved-six".lower() == value.lower():
-            ret = Conformance.RESERVED_SIX
+        elif "delta-value-encoding".lower() == value.lower():
+            ret = Conformance.DELTA_VALUE_ENCODING
         elif "reserved-zero".lower() == value.lower():
             ret = Conformance.RESERVED_ZERO
         elif "selective-access".lower() == value.lower():

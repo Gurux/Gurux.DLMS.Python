@@ -38,9 +38,11 @@ import traceback
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits
 from gurux_common import ReceiveParameters, GXCommon, TimeoutException
-from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException
-from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType, Security, AssociationResult, SourceDiagnostic
-from gurux_dlms.objects import GXDLMSObject, GXDLMSObjectCollection, GXDLMSData, GXDLMSRegister, GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
+from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException, GXDLMSAccessItem
+from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType,\
+    Security, AssociationResult, SourceDiagnostic, AccessServiceCommandType
+from gurux_dlms.objects import GXDLMSObject, GXDLMSObjectCollection, GXDLMSData, GXDLMSRegister,\
+    GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
 from gurux_net import GXNet
 from gurux_serial import GXSerial
 
@@ -367,12 +369,28 @@ class GXDLMSReader:
         self.readDataBlock(data, reply)
         return self.client.updateValue(pg, 2, reply.value)
 
+    #Read values using Access request.
+    def readByAccess(self, list_):
+        if list_:
+            reply = GXReplyData()
+            data = self.client.accessRequest(None, list_)
+            self.readDataBlock(data, reply);
+            self.client.parseAccessResponse(list_, reply.data)
+
     def readScalerAndUnits(self):
         #pylint: disable=broad-except
         objs = self.client.objects.getObjects([ObjectType.REGISTER, ObjectType.EXTENDED_REGISTER, ObjectType.DEMAND_REGISTER])
+        list_ = list()
+        if self.client.negotiatedConformance & Conformance.ACCESS != 0:
+            for it in objs:
+                if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
+                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3));
+                elif isinstance(it, (GXDLMSDemandRegister,)):
+                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4));
+            self.readByAccess(list_)
+            return
         try:
             if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES != 0:
-                list_ = list()
                 for it in objs:
                     if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
                         list_.append((it, 3))

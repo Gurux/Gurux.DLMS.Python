@@ -698,8 +698,8 @@ class TranslatorSimpleTags:
             str_ = "Read"
         elif value == Conformance.RESERVED_SEVEN:
             str_ = "ReservedSeven"
-        elif value == Conformance.RESERVED_SIX:
-            str_ = "ReservedSix"
+        elif value == Conformance.DELTA_VALUE_ENCODING:
+            str_ = "DeltaValueEncoding"
         elif value == Conformance.RESERVED_ZERO:
             str_ = "ReservedZero"
         elif value == Conformance.SELECTIVE_ACCESS:
@@ -753,8 +753,8 @@ class TranslatorSimpleTags:
             ret = Conformance.READ
         elif "ReservedSeven".lower() == value.lower():
             ret = Conformance.RESERVED_SEVEN
-        elif "ReservedSix".lower() == value.lower():
-            ret = Conformance.RESERVED_SIX
+        elif "DeltaValueEncoding".lower() == value.lower():
+            ret = Conformance.DELTA_VALUE_ENCODING
         elif "ReservedZero".lower() == value.lower():
             ret = Conformance.RESERVED_ZERO
         elif "SelectiveAccess".lower() == value.lower():
