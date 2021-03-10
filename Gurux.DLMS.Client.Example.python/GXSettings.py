@@ -192,7 +192,7 @@ class GXSettings:
                 GXDLMSObject.validateLogicalName(self.invocationCounter)
             elif it.tag == 'g':
                 #  Get (read) selected objects.
-                for o in it.value.split(";,"):
+                for o in it.value.split(";"):
                     tmp = o.split(":")
                     if len(tmp) != 2:
                         raise ValueError("Invalid Logical name or attribute index.")
