@@ -443,7 +443,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
     def updateObjectList(cls, settings, target, value):
         #pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
-        target = []
+        target.clear()
         if value:
             for item in value:
                 type_ = item[0]
@@ -454,7 +454,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     obj = _GXObjectFactory.createObject(type_)
                     obj.logicalName = ln
                     obj.version = version
-                if isinstance(obj, (IGXDLMSBase,)):
+                if type(obj) != GXDLMSObject:
                     cls.updateAccessRights(obj, item[3])
                     target.append(obj)
 

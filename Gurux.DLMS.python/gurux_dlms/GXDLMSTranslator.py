@@ -1268,7 +1268,7 @@ class GXDLMSTranslator:
                             s.attributeDescriptor.setUInt8(VariableAccessSpecification.VARIABLE_NAME)
                         else:
                             s.attributeDescriptor.setUInt8(s.requestType)
-                            s.setRequestType(0xFF)
+                            s.requestType = 0xFF
                         s.count = s.count + 1
                     elif s.command != Command.INFORMATION_REPORT:
                         s.attributeDescriptor.setUInt8(s.count)

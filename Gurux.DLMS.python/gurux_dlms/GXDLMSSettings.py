@@ -198,6 +198,9 @@ class GXDLMSSettings:
             if frame_ == expected:
                 self.receiverFrame = frame_
                 return True
+            if frame_ == (expected & ~0x10):
+                self.receiverFrame = GXDLMSSettings.increaseSendSequence(self.receiverFrame)
+                return True
         else:
             expected = self.increaseSendSequence(self.receiverFrame) & 0xFF
             #  If answer for RR.

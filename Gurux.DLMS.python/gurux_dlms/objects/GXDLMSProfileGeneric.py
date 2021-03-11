@@ -345,7 +345,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         elif e.index == 4:
             ret = self.capturePeriod
         elif e.index == 5:
-            ret = self.sortMethod.value
+            ret = self.sortMethod
         elif e.index == 6:
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)

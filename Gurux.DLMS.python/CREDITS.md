@@ -1,5 +1,11 @@
 Credits
 =======
+  - Listening window of Auto Answer issue fixed.
+    * [isidroas](https://github.com/isidroas)
+
+  - setRequestType changed to requestType.
+    * [lafks](https://github.com/lafka)
+
   - GatewayResponse parse fix.
     * [alyainfo](https://www.gurux.fi/user/155959)
 

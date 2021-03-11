@@ -347,9 +347,9 @@ class GXDLMS:
                 if p.command == Command.SET_REQUEST:
                     if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
                         if p.requestType == 1:
-                            p.setRequestType(2)
+                            p.requestType = 2
                         elif p.requestType == 2:
-                            p.setRequestType(3)
+                            p.requestType = 3
                 if p.command == Command.GET_RESPONSE:
                     if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
                         if p.requestType == 1:
@@ -361,13 +361,14 @@ class GXDLMS:
                     else:
                         reply.setUInt8(cls.getInvokeIDPriority(p.settings))
             reply.set(p.attributeDescriptor)
-            if p.multipleBlocks and not (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
-                if p.lastBlock:
-                    reply.setUInt8(1)
-                    p.settings.setCount(0)
-                    p.settings.setIndex(0)
-                else:
-                    reply.setUInt8(0)
+            if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
+                if p.command != Command.SET_RESPONSE:
+                    if p.lastBlock:
+                        reply.setUInt8(1)
+                        p.settings.setCount(0)
+                        p.settings.setIndex(0)
+                    else:
+                        reply.setUInt8(0)
                 reply.setUInt32(p.blockIndex)
                 p.blockIndex = p.blockIndex + 1
                 if p.status != 0xFF:
@@ -387,7 +388,7 @@ class GXDLMS:
                         len_ -= cls.__CIPHERING_HEADER_SIZE
                     len_ -= _GXCommon.getObjectCountSizeInBytes(len_)
                 _GXCommon.setObjectCount(len_, reply)
-                reply.set(p.data, len_)
+                reply.set(p.data, p.data.position, len_)
             if len_ == 0:
                 if p.status != 0xFF and p.command != Command.GENERAL_BLOCK_TRANSFER:
                     if p.status != 0 and p.command == Command.GET_RESPONSE:
@@ -644,11 +645,11 @@ class GXDLMS:
                         elif not reply:
                             reply.set(_GXCommon.LLC_SEND_BYTES)
                     if p.command == Command.WRITE_REQUEST:
-                        p.setRequestType(VariableAccessSpecification.WRITE_DATA_BLOCK_ACCESS)
+                        p.requestType = VariableAccessSpecification.WRITE_DATA_BLOCK_ACCESS
                     elif p.command == Command.READ_REQUEST:
-                        p.setRequestType(VariableAccessSpecification.READ_DATA_BLOCK_ACCESS)
+                        p.requestType = VariableAccessSpecification.READ_DATA_BLOCK_ACCESS
                     elif p.command == Command.READ_RESPONSE:
-                        p.setRequestType(SingleReadResponse.DATA_BLOCK_RESULT)
+                        p.requestType = SingleReadResponse.DATA_BLOCK_RESULT
                     else:
                         raise ValueError("Invalid command.")
                     reply.setUInt8(p.command)
@@ -1869,10 +1870,13 @@ class GXDLMS:
     @classmethod
     def getData(cls, settings, reply, data, notify):
         frame_ = 0
+        isLast = True
         isNotify = False
         target = data
+        index = reply.position
         if settings.interfaceType == InterfaceType.HDLC:
             frame_ = GXDLMS.getHdlcData(settings.isServer, settings, reply, target, notify)
+            isLast = (frame_ & 0x10) != 0
             if notify and frame_ == 0x13:
                 target = notify
                 isNotify = True
@@ -1889,6 +1893,7 @@ class GXDLMS:
         else:
             raise ValueError("Invalid Interface type.")
         if not target.complete:
+            reply.position = index
             return False
         GXDLMS.getDataFromFrame(reply, target, settings.interfaceType == InterfaceType.HDLC)
         moreData = data.isMoreData()
@@ -1912,6 +1917,8 @@ class GXDLMS:
                 notify.data.set(data.data)
                 notify.value = data.value
                 data.data.trim()
+        if not isLast:
+            return cls.getData(settings, reply, data, notify)
         if isNotify:
             return False
         return True

@@ -73,6 +73,7 @@ class GXSettings:
         print(" -c \t Client address. (Default: 16)")
         print(" -s \t Server address. (Default: 1)")
         print(" -n \t Server address as serial number.")
+        print(" -l \t Logical Server address.")
         print(" -r [sn, ln]\t Short name or Logical Name (default) referencing is used.")
         print(" -w WRAPPER profile is used. HDLC is default.")
         print(" -t [Error, Warning, Info, Verbose] Trace messages.")
@@ -132,7 +133,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:T:A:B:D:d:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:iIt:a:p:wP:g:S:n:C:v:o:T:A:B:D:d:l:")
         defaultBaudRate = True
         for it in parameters:
             if it.tag == 'w':
@@ -270,9 +271,14 @@ class GXSettings:
             elif it.tag == 'c':
                 self.client.clientAddress = int(it.value)
             elif it.tag == 's':
-                self.client.serverAddress = int(it.value)
+                if self.client.serverAddress != 1:
+                    self.client.serverAddress = GXDLMSClient.getServerAddress(serverAddress, atoi(optarg))
+                else:
+                    self.client.serverAddress = int(it.value)
+            elif it.tag == 'l':
+                self.client.serverAddress = GXDLMSClient.getServerAddress(int(it.value), self.client.serverAddress)
             elif it.tag == 'n':
-                self.client.serverAddress = GXDLMSClient.getServerAddress(int(it.value))
+                self.client.serverAddress = GXDLMSClient.getServerAddressFromSerialNumber(int(it.value))
             elif it.tag == '?':
                 if it.tag == 'c':
                     raise ValueError("Missing mandatory client option.")

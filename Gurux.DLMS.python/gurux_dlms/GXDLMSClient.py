@@ -99,7 +99,8 @@ class GXDLMSClient(object):
         self.isAuthenticationRequired = False
         # Auto increase Invoke ID.
         self.autoIncreaseInvokeID = False
-        #If protected release is used release is including a ciphered xDLMS Initiate request.
+        #If protected release is used release is including a ciphered xDLMS
+        #Initiate request.
         self.useProtectedRelease = False
 
     def __getObjects(self):
@@ -252,7 +253,8 @@ class GXDLMSClient(object):
 
     #
     # Standard says that Time zone is from normal time to UTC in minutes.
-    # If meter is configured to use UTC time (UTC to normal time) set this to true.
+    # If meter is configured to use UTC time (UTC to normal time) set this to
+    # true.
     #
     # True, if UTC time is used.
     #
@@ -1169,13 +1171,17 @@ class GXDLMSClient(object):
         return ret
 
     @classmethod
-    def getServerAddress(cls, serialNumber, formula=None):
+    def getServerAddressFromSerialNumber(cls, serialNumber, logicalAddress=1, formula=None):
         if not formula:
-            return 0x4000 | SerialNumberCounter.count(serialNumber, "SN % 10000 + 1000")
-        return 0x4000 | SerialNumberCounter.count(serialNumber, formula)
+            ret = SerialNumberCounter.count(serialNumber, "SN % 10000 + 1000")
+        else:
+            ret = SerialNumberCounter.count(serialNumber, formula)
+        if logicalAddress:
+            ret |= logicalAddress << 14
+        return ret
 
     @classmethod
-    def getServerAddress2(cls, logicalAddress, physicalAddress, addressSize):
+    def getServerAddress(cls, logicalAddress, physicalAddress, addressSize=0):
         if addressSize < 4 and physicalAddress < 0x80 and logicalAddress < 0x80:
             return logicalAddress << 7 | physicalAddress
         if physicalAddress < 0x4000 and logicalAddress < 0x4000:
