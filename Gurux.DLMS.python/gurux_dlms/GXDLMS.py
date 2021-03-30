@@ -1199,11 +1199,11 @@ class GXDLMS:
     @classmethod
     def handleMethodResponse(cls, settings, data):
         type_ = int(data.data.getUInt8())
-        invoke = data.data.getUInt8()
+        data.invokeId = data.data.getUInt8()
         if data.xml:
             data.xml.appendStartTag(Command.METHOD_RESPONSE)
             data.xml.appendStartTag(Command.METHOD_RESPONSE, type_)
-            data.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", data.xml.integerToHex(invoke, 2))
+            data.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", data.xml.integerToHex(data.invokeId, 2))
         standardXml = data.xml and data.xml.outputType == TranslatorOutputType.STANDARD_XML
         if type_ == 1:
             ret = data.data.getUInt8()
@@ -1279,7 +1279,7 @@ class GXDLMS:
     @classmethod
     def handleAccessResponse(cls, settings, reply):
         data = reply.data
-        invokeId = reply.data.getUInt32()
+        reply.invokeId = reply.data.getUInt32()
         len_ = reply.data.getUInt8()
         tmp = None
         if len_ != 0:
@@ -1288,7 +1288,7 @@ class GXDLMS:
             reply.time = _GXCommon.changeType(settings, tmp, DataType.DATETIME)
         if reply.xml:
             reply.xml.appendStartTag(Command.ACCESS_RESPONSE)
-            reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(invokeId, 8))
+            reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(reply.invokeId, 8))
             if reply.time:
                 reply.xml.appendComment(str(reply.time))
             reply.xml.appendLine(TranslatorTags.DATE_TIME, "Value", GXByteBuffer.hex(tmp, False))
@@ -1332,7 +1332,7 @@ class GXDLMS:
     def handleDataNotification(cls, settings, reply):
         data = reply.data
         start = data.position - 1
-        invokeId = data.getUInt32()
+        reply.invokeId = data.getUInt32()
         reply.time = None
         len_ = data.getUInt8()
         tmp = None
@@ -1349,7 +1349,7 @@ class GXDLMS:
             reply.time = _GXCommon.getData(settings, GXByteBuffer(tmp), info)
         if reply.xml:
             reply.xml.appendStartTag(Command.DATA_NOTIFICATION)
-            reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(invokeId, 8))
+            reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(reply.invokeId, 8))
             if reply.time:
                 reply.xml.appendComment(str(reply.time))
             reply.xml.appendLine(TranslatorTags.DATE_TIME, None, GXByteBuffer.hex(tmp, False))
@@ -1368,11 +1368,11 @@ class GXDLMS:
     @classmethod
     def handleSetResponse(cls, data):
         type_ = SetResponseType(data.data.getUInt8())
-        invokeId = data.data.getUInt8()
+        data.invokeId = data.data.getUInt8()
         if data.xml:
             data.xml.appendStartTag(Command.SET_RESPONSE)
             data.xml.appendStartTag(Command.SET_RESPONSE, type_)
-            data.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", data.xml.integerToHex(invokeId, 2))
+            data.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", data.xml.integerToHex(data.invokeId, 2))
         if type_ == SetResponseType.NORMAL:
             data.error = data.data.getUInt8()
             if data.xml:
@@ -1463,11 +1463,11 @@ class GXDLMS:
         # pylint: disable=too-many-locals
         ret = True
         type_ = reply.data.getUInt8()
-        ch = reply.data.getUInt8()
+        reply.invokeId = reply.data.getUInt8()
         if reply.xml:
             reply.xml.appendStartTag(Command.GET_RESPONSE)
             reply.xml.appendStartTag(Command.GET_RESPONSE, type_)
-            reply.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", reply.xml.integerToHex(ch, 2))
+            reply.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", reply.xml.integerToHex(reply.invokeId, 2))
         if type_ == GetCommandType.NORMAL:
             ch = reply.data.getUInt8()
             if ch != 0:

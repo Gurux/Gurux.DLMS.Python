@@ -114,7 +114,7 @@ class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
         elif index == 4:
             ret = DataType.ENUM
         elif index == 5:
-            ret = DataType.UINT16
+            ret = DataType.UINT8
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret

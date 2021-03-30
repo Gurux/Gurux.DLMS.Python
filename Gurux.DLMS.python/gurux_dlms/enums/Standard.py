@@ -47,3 +47,5 @@ class Standard(GXIntEnum):
     SAUDI_ARABIA = 3
     #Meter uses IDIS DLMS standard. https://www.idis-association.com/
     IDIS = 4
+    #Meter uses Spain DLMS standard.
+    SPAIN = 5

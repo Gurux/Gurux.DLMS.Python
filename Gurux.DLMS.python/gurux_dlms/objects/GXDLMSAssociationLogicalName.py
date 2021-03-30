@@ -441,7 +441,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def updateObjectList(cls, settings, target, value):
-        #pylint: disable=import-outside-toplevel
+        #pylint: disable=import-outside-toplevel,unidiomatic-typecheck
         from .._GXObjectFactory import _GXObjectFactory
         target.clear()
         if value:

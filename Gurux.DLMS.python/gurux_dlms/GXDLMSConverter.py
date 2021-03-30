@@ -153,6 +153,8 @@ class GXDLMSConverter:
             str_ = pkg_resources.resource_string(__name__, "India.txt").decode("utf-8")
         elif standard == Standard.SAUDI_ARABIA:
             str_ = pkg_resources.resource_string(__name__, "SaudiArabia.txt").decode("utf-8")
+        elif standard == Standard.SPAIN:
+            str_ = pkg_resources.resource_string(__name__, "Spain.txt").decode("utf-8")
         if not str_:
             return None
         str_ = str_.replace("\n", "\r")

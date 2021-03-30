@@ -84,7 +84,7 @@ class GXXmlWriter:
 
     def writeElementString(self, name, value, defaultValue=None):
         if isinstance(value, (GXIntEnum, GXIntFlag)):
-            raise ValueError("Datatype is enum.")
+            value = int(value)
 
         if not(value and self.skipDefaults) or value != defaultValue:
             if value is None:
@@ -133,7 +133,7 @@ class GXXmlWriter:
     # pylint: disable=too-many-arguments
     def writeElementObject(self, name, value, dt=DataType.NONE, uiType=DataType.NONE):
         if isinstance(value, (GXIntEnum, GXIntFlag)):
-            raise ValueError("Datatype is enum.")
+            value = int(value)
 
         if value or not self.skipDefaults:
             if value is None:

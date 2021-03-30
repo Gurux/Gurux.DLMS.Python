@@ -1,0 +1,62 @@
+# IC | OBIS | VERSION | DESCRIPTION | UI Type
+3;1.1.94.34.1.255;0;Clock Time Shift Invalid Limit
+3;0.1.94.34.1.255;0;Active Demand Control Threshold Rate 1 Contract 1
+3;0.1.94.34.2.255;0;Active Demand Control Threshold Rate 2 Contract 1
+3;0.1.94.34.3.255;0;Active Demand Control Threshold Rate 3 Contract 1
+3;0.1.94.34.4.255;0;Active Demand Control Threshold Rate 4 Contract 1
+3;0.1.94.34.21.255;0;Active Demand Control Threshold Rate 1 Contract 3
+3;0.1.94.34.22.255;0;Active Demand Control Threshold Rate 2 Contract 3
+3;0.1.94.34.23.255;0;Active Demand Control Threshold Rate 3 Contract 3
+3;0.1.94.34.24.255;0;Active Demand Control Threshold Rate 4 Contract 3
+3;0.1.94.34.11.255;0;Passive Demand Control Threshold Rate 1 Contract 1
+3;0.1.94.34.12.255;0;Passive Demand Control Threshold Rate 2 Contract 1
+3;0.1.94.34.13.255;0;Passive Demand Control Threshold Rate 3 Contract 1
+3;0.1.94.34.14.255;0;Passive Demand Control Threshold Rate 4 Contract 1
+3;0.1.94.34.41.255;0;Passive Demand Control Threshold Rate 1 Contract 3
+3;0.1.94.34.42.255;0;Passive Demand Control Threshold Rate 2 Contract 3
+3;0.1.94.34.43.255;0;Passive Demand Control Threshold Rate 3 Contract 3
+3;0.1.94.34.44.255;0;Passive Demand Control Threshold Rate 4 Contract 3
+1;0.0.94.34.41.255;0;Passive end of billing period 1 contract 1;25
+1;0.0.94.34.42.255;0;Passive end of billing period 1 contract 2;25
+1;0.0.94.34.43.255;0;Passive end of billing period 1 contract 3;25
+1;0.0.94.34.11.255;0;Time stamp of billing period 1 last reset contract 1;25
+1;0.0.94.34.12.255;0;Time stamp of billing period 1 last reset contract 2;25
+1;0.0.94.34.13.255;0;Time stamp of billing period 1 last reset contract 3;25
+3;0.0.94.34.60.255;0;Threshold for long power failure
+3;0.0.94.34.100.255;0;Duration of current long power failures in any phases
+3;0.0.94.34.101.255;0;Duration of current long power failures in phase L1
+3;0.0.94.34.102.255;0;Duration of current long power failures in phase L2
+3;0.0.94.34.103.255;0;Duration of current long power failures in phase L3
+1;0.0.94.34.80.255;Time trigger for voltage sags, for voltage swell or long power failure;25
+1;0.1.94.34.105.255;0;Standard Event Log Filter
+1;0.1.94.34.106.255;0;Fraud Detection Log Filter
+1;0.1.94.34.107.255;0;Power Quality Non-finished Event Log Filter
+1;0.1.94.34.108.255;0;Power Quality finished Event Log Filter
+1;0.1.94.34.111.255;0;Import power Contract Event Log Filter
+1;0.1.94.34.112.255;0;Firmware Event Log Filter
+1;0.1.94.34.113.255;0;Synchronization Event Log Filter
+1;0.1.94.34.114.255;0;Disconnect Control log Filter
+1;0.1.94.34.115.255;0;Export power Contract Event Log Filter
+70;0.1.94.34.20.255;0;Previous Disconnect Control
+1;0.1.94.34.30.255;0;Import Active Power over threshold status
+3;0.1.94.34.31.255;0;Currently Import Active Power Threshold
+1;0.1.94.34.32.255;0;Export Active Power over threshold status
+3;0.1.94.34.33.255;0;Currently Export Active Power Threshold
+3;0.0.94.34.70.255;0;Threshold for Demand close to contract power
+3;0.0.94.34.110.255;0;Time for Scroll Display
+3;0.0.94.34.51.255;0;Timeout open session for reading client
+3;0.0.94.34.52.255;0;Timeout open session for Management client
+1;1.0.94.34.130.255;0;Time stamp for new calendar activation
+1;1.0.94.34.90.255;0;Number of voltage sags for average voltage in all 3 phases
+3;1.0.94.34.91.255;0;Duration of voltage sags for average voltage in all 3 phases
+1;1.0.94.34.92.255;0;Number of voltage swells for average voltage in all 3 phases
+3;1.0.94.34.93.255;0;Duration of voltage swells for average voltage in all 3 phases
+1;1.1.94.34.100.255;0;Active Quadrant
+1;1.1.94.34.101.255;0;Active Quadrant L1
+1;1.1.94.34.102.255;0;Active Quadrant L2
+1;1.1.94.34.103.255;0;Active Quadrant L3
+1;1.1.94.34.104.255;0;Phase presence
+3;0.0.94.34.54.255;0;Timeout open session for security client through PLC channel
+3;0.0.94.34.55.255;0;Timeout open session for security client through PLC channel for current association
+1;0.1.94.34.116.255;0;Correct security operations Event log Filter
+1;0.1.94.34.117.255;0;Failed security operations Event log filter

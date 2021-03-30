@@ -1100,7 +1100,7 @@ class GXDLMSClient(object):
                 _GXCommon.setData(self.settings, buff, DataType.UINT16, it[0].objectType)
                 _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it[0].logicalName))
                 _GXCommon.setData(self.settings, buff, DataType.INT8, it[1].attributeIndex)
-                _GXCommon.setData(self.settings, buff, DataType.INT16, it[1].dataIndex)
+                _GXCommon.setData(self.settings, buff, DataType.UINT16, it[1].dataIndex)
         return self._read(pg.name, ObjectType.PROFILE_GENERIC, 2, buff)
 
     @classmethod
@@ -1126,7 +1126,7 @@ class GXDLMSClient(object):
             ret = True
         if ret and self.translator and data.moreData == RequestTypes.NONE:
             if data.xml is None:
-                data.xml = (GXDLMSTranslatorStructure(self.translator.outputType, self.translator.isOmitXmlNameSpace(), self.translator.isHex(), self.translator.getShowStringAsHex(), self.translator.comments, self.translator.tags))
+                data.xml = (GXDLMSTranslatorStructure(self.translator.outputType, self.translator.omitXmlNameSpace, self.translator.hex, self.translator.showStringAsHex, self.translator.comments, self.translator.tags))
             pos = data.data.position
             try:
                 data2 = data.data
@@ -1137,7 +1137,7 @@ class GXDLMSClient(object):
                     tmp.setUInt8(int(data.invokeId))
                     tmp.setUInt8(0)
                     tmp.set(data.data)
-                    data.setData(tmp)
+                    data.data = tmp
                 elif data.command == Command.METHOD_RESPONSE:
                     tmp = GXByteBuffer((6 + data.data.size))
                     tmp.setUInt8(data.command)
@@ -1147,7 +1147,7 @@ class GXDLMSClient(object):
                     tmp.setUInt8(1)
                     tmp.setUInt8(0)
                     tmp.set(data.data)
-                    data.setData(tmp)
+                    data.data = tmp
                 elif data.command == Command.READ_RESPONSE:
                     tmp = GXByteBuffer(3 + data.data.size)
                     tmp.setUInt8(data.command)
@@ -1155,7 +1155,7 @@ class GXDLMSClient(object):
                     tmp.setUInt8(int(data.invokeId))
                     tmp.setUInt8(0)
                     tmp.set(data.data)
-                    data.setData(tmp)
+                    data.data = tmp
                 data.data.position = 0
                 if data.command == Command.SNRM or data.command == Command.UA:
                     data.xml.appendStartTag(data.command)
@@ -1165,7 +1165,7 @@ class GXDLMSClient(object):
                 else:
                     if data.data.size != 0:
                         self.translator.pduToXml(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
-                    data.setData(data2)
+                    data.data = data2
             finally:
                 data.data.position = pos
         return ret
