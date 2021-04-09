@@ -768,7 +768,7 @@ class GXDLMSClient(object):
     def updateValue(self, target, attributeIndex, value, parameters=None):
         if isinstance(value, (bytes, bytearray)):
             type_ = target.getUIDataType(attributeIndex)
-            if type_ == DataType.DATETIME and len(value) == 4:
+            if type_ == DataType.DATETIME and len(value) == 5:
                 type_ = DataType.DATE
                 target.setUIDataType(attributeIndex, type_)
             if type_ != DataType.NONE:
