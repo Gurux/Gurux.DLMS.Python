@@ -53,9 +53,9 @@ You can use GetServerAddress method for that.
 
 ```bash
 # Count server address from serial number.
-serverAddress = CGXDLMSClient.getServerAddress(Serial number)
+serverAddress = GXDLMSClient.getServerAddressFromSerialNumber(Serial number)
 # Count server address from logican and physical address.
-serverAddress = CGXDLMSClient.getServerAddress2(logical Address, physical Address, Address size in bytes);
+serverAddress = GXDLMSClient.getServerAddress2(logical Address, physical Address, Address size in bytes);
 ```
 
 If you are using IEC handshake you must first send identify command and move to mode E.
