@@ -90,7 +90,8 @@ class _GXAPDU:
             #  0xAC
             data.setUInt8(BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLING_AUTHENTICATION_VALUE)
             #  Len
-            len_ = len(callingAuthenticationValue)
+            if callingAuthenticationValue:
+                len_ = len(callingAuthenticationValue)
             data.setUInt8((2 + len_))
             #  Add authentication information.
             data.setUInt8(BerType.CONTEXT)
