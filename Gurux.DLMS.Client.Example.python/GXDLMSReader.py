@@ -518,7 +518,10 @@ class GXDLMSReader:
         if not self.client.useLogicalNameReferencing:
             sn = self.client.objects.findBySN(0xFA00)
             if sn and sn.version > 0:
-                self.read(sn, 3)
+                try:
+                    self.read(sn, 3)
+                except (GXDLMSException):
+                    self.writeTrace("Access rights are not implemented for the meter.", TraceLevel.INFO)
 
     def readAll(self, outputFile):
         try:

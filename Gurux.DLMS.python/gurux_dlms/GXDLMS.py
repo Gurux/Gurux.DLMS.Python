@@ -582,25 +582,25 @@ class GXDLMS:
         ciphering = p.settings.cipher and p.settings.cipher.security != Security.NONE
         hSize = len(reply) + 3
         if p.command == Command.WRITE_REQUEST or p.command == Command.READ_REQUEST:
-            hSize += 1 + _GXCommon.getObjectCountSizeInBytes(p.getCount())
+            hSize += 1 + _GXCommon.getObjectCountSizeInBytes(p.count)
         maxSize = p.settings.maxPduSize - hSize
         if ciphering:
             maxSize -= cls.__CIPHERING_HEADER_SIZE
             if p.settings.interfaceType == InterfaceType.HDLC:
                 maxSize -= 3
         maxSize -= _GXCommon.getObjectCountSizeInBytes(maxSize)
-        if reply.data.size - reply.data.position > maxSize:
+        if reply.available() > maxSize:
             reply.setUInt8(0)
         else:
             reply.setUInt8(1)
-            maxSize = reply.data.size - reply.data.position
+            maxSize = reply.available()
         reply.setUInt16(p.blockIndex)
         if p.command == Command.WRITE_REQUEST:
-            p.setBlockIndex(p.blockIndex + 1)
-            _GXCommon.setObjectCount(p.getCount(), reply)
+            p.blockIndex = p.blockIndex + 1
+            _GXCommon.setObjectCount(p.count, reply)
             reply.setUInt8(DataType.OCTET_STRING)
         elif p.command == Command.READ_REQUEST:
-            p.setBlockIndex(p.blockIndex + 1)
+            p.blockIndex = p.blockIndex + 1
         _GXCommon.setObjectCount(maxSize, reply)
         return maxSize
 
