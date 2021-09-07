@@ -90,7 +90,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
-        return client.method(self, 3, data.Array(), DataType.STRUCTURE)
+        return client.method(self, 3, data.array(), DataType.STRUCTURE)
 
     #
     # Enable entry from entries list.
@@ -109,7 +109,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         _GXCommon.setData(None, data, DataType.UINT16, 0)
         _GXCommon.setData(None, data, DataType.UINT16, 0)
-        return client.method(self, 1, data.Array(), DataType.STRUCTURE)
+        return client.method(self, 1, data.array(), DataType.STRUCTURE)
 
     #
     # Disable entry from entries list.
@@ -128,7 +128,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
         #lastIndex
         _GXCommon.setData(None, data, DataType.UINT16, entry.index)
-        return client.method(self, 1, data.Array(), DataType.STRUCTURE)
+        return client.method(self, 1, data.array(), DataType.STRUCTURE)
 
     #
     # Returns collection of attributes to read.  If attribute is static

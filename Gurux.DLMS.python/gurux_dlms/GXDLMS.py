@@ -70,6 +70,10 @@ class GXDLMS:
     GXDLMS implements methods to communicate with DLMS/COSEM metering devices.
     """
 
+    @classmethod
+    def useHdlc(cls, type):
+        return type == InterfaceType.HDLC or type == InterfaceType.HDLC_WITH_MODE_E or type == InterfaceType.PLC_HDLC;
+
     __CIPHERING_HEADER_SIZE = 7 + 12 + 3
     _data_TYPE_OFFSET = 0xFF0000
 
@@ -847,7 +851,8 @@ class GXDLMS:
         except Exception:
             ret = False
         if not ret:
-            if not (reply.position < len(reply) and reply.getUInt8(reply.position) == 0x13):
+            #If not notify.
+            if not ((reply.position < len(reply) and (reply.getUInt8(reply.position) == 0x13 or reply.getUInt8(reply.position) == 0x3))):
                 reply.position = 1 + eopPos
                 return GXDLMS.getHdlcData(server, settings, reply, data, notify)
             if notify:
@@ -856,7 +861,7 @@ class GXDLMS:
                 notify.serverAddress = addresses[0]
         # HDLC control fields
         cf = reply.getUInt8()
-        if not isNotify and notify and cf == 0x13:
+        if not isNotify and notify and (cf == 0x13 or cf == 0x3):
             isNotify = True
             notify.clientAddress = addresses[1]
             notify.serverAddress = addresses[0]
@@ -894,15 +899,17 @@ class GXDLMS:
                 notify.packetLength = (reply.position + 1)
             else:
                 data.packetLength = (reply.position + 1)
-        if cf != 0x13 and (cf & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
+        if cf != 0x13 and cf != 0x3 and (cf & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
             if cf == 0x97:
                 data.error = ErrorCode.UNACCEPTABLE_FRAME
             elif cf == 0x1f:
                 data.error = ErrorCode.DISCONNECT_MODE
+            elif cf == 0x17:
+                data.error = ErrorCode.DISCONNECT_MODE
             data.command = cf
-        elif cf != 0x13 and (cf & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
+        elif cf != 0x13 and cf != 0x3 and (cf & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
             tmp = (cf >> 2) & 0x3
             if tmp == HdlcControlFrame.REJECT:
                 data.error = ErrorCode.REJECTED
@@ -1877,7 +1884,7 @@ class GXDLMS:
         if settings.interfaceType == InterfaceType.HDLC:
             frame_ = GXDLMS.getHdlcData(settings.isServer, settings, reply, target, notify)
             isLast = (frame_ & 0x10) != 0
-            if notify and frame_ == 0x13:
+            if notify and (frame_ == 0x13 or frame_ == 0x3):
                 target = notify
                 isNotify = True
             target.frameId = frame_
@@ -1895,10 +1902,19 @@ class GXDLMS:
         if not target.complete:
             reply.position = index
             return False
-        GXDLMS.getDataFromFrame(reply, target, settings.interfaceType == InterfaceType.HDLC)
-        moreData = data.isMoreData()
-        if target.xml or ((frame_ != 0x13 or moreData) and (frame_ & 0x1) != 0):
-            return True
+        if settings.interfaceType != InterfaceType.PLC_HDLC:
+            cls.getDataFromFrame(reply, target, cls.useHdlc(settings.interfaceType))
+        #If keepalive or get next frame request.
+        if data.xml != None or (((frame_ != 0x13 and frame_ != 0x3) or target.isMoreData()) and (frame_ & 0x1) != 0):
+            if frame_ == 0x3 and target.isMoreData():
+                tmp = cls.getData(settings, reply, data, notify)
+                target.data.position = 0
+                return tmp
+            return True;
+
+        if frame_ == 0x13 and not target.isMoreData():
+            target.data.position = 0
+        
         cls.getPdu(settings, target)
         if notify and not isNotify:
             #Check command to make sure it's not notify message.
@@ -1910,13 +1926,15 @@ class GXDLMS:
                                 Command.DED_EVENT_NOTIFICATION):
                 isNotify = True
                 notify.complete = data.complete
+                notify.moreData = data.moreData;
                 notify.command = data.command
                 data.command = Command.NONE
                 notify.time = data.time
                 data.time = None
                 notify.data.set(data.data)
-                notify.value = data.value
                 data.data.trim()
+                notify.value = data.value
+                data.value = None
         if not isLast:
             return cls.getData(settings, reply, data, notify)
         if isNotify:

@@ -81,7 +81,7 @@ class sampleclient():
             if not isinstance(settings.media, (GXSerial, GXNet)):
                 raise Exception("Unknown media type.")
             # //////////////////////////////////////
-            reader = GXDLMSReader(settings.client, settings.media, settings.trace, settings.invocationCounter, settings.iec)
+            reader = GXDLMSReader(settings.client, settings.media, settings.trace, settings.invocationCounter)
             settings.media.open()
             if settings.readObjects:
                 read = False

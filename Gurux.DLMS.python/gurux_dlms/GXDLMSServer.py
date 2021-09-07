@@ -368,7 +368,7 @@ class GXDLMSServer(object):
     #
     def addData(self, obj, index, buff):
         dt = None
-        e = ValueEventArgs(obj, index, 0, None)
+        e = ValueEventArgs(self.settings, obj, index, 0, None)
         value = obj.getValue(self.settings, e)
         dt = obj.getDataType(index)
         if dt == DataType.NONE and value:
@@ -651,10 +651,10 @@ class GXDLMSServer(object):
         GXDLMS.appendHdlcParameter(self.replyData, self.limits.maxInfoRX)
         self.replyData.setUInt8(_HDLCInfo.WINDOW_SIZE_TX)
         self.replyData.setUInt8(4)
-        self.replyData.setUInt32(self.limits.getWindowSizeTX())
+        self.replyData.setUInt32(self.limits.windowSizeTX)
         self.replyData.setUInt8(_HDLCInfo.WINDOW_SIZE_RX)
         self.replyData.setUInt8(4)
-        self.replyData.setUInt32(self.limits.getWindowSizeRX())
+        self.replyData.setUInt32(self.limits.windowSizeRX)
         self.replyData.setUInt8(2, len(self.replyData) - 3)
         self.settings.connected = ConnectionState.HDLC
 

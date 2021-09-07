@@ -48,7 +48,7 @@ from gurux_serial import GXSerial
 
 class GXDLMSReader:
     #pylint: disable=too-many-public-methods, too-many-instance-attributes
-    def __init__(self, client, media, trace, invocationCounter, useOpticalHead):
+    def __init__(self, client, media, trace, invocationCounter):
         #pylint: disable=too-many-arguments
         self.replyBuff = bytearray(8 + 1024)
         self.waitTime = 5000
@@ -56,7 +56,6 @@ class GXDLMSReader:
         self.trace = trace
         self.media = media
         self.invocationCounter = invocationCounter
-        self.useOpticalHead = useOpticalHead
         self.client = client
         if self.trace > TraceLevel.WARNING:
             print("Authentication: " + str(self.client.authentication))
@@ -187,7 +186,7 @@ class GXDLMSReader:
                     self.readDLMSPacket(data, reply)
 
     def initializeOpticalHead(self):
-        if self.useOpticalHead and isinstance(self.media, GXSerial):
+        if self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             p = ReceiveParameters()
             p.allData = False
             p.eop = '\n'
@@ -415,7 +414,8 @@ class GXDLMSReader:
         for pg in profileGenerics:
             self.writeTrace("Profile Generic " + str(pg.name) + "Columns:", TraceLevel.INFO)
             try:
-                self.read(pg, 3)
+                if pg.canRead(3):
+                    self.read(pg, 3)
                 if self.trace > TraceLevel.WARNING:
                     sb = ""
                     for k, _ in pg.captureObjects:
