@@ -1905,7 +1905,7 @@ class GXDLMS:
         if settings.interfaceType != InterfaceType.PLC_HDLC:
             cls.getDataFromFrame(reply, target, cls.useHdlc(settings.interfaceType))
         #If keepalive or get next frame request.
-        if data.xml != None or (((frame_ != 0x13 and frame_ != 0x3) or target.isMoreData()) and (frame_ & 0x1) != 0):
+        if data.xml != None or (((frame_ != 0x13 and frame_ != 0x3) or data.isMoreData()) and (frame_ & 0x1) != 0):
             if frame_ == 0x3 and target.isMoreData():
                 tmp = cls.getData(settings, reply, data, notify)
                 target.data.position = 0
