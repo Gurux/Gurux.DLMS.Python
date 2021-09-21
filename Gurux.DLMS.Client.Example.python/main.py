@@ -110,7 +110,8 @@ class sampleclient():
             print(ex)
         except (KeyboardInterrupt, SystemExit, Exception) as ex:
             traceback.print_exc()
-            settings.media.close()
+            if settings.media:
+                settings.media.close()
             reader = None
         finally:
             if reader:
