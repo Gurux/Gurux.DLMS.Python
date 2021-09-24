@@ -206,10 +206,9 @@ class GXDLMSReader:
                     if not self.media.receive(p):
                         raise Exception("Failed to received reply from the media.")
                     self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
-                    replyStr = str(p.reply)
 
             if not p.reply or p.reply[0] != ord('/'):
-                raise Exception("Invalid responce : " + replyStr)
+                raise Exception("Invalid responce : " + str(p.reply))
             baudrate = chr(p.reply[4])
             if baudrate == '0':
                 bitrate = 300
