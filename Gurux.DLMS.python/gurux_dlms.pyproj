@@ -327,7 +327,6 @@
     <Content Include="gurux_dlms\requirements.txt" />
     <Content Include="gurux_dlms\SaudiArabia.txt" />
     <Content Include="LICENSE" />
-    <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="gurux_dlms\" />

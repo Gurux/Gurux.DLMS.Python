@@ -651,7 +651,7 @@ class GXDLMSClient(object):
         self.settings.maxPduSize = 0xFFFF
         if not force and self.settings.connected == ConnectionState.NONE:
             return None
-        if self.interfaceType == InterfaceType.HDLC:
+        if self.interfaceType == InterfaceType.HDLC or self.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             self.settings.connected = ConnectionState.NONE
             return GXDLMS.getHdlcFrame(self.settings, Command.DISCONNECT_REQUEST, None)
         reply = self.releaseRequest()

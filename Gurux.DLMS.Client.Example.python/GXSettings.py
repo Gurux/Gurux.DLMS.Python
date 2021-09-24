@@ -189,9 +189,9 @@ class GXSettings:
                     self.clientinterfaceType = InterfaceType.PLC_HDLC
                 else:
                     raise ValueError("Invalid interface type option." + it.value + " (HDLC, WRAPPER, HdlcWithModeE, Plc, PlcHdlc)");
-                if modeEDefaultValues and self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
-                    self.media.baudrate = BaudRate.BAUD_RATE_300
-                    self.media.bytesize = 7
+                if modeEDefaultValues and self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E and isinstance(self.media, GXSerial):
+                    self.media.baudRate = BaudRate.BAUD_RATE_300
+                    self.media.dataBits = 7
                     self.media.parity = Parity.EVEN
                     self.media.stopbits = StopBits.ONE
             elif it.tag == 'I':
@@ -218,10 +218,16 @@ class GXSettings:
                     self.media.parity = Parity[tmp[2][1: len(tmp[2]) - 1].upper()]
                     self.media.stopBits = int(tmp[2][len(tmp[2]) - 1:]) - 1
                 else:
-                    self.media.baudrate = BaudRate.BAUD_RATE_9600
-                    self.media.bytesize = 8
-                    self.media.parity = Parity.NONE
-                    self.media.stopbits = StopBits.ONE
+                    if self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E:                        
+                        self.media.baudRate = BaudRate.BAUD_RATE_300
+                        self.media.dataBits = 7
+                        self.media.parity = Parity.EVEN
+                        self.media.stopbits = StopBits.ONE
+                    else:
+                        self.media.baudRate = BaudRate.BAUD_RATE_9600
+                        self.media.dataBits = 8
+                        self.media.parity = Parity.NONE
+                        self.media.stopbits = StopBits.ONE
             elif it.tag == 'a':
                 try:
                     if it.value == "None":

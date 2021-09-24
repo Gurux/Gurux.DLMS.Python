@@ -132,6 +132,7 @@ class GXDLMSReader:
             eop = None
         p = ReceiveParameters()
         p.eop = eop
+        p.allData = True
         p.waitTime = self.waitTime
         if eop is None:
             p.Count = 8
@@ -188,7 +189,7 @@ class GXDLMSReader:
     def initializeOpticalHead(self):
         if self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             p = ReceiveParameters()
-            p.allData = False
+            p.allData = True
             p.eop = '\n'
             p.waitTime = self.waitTime
             with self.media.getSynchronous():
@@ -200,17 +201,16 @@ class GXDLMSReader:
 
                 self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
                 #If echo is used.
-                replyStr = str(p.reply)
-                if data == replyStr:
+                if data.encode() == p.reply:
                     p.reply = None
                     if not self.media.receive(p):
                         raise Exception("Failed to received reply from the media.")
                     self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
                     replyStr = str(p.reply)
 
-            if not replyStr or replyStr[0] != '/':
+            if not p.reply or p.reply[0] != ord('/'):
                 raise Exception("Invalid responce : " + replyStr)
-            baudrate = replyStr[4]
+            baudrate = chr(p.reply[4])
             if baudrate == '0':
                 bitrate = 300
             elif baudrate == '1':
@@ -228,31 +228,31 @@ class GXDLMSReader:
             else:
                 raise Exception("Unknown baud rate.")
 
-            print("Bitrate is : " + bitrate)
+            print("Bitrate is : " + str(bitrate))
             #Send ACK
             #Send Protocol control character
-            controlCharacter = '2'.encode()
+            controlCharacter = ord('2')
             #"2" HDLC protocol procedure (Mode E)
             #Mode control character
             #"2" //(HDLC protocol procedure) (Binary mode)
-            modeControlCharacter = '2'.encode()
+            modeControlCharacter = ord('2')
             #Set mode E.
-            tmp = bytearray([0x06, controlCharacter, baudrate, modeControlCharacter, 13, 10])
+            tmp = bytearray([0x06, controlCharacter, ord(baudrate), modeControlCharacter, 13, 10])
             p.reply = None
             with self.media.getSynchronous():
                 self.media.send(tmp)
+                #This sleep make sure that all meters can be read.
+                time.sleep(1)
                 self.writeTrace("TX: " + self.now() + "\t" + GXCommon.toHex(tmp), TraceLevel.VERBOSE)
                 p.waitTime = 200
                 if self.media.receive(p):
                     self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
-                self.media.close()
                 self.media.dataBits = 8
                 self.media.parity = Parity.NONE
                 self.media.stopBits = StopBits.ONE
                 self.media.baudRate = bitrate
-                self.media.open()
                 #This sleep make sure that all meters can be read.
-                time.sleep(1000)
+                time.sleep(1)
 
     def updateFrameCounter(self):
         if self.invocationCounter and self.client.ciphering is not None and self.client.ciphering.security != Security.NONE:

@@ -608,7 +608,7 @@ class GXDLMSServer(object):
         except GXDLMSException as e:
             result = e.result
             diagnostic = e.diagnostic
-        if self.settings.interfaceType == InterfaceType.HDLC:
+        if self.settings.interfaceType == InterfaceType.HDLC or self.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             self.replyData.set(_GXCommon.LLC_REPLY_BYTES)
         if self.settings.authentication > Authentication.LOW:
             self.settings.setStoCChallenge(GXSecure.generateChallenge())
@@ -616,7 +616,7 @@ class GXDLMSServer(object):
 
     def handleReleaseRequest(self, data):
         # pylint: disable=unused-argument
-        if self.settings.interfaceType == InterfaceType.HDLC:
+        if self.settings.interfaceType == InterfaceType.HDLC or self.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             self.replyData.set(0, _GXCommon.LLC_REPLY_BYTES)
         tmp = _GXAPDU.getUserInformation(self.settings, self.settings.cipher)
         self.replyData.setUInt8(0x63)
@@ -788,7 +788,7 @@ class GXDLMSServer(object):
 
     def reportConfirmedServiceError(self, e):
         self.replyData.clear()
-        if self.settings.interfaceType == InterfaceType.HDLC:
+        if self.settings.interfaceType == InterfaceType.HDLC or self.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             GXDLMS.addLLCBytes(self.settings, self.replyData)
         self.replyData.setUInt8(Command.CONFIRMED_SERVICE_ERROR)
         self.replyData.setUInt8(e.confirmedServiceError)

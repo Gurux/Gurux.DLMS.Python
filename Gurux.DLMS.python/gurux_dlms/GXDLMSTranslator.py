@@ -189,7 +189,7 @@ class GXDLMSTranslator:
         found = bool()
         try:
             while data.position < len(data):
-                if type_ == InterfaceType.HDLC and data.getUInt8(data.position) == 0x7e:
+                if (type_ == InterfaceType.HDLC or type_ == InterfaceType.HDLC_WITH_MODE_E) and data.getUInt8(data.position) == 0x7e:
                     pos = data.position
                     found = GXDLMS.getData(settings, data, reply, None)
                     data.position = pos

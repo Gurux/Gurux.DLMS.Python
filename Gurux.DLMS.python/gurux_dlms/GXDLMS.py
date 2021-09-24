@@ -479,7 +479,7 @@ class GXDLMS:
                 reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
                 reply.set(p.settings.gateway.physicalDeviceAddress)
                 reply.set(tmp)
-        if p.settings.interfaceType == InterfaceType.HDLC:
+        if p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             cls.addLLCBytes(p.settings, reply)
 
     @classmethod
@@ -537,7 +537,7 @@ class GXDLMS:
             while reply.position != len(reply):
                 if p.settings.interfaceType == InterfaceType.WRAPPER:
                     messages.append(GXDLMS.getWrapperFrame(p.settings, p.command, reply))
-                elif p.settings.interfaceType == InterfaceType.HDLC:
+                elif p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
                     messages.append(GXDLMS.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
                         frame_ = p.settings.getNextSend(False)
@@ -566,7 +566,7 @@ class GXDLMS:
             while reply.position != len(reply):
                 if p.settings.interfaceType == InterfaceType.WRAPPER:
                     messages.append(cls.getWrapperFrame(p.settings, p.command, reply))
-                elif p.settings.interfaceType == InterfaceType.HDLC:
+                elif p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
                     messages.append(cls.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
                         frame_ = p.settings.getNextSend(False)
@@ -590,7 +590,7 @@ class GXDLMS:
         maxSize = p.settings.maxPduSize - hSize
         if ciphering:
             maxSize -= cls.__CIPHERING_HEADER_SIZE
-            if p.settings.interfaceType == InterfaceType.HDLC:
+            if p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
                 maxSize -= 3
         maxSize -= _GXCommon.getObjectCountSizeInBytes(maxSize)
         if reply.available() > maxSize:
@@ -611,7 +611,7 @@ class GXDLMS:
     @classmethod
     def getSNPdu(cls, p, reply):
         ciphering = p.settings.cipher and p.settings.cipher.security != Security.NONE and p.command != Command.AARQ and p.command != Command.AARE
-        if not ciphering and p.settings.interfaceType == InterfaceType.HDLC:
+        if not ciphering and (p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E):
             if p.settings.isServer:
                 reply.set(_GXCommon.LLC_REPLY_BYTES)
             elif not reply:
@@ -643,7 +643,7 @@ class GXDLMS:
                 p.multipleBlocks = len(reply) + cipherSize + cnt > p.settings.maxPduSize
                 if p.multipleBlocks:
                     reply.size = 0
-                    if not ciphering and p.settings.interfaceType == InterfaceType.HDLC:
+                    if not ciphering and (p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E):
                         if p.settings.isServer:
                             reply.set(_GXCommon.LLC_REPLY_BYTES)
                         elif not reply:
@@ -676,7 +676,7 @@ class GXDLMS:
             tmp = GXCiphering.encrypt(s, reply.array())
             assert not tmp
             reply.size = 0
-            if p.settings.interfaceType == InterfaceType.HDLC:
+            if p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
                 if p.settings.isServer:
                     reply.set(_GXCommon.LLC_REPLY_BYTES)
                 elif not reply:
@@ -1881,7 +1881,7 @@ class GXDLMS:
         isNotify = False
         target = data
         index = reply.position
-        if settings.interfaceType == InterfaceType.HDLC:
+        if settings.interfaceType == InterfaceType.HDLC or settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             frame_ = GXDLMS.getHdlcData(settings.isServer, settings, reply, target, notify)
             isLast = (frame_ & 0x10) != 0
             if notify and (frame_ == 0x13 or frame_ == 0x3):
