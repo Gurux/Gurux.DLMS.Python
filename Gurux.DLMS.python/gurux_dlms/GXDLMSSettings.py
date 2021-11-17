@@ -114,6 +114,8 @@ class GXDLMSSettings:
         self.limits = GXDLMSLimits()
         self.gateway = None
         self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
+        self.receiverFrame = 0
+        self.senderFrame = 0
         self.resetFrameSequence()
         self.windowSize = 1
         self.userId = -1
@@ -125,8 +127,6 @@ class GXDLMSSettings:
         self.standard = Standard.DLMS
         self.negotiatedConformance = Conformance.NONE
         self.invokeID = 0
-        self.receiverFrame = 0
-        self.senderFrame = 0
         self.command = 0
         self.commandType = 0
         self.useCustomChallenge = False
@@ -182,17 +182,24 @@ class GXDLMSSettings:
         #  If notify
         if frame_ == 0x13:
             return True
+        # If echo.
+        if frame_ == self.senderFrame:
+            return False
+
         #  If U frame.
         if (frame_ & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
-            if frame_ in (0x73, 0x93):
+            if frame_ == 0x93:
+                isEcho = not self.isServer and frame_ == 0x93 and (self.senderFrame == 0x10 or self.senderFrame == 0xfe) and self.receiverFrame == 0xE
                 self.resetFrameSequence()
-                return True
+                return not isEcho
+            if frame_ == 0x73 and not self.isServer:
+                return self.senderFrame == 0xFE and self.receiverFrame == 0xE
+            return True
         #  If S -frame.
         if (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
             self.receiverFrame = self.increaseReceiverSequence(self.receiverFrame)
             return True
         #  Handle I-frame.
-        expected = int()
         if (self.senderFrame & 0x1) == 0:
             expected = GXDLMSSettings.increaseReceiverSequence(GXDLMSSettings.increaseSendSequence(self.receiverFrame))
             if frame_ == expected:

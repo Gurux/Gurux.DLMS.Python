@@ -1079,8 +1079,14 @@ class GXDLMSClient(object):
         buff.setUInt8(0x04)
         buff.setUInt8(DataType.STRUCTURE)
         buff.setUInt8(0x04)
-        _GXCommon.setData(self.settings, buff, DataType.UINT16, sort.objectType)
-        _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(sort.logicalName))
+        if sort:
+            ot = sort.objectType
+            ln = sort.logicalName
+        else:
+            ot = ObjectType.CLOCK
+            ln = "0.0.1.0.0.255"
+        _GXCommon.setData(self.settings, buff, DataType.UINT16, ot)
+        _GXCommon.setData(self.settings, buff, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(ln))
         _GXCommon.setData(self.settings, buff, DataType.INT8, 2)
         _GXCommon.setData(self.settings, buff, DataType.UINT16, 0)
         if sort and isinstance(sort, GXDLMSData) and sort.logicalName == "0.0.1.1.0.255":

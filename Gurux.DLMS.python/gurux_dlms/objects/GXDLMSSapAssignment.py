@@ -58,6 +58,26 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
         return [self.logicalName,
                 self.sapAssignmentList]
 
+    def addSap(self, client, id, name):
+        """Add new SAP item."""
+        data = GXByteBuffer()
+        data.setUInt8(DataType.STRUCTURE)
+        #Add structure size.
+        data.setUInt8(2)
+        _GXCommon.setData(client.settings, data, DataType.UINT16, id)
+        _GXCommon.setData(client.settings, data, DataType.OCTET_STRING, name.encode())
+        return client.method(self, 1, data.array(), DataType.STRUCTURE)
+
+    def removeSap(self, client, name):
+        """Remove SAP item."""
+        data = GXByteBuffer()
+        data.setUInt8(DataType.STRUCTURE)
+        #Add structure size.
+        data.setUInt8(2)
+        _GXCommon.setData(client.settings, data, DataType.UINT16, 0)
+        _GXCommon.setData(client.settings, data, DataType.OCTET_STRING, name.encode())
+        return client.method(self, 1, data.array(), DataType.STRUCTURE)
+
     #
     # Returns collection of attributes to read.  If attribute is static and
     # already read or device is returned HW error it is not returned.

@@ -475,7 +475,10 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                         if not lastDate and self.buffer:
                             lastDate = self.buffer[len(self.buffer) - 1][colIndex].value
                         if lastDate:
-                            lastDate -= timedelta(seconds=self.capturePeriod)
+                            if self.sortMethod in(SortMethod.FIFO, SortMethod.SMALLEST):
+                                lastDate += timedelta(seconds=self.capturePeriod)
+                            else:
+                                lastDate -= timedelta(seconds=self.capturePeriod)
                             row[colIndex] = GXDateTime(lastDate)
                     elif type_ == DataType.DATETIME and not isinstance(row[colIndex], GXDateTime):
                         row[colIndex] = GXDateTime.fromUnixTime(row[colIndex])

@@ -446,7 +446,7 @@ class GXDateTime:
                 return self.__toLocal(self.value).strftime(pattern.strip())
             return self.value.strftime(pattern.strip()) + self.__getTimeZone()
         if useLocalTime:
-            return self.value.strftime("%x %X")
+            return self.__toLocal(self.value).strftime("%x %X")
         return self.value.strftime("%x %X") + self.__getTimeZone()
 
     #

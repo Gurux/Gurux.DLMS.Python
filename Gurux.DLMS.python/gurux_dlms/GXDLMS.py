@@ -861,11 +861,13 @@ class GXDLMS:
                 notify.serverAddress = addresses[0]
         # HDLC control fields
         cf = reply.getUInt8()
+        if data.xml is None and not settings.checkFrame(cf):
+            reply.position = eopPos + 1
+            return GXDLMS.getHdlcData(server, settings, reply, data, notify)
         if not isNotify and notify and (cf == 0x13 or cf == 0x3):
             isNotify = True
             notify.clientAddress = addresses[1]
             notify.serverAddress = addresses[0]
-
         if (frame_ & 0x8) != 0:
             if isNotify:
                 notify.moreData = notify.moreData | RequestTypes.FRAME
@@ -876,9 +878,6 @@ class GXDLMS:
                 notify.moreData = notify.moreData & ~RequestTypes.FRAME
             else:
                 data.moreData = data.moreData & ~RequestTypes.FRAME
-        if data.xml is None and not settings.checkFrame(cf):
-            reply.position = eopPos + 1
-            return GXDLMS.getHdlcData(server, settings, reply, data, notify)
         crc = _GXFCS16.countFCS16(reply, packetStartID + 1, reply.position - packetStartID - 1)
         crcRead = reply.getUInt16()
         if crc != crcRead:
