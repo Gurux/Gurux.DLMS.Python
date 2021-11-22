@@ -75,7 +75,7 @@ data = self.client.snrmRequest()
 if data:
     self.readDLMSPacket(data, reply)
     self.client.parseUAResponse(reply.data)
-    size = self.client.limits.maxInfoTX + 40
+    size = self.client.hdlc.maxInfoTX + 40
     self.replyBuff = bytearray(size)
 reply.clear()
 self.readDataBlock(self.client.aarqRequest(), reply)

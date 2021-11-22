@@ -32,33 +32,28 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #
-import setuptools
+#  GXHdlcSettings contains commands for retrieving and setting the limits of
+#  field ength and window size, when communicating with the server.
+#
+class GXHdlcSettings:
+    DEFAULT_MAX_INFO_TX = 128
+    DEFAULT_MAX_INFO_RX = 128
+    DEFAULT_WINDOWS_SIZE_TX = 1
+    DEFAULT_WINDOWS_SIZE_RX = 1
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+    #
+    # Constructor.
+    #
+    def __init__(self):
+        self.maxInfoTX = self.DEFAULT_MAX_INFO_TX
+        self.maxInfoRX = self.DEFAULT_MAX_INFO_RX
+        self.windowSizeTX = self.DEFAULT_WINDOWS_SIZE_TX
+        self.windowSizeRX = self.DEFAULT_WINDOWS_SIZE_RX
 
-setuptools.setup(
-    name="gurux_dlms",
-    version="1.0.112",
-    author="Gurux Ltd",
-    author_email="gurux@gurux.fi",
-    description="Gurux DLMS library for Python.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/gurux/gurux.dlms.python",
-    packages=setuptools.find_packages(),
-    package_data={'gurux_dlms': ['OBISCodes.txt', 'India.txt', 'Italy.txt', 'SaudiArabia.txt', 'Spain.txt']},
-    license='GPLv2',
-    classifiers=[
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
-        "Operating System :: OS Independent",
-    ],
-    install_requires=[],
-)
+    # Update HDLC settings from HdlcSetup COSEM object.
+    def _update(self, hdlc):
+        if hdlc:
+            self.maxInfoRX = hdlc.maximumInfoLengthReceive
+            self.maxInfoTX = hdlc.maximumInfoLengthTransmit
+            self.windowSizeRX = hdlc.windowSizeReceive
+            self.windowSizeTX = hdlc.windowSizeTransmit

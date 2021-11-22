@@ -71,8 +71,10 @@ from .objects.IGXDLMSBase import IGXDLMSBase
 from .enums.Initiate import Initiate
 from .enums.Security import Security
 from .GXDLMSLNCommandHandler import GXDLMSLNCommandHandler
+from .GXHdlcSettings import GXHdlcSettings
 
-# pylint: disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
+# pylint:
+# disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
 class GXDLMSServer(object):
     __metaclass__ = ABCMeta
     #
@@ -106,14 +108,14 @@ class GXDLMSServer(object):
     # List of objects that meter supports.
     items = property(__getItems)
 
-    def __getWindowSize(self):
+    def __getGbtWindowSize(self):
         return self.settings.windowSize
 
-    def __setWindowSize(self, value):
+    def __setGbtWindowSize(self, value):
         self.settings.windowSize = value
 
-    #Window size.
-    windowSize = property(__getWindowSize, __setWindowSize)
+    #GBT Window size.
+    gbtWindowSize = property(__getGbtWindowSize, __setGbtWindowSize)
 
     def __getPushClientAddress(self):
         return self.settings.pushClientAddress
@@ -123,12 +125,21 @@ class GXDLMSServer(object):
 
     #client address for push messages.
     pushClientAddress = property(__getPushClientAddress, __setPushClientAddress)
+ #
+    # Information from the connection size that server can
+    #      handle.
+    #
+    @property
+    def limits(self):
+        """Obsolete. Use hdlcSettings instead."""
+        return self.settings.hdlc
 
-    def __getLimits(self):
-        return self.settings.limits
-
-    # Information from the connection size that server can handle.
-    limits = property(__getLimits)
+    #
+    # HDLC framing settings.
+    #
+    @property
+    def hdlcSettings(self):
+        return self.settings.hdlc
 
     def __getMaxReceivePDUSize(self):
         return self.maxReceivePDUSize
@@ -631,30 +642,38 @@ class GXDLMSServer(object):
         self.replyData.set(tmp)
 
     def handleSnrmRequest(self, data):
-        GXDLMS.parseSnrmUaResponse(data, self.settings.limits)
+        if self.hdlc:
+            self.settings.hdlc.update(self.hdlcSettings)
+        else:         
+            self.settings.hdlc.maxInfoRX = GXHdlcSettings.DEFAULT_MAX_INFO_RX
+            self.settings.hdlc.maxInfoTX = GXHdlcSettings.DEFAULT_MAX_INFO_TX
+            self.settings.hdlc.windowSizeRX = GXHdlcSettings.DEFAULT_WINDOWS_SIZE_RX
+            self.settings.hdlc.windowSizeTX = GXHdlcSettings.DEFAULT_WINDOWS_SIZE_TX
+        GXDLMS.parseSnrmUaResponse(data, self.settings.hdlc)
         self.reset(True)
         self.replyData.setUInt8(0x81)
         self.replyData.setUInt8(0x80)
         self.replyData.setUInt8(0)
         if self.hdlc:
-            if self.settings.limits.maxInfoTX > self.hdlc.maximumInfoLengthReceive:
-                self.settings.limits.maxInfoTX = self.hdlc.maximumInfoLengthReceive
-            if self.settings.limits.maxInfoRX > self.hdlc.maximumInfoLengthTransmit:
-                self.settings.limits.maxInfoRX = self.hdlc.maximumInfoLengthTransmit
-            if self.settings.limits.maxInfoRX > self.hdlc.maximumInfoLengthTransmit:
-                self.settings.limits.windowSizeTX = self.hdlc.windowSizeReceive
-            if self.settings.limits.maxInfoRX > self.hdlc.maximumInfoLengthTransmit:
-                self.settings.limits.windowSizeRX = self.hdlc.windowSizeTransmit
+            #If client wants send larger HDLC frames what meter accepts.
+            if self.settings.hdlc.maxInfoTX > self.hdlc.maximumInfoLengthReceive:
+                self.settings.hdlc.maxInfoTX = self.hdlc.maximumInfoLengthReceive
+            if self.settings.hdlc.maxInfoRX > self.hdlc.maximumInfoLengthTransmit:
+                self.settings.hdlc.maxInfoRX = self.hdlc.maximumInfoLengthTransmit
+            if self.settings.hdlc.maxInfoRX > self.hdlc.maximumInfoLengthTransmit:
+                self.settings.hdlc.windowSizeTX = self.hdlc.windowSizeReceive
+            if self.settings.hdlc.maxInfoRX > self.hdlc.maximumInfoLengthTransmit:
+                self.settings.hdlc.windowSizeRX = self.hdlc.windowSizeTransmit
         self.replyData.setUInt8(_HDLCInfo.MAX_INFO_TX)
-        GXDLMS.appendHdlcParameter(self.replyData, self.limits.maxInfoTX)
+        GXDLMS.appendHdlcParameter(self.replyData, self.hdlc.maxInfoTX)
         self.replyData.setUInt8(_HDLCInfo.MAX_INFO_RX)
-        GXDLMS.appendHdlcParameter(self.replyData, self.limits.maxInfoRX)
+        GXDLMS.appendHdlcParameter(self.replyData, self.hdlc.maxInfoRX)
         self.replyData.setUInt8(_HDLCInfo.WINDOW_SIZE_TX)
         self.replyData.setUInt8(4)
-        self.replyData.setUInt32(self.limits.windowSizeTX)
+        self.replyData.setUInt32(self.hdlc.windowSizeTX)
         self.replyData.setUInt8(_HDLCInfo.WINDOW_SIZE_RX)
         self.replyData.setUInt8(4)
-        self.replyData.setUInt32(self.limits.windowSizeRX)
+        self.replyData.setUInt32(self.hdlc.windowSizeRX)
         self.replyData.setUInt8(2, len(self.replyData) - 3)
         self.settings.connected = ConnectionState.HDLC
 
@@ -664,16 +683,16 @@ class GXDLMSServer(object):
         self.replyData.setUInt8(0)
         self.replyData.setUInt8(_HDLCInfo.MAX_INFO_TX)
         self.replyData.setUInt8(1)
-        self.replyData.setUInt8(self.limits.maxInfoTX)
+        self.replyData.setUInt8(self.hdlc.maxInfoTX)
         self.replyData.setUInt8(_HDLCInfo.MAX_INFO_RX)
         self.replyData.setUInt8(1)
-        self.replyData.setUInt8(self.limits.maxInfoRX)
+        self.replyData.setUInt8(self.hdlc.maxInfoRX)
         self.replyData.setUInt8(_HDLCInfo.WINDOW_SIZE_TX)
         self.replyData.setUInt8(4)
-        self.replyData.setUInt32(self.limits.windowSizeTX)
+        self.replyData.setUInt32(self.hdlc.windowSizeTX)
         self.replyData.setUInt8(_HDLCInfo.WINDOW_SIZE_RX)
         self.replyData.setUInt8(4)
-        self.replyData.setUInt32(self.limits.windowSizeRX)
+        self.replyData.setUInt32(self.hdlc.windowSizeRX)
         self.replyData.setUInt8(2, len(self.replyData) - 3)
 
 

@@ -12,7 +12,7 @@
     <Name>Gurux.DLMS.Client.Example.python</Name>
     <RootNamespace>Gurux.DLMS.Client.Example.python</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-h localhost -p 1000</CommandLineArguments>
+    <CommandLineArguments>-h localhost -p 1000 -r sn -c 48 -s 24831 -a High -P 12345678 -g "0.0.42.0.0.255:0" -L LGZ</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -240,6 +240,9 @@ class ObjectType(GXIntEnum):
     # where header = the common part, and each cell = a possible E value, of
     # the OBIS code.
     REGISTER_TABLE = 61
+    
+    # NTP Setup is used for time synchronisation.
+    NTP_SETUP = 100
 
     #
     # Configure a ZigBee PRO device with information necessary to create or

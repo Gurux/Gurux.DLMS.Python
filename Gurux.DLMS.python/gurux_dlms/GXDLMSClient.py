@@ -36,7 +36,7 @@ from .GXDLMSSettings import GXDLMSSettings
 from .enums import Authentication, InterfaceType, SourceDiagnostic, DataType, Conformance
 from .ConnectionState import ConnectionState
 from .GXByteBuffer import GXByteBuffer
-from .GXDLMSLimits import GXDLMSLimits
+from .GXHdlcSettings import GXHdlcSettings
 from .enums import Command, ObjectType
 from .GXDLMS import GXDLMS
 from ._GXAPDU import _GXAPDU
@@ -81,6 +81,7 @@ class GXDLMSClient(object):
     def __init__(self, useLogicalNameReferencing=True, clientAddress=16, serverAddress=1, forAuthentication=Authentication.NONE, password=None, interfaceType=InterfaceType.HDLC):
         # DLMS settings.
         self.settings = GXDLMSSettings(False)
+        self.manufacturerId = None
         self.settings.setUseLogicalNameReferencing(useLogicalNameReferencing)
         self.clientAddress = clientAddress
         self.serverAddress = serverAddress
@@ -176,16 +177,16 @@ class GXDLMSClient(object):
     #
     sourceSystemTitle = property(__getSourceSystemTitle, None)
 
-    def __getWindowSize(self):
-        return self.settings.windowSize
+    def __getGbtWindowSize(self):
+        return self.settings.gbtWindowSize
 
-    def __setWindowSize(self, value):
-        self.settings.windowSize = value
+    def __setGbtWindowSize(self, value):
+        self.settings.gbtWindowSize = value
 
     #
     # GBT window size.
     #
-    windowSize = property(__getWindowSize, __setWindowSize)
+    gbtWndowSize = property(__getGbtWindowSize, __setGbtWindowSize)
 
     def __getMaxReceivePDUSize(self):
         return self.settings.maxPduSize
@@ -398,7 +399,15 @@ class GXDLMSClient(object):
     #
     @property
     def limits(self):
-        return self.settings.limits
+        """Obsolete. Use hdlcSettings instead."""
+        return self.settings.hdlc
+
+    #
+    # HDLC framing settings.
+    #
+    @property
+    def hdlcSettings(self):
+        return self.settings.hdlc
 
     def __getGateway(self):
         return self.settings.gateway
@@ -454,20 +463,20 @@ class GXDLMSClient(object):
         data.setUInt8(0)
         #  Length.
         #  If custom HDLC parameters are used.
-        if GXDLMSLimits.DEFAULT_MAX_INFO_TX != self.limits.maxInfoTX:
+        if GXHdlcSettings.DEFAULT_MAX_INFO_TX != self.hdlcSettings.maxInfoTX:
             data.setUInt8(_HDLCInfo.MAX_INFO_TX)
-            GXDLMS.appendHdlcParameter(data, self.limits.maxInfoTX)
-        if GXDLMSLimits.DEFAULT_MAX_INFO_RX != self.limits.maxInfoRX:
+            GXDLMS.appendHdlcParameter(data, self.hdlcSettings.maxInfoTX)
+        if GXHdlcSettings.DEFAULT_MAX_INFO_RX != self.hdlcSettings.maxInfoRX:
             data.setUInt8(_HDLCInfo.MAX_INFO_RX)
-            GXDLMS.appendHdlcParameter(data, self.limits.maxInfoRX)
-        if GXDLMSLimits.DEFAULT_WINDOWS_SIZE_TX != self.limits.windowSizeTX:
+            GXDLMS.appendHdlcParameter(data, self.hdlcSettings.maxInfoRX)
+        if GXHdlcSettings.DEFAULT_WINDOWS_SIZE_TX != self.hdlcSettings.windowSizeTX:
             data.setUInt8(_HDLCInfo.WINDOW_SIZE_TX)
             data.setUInt8(4)
-            data.setUInt32(self.limits.windowSizeTX)
-        if GXDLMSLimits.DEFAULT_WINDOWS_SIZE_RX != self.limits.windowSizeRX:
+            data.setUInt32(self.hdlcSettings.windowSizeTX)
+        if GXHdlcSettings.DEFAULT_WINDOWS_SIZE_RX != self.hdlcSettings.windowSizeRX:
             data.setUInt8(_HDLCInfo.WINDOW_SIZE_RX)
             data.setUInt8(4)
-            data.setUInt32(self.limits.windowSizeRX)
+            data.setUInt32(self.hdlcSettings.windowSizeRX)
         #  If default HDLC parameters are not used.
         if data.size != 3:
             data.setUInt8(len(data) - 3, 2)
@@ -485,7 +494,7 @@ class GXDLMSClient(object):
         if not isinstance(data, GXByteBuffer):
             data = GXByteBuffer(data)
 
-        GXDLMS.parseSnrmUaResponse(data, self.settings.limits)
+        GXDLMS.parseSnrmUaResponse(data, self.settings.hdlc)
         self.settings.connected = ConnectionState.HDLC
 
     #
@@ -565,7 +574,14 @@ class GXDLMSClient(object):
         if self.settings.authentication != Authentication.HIGH_ECDSA and self.settings.authentication != Authentication.HIGH_GMAC and not self.settings.password:
             raise ValueError("Password is invalid.")
         self.settings.resetBlockIndex()
-        pw = []
+        #Count challenge for Landis+Gyr.  L+G is using custom way to count the
+        #challenge.
+        if self.manufacturerId == "LGZ" and self.settings.authentication == Authentication.HIGH:
+            challenge = self.encryptLandisGyrHighLevelAuthentication(self.settings.password, self.settings.stoCChallenge)
+            if self.useLogicalNameReferencing:
+                return self.__method("0.0.40.0.0.255", ObjectType.ASSOCIATION_LOGICAL_NAME, 1, challenge, DataType.OCTET_STRING)
+            return self.__method(0xFA00, ObjectType.ASSOCIATION_SHORT_NAME, 8, challenge, DataType.OCTET_STRING)
+
         if self.settings.authentication == Authentication.HIGH_GMAC:
             pw = self.settings.cipher.systemTitle
         elif self.settings.authentication == Authentication.HIGH_SHA256:
@@ -592,38 +608,42 @@ class GXDLMSClient(object):
     # Received reply from the server.
     #
     def parseApplicationAssociationResponse(self, reply):
-        info = _GXDataInfo()
-        equals = False
-        ic = 0
-        value = _GXCommon.getData(self.settings, reply, info)
-        if value:
-            if self.settings.authentication == Authentication.HIGH_ECDSA:
-                raise ValueError("ECDSA is not supported.")
-            if self.settings.authentication == Authentication.HIGH_GMAC:
-                secret = self.settings.sourceSystemTitle
-                bb = GXByteBuffer(value)
-                bb.getUInt8()
-                ic = bb.getUInt32()
-            elif self.settings.authentication == Authentication.HIGH_SHA256:
-                tmp2 = GXByteBuffer()
-                tmp2.set(self.settings.password)
-                tmp2.set(self.settings.sourceSystemTitle)
-                tmp2.set(self.settings.cipher.systemTitle)
-                tmp2.set(self.settings.ctoSChallenge)
-                tmp2.set(self.settings.stoCChallenge)
-                secret = tmp2.array()
-            else:
-                secret = self.settings.password
-            tmp = GXSecure.secure(self.settings, self.settings.cipher, ic, self.settings.getCtoSChallenge(), secret)
-            challenge = GXByteBuffer(tmp)
-            equals = challenge.compare(value)
-            if not equals:
-                print("Invalid StoC:" + GXByteBuffer.hex(value, True) + "-" + GXByteBuffer.hex(tmp, True))
+         # Landis+Gyr is not returning StoC.
+        if self.manufacturerId == "LGZ" and self.settings.authentication == Authentication.HIGH:
+            self.settings.connected |= ConnectionState.DLMS
         else:
-            print("Server did not accept CtoS.")
-        if not equals:
-            raise Exception("parseApplicationAssociationResponse failed. " + " Server to Client do not match.")
-        self.settings.connected |= ConnectionState.DLMS
+            info = _GXDataInfo()
+            equals = False
+            ic = 0
+            value = _GXCommon.getData(self.settings, reply, info)
+            if value:
+                if self.settings.authentication == Authentication.HIGH_ECDSA:
+                    raise ValueError("ECDSA is not supported.")
+                if self.settings.authentication == Authentication.HIGH_GMAC:
+                    secret = self.settings.sourceSystemTitle
+                    bb = GXByteBuffer(value)
+                    bb.getUInt8()
+                    ic = bb.getUInt32()
+                elif self.settings.authentication == Authentication.HIGH_SHA256:
+                    tmp2 = GXByteBuffer()
+                    tmp2.set(self.settings.password)
+                    tmp2.set(self.settings.sourceSystemTitle)
+                    tmp2.set(self.settings.cipher.systemTitle)
+                    tmp2.set(self.settings.ctoSChallenge)
+                    tmp2.set(self.settings.stoCChallenge)
+                    secret = tmp2.array()
+                else:
+                    secret = self.settings.password
+                tmp = GXSecure.secure(self.settings, self.settings.cipher, ic, self.settings.getCtoSChallenge(), secret)
+                challenge = GXByteBuffer(tmp)
+                equals = challenge.compare(value)
+                if not equals:
+                    print("Invalid StoC:" + GXByteBuffer.hex(value, True) + "-" + GXByteBuffer.hex(tmp, True))
+            else:
+                print("Server did not accept CtoS.")
+            if not equals:
+                raise Exception("parseApplicationAssociationResponse failed. " + " Server to Client do not match.")
+            self.settings.connected |= ConnectionState.DLMS
 
     def releaseRequest(self):
         if (self.settings.connected & ConnectionState.DLMS) == 0:
@@ -1185,6 +1205,19 @@ class GXDLMSClient(object):
         if logicalAddress:
             ret |= logicalAddress << 14
         return ret
+
+    # Encrypt Landis+Gyr High level password.
+    @classmethod
+    def encryptLandisGyrHighLevelAuthentication(cls, password, seed):
+        crypted = bytearray(len(seed))
+        crypted[0: len(seed)] = seed
+        for pos in range(0, len(password) - 1):
+            if password[pos] != 0x30:
+                crypted[pos] += (int(password[pos]) - 0x30)
+                #Convert to upper case.
+                if crypted[pos] > 0x39:
+                    crypted[pos] += 7
+        return crypted
 
     @classmethod
     def getServerAddress(cls, logicalAddress, physicalAddress, addressSize=0):

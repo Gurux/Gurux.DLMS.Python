@@ -53,7 +53,7 @@ class GXDLMSImageActivateInfo:
         if GXByteBuffer.isAsciiString(self.identification):
             sb += str(self.identification)
         else:
-            sb.append(GXByteBuffer.hex(self.identification, True))
+            sb += GXByteBuffer.hex(self.identification, True)
         sb += " "
         if GXByteBuffer.isAsciiString(self.signature):
             sb += str(self.signature)

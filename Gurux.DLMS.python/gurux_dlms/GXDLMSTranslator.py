@@ -1364,28 +1364,28 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.MAX_INFO_TX:
                 value = int(cls.getValue(node, s))
                 if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
-                    s.settings.limits.setMaxInfoRX(int(value))
+                    s.settings.hdlc.setMaxInfoRX(int(value))
                 s.data.setUInt8(_HDLCInfo.MAX_INFO_RX)
                 s.data.setUInt8(1)
                 s.data.setUInt8(int(value))
             elif tag == TranslatorTags.MAX_INFO_RX:
                 value = int(cls.getValue(node, s))
                 if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
-                    s.settings.limits.setMaxInfoTX(int(value))
+                    s.settings.hdlc.setMaxInfoTX(int(value))
                 s.data.setUInt8(_HDLCInfo.MAX_INFO_TX)
                 s.data.setUInt8(1)
                 s.data.setUInt8(int(value))
             elif tag == TranslatorTags.WINDOW_SIZE_TX:
                 value = int(cls.getValue(node, s))
                 if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
-                    s.settings.limits.setWindowSizeRX(int(value))
+                    s.settings.hdlc.setWindowSizeRX(int(value))
                 s.data.setUInt8(int(_HDLCInfo.WINDOW_SIZE_RX))
                 s.data.setUInt8(4)
                 s.data.setUInt32(value)
             elif tag == TranslatorTags.WINDOW_SIZE_RX:
                 value = int(cls.getValue(node, s))
                 if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
-                    s.settings.limits.setWindowSizeTX(int(value))
+                    s.settings.hdlc.setWindowSizeTX(int(value))
                 s.data.setUInt8(_HDLCInfo.WINDOW_SIZE_TX)
                 s.data.setUInt8(4)
                 s.data.setUInt32(value)

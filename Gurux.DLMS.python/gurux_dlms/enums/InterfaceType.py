@@ -44,18 +44,18 @@ class InterfaceType(GXIntEnum):
     # Plain PDU is returned.
     PDU = 2
     # EN 13757-4/-5 Wireless M-Bus profile is used.
-    WIRELESS_MBUS = 3,
+    WIRELESS_MBUS = 3
     # IEC 62056-21 E-Mode is used to initialize communication before moving to HDLC protocol.
-    HDLC_WITH_MODE_E = 4,
+    HDLC_WITH_MODE_E = 4
     #PLC Logical link control (LLC) profile is used with IEC 61334-4-32 connectionless LLC sublayer.
-    PLC = 5,
+    PLC = 5
     # PLC Logical link control (LLC) profile is used with HDLC.
-    PLC_HDLC = 6,
+    PLC_HDLC = 6
     # LowPower Wide Area Networks (LPWAN) profile is used.
-    LPWAN = 7,
+    LPWAN = 7
     # Wi-SUN FAN mesh network is used.
-    WI_SUN = 8,
+    WI_SUN = 8
     # OFDM PLC PRIME is defined in IEC 62056-8-4.
-    PLC_PRIME = 9,
+    PLC_PRIME = 9
     # EN 13757-2 wired (twisted pair based) M-Bus scheme is used.
     WIRED_MBUS = 10

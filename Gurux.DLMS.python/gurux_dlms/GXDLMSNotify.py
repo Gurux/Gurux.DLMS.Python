@@ -91,11 +91,20 @@ class GXDLMSNotify(object):
     objects = property(__getObjects)
 
     #
+    # Information from the connection size that server can
+    #      handle.
     #
-    def __getLimits(self):
-        return self.settings.limits
-    # Information from the connection size that server can handle.
-    limits = property(__getLimits)
+    @property
+    def limits(self):
+        """Obsolete. Use hdlcSettings instead."""
+        return self.settings.hdlc
+
+    #
+    # HDLC framing settings.
+    #
+    @property
+    def hdlcSettings(self):
+        return self.settings.hdlc
 
     def __getMaxReceivePDUSize(self):
         return self.settings.maxPduSize

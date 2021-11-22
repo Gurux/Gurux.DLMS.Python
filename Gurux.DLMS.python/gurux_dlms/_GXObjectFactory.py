@@ -86,6 +86,7 @@ from .objects.GXDLMSPrimeNbOfdmPlcMacFunctionalParameters import GXDLMSPrimeNbOf
 from .objects.GXDLMSPrimeNbOfdmPlcMacCounters import GXDLMSPrimeNbOfdmPlcMacCounters
 from .objects.GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData import GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData
 from .objects.GXDLMSPrimeNbOfdmPlcApplicationsIdentification import GXDLMSPrimeNbOfdmPlcApplicationsIdentification
+from .objects.GXDLMSNtpSetup import GXDLMSNtpSetup
 
 class _GXObjectFactory:
     #Reserved for internal use.
@@ -212,6 +213,8 @@ class _GXObjectFactory:
             ret = GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData()
         elif ot == ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION:
             ret = GXDLMSPrimeNbOfdmPlcApplicationsIdentification()
+        elif ot == ObjectType.NTP_SETUP:
+            ret = GXDLMSNtpSetup()
         else:
             ret = GXDLMSObject(ot)
         return ret

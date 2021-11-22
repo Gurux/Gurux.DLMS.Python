@@ -55,7 +55,7 @@ from .objects.enums import SecuritySuite
 from .ConnectionState import ConnectionState
 from .GXCiphering import GXCiphering
 from .enums.DataType import DataType
-from .GXDLMSLimits import GXDLMSLimits
+from .GXHdlcSettings import GXHdlcSettings
 from .VariableAccessSpecification import VariableAccessSpecification
 from .AesGcmParameter import AesGcmParameter
 from .GXDLMSConfirmedServiceError import GXDLMSConfirmedServiceError
@@ -139,7 +139,7 @@ class GXDLMS:
 
         if reply.moreData == RequestTypes.GBT:
             p = GXDLMSLNParameters(settings, 0, Command.GENERAL_BLOCK_TRANSFER, 0, None, None, 0xff)
-            p.WindowSize = reply.windowSize
+            p.gbtWindowSize = reply.gbtWindowSize
             p.blockNumberAck = reply.blockNumberAck
             p.blockIndex = reply.blockNumber
             p.Streaming = False
@@ -751,7 +751,7 @@ class GXDLMS:
             primaryAddress = cls.getAddressBytes(settings.serverAddress, settings.serverAddressSize)
             secondaryAddress = cls.getAddressBytes(settings.clientAddress, 1)
         bb.setUInt8(_GXCommon.HDLC_FRAME_START_END)
-        frameSize = settings.limits.maxInfoTX
+        frameSize = settings.hdlc.maxInfoTX
         if data and data.position == 0:
             frameSize -= 3
         if not data:
@@ -861,7 +861,7 @@ class GXDLMS:
                 notify.serverAddress = addresses[0]
         # HDLC control fields
         cf = reply.getUInt8()
-        if data.xml is None and not settings.checkFrame(cf):
+        if data.xml is None and not settings.checkFrame(cf, data.xml):
             reply.position = eopPos + 1
             return GXDLMS.getHdlcData(server, settings, reply, data, notify)
         if not isNotify and notify and (cf == 0x13 or cf == 0x3):
@@ -2022,13 +2022,8 @@ class GXDLMS:
             value[0] = 0
 
     @classmethod
-    def parseSnrmUaResponse(cls, data, limits):
-        if data.available() == 0:
-            limits.maxInfoTX = GXDLMSLimits.DEFAULT_MAX_INFO_TX
-            limits.maxInfoRX = GXDLMSLimits.DEFAULT_MAX_INFO_RX
-            limits.windowSizeTX = GXDLMSLimits.DEFAULT_WINDOWS_SIZE_TX
-            limits.windowSizeRX = GXDLMSLimits.DEFAULT_WINDOWS_SIZE_RX
-        else:
+    def parseSnrmUaResponse(cls, data, settings):
+        if data.available() != 0:
             data.getUInt8()
             data.getUInt8()
             data.getUInt8()
@@ -2044,13 +2039,13 @@ class GXDLMS:
                 else:
                     raise Exception("Invalid Exception.")
                 if id_ == _HDLCInfo.MAX_INFO_RX:
-                    limits.maxInfoTX = val
+                    settings.maxInfoTX = val
                 elif id_ == _HDLCInfo.MAX_INFO_TX:
-                    limits.maxInfoRX = val
+                    settings.maxInfoRX = val
                 elif id_ == _HDLCInfo.WINDOW_SIZE_RX:
-                    limits.windowSizeTX = val
+                    settings.windowSizeTX = val
                 elif id_ == _HDLCInfo.WINDOW_SIZE_TX:
-                    limits.windowSizeRX = val
+                    settings.windowSizeRX = val
                 else:
                     raise Exception("Invalid UA response.")
 

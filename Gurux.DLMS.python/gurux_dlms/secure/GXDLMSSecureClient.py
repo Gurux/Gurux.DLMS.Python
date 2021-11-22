@@ -110,10 +110,10 @@ class GXDLMSSecureClient(GXDLMSClient):
     securitySuite = property(__getSecuritySuite, __setSecuritySuite)
 
     def __getServerSystemTitle(self):
-        return self.ciphering.sourceSystemTitle
+        return self.settings.preEstablishedSystemTitle
 
     def __setServerSystemTitle(self, value):
-        self.ciphering.sourceSystemTitle = value
+        self.settings.preEstablishedSystemTitle = value
 
     # Server system title.
     serverSystemTitle = property(__getServerSystemTitle, __setServerSystemTitle)

@@ -126,3 +126,4 @@ from .GXMacMulticastEntry import GXMacMulticastEntry
 from .GXMacDirectTable import GXMacDirectTable
 from .GXMacAvailableSwitch import GXMacAvailableSwitch
 from .GXMacPhyCommunication import GXMacPhyCommunication
+from .GXDLMSNtpSetup import GXDLMSNtpSetup

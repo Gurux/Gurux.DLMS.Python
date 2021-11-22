@@ -81,3 +81,4 @@ from .MBusEncryptionKeyStatus import MBusEncryptionKeyStatus
 from .Weekdays import Weekdays
 from .MacState import MacState
 from .ChargeConfiguration import ChargeConfiguration
+from .NtpAuthenticationMethod import NtpAuthenticationMethod

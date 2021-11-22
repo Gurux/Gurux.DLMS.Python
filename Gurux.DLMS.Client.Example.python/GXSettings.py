@@ -86,6 +86,10 @@ class GXSettings:
         print(" -B \t Block cipher key that is used with chiphering. Ex. -B 000102030405060708090A0B0C0D0E0F")
         print(" -D \t Dedicated key that is used with chiphering. Ex. -D 00112233445566778899AABBCCDDEEFF")
         print(" -d \t Used DLMS standard. Ex. -d India (DLMS, India, Italy, Saudi_Arabia, IDIS)")
+        print(" -W \t General Block Transfer window size.")
+        print(" -w \t HDLC Window size. Default is 1")
+        print(" -f \t HDLC Frame size. Default is 128")
+        print(" -L \t Manufacturer ID (Flag ID) is used to use manufacturer depending functionality. -L LGZ")
         print("Example:")
         print("Read LG device using TCP/IP connection.")
         print("GuruxDlmsSample -r SN -c 16 -s 1 -h [Meter IP Address] -p [Meter Port No]")
@@ -132,7 +136,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:i:It:a:p:wP:g:S:n:C:v:o:T:A:B:D:d:l:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:i:It:a:p:wP:g:S:n:C:v:o:T:A:B:D:d:l:W:w:f:L:")
         modeEDefaultValues = True
         for it in parameters:
             if it.tag == 'w':
@@ -294,6 +298,14 @@ class GXSettings:
                 self.client.serverAddress = GXDLMSClient.getServerAddress(int(it.value), self.client.serverAddress)
             elif it.tag == 'n':
                 self.client.serverAddress = GXDLMSClient.getServerAddressFromSerialNumber(int(it.value))
+            elif it.tag == 'W':
+                self.client.gbtWindowSize = int(it.value)
+            elif it.tag == 'w':
+                self.client.hdlcSettings.WindowSizeRX = settings.client.HdlcSettings.WindowSizeTX = int(it.value)
+            elif it.tag == 'f':
+                self.client.hdlcSettings.MaxInfoRX = settings.client.HdlcSettings.MaxInfoTX = int(it.value)
+            elif it.tag == 'L':
+                self.client.manufacturerId = it.value
             elif it.tag == '?':
                 if it.tag == 'c':
                     raise ValueError("Missing mandatory client option.")

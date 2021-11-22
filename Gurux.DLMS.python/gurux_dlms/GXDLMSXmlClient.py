@@ -168,15 +168,15 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
                         reply = []
                         reply = self.translator.xmlToPdu(GXDLMSXmlPdu.getOuterXml(node), s)
                         if s.command == Command.SNRM and not s.settings.isServer:
-                            self.settings.limits.maxInfoTX = s.settings.limits.maxInfoTX
-                            self.settings.limits.maxInfoRX = s.settings.limits.maxInfoRX
-                            self.settings.limits.windowSizeRX = s.settings.limits.windowSizeRX
-                            self.settings.limits.windowSizeTX = s.settings.limits.windowSizeTX
+                            self.settings.hdlc.maxInfoTX = s.settings.hdlc.maxInfoTX
+                            self.settings.hdlc.maxInfoRX = s.settings.hdlc.maxInfoRX
+                            self.settings.hdlc.windowSizeRX = s.settings.hdlc.windowSizeRX
+                            self.settings.hdlc.windowSizeTX = s.settings.hdlc.windowSizeTX
                         elif s.command == Command.UA and s.settings.isServer:
-                            self.settings.limits.maxInfoTX = s.settings.limits.maxInfoTX
-                            self.settings.limits.maxInfoRX = s.settings.limits.maxInfoRX
-                            self.settings.limits.windowSizeRX = s.settings.limits.windowSizeRX
-                            self.settings.limits.windowSizeTX = s.settings.limits.windowSizeTX
+                            self.settings.hdlc.maxInfoTX = s.settings.hdlc.maxInfoTX
+                            self.settings.hdlc.maxInfoRX = s.settings.hdlc.maxInfoRX
+                            self.settings.hdlc.windowSizeRX = s.settings.hdlc.windowSizeRX
+                            self.settings.hdlc.windowSizeTX = s.settings.hdlc.windowSizeTX
                         if s.template:
                             reply = None
                         p = GXDLMSXmlPdu(s.command, node, reply)

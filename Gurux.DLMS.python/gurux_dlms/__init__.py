@@ -54,6 +54,7 @@ from .GXDLMSConverter import GXDLMSConverter
 from .GXDLMSException import GXDLMSException
 from .GXDLMSGateway import GXDLMSGateway
 from .GXDLMSLimits import GXDLMSLimits
+from .GXHdlcSettings import GXHdlcSettings
 from .GXDLMSLNCommandHandler import GXDLMSLNCommandHandler
 from .GXDLMSLNParameters import GXDLMSLNParameters
 from .GXDLMSLongTransaction import GXDLMSLongTransaction

@@ -65,6 +65,7 @@
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
     <Compile Include="gurux_dlms\GXDLMSExceptionResponse.py" />
+    <Compile Include="gurux_dlms\GXHdlcSettings.py" />
     <Compile Include="gurux_dlms\GXIntFlag.py" />
     <Compile Include="gurux_dlms\GXIntEnum.py" />
     <Compile Include="gurux_dlms\GXInt32.py" />
@@ -86,11 +87,13 @@
     <Compile Include="gurux_dlms\GXSecure.py" />
     <Compile Include="gurux_dlms\GXStandardObisCodeCollection.py" />
     <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttributeSettings.py" />
+    <Compile Include="gurux_dlms\objects\enums\NtpAuthenticationMethod.py" />
     <Compile Include="gurux_dlms\objects\enums\ChargeConfiguration.py" />
     <Compile Include="gurux_dlms\objects\enums\MacState.py" />
     <Compile Include="gurux_dlms\objects\enums\Weekdays.py" />
     <Compile Include="gurux_dlms\objects\enums\KeyUsage.py" />
     <Compile Include="gurux_dlms\objects\enums\MBusEncryptionKeyStatus.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSNtpSetup.py" />
     <Compile Include="gurux_dlms\objects\GXMacPhyCommunication.py" />
     <Compile Include="gurux_dlms\objects\GXMacAvailableSwitch.py" />
     <Compile Include="gurux_dlms\objects\GXMacDirectTable.py" />

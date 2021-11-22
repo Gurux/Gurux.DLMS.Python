@@ -65,7 +65,6 @@ class GXDLMSLNCommandHandler:
     def __init__(self):
         pass
 
-    # pylint: too-many-arguments
     @classmethod
     def handleGetRequest(cls, settings, server, data, replyData, xml):
         #  Return error if connection is not established.
@@ -277,7 +276,7 @@ class GXDLMSLNCommandHandler:
         settings.increaseBlockIndex()
         p = GXDLMSLNParameters(settings, invokeID, Command.GENERAL_BLOCK_TRANSFER if streaming else Command.GET_RESPONSE, 2, None, bb, ErrorCode.OK)
         p.streaming = streaming
-        p.windowSize = settings.getWindowSize()
+        p.windowSize = settings.gbtWndowSize
         #  If transaction is not in progress.
         if server.getTransaction() is None:
             p.status = int(ErrorCode.NO_LONG_GET_OR_READ_IN_PROGRESS)

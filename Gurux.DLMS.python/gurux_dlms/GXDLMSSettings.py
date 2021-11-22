@@ -36,7 +36,7 @@ from .enums import Priority, ServiceClass, InterfaceType, Authentication, Standa
 from .enums.DateTimeSkips import DateTimeSkips
 from .ConnectionState import ConnectionState
 from .objects.GXDLMSObjectCollection import GXDLMSObjectCollection
-from .GXDLMSLimits import GXDLMSLimits
+from .GXHdlcSettings import GXHdlcSettings
 
 # This class includes DLMS communication settings.
 # pylint: disable=bad-option-value,too-many-public-methods,too-many-instance-attributes,old-style-class
@@ -77,7 +77,6 @@ class GXDLMSSettings:
     # Constructor.
     #
     def __init__(self, isServer):
-        self.skipFrameCheck = False
         self.customChallenges = False
         self.ctoSChallenge = None
         self.stoCChallenge = None
@@ -111,13 +110,13 @@ class GXDLMSSettings:
         self.protocolVersion = None
         self.isServer = isServer
         self.objects = GXDLMSObjectCollection()
-        self.limits = GXDLMSLimits()
+        self.hdlc = GXHdlcSettings()
         self.gateway = None
         self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
         self.receiverFrame = 0
         self.senderFrame = 0
         self.resetFrameSequence()
-        self.windowSize = 1
+        self.gbtWindowSize = 1
         self.userId = -1
         #Quality of service.
         self.qualityOfService = 0
@@ -178,13 +177,10 @@ class GXDLMSSettings:
             self.receiverFrame = self.__CLIENT_START_RCEIVER_FRAME_SEQUENCE
 
     #pylint: disable=too-many-return-statements
-    def checkFrame(self, frame_):
+    def checkFrame(self, frame_, xml):
         #  If notify
         if frame_ == 0x13:
             return True
-        # If echo.
-        if frame_ == self.senderFrame:
-            return False
 
         #  If U frame.
         if (frame_ & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
@@ -197,6 +193,9 @@ class GXDLMSSettings:
             return True
         #  If S -frame.
         if (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
+            #If echo.
+            if frame_ == (self.senderFrame and 0xF1):
+                return False
             self.receiverFrame = self.increaseReceiverSequence(self.receiverFrame)
             return True
         #  Handle I-frame.
@@ -205,18 +204,39 @@ class GXDLMSSettings:
             if frame_ == expected:
                 self.receiverFrame = frame_
                 return True
-            if frame_ == (expected & ~0x10):
-                self.receiverFrame = GXDLMSSettings.increaseSendSequence(self.receiverFrame)
+            #If the final bit is not set.
+            if frame_ == (expected and ~0x10) and self.hdlc.windowSizeRX != 1:
+                self.receiverFrame = frame_
                 return True
+            # If Final bit is not set for the previous message.
+            if (self.receiverFrame and 0x10) == 0 and self.hdlc.windowSizeRX != 1:
+                expected = (0x10 | self.increaseSendSequence(self.receiverFrame))
+                if frame_ == expected:
+                    self.receiverFrame = frame_
+                    return True
+                # If the final bit is not set.
+                if frame_ == (expected & ~0x10):
+                    ReceiverFrame = frame_
+                    return True            
         else:
             expected = self.increaseSendSequence(self.receiverFrame) & 0xFF
             #  If answer for RR.
             if frame_ == expected:
                 self.receiverFrame = frame_
                 return True
-        #  This is for unit tests.
-        if self.skipFrameCheck:
-            self.receiverFrame = frame_
+            if frame_ == (expected and ~0x10):
+                self.receiverFrame = frame_
+                return True
+            if self.hdlc.windowSizeRX != 1:
+                #If HDLC window size is bigger than one.
+                expected = self.increaseReceiverSequence(self.increaseSendSequence(ReceiverFrame))
+                if frame_ == expected:
+                    ReceiverFrame = frame_
+                    return True
+                
+        # If try to find data from bytestream and not real communicating.
+        if xml and ((not self.isServer and self.receiverFrame == 0xE) or (self.isServer and self.receiverFrame == 0xEE)):        
+            ReceiverFrame = frame_
             return True
         print("Invalid HDLC Frame: " + hex(frame_) + " Expected: " + hex(expected))
         return False

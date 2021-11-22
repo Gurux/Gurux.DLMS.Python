@@ -35,17 +35,11 @@
 #  GXDLMSLimits contains commands for retrieving and setting the limits of
 #  field ength and window size, when communicating with the server.
 #
-class GXDLMSLimits:
-    DEFAULT_MAX_INFO_TX = 128
-    DEFAULT_MAX_INFO_RX = 128
-    DEFAULT_WINDOWS_SIZE_TX = 1
-    DEFAULT_WINDOWS_SIZE_RX = 1
+from .GXHdlcSettings import GXHdlcSettings
 
+class GXDLMSLimits(GXHdlcSettings):
     #
     # Constructor.
     #
     def __init__(self):
-        self.maxInfoTX = self.DEFAULT_MAX_INFO_TX
-        self.maxInfoRX = self.DEFAULT_MAX_INFO_RX
-        self.windowSizeTX = self.DEFAULT_WINDOWS_SIZE_TX
-        self.windowSizeRX = self.DEFAULT_WINDOWS_SIZE_RX
+        GXHdlcSettings.__init__(self)
