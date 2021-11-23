@@ -51,7 +51,7 @@ class GXDLMSChippering:
     @classmethod
     def getNonse(cls, invocationCounter, systemTitle):
         nonce = bytearray(12)
-        nonce[0:7] = systemTitle
+        nonce[0:8] = systemTitle 
         nonce[8] = ((invocationCounter >> 24) & 0xFF)
         nonce[9] = ((invocationCounter >> 16) & 0xFF)
         nonce[10] = ((invocationCounter >> 8) & 0xFF)

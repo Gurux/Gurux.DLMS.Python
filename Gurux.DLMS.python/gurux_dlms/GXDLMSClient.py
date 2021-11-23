@@ -104,6 +104,19 @@ class GXDLMSClient(object):
         #Initiate request.
         self.useProtectedRelease = False
 
+        #Initialize challenge that is restored after the connection is closed.
+        self.initializeChallenge = None
+        #Initialize PDU size that is restored after the connection is closed.
+        self.initializePduSize = 0
+        #Initialize Max HDLC transmission size that is restored after the connection is closed.
+        self.InitializeMaxInfoTX = 0
+        # Initialize Max HDLC receive size that is restored after the connection is closed.
+        self.InitializeMaxInfoRX = 0
+        #Initialize max HDLC window size in transmission that is restored after the connection is closed.
+        self.InitializeWindowSizeTX = 0
+        #Initialize max HDLC window size in receive that is restored after the connection is closed.
+        self.InitializeWindowSizeRX = 0
+
     def __getObjects(self):
         return self.settings.objects
 
@@ -450,6 +463,11 @@ class GXDLMSClient(object):
     # SNRM request as byte array.
     #
     def snrmRequest(self):
+        #Save default values.
+        self.initializeMaxInfoTX = self.hdlcSettings.maxInfoTX
+        self.initializeMaxInfoRX = self.hdlcSettings.maxInfoRX
+        self.initializeWindowSizeTX = self.hdlcSettings.windowSizeTX
+        self.initializeWindowSizeRX = self.hdlcSettings.windowSizeRX
         self.settings.connected = ConnectionState.NONE
         self.isAuthenticationRequired = False
         #  SNRM request is not used in network connections.
@@ -509,6 +527,9 @@ class GXDLMSClient(object):
     #
     def aarqRequest(self):
         #pylint: disable=bad-option-value,redefined-variable-type
+        #Save default values.
+        self.initializePduSize = self.maxReceivePDUSize
+        self.initializeChallenge = self.settings.getStoCChallenge()
         self.settings.connected = self.settings.connected & ~ConnectionState.DLMS
         buff = GXByteBuffer(20)
         self.settings.resetBlockIndex()
@@ -659,12 +680,21 @@ class GXDLMSClient(object):
                 self.settings.cipher.invocationCounter = self.settings.cipher.invocationCounter + 1
             _GXAPDU.generateUserInformation(self.settings, self.settings.cipher, None, buff)
             buff.setUInt8(len(buff) - 1, 0)
+        else:
+            buff.setUInt8(3)
+            buff.setUInt8(0x80)
+            buff.setUInt8(1)
+            buff.setUInt8(0)
+
         if self.useLogicalNameReferencing:
             p = GXDLMSLNParameters(self.settings, 0, Command.RELEASE_REQUEST, 0, buff, None, 0xff)
             reply = GXDLMS.getLnMessages(p)
         else:
             reply = GXDLMS.getSnMessages(GXDLMSSNParameters(self.settings, Command.RELEASE_REQUEST, 0xFF, 0xFF, None, buff))
         self.settings.connected = self.settings.connected & ~ConnectionState.DLMS
+        #Restore default values.
+        self.maxReceivePDUSize = self.initializePduSize
+        self.settings.setCtoSChallenge(self.initializeChallenge)
         return reply
 
     def disconnectRequest(self, force=False):
@@ -673,11 +703,19 @@ class GXDLMSClient(object):
             return None
         if self.interfaceType == InterfaceType.HDLC or self.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             self.settings.connected = ConnectionState.NONE
-            return GXDLMS.getHdlcFrame(self.settings, Command.DISCONNECT_REQUEST, None)
-        reply = self.releaseRequest()
-        if reply is None:
-            return None
-        return reply[0]
+            reply = GXDLMS.getHdlcFrame(self.settings, Command.DISCONNECT_REQUEST, None)
+        elif force or self.settings.connected == ConnectionState.DLMS:
+            reply = self.releaseRequest()
+            if reply:
+                reply = reply[0]
+        #Restore default HDLC values.
+        self.hdlcSettings.maxInfoTX = self.initializeMaxInfoTX
+        self.hdlcSettings.maxInfoRX = self.initializeMaxInfoRX
+        self.hdlcSettings.windowSizeTX = self.initializeWindowSizeTX
+        self.hdlcSettings.windowSizeRX = self.initializeWindowSizeRX
+        self.settings.connected = ConnectionState.NONE
+        self.settings.resetFrameSequence()
+        return reply
 
     @classmethod
     def __createDLMSObject(cls, classID, version, baseName, ln, accessRights):

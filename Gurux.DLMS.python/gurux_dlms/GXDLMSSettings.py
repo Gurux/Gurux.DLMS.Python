@@ -194,7 +194,7 @@ class GXDLMSSettings:
         #  If S -frame.
         if (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
             #If echo.
-            if frame_ == (self.senderFrame and 0xF1):
+            if frame_ == (self.senderFrame & 0xF1):
                 return False
             self.receiverFrame = self.increaseReceiverSequence(self.receiverFrame)
             return True
@@ -205,11 +205,11 @@ class GXDLMSSettings:
                 self.receiverFrame = frame_
                 return True
             #If the final bit is not set.
-            if frame_ == (expected and ~0x10) and self.hdlc.windowSizeRX != 1:
+            if frame_ == (expected & ~0x10) and self.hdlc.windowSizeRX != 1:
                 self.receiverFrame = frame_
                 return True
             # If Final bit is not set for the previous message.
-            if (self.receiverFrame and 0x10) == 0 and self.hdlc.windowSizeRX != 1:
+            if (self.receiverFrame & 0x10) == 0 and self.hdlc.windowSizeRX != 1:
                 expected = (0x10 | self.increaseSendSequence(self.receiverFrame))
                 if frame_ == expected:
                     self.receiverFrame = frame_
@@ -224,7 +224,7 @@ class GXDLMSSettings:
             if frame_ == expected:
                 self.receiverFrame = frame_
                 return True
-            if frame_ == (expected and ~0x10):
+            if frame_ == (expected & ~0x10):
                 self.receiverFrame = frame_
                 return True
             if self.hdlc.windowSizeRX != 1:
