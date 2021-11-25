@@ -1252,8 +1252,8 @@ class GXDLMSClient(object):
         for pos in range(0, len(password) - 1):
             if password[pos] != 0x30:
                 crypted[pos] += (int(password[pos]) - 0x30)
-                #Convert to upper case.
-                if crypted[pos] > 0x39:
+                #Convert to upper case letter.
+                if crypted[pos] > '9' and crypted[pos] < 'A':
                     crypted[pos] += 7
         return crypted
 

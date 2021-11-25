@@ -50,7 +50,7 @@ class GXDLMSSecureNotify(GXDLMSNotify):
     #      *            Object type.
     #
     def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
-        super(GXDLMSSecureNotify, self).__init__(interfaceType)
+        super(GXDLMSSecureNotify, self).__init__(useLogicalNameReferencing, clientAddress, serverAddress, interfaceType)
         self.ciphering = GXCiphering("ABCDEFGH".encode())
         self.cipher = self.ciphering
 
