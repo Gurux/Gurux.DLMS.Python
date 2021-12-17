@@ -965,7 +965,7 @@ class GXDLMS:
                     reply.position = index + 1
                 return False
             #If All-station (Broadcast).
-            if settings.serverAddress != source and settings.serverAddress != 0x7F and settings.serverAddress != 0x3FFF:
+            if settings.serverAddress != source and (settings.serverAddress and 0x7F) != 0x7F and (settings.serverAddress and 0x3FFF) != 0x3FFF:
                 readLogical = [0]
                 readPhysical = [0]
                 logical = [0]
@@ -1913,7 +1913,7 @@ class GXDLMS:
 
         if frame_ == 0x13 and not target.isMoreData():
             target.data.position = 0
-        
+
         cls.getPdu(settings, target)
         if notify and not isNotify:
             #Check command to make sure it's not notify message.
