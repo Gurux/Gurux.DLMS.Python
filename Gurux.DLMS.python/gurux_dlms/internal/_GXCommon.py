@@ -1003,14 +1003,16 @@ class _GXCommon:
     # Returns parsed BCD value.
     #
     @classmethod
-    def getBcd(cls, buff, info):
+    def getBcd(cls, buff: GXByteBuffer, info):
         #  If there is not enough data available.
         if len(buff) - buff.position < 1:
             info.complete = False
             return None
-        value = buff.getUInt8()
+        count = buff.getUInt8()
+        value = buff.subArray(buff.position, count).hex()
+        buff.position += count
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
+            info.xml.appendLine(info.xml.getDataType(info.type_), None, value)
         return value
 
     #
