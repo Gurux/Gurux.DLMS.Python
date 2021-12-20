@@ -194,7 +194,7 @@ class GXReplyData:
     # Is GBT streaming.
     #
     def isStreaming(self):
-        return self.streaming and (self.blockNumberAck * self.windowSize) + 1 > self.blockNumber
+        return (self.moreData & RequestTypes.FRAME) == 0 and self.streaming and (self.blockNumberAck * self.windowSize) + 1 > self.blockNumber
 
     def __str__(self):
         if self.xml:

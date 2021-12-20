@@ -92,7 +92,7 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(DataType.OCTET_STRING)
         _GXCommon.setObjectCount(key.length, bb)
         bb.set(key)
-        return client.method(self, 2, bb.array(), DataType.STRUCTURE)    
+        return client.method(self, 2, bb.array(), DataType.STRUCTURE)
 
     # Remove symmetric authentication key.
     # client: DLMS client.
@@ -240,9 +240,9 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
         self.keys.clear()
         if reader.isStartElement("Keys", True):
             while reader.isStartElement("Item", True):
-                id = reader.readElementContentAsLong("ID")
+                id_ = reader.readElementContentAsLong("ID")
                 key = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Key"))
-                self.keys[id] = key
+                self.keys[id_] = key
         self.clientKey = GXByteBuffer.hexToBytes(reader.readElementContentAsString("ServerAddress", None))
 
     def save(self, writer):

@@ -136,12 +136,10 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:i:It:a:p:wP:g:S:n:C:v:o:T:A:B:D:d:l:W:w:f:L:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:i:It:a:p:P:g:S:n:C:v:o:T:A:B:D:d:l:W:w:f:L:")
         modeEDefaultValues = True
         for it in parameters:
-            if it.tag == 'w':
-                self.client.interfaceType = InterfaceType.WRAPPER
-            elif it.tag == 'r':
+            if it.tag == 'r':
                 if it.value == "sn":
                     self.client.useLogicalNameReferencing = False
                 elif it.value == "ln":
@@ -301,9 +299,9 @@ class GXSettings:
             elif it.tag == 'W':
                 self.client.gbtWindowSize = int(it.value)
             elif it.tag == 'w':
-                self.client.hdlcSettings.WindowSizeRX = settings.client.HdlcSettings.WindowSizeTX = int(it.value)
+                self.client.hdlcSettings.WindowSizeRX = self.client.hdlcSettings.WindowSizeTX = int(it.value)
             elif it.tag == 'f':
-                self.client.hdlcSettings.MaxInfoRX = settings.client.HdlcSettings.MaxInfoTX = int(it.value)
+                self.client.hdlcSettings.MaxInfoRX = self.client.hdlcSettings.MaxInfoTX = int(it.value)
             elif it.tag == 'L':
                 self.client.manufacturerId = it.value
             elif it.tag == '?':

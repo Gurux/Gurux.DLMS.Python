@@ -239,8 +239,8 @@ class ObjectType(GXIntEnum):
     # Clause 5 determines the possible values in value group E, as a table,
     # where header = the common part, and each cell = a possible E value, of
     # the OBIS code.
+
     REGISTER_TABLE = 61
-    
     # NTP Setup is used for time synchronisation.
     NTP_SETUP = 100
 

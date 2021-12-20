@@ -546,9 +546,9 @@ class GXDateTime:
     #
     @classmethod
     def toUnixTime(cls, value):
-        if isinstance(value, datetime):
+        if isinstance(value, (datetime)):
             return value.utctimetuple()
-        if isinstance(value, GXDateTime):
+        if isinstance(value, (GXDateTime)):
             return value.value.utctimetuple()
         return int(value.value / 1000)
 

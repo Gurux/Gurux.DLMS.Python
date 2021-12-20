@@ -40,9 +40,9 @@ class ActionResponseType(GXIntEnum):
 
     #Normal action.
     NORMAL = 1
-    #Action with first block.
-    WITH_FIRST_BLOCK = 2
+    #Action with block.
+    WITH_BLOCK = 2
     #Action with list.
     WITH_LIST = 3
     #Action with next block.
-    WITH_BLOCK = 4
+    NEXT_BLOCK = 4

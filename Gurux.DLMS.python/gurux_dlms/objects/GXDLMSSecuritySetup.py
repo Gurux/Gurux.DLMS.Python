@@ -56,6 +56,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         sn : Short Name of the object.
         """
         super(GXDLMSSecuritySetup, self).__init__(ObjectType.SECURITY_SETUP, ln, sn)
+        self.version = 1
         self.securityPolicy = SecurityPolicy0.NOTHING
         # Security policy for version 1.
         self.securitySuite = SecuritySuite.AES_GCM_128
@@ -163,10 +164,10 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
 
 
     def importCertificate(self, client, certificate):
-        return self.importCertificate(client, certificate.getEncoded())
-
-    def importCertificate_0(self, client, key):
-        return client.method(self, 6, key, DataType.OCTET_STRING)
+        #If certificate is a string.
+        if isinstance(certificate, (str)):
+            certificate = certificate.getEncoded()
+        return client.method(self, 6, certificate, DataType.OCTET_STRING)
 
     def exportCertificateByEntity(self, client, entity, type_, systemTitle):
         if not systemTitle:

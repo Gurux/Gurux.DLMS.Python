@@ -63,6 +63,9 @@ from .MBusEncryptionMode import MBusEncryptionMode
 from .MBusCommand import MBusCommand
 from .enums.Standard import Standard
 from .GXDLMSExceptionResponse import GXDLMSExceptionResponse
+from .ActionRequestType import ActionRequestType
+from .ActionResponseType import ActionResponseType
+from .SetRequestType import SetRequestType
 
 # pylint: disable=too-many-public-methods,too-many-function-args
 class GXDLMS:
@@ -72,7 +75,7 @@ class GXDLMS:
 
     @classmethod
     def useHdlc(cls, type):
-        return type == InterfaceType.HDLC or type == InterfaceType.HDLC_WITH_MODE_E or type == InterfaceType.PLC_HDLC;
+        return type == InterfaceType.HDLC or type == InterfaceType.HDLC_WITH_MODE_E or type == InterfaceType.PLC_HDLC
 
     __CIPHERING_HEADER_SIZE = 7 + 12 + 3
     _data_TYPE_OFFSET = 0xFF0000
@@ -125,24 +128,13 @@ class GXDLMS:
         #  Get next frame.
         if (reply.moreData & RequestTypes.FRAME) != 0:
             id_ = settings.getReceiverReady()
-            return GXDLMS.getHdlcFrame(settings, id_, None)
-        if settings.getUseLogicalNameReferencing():
-            if settings.isServer:
-                cmd = Command.GET_RESPONSE
-            else:
-                cmd = Command.GET_REQUEST
-        else:
-            if settings.isServer:
-                cmd = Command.READ_RESPONSE
-            else:
-                cmd = Command.READ_REQUEST
-
+            return cls.getHdlcFrame(settings, id_, None)
+        cmd = settings.command
         if reply.moreData == RequestTypes.GBT:
             p = GXDLMSLNParameters(settings, 0, Command.GENERAL_BLOCK_TRANSFER, 0, None, None, 0xff)
             p.gbtWindowSize = reply.gbtWindowSize
-            p.blockNumberAck = reply.blockNumberAck
-            p.blockIndex = reply.blockNumber
-            p.Streaming = False
+            p.blockNumberAck = reply.blockNumber
+            p.blockIndex = settings.blockNumber
             reply = GXDLMS.getLnMessages(p)
         else:
             #  Get next block.
@@ -345,16 +337,37 @@ class GXDLMS:
                     if p.command != Command.EVENT_NOTIFICATION:
                         reply.move(pos + 1, pos, len(reply) - pos - 1)
                 cls.multipleBlocks(p, reply, ciphering)
-            elif p.command != Command.RELEASE_REQUEST:
+            elif p.command != Command.RELEASE_REQUEST and p.command != Command.EXCEPTION_RESPONSE:
                 if p.command != Command.GET_REQUEST and p.data and reply:
                     cls.multipleBlocks(p, reply, ciphering)
                 if p.command == Command.SET_REQUEST:
                     if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
-                        if p.requestType == 1:
-                            p.requestType = 2
-                        elif p.requestType == 2:
-                            p.requestType = 3
-                if p.command == Command.GET_RESPONSE:
+                        if p.requestType == SetRequestType.NORMAL:
+                            p.requestType = SetRequestType.FIRST_DATA_BLOCK
+                        elif p.requestType == SetRequestType.FIRST_DATA_BLOCK:
+                            p.requestType = SetRequestType.WITH_DATA_BLOCK
+                            #Change Request type if action request and multiple blocks is needed.
+                elif p.command == Command.METHOD_REQUEST:
+                    if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
+                        if p.requestType == ActionRequestType.NORMAL:
+                            #Remove Method Invocation Parameters tag.
+                            p.attributeDescriptor.size = p.attributeDescriptor.size - 1
+                            p.requestType = ActionRequestType.WITH_FIRST_BLOCK
+                        elif p.requestType == ActionRequestType.WITH_FIRST_BLOCK:
+                            p.requestType = ActionRequestType.WITH_BLOCK;
+                #Change Request type if action request and multiple blocks is needed.
+                elif p.command == Command.METHOD_RESPONSE:
+                    if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
+                        # There is no status fiel in action resonse.
+                        p.status = 0xFF
+                        if p.RequestType == ActionResponseType.NORMAL:
+                            # Remove Method Invocation Parameters tag.
+                            p.data.position = p.data.position + 2
+                            p.requestType = ActionResponseType.WITH_BLOCK
+                        elif p.requestType == ActionResponseType.WITH_BLOCK and p.data.available == 0:
+                            # If server asks next part of PDU.
+                            p.requestType = ActionResponseType.NEXT_BLOCK
+                elif p.command == Command.GET_RESPONSE:
                     if p.multipleBlocks and (p.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER) == 0:
                         if p.requestType == 1:
                             p.requestType = 2
@@ -965,7 +978,7 @@ class GXDLMS:
                     reply.position = index + 1
                 return False
             #If All-station (Broadcast).
-            if settings.serverAddress != source and settings.serverAddress != 0x7F and settings.serverAddress != 0x3FFF:
+            if settings.serverAddress != source and (settings.serverAddress and 0x7F) != 0x7F and (settings.serverAddress and 0x3FFF) != 0x3FFF:
                 readLogical = [0]
                 readPhysical = [0]
                 logical = [0]
@@ -1094,7 +1107,7 @@ class GXDLMS:
             settings.setBlockIndex(number)
         expectedIndex = settings.blockIndex
         if number != expectedIndex:
-            raise Exception("Invalid Block number. It is " + str(number) + " and it should be " + str(expectedIndex) + ".")
+            raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(expectedIndex) + ".")
         if (reply.moreData & RequestTypes.FRAME) != 0:
             cls.getDataFromBlock(data, index)
             return False
@@ -1104,9 +1117,9 @@ class GXDLMS:
         if reply.xml:
             data.strip()
             reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA_BLOCK_RESULT)
-            reply.xml.appendLine(TranslatorTags.LAST_BLOCK, "Value", reply.xml.integerToHex(lastBlock, 2))
-            reply.xml.appendLine(TranslatorTags.BLOCK_NUMBER, "Value", reply.xml.integerToHex(number, 4))
-            reply.xml.appendLine(TranslatorTags.RAW_DATA, "Value", data.toHex(False, 0, data.size))
+            reply.xml.appendLine(TranslatorTags.LAST_BLOCK, None, reply.xml.integerToHex(lastBlock, 2))
+            reply.xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, reply.xml.integerToHex(number, 4))
+            reply.xml.appendLine(TranslatorTags.RAW_DATA, None, data.toHex(False, 0, data.size))
             reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA_BLOCK_RESULT)
             return False
         cls.getDataFromBlock(reply.data, index)
@@ -1183,7 +1196,7 @@ class GXDLMS:
             elif type_ == SingleReadResponse.BLOCK_NUMBER:
                 number = data.getUInt16()
                 if number != settings.blockIndex:
-                    raise Exception("Invalid Block number. It is " + str(number) + " and it should be " + str(settings.blockIndex) + ".")
+                    raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(settings.blockIndex) + ".")
                 settings.increaseBlockIndex()
                 reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
             else:
@@ -1201,60 +1214,134 @@ class GXDLMS:
         if type_ == TranslatorOutputType.STANDARD_XML:
             return TranslatorStandardTags.errorCodeToString(value)
         return TranslatorSimpleTags.errorCodeToString(value)
+ 
+    @classmethod
+    def handleActionResponseNormal(cls, settings, data):
+        ret = data.data.getUInt8()
+        if ret != 0:
+            data.error = ret
+        if data.xml:
+            if data.xml.outputType == TranslatorOutputType.STANDARD_XML:
+                data.xml.appendStartTag(TranslatorTags.SINGLE_RESPONSE)
+            data.xml.appendLine(TranslatorTags.RESULT, None, GXDLMS.errorCodeToString(data.xml.outputType, data.error))
+        settings.resetBlockIndex()
+        if data.data.position < data.data.size:
+            ret = data.data.getUInt8()
+            if ret == 0:
+                cls.getDataFromBlock(data.data, 0)
+            elif ret == 1:
+                ret = int(data.data.getUInt8())
+                if ret != 0:
+                    data.error = data.data.getUInt8()
+                    if ret == 9 and data.getError() == 16:
+                        data.data.position = data.data.position - 2
+                        cls.getDataFromBlock(data.data, 0)
+                        data.error = 0
+                        ret = 0
+                else:
+                    cls.getDataFromBlock(data.data, 0)
+            else:
+                raise Exception("HandleActionResponseNormal failed. " + "Invalid tag.")
+            if data.xml and (ret != 0 or data.data.position < data.data.size):
+                data.xml.appendStartTag(TranslatorTags.RETURN_PARAMETERS)
+                if ret != 0:
+                    data.xml.appendLine(TranslatorTags.DATA_ACCESS_ERROR, None, GXDLMS.errorCodeToString(data.xml.outputType, data.error))
+                else:
+                    data.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
+                    di = _GXDataInfo()
+                    di.xml = (data.xml)
+                    _GXCommon.getData(settings, data.data, di)
+                    data.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
+                data.xml.appendEndTag(TranslatorTags.RETURN_PARAMETERS)
+                if data.xml.outputType == TranslatorOutputType.STANDARD_XML:
+                    data.xml.appendEndTag(TranslatorTags.SINGLE_RESPONSE)
 
     @classmethod
-    def handleMethodResponse(cls, settings, data):
+    def handleActionResponseWithBlock(cls, settings, reply, index):
+        ret = True
+        ch = reply.data.getUInt8()
+        if reply.xml:
+            # Result start tag.
+            reply.xml.appendStartTag(TranslatorTags.P_BLOCK)
+            # LastBlock
+            reply.xml.appendLine(TranslatorTags.LAST_BLOCK, None, reply.xml.integerToHex(ch, 2))
+        if ch == 0:
+            reply.moreData = reply.moreData | RequestTypes.DATABLOCK
+        else:
+            reply.moreData = reply.moreData & ~RequestTypes.DATABLOCK
+        # Get Block number.
+        number = reply.data.getUInt32()
+        if reply.xml:
+            # BlockNumber
+            reply.xml.AppendLine(TranslatorTags.BLOCK_NUMBER, None, reply.xml.integerToHex(number, 8))
+        else:
+            # Update initial block index. This is critical if message is send and received in multiple blocks.
+            if number == 1:
+                settings.resetBlockIndex()
+            if number != settings.blockIndex:
+                raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(settings.BlockIndex) + ".")
+        #Note! There is no status!!
+        if reply.xml:
+            if reply.data.available() != 0:
+                # Get data size.
+                blockLength = _GXCommon.getObjectCount(reply.data)
+                # if whole block is read.
+                if (reply.moreData & RequestTypes.FRAME) == 0:
+                    #Check Block length.
+                    if blockLength > reply.data.available():
+                        reply.xml.appendComment("Block is not complete." + str(reply.data.available()) + "/" + str(blockLength) + ".")
+                reply.xml.appendLine(TranslatorTags.RAW_DATA, None, GXByteBuffer.toHex(reply.data.data, False, reply.data.position, reply.data.available));
+            reply.xml.AppendEndTag(TranslatorTags.P_BLOCK)        
+        elif reply.data.available != 0:
+            # Get data size.
+            blockLength = _GXCommon.getObjectCount(reply.data)
+            # if whole block is read.
+            if (reply.moreData & RequestTypes.FRAME) == 0:
+                # Check Block length.
+                if blockLength > reply.data.available():
+                    raise ValueError("Not enought data.")
+                # Keep command if this is last block for XML Client.
+                if (reply.moreData & RequestTypes.DATABLOCK) != 0:
+                    reply.command = Command.NONE
+            if blockLength == 0:
+                #If meter sends empty data block.
+                reply.data.size = index
+            else:
+                cls.getDataFromBlock(reply.data, index)
+            # If last packet and data is not try to peek.
+            if reply.moreData == RequestTypes.NONE:
+                reply.data.position = 0
+                settings.resetBlockIndex()        
+        elif reply.data.available() == 0:
+            # Empty block. Conformance tests uses this.
+            reply.EmptyResponses |= RequestTypes.DATABLOCK
+        if reply.moreData == RequestTypes.NONE and settings and \
+            settings.command == Command.METHOD_REQUEST and settings.commandType == ActionResponseType.WITH_LIST:
+            raise ValueError("Action with list is not implemented.")
+        return ret
+    
+    @classmethod
+    def handleMethodResponse(cls, settings, data, index):
         type_ = int(data.data.getUInt8())
         data.invokeId = data.data.getUInt8()
         if data.xml:
             data.xml.appendStartTag(Command.METHOD_RESPONSE)
             data.xml.appendStartTag(Command.METHOD_RESPONSE, type_)
-            data.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", data.xml.integerToHex(data.invokeId, 2))
+            data.xml.appendLine(TranslatorTags.INVOKE_ID, None, data.xml.integerToHex(data.invokeId, 2))
         standardXml = data.xml and data.xml.outputType == TranslatorOutputType.STANDARD_XML
-        if type_ == 1:
-            ret = data.data.getUInt8()
-            if ret != 0:
-                data.error = ret
-            if data.xml:
-                if standardXml:
-                    data.xml.appendStartTag(TranslatorTags.SINGLE_RESPONSE)
-                data.xml.appendLine(TranslatorTags.RESULT, None, GXDLMS.errorCodeToString(data.xml.outputType, data.error))
-            if data.data.position < data.data.size:
-                ret = data.data.getUInt8()
-                if ret == 0:
-                    cls.getDataFromBlock(data.data, 0)
-                elif ret == 1:
-                    ret = int(data.data.getUInt8())
-                    if ret != 0:
-                        data.error = data.data.getUInt8()
-                        if ret == 9 and data.getError() == 16:
-                            data.data.position = data.data.position - 2
-                            cls.getDataFromBlock(data.data, 0)
-                            data.error = 0
-                            ret = 0
-                    else:
-                        cls.getDataFromBlock(data.data, 0)
-                else:
-                    raise Exception("HandleActionResponseNormal failed. " + "Invalid tag.")
-                if data.xml and (ret != 0 or data.data.position < data.data.size):
-                    data.xml.appendStartTag(TranslatorTags.RETURN_PARAMETERS)
-                    if ret != 0:
-                        data.xml.appendLine(TranslatorTags.DATA_ACCESS_ERROR, None, GXDLMS.errorCodeToString(data.xml.outputType, data.error))
-                    else:
-                        data.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
-                        di = _GXDataInfo()
-                        di.xml = (data.xml)
-                        _GXCommon.getData(settings, data.data, di)
-                        data.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
-                    data.xml.appendEndTag(TranslatorTags.RETURN_PARAMETERS)
-                    if standardXml:
-                        data.xml.appendEndTag(TranslatorTags.SINGLE_RESPONSE)
+        if type_ == ActionResponseType.NORMAL:
+            cls.handleActionResponseNormal(settings, data)
         elif type_ == 2:
-            raise ValueError("Invalid Command.")
+            cls.handleActionResponseWithBlock(settings, data, index);
         elif type_ == 3:
             raise ValueError("Invalid Command.")
         elif type_ == 4:
-            raise ValueError("Invalid Command.")
+            number = data.data.getUInt32()
+            if data.xml:
+                data.xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, data.xml.integerToHex(number, 8))
+            elif number != settings.blockIndex:
+                raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(settings.BlockIndex) + ".")
+            settings.increaseBlockIndex()
         else:
             raise ValueError("Invalid Command.")
         if data.xml:
@@ -1297,7 +1384,7 @@ class GXDLMS:
             reply.xml.appendLine(TranslatorTags.LONG_INVOKE_ID, None, reply.xml.integerToHex(reply.invokeId, 8))
             if reply.time:
                 reply.xml.appendComment(str(reply.time))
-            reply.xml.appendLine(TranslatorTags.DATE_TIME, "Value", GXByteBuffer.hex(tmp, False))
+            reply.xml.appendLine(TranslatorTags.DATE_TIME, None, GXByteBuffer.hex(tmp, False))
             reply.data.getUInt8()
             len_ = _GXCommon.getObjectCount(reply.data)
             reply.xml.appendStartTag(TranslatorTags.ACCESS_RESPONSE_BODY)
@@ -1378,21 +1465,21 @@ class GXDLMS:
         if data.xml:
             data.xml.appendStartTag(Command.SET_RESPONSE)
             data.xml.appendStartTag(Command.SET_RESPONSE, type_)
-            data.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", data.xml.integerToHex(data.invokeId, 2))
+            data.xml.appendLine(TranslatorTags.INVOKE_ID, None, data.xml.integerToHex(data.invokeId, 2))
         if type_ == SetResponseType.NORMAL:
             data.error = data.data.getUInt8()
             if data.xml:
-                data.xml.appendLine(TranslatorTags.RESULT, "Value", GXDLMS.errorCodeToString(data.xml.outputType, data.error))
+                data.xml.appendLine(TranslatorTags.RESULT, None, GXDLMS.errorCodeToString(data.xml.outputType, data.error))
         elif type_ == SetResponseType.DATA_BLOCK:
             number = data.data.getUInt32()
             if data.xml:
-                data.xml.appendLine(TranslatorTags.BLOCK_NUMBER, "Value", data.xml.integerToHex(number, 8))
+                data.xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, data.xml.integerToHex(number, 8))
         elif type_ == SetResponseType.LAST_DATA_BLOCK:
             data.error = data.data.getUInt8()
             number = data.data.getUInt32()
             if data.xml:
-                data.xml.appendLine(TranslatorTags.RESULT, "Value", GXDLMS.errorCodeToString(data.xml.outputType, data.error))
-                data.xml.appendLine(TranslatorTags.BLOCK_NUMBER, "Value", data.xml.integerToHex(number, 8))
+                data.xml.appendLine(TranslatorTags.RESULT, None, GXDLMS.errorCodeToString(data.xml.outputType, data.error))
+                data.xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, data.xml.integerToHex(number, 8))
         elif type_ == SetResponseType.WITH_LIST:
             cnt = _GXCommon.getObjectCount(data.data)
             if data.xml:
@@ -1400,7 +1487,7 @@ class GXDLMS:
                 pos = 0
                 while pos != cnt:
                     err = data.data.getUInt8()
-                    data.xml.appendLine(TranslatorTags.DATA_ACCESS_RESULT, "Value", GXDLMS.errorCodeToString(data.xml.outputType, err))
+                    data.xml.appendLine(TranslatorTags.DATA_ACCESS_RESULT, None, GXDLMS.errorCodeToString(data.xml.outputType, err))
                     pos += 1
                 data.xml.appendEndTag(TranslatorTags.RESULT)
             else:
@@ -1465,6 +1552,96 @@ class GXDLMS:
         reply.value = values
 
     @classmethod
+    def handleGetResponseNormal(cls, settings, reply):
+        if reply.data.available() == 0:
+            empty = True
+            cls.getDataFromBlock(reply.data, 0)
+        else:
+            empty = False
+            # Result
+            ch = reply.data.getUInt8()
+            if ch != 0:
+                reply.error = reply.data.getUInt8()
+            if reply.xml:
+                # Result start tag.
+                reply.xml.appendStartTag(TranslatorTags.RESULT)
+                if reply.error:
+                    reply.xml.appendLine(TranslatorTags.DATA_ACCESS_ERROR, None,\
+                        GXDLMS.errorCodeToString(reply.xml.outputType, reply.error))
+                else:
+                    reply.xml.appendStartTag(TranslatorTags.DATA)
+                    di = _GXDataInfo()
+                    di.xml = reply.xml
+                    _GXCommon.getData(settings, reply.data, di)
+                    reply.xml.appendEndTag(TranslatorTags.DATA)
+            else:
+                cls.getDataFromBlock(reply.data, 0)
+        return empty
+    
+    @classmethod
+    def handleGetResponseNextDataBlock(cls, settings, reply, index):
+        ret = True
+        ch = reply.data.getUInt8()
+        if reply.xml:
+            reply.xml.appendStartTag(TranslatorTags.RESULT)
+            reply.xml.appendLine(TranslatorTags.LAST_BLOCK, None, reply.xml.integerToHex(ch, 2))
+        if ch == 0:
+            reply.moreData = reply.moreData | RequestTypes.DATABLOCK
+        else:
+            reply.moreData = reply.moreData & ~RequestTypes.DATABLOCK
+        number = reply.data.getUInt32()
+        if reply.xml:
+            reply.xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, reply.xml.integerToHex(number, 8))
+        else:
+            # If meter's block index is zero based.
+            if number == 0 and settings.blockIndex == 1:
+                settings.setBlockIndex(0)
+            expectedIndex = settings.blockIndex
+            if number != expectedIndex:
+                raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(expectedIndex) + ".")
+        # Get status.
+        ch = reply.data.getUInt8()
+        if ch != 0:
+            reply.error = reply.data.getUInt8()
+        if reply.xml:
+            reply.xml.appendStartTag(TranslatorTags.RESULT)
+            if reply.getError() != 0:
+                reply.xml.appendLine(TranslatorTags.DATA_ACCESS_RESULT, None, GXDLMS.errorCodeToString(reply.xml.outputType, reply.error))
+            elif reply.data.available() != 0:
+                blockLength = _GXCommon.getObjectCount(reply.data)
+                if (reply.moreData & RequestTypes.FRAME) == 0:
+                    if blockLength > len(reply.data) - reply.data.position:
+                        reply.xml.appendComment("Block is not complete." + str(len(reply.data) - reply.data.position) + "/" + str(blockLength) + ".")
+                reply.xml.appendLine(TranslatorTags.RAW_DATA, None, reply.data.toHex(False, reply.data.position, reply.data.available()))
+            reply.xml.appendEndTag(TranslatorTags.RESULT)
+        elif reply.data.available != 0:
+            # Get data size.
+            blockLength = _GXCommon.getObjectCount(reply.data)
+            # if whole block is read.
+            if (reply.moreData & RequestTypes.FRAME) == 0:
+                # Check Block length.
+                if blockLength > reply.data.available():
+                    raise ValueError("Not enought data.")
+                # Keep command if this is last block for XML Client.
+                if (reply.moreData & RequestTypes.DATABLOCK) != 0:
+                    reply.command = Command.NONE
+            if blockLength == 0:
+                # If meter sends empty data block.
+                reply.data.Size = index
+            else:
+                cls.getDataFromBlock(reply.data, index)
+            # If last packet and data is not try to peek.
+            if reply.moreData == RequestTypes.NONE:
+                reply.data.position = 0
+                settings.resetBlockIndex()
+
+            if reply.moreData == RequestTypes.NONE and settings and\
+                settings.command == Command.GET_REQUEST and settings.commandType == GetCommandType.WITH_LIST:
+                cls.handleGetResponseWithList(settings, reply);
+                ret = False
+        return ret
+
+    @classmethod
     def handleGetResponse(cls, settings, reply, index):
         # pylint: disable=too-many-locals
         ret = True
@@ -1473,79 +1650,19 @@ class GXDLMS:
         if reply.xml:
             reply.xml.appendStartTag(Command.GET_RESPONSE)
             reply.xml.appendStartTag(Command.GET_RESPONSE, type_)
-            reply.xml.appendLine(TranslatorTags.INVOKE_ID, "Value", reply.xml.integerToHex(reply.invokeId, 2))
+            reply.xml.appendLine(TranslatorTags.INVOKE_ID, None, reply.xml.integerToHex(reply.invokeId, 2))
         if type_ == GetCommandType.NORMAL:
-            ch = reply.data.getUInt8()
-            if ch != 0:
-                reply.error = reply.data.getUInt8()
-            if reply.xml:
-                reply.xml.appendStartTag(TranslatorTags.RESULT)
-                if reply.getError() != 0:
-                    reply.xml.appendLine(TranslatorTags.DATA_ACCESS_ERROR, "Value", GXDLMS.errorCodeToString(reply.xml.outputType, reply.error))
-                else:
-                    reply.xml.appendStartTag(TranslatorTags.DATA)
-                    di = _GXDataInfo()
-                    di.xml = (reply.xml)
-                    _GXCommon.getData(settings, reply.data, di)
-                    reply.xml.appendEndTag(TranslatorTags.DATA)
-            else:
-                cls.getDataFromBlock(reply.data, 0)
+            empty = cls.handleGetResponseNormal(settings, reply)
         elif type_ == GetCommandType.NEXT_DATA_BLOCK:
-            ch = reply.data.getUInt8()
-            if reply.xml:
-                reply.xml.appendStartTag(TranslatorTags.RESULT)
-                reply.xml.appendLine(TranslatorTags.LAST_BLOCK, "Value", reply.xml.integerToHex(ch, 2))
-            if ch == 0:
-                reply.moreData = reply.moreData | RequestTypes.DATABLOCK
-            else:
-                reply.moreData = reply.moreData & ~RequestTypes.DATABLOCK
-            number = reply.data.getUInt32()
-            if reply.xml:
-                reply.xml.appendLine(TranslatorTags.BLOCK_NUMBER, "Value", reply.xml.integerToHex(number, 8))
-            else:
-                if number == 0 and settings.blockIndex == 1:
-                    settings.setBlockIndex(0)
-                expectedIndex = settings.blockIndex
-                if number != expectedIndex:
-                    raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(expectedIndex) + ".")
-            ch = reply.data.getUInt8()
-            if ch != 0:
-                reply.error = reply.data.getUInt8()
-            if reply.xml:
-                reply.xml.appendStartTag(TranslatorTags.RESULT)
-                if reply.getError() != 0:
-                    reply.xml.appendLine(TranslatorTags.DATA_ACCESS_RESULT, "Value", GXDLMS.errorCodeToString(reply.xml.outputType, reply.error))
-                elif reply.data.available() != 0:
-                    blockLength = _GXCommon.getObjectCount(reply.data)
-                    if (reply.moreData & RequestTypes.FRAME) == 0:
-                        if blockLength > len(reply.data) - reply.data.position:
-                            reply.xml.appendComment("Block is not complete." + str(len(reply.data) - reply.data.position) + "/" + str(blockLength) + ".")
-                    reply.xml.appendLine(TranslatorTags.RAW_DATA, "Value", reply.data.toHex(False, reply.data.position, reply.data.available()))
-                reply.xml.appendEndTag(TranslatorTags.RESULT)
-            elif reply.data.position != len(reply.data):
-                blockLength = _GXCommon.getObjectCount(reply.data)
-                if (reply.moreData & RequestTypes.FRAME) == 0:
-                    if blockLength > len(reply.data) - reply.data.position:
-                        raise ValueError("Invalid block length.")
-                    reply.command = Command.NONE
-                if blockLength == 0:
-                    reply.data.size = index
-                else:
-                    cls.getDataFromBlock(reply.data, index)
-                if reply.moreData == RequestTypes.NONE:
-                    if not reply.peek:
-                        reply.data.position = 0
-                        settings.resetBlockIndex()
-                if reply.moreData == RequestTypes.NONE and settings and settings.command == Command.GET_REQUEST and settings.commandType == GetCommandType.WITH_LIST:
-                    cls.handleGetResponseWithList(settings, reply)
-                    ret = False
+            cls.handleGetResponseNextDataBlock(settings, reply, index)
         elif type_ == GetCommandType.WITH_LIST:
             cls.handleGetResponseWithList(settings, reply)
             ret = False
         else:
             raise ValueError("Invalid Get response.")
         if reply.xml:
-            reply.xml.appendEndTag(TranslatorTags.RESULT)
+            if not empty:
+                reply.xml.appendEndTag(TranslatorTags.RESULT)
             reply.xml.appendEndTag(Command.GET_RESPONSE, type_)
             reply.xml.appendEndTag(Command.GET_RESPONSE)
         return ret
@@ -1638,7 +1755,7 @@ class GXDLMS:
             elif cmd == Command.WRITE_RESPONSE:
                 cls.handleWriteResponse(data)
             elif cmd == Command.METHOD_RESPONSE:
-                cls.handleMethodResponse(settings, data)
+                cls.handleMethodResponse(settings, data, index)
             elif cmd == Command.ACCESS_RESPONSE:
                 cls.handleAccessResponse(settings, data)
             elif cmd == Command.GENERAL_BLOCK_TRANSFER:
@@ -1701,7 +1818,9 @@ class GXDLMS:
                     data.data.position = data.getCipherIndex()
                     cls.getPdu(settings, data)
             else:
-                data.command = (Command.NONE)
+                # Client do not need a command any more.
+                if data.isMoreData():
+                    data.command = (Command.NONE)
                 if cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE,\
                     Command.GLO_METHOD_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE,\
                     Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
@@ -1731,10 +1850,10 @@ class GXDLMS:
                 data.xml.appendLine("x:" + tag, None, value)
                 data.xml.appendEndTag(TranslatorTags.INITIATE_ERROR)
             else:
-                data.xml.appendLine(TranslatorTags.SERVICE, "Value", data.xml.integerToHex(data.data.getUInt8(), 2))
+                data.xml.appendLine(TranslatorTags.SERVICE, None, data.xml.integerToHex(data.data.getUInt8(), 2))
                 type_ = data.data.getUInt8()
                 data.xml.appendStartTag(TranslatorTags.SERVICE_ERROR)
-                data.xml.appendLine(TranslatorSimpleTags.serviceErrorToString(type_), "Value", TranslatorSimpleTags.getServiceErrorValue(type_, data.data.getUInt8()))
+                data.xml.appendLine(TranslatorSimpleTags.serviceErrorToString(type_), None, TranslatorSimpleTags.getServiceErrorValue(type_, data.data.getUInt8()))
                 data.xml.appendEndTag(TranslatorTags.SERVICE_ERROR)
             data.xml.appendEndTag(Command.CONFIRMED_SERVICE_ERROR)
         else:
@@ -1909,7 +2028,7 @@ class GXDLMS:
                 tmp = cls.getData(settings, reply, data, notify)
                 target.data.position = 0
                 return tmp
-            return True;
+            return True
 
         if frame_ == 0x13 and not target.isMoreData():
             target.data.position = 0
@@ -1925,7 +2044,7 @@ class GXDLMS:
                                 Command.DED_EVENT_NOTIFICATION):
                 isNotify = True
                 notify.complete = data.complete
-                notify.moreData = data.moreData;
+                notify.moreData = data.moreData
                 notify.command = data.command
                 data.command = Command.NONE
                 notify.time = data.time
@@ -1934,7 +2053,7 @@ class GXDLMS:
                 data.data.trim()
                 notify.value = data.value
                 data.value = None
-        if not isLast:
+        if not isLast or (data.moreData == RequestTypes.GBT and reply.available() != 0):
             return cls.getData(settings, reply, data, notify)
         if isNotify:
             return False

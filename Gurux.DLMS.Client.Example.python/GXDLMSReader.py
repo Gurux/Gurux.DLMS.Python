@@ -177,6 +177,7 @@ class GXDLMSReader:
                 for it in data:
                     reply.clear()
                     self.readDataBlock(it, reply)
+                return reply.error == 0
             else:
                 self.readDLMSPacket(data, reply)
                 while reply.isMoreData():

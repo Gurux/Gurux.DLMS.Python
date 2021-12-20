@@ -1,5 +1,7 @@
 Credits
 =======
+  - HDLC broadcast support fixed.
+    * [Diego Fontana](https://github.com/diegofontana)
   - Profile generic sortMethod cast from int to SortMethod enum.
     * [Olav Frengstad](https://github.com/lafka)
   - getLastReadTime items-issue fixed.

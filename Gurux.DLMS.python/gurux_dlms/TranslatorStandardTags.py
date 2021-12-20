@@ -15,7 +15,7 @@ from .enums.Service import Service
 from .ReleaseResponseReason import ReleaseResponseReason
 from .ReleaseRequestReason import ReleaseRequestReason
 
-#pylint: disable=bad-option-value,old-style-class,too-many-public-methods
+#pylint: disable=bad-option-value,old-style-class,too-many-public-methods,unused-private-member
 class TranslatorStandardTags:
     # Constructor.
     def __init__(self):
@@ -121,8 +121,9 @@ class TranslatorStandardTags:
         list_[Command.METHOD_REQUEST << 8 | ActionRequestType.WITH_LIST] = "action-request-with-list"
         list_[Command.METHOD_RESPONSE] = "action-response"
         list_[Command.METHOD_RESPONSE << 8 | ActionResponseType.NORMAL] = "action-response-normal"
-        list_[Command.METHOD_RESPONSE << 8 | ActionResponseType.WITH_FIRST_BLOCK] = "action-response-with-first-block"
+        list_[Command.METHOD_RESPONSE << 8 | ActionResponseType.WITH_BLOCK] = "action-response-with-pblock"
         list_[Command.METHOD_RESPONSE << 8 | ActionResponseType.WITH_LIST] = "action-response-with-list"
+        list_[Command.METHOD_RESPONSE << 8 | ActionResponseType.NEXT_BLOCK] = "action-response-next-pblock"
         list_[TranslatorTags.SINGLE_RESPONSE] = "single-response"
         list_[int(Command.DATA_NOTIFICATION)] = "data-notification"
         list_[Command.GET_RESPONSE] = "get-response"
