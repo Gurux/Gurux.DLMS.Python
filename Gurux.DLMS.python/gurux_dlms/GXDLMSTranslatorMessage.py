@@ -31,34 +31,28 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#
-import setuptools
-
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
-setuptools.setup(
-    name="gurux_dlms",
-    version="1.0.116",
-    author="Gurux Ltd",
-    author_email="gurux@gurux.fi",
-    description="Gurux DLMS library for Python.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/gurux/gurux.dlms.python",
-    packages=setuptools.find_packages(),
-    package_data={'gurux_dlms': ['OBISCodes.txt', 'India.txt', 'Italy.txt', 'SaudiArabia.txt', 'Spain.txt']},
-    license='GPLv2',
-    classifiers=[
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
-        "Operating System :: OS Independent",
-    ],
-    install_requires=[],
-)
+class GXDLMSTranslatorMessage():
+    def __init__(self):
+        """
+        Constructor.
+        """
+        self.message = None
+        """Message to convert to XML."""
+        #Converted XML.
+        self.xml = None
+        #Executed Command.
+        self.command = None
+        #System title from AARQ or AARE messages.
+        self.systemTitle = None
+        # Dedicated key from AARQ messages.
+        self.dedicatedKey = None
+        # Interface type.
+        self.interfaceType = None
+        #Client address.
+        self.sourceAddress = 0
+        # Server address.
+        self.targetAddress = 0
+        #Is more data available. Return None if more data is not available or Frame or Block type.
+        self.moreData = 0
+        #Occurred exception.
+        self.exception = None

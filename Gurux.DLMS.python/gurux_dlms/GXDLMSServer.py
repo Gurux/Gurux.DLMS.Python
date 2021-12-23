@@ -73,8 +73,7 @@ from .enums.Security import Security
 from .GXDLMSLNCommandHandler import GXDLMSLNCommandHandler
 from .GXHdlcSettings import GXHdlcSettings
 
-# pylint:
-# disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
+# pylint:disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
 class GXDLMSServer(object):
     __metaclass__ = ABCMeta
     #
@@ -102,29 +101,29 @@ class GXDLMSServer(object):
         self.wrapper = None
         self.reset()
 
-    def __getItems(self):
+    def getItems(self):
         return self.settings.objects
 
     # List of objects that meter supports.
-    items = property(__getItems)
+    items = property(getItems)
 
-    def __getGbtWindowSize(self):
+    def getGbtWindowSize(self):
         return self.settings.windowSize
 
-    def __setGbtWindowSize(self, value):
+    def setGbtWindowSize(self, value):
         self.settings.windowSize = value
 
     #GBT Window size.
-    gbtWindowSize = property(__getGbtWindowSize, __setGbtWindowSize)
+    gbtWindowSize = property(getGbtWindowSize, setGbtWindowSize)
 
-    def __getPushClientAddress(self):
+    def getPushClientAddress(self):
         return self.settings.pushClientAddress
 
-    def __setPushClientAddress(self, value):
+    def setPushClientAddress(self, value):
         self.settings.pushClientAddress = value
 
     #client address for push messages.
-    pushClientAddress = property(__getPushClientAddress, __setPushClientAddress)
+    pushClientAddress = property(getPushClientAddress, setPushClientAddress)
  #
     # Information from the connection size that server can
     #      handle.
@@ -141,10 +140,10 @@ class GXDLMSServer(object):
     def hdlcSettings(self):
         return self.settings.hdlc
 
-    def __getMaxReceivePDUSize(self):
+    def getMaxReceivePDUSize(self):
         return self.maxReceivePDUSize
 
-    def __setMaxReceivePDUSize(self, value):
+    def setMaxReceivePDUSize(self, value):
         self.maxReceivePDUSize = value
 
     #
@@ -154,12 +153,12 @@ class GXDLMSServer(object):
     #
     # Maximum size of received PDU.
     #
-    maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
+    maxReceivePDUSize = property(getMaxReceivePDUSize, setMaxReceivePDUSize)
 
-    def __getUseLogicalNameReferencing(self):
+    def getUseLogicalNameReferencing(self):
         return self.settings.getUseLogicalNameReferencing()
 
-    def __setUseLogicalNameReferencing(self, value):
+    def setUseLogicalNameReferencing(self, value):
         self.settings.setUseLogicalNameReferencing(value)
 
     #
@@ -173,18 +172,18 @@ class GXDLMSServer(object):
     # @see #getMaxReceivePDUSize
     # Is logical name referencing used.
     #
-    useLogicalNameReferencing = property(__getUseLogicalNameReferencing, __setUseLogicalNameReferencing)
+    useLogicalNameReferencing = property(getUseLogicalNameReferencing, setUseLogicalNameReferencing)
 
-    def __getConformance(self):
+    def getConformance(self):
         return self.settings.proposedConformance
 
-    def __setConformance(self, value):
+    def setConformance(self, value):
         self.settings.proposedConformance = value
 
     #
     # What kind of services server is offering.
     #
-    conformance = property(__getConformance, __setConformance)
+    conformance = property(getConformance, setConformance)
 
     #
     # Check is data sent to this server.
@@ -420,10 +419,10 @@ class GXDLMSServer(object):
             self.addData(k, v.attributeIndex, buff)
         return self.generateDataNotificationMessages(date, buff)
 
-    def __getStoCChallenge(self):
+    def getStoCChallenge(self):
         return self.settings.stoCChallenge
 
-    def __setStoCChallenge(self, value):
+    def setStoCChallenge(self, value):
         self.settings.useCustomChallenge = value is not None
         self.settings.stoCChallenge = value
 
@@ -433,7 +432,7 @@ class GXDLMSServer(object):
     # custom challenge settings StoCChallenge to null.
     # @param value Server to Client challenge.
     #
-    stoCChallenge = property(__getStoCChallenge, __setStoCChallenge)
+    stoCChallenge = property(getStoCChallenge, setStoCChallenge)
 
     #
     # Interface type.
@@ -442,10 +441,10 @@ class GXDLMSServer(object):
         return self.settings.interfaceType
 
 
-    def __getStartingPacketIndex(self):
+    def getStartingPacketIndex(self):
         return self.settings.blockIndex
 
-    def __setStartingPacketIndex(self, value):
+    def setStartingPacketIndex(self, value):
         self.settings.blockIndex = value
 
     #
@@ -454,34 +453,34 @@ class GXDLMSServer(object):
     # based value.  Usually this is not used.
     # @param value Zero based starting index.
     #
-    startingPacketIndex = property(__getStartingPacketIndex, __setStartingPacketIndex)
+    startingPacketIndex = property(getStartingPacketIndex, setStartingPacketIndex)
 
-    def __getInvokeID(self):
+    def getInvokeID(self):
         return self.settings.invokeId
 
-    def __setInvokeID(self, value):
+    def setInvokeID(self, value):
         self.settings.invokeID = value
 
     # Invoke ID.
-    invokeID = property(__getInvokeID, __setInvokeID)
+    invokeID = property(getInvokeID, setInvokeID)
 
-    def __getServiceClass(self):
+    def getServiceClass(self):
         return self.settings.serviceClass
 
-    def __setServiceClass(self, value):
+    def setServiceClass(self, value):
         self.settings.serviceClass = value
 
     # Used service class.
-    serviceClass = property(__getServiceClass, __setServiceClass)
+    serviceClass = property(getServiceClass, setServiceClass)
 
-    def __getPriority(self):
+    def getPriority(self):
         return self.settings.priority
 
-    def __setPriority(self, value):
+    def setPriority(self, value):
         self.settings.priority = value
 
     # Used priority.
-    priority = property(__getPriority, __setPriority)
+    priority = property(getPriority, setPriority)
 
     #
     # Initialize server.  This must call after server objects are set.
@@ -644,7 +643,7 @@ class GXDLMSServer(object):
     def handleSnrmRequest(self, data):
         if self.hdlc:
             self.settings.hdlc.update(self.hdlcSettings)
-        else:         
+        else:
             self.settings.hdlc.maxInfoRX = GXHdlcSettings.DEFAULT_MAX_INFO_RX
             self.settings.hdlc.maxInfoTX = GXHdlcSettings.DEFAULT_MAX_INFO_TX
             self.settings.hdlc.windowSizeRX = GXHdlcSettings.DEFAULT_WINDOWS_SIZE_RX

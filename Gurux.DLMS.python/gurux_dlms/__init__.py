@@ -118,4 +118,5 @@ from .GXFloat32 import GXFloat32
 from .GXFloat64 import GXFloat64
 from .GXIntEnum import GXIntEnum
 from .GXIntFlag import GXIntFlag
+from .GXDLMSTranslatorMessage import GXDLMSTranslatorMessage
 name = "gurux_dlms"

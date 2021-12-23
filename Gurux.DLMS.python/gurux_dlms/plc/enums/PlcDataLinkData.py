@@ -31,32 +31,13 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#
-from ..GXDLMSNotify import GXDLMSNotify
-from ..GXCiphering import GXCiphering
-#  This class is used to send data notify and push messages to the clients.
-#
-class GXDLMSSecureNotify(GXDLMSNotify):
-    #
-    #      * Constructor.
-    #      *
-    #      * @param useLogicalNameReferencing
-    #      *            Is Logical Name referencing used.
-    #      * @param clientAddress
-    #      *            Server address.
-    #      * @param serverAddress
-    #      *            Client address.
-    #      * @param interfaceType
-    #      *            Object type.
-    #
-    def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
-        #pylint:disable=super-with-arguments
-        super(GXDLMSSecureNotify, self).__init__(useLogicalNameReferencing, clientAddress, serverAddress, interfaceType)
-        self.ciphering = GXCiphering("ABCDEFGH".encode())
-        self.cipher = self.ciphering
 
-    #
-    #      * @return Ciphering settings.
-    #
-    def getCiphering(self):
-        return self.ciphering
+from gurux_dlms.GXIntEnum import GXIntEnum
+
+class PlcDataLinkData(GXIntEnum):
+    """
+    PLC data link data commands.
+    """
+    #pylint: disable=too-few-public-methods
+
+    REQUEST = 0x90

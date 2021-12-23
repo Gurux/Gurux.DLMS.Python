@@ -55,54 +55,54 @@ class GXxDLMSContextType(object):
         # CypheringInfo.
         self.cypheringInfo = []
 
-    def __getConformance(self):
+    def getConformance(self):
         if self.__settings:
             return self.__settings.proposedConformance
         return self.__conformance
 
-    def __setConformance(self, value):
+    def setConformance(self, value):
         if self.__settings:
             self.__settings.proposedConformance = value
         self.__conformance = value
 
-    def __getMaxReceivePduSize(self):
+    def getMaxReceivePduSize(self):
         if self.__settings:
             return self.__settings.maxServerPDUSize
         return self.__maxReceivePduSize
 
-    def __setMaxReceivePduSize(self, value):
+    def setMaxReceivePduSize(self, value):
         if self.__settings:
             self.__settings.maxServerPDUSize = value
         self.__maxReceivePduSize = value
 
-    def __getMaxSendPduSize(self):
+    def getMaxSendPduSize(self):
         if self.__settings:
             return self.__settings.maxServerPDUSize
         return self.__maxSendPduSize
 
-    def __setMaxSendPduSize(self, value):
+    def setMaxSendPduSize(self, value):
         if self.__settings:
             self.__settings.maxServerPDUSize = value
         self.__maxSendPduSize = value
 
-    def __getDlmsVersionNumber(self):
+    def getDlmsVersionNumber(self):
         if self.__settings:
             return self.__settings.dlmsVersionNumber
         return self.__dlmsVersionNumber
 
-    def __setDlmsVersionNumber(self, value):
+    def setDlmsVersionNumber(self, value):
         if self.__settings:
             self.__settings.dlmsVersionNumber = value
         self.__dlmsVersionNumber = value
 
     #Conformance
-    conformance = property(__getConformance, __setConformance)
+    conformance = property(getConformance, setConformance)
 
-    maxReceivePduSize = property(__getMaxReceivePduSize, __setMaxReceivePduSize)
+    maxReceivePduSize = property(getMaxReceivePduSize, setMaxReceivePduSize)
 
-    maxSendPduSize = property(__getMaxSendPduSize, __setMaxSendPduSize)
+    maxSendPduSize = property(getMaxSendPduSize, setMaxSendPduSize)
 
-    dlmsVersionNumber = property(__getDlmsVersionNumber, __setDlmsVersionNumber)
+    dlmsVersionNumber = property(getDlmsVersionNumber, setDlmsVersionNumber)
 
     def __str__(self):
         str_ = str(self.conformance) + " " + str(self.maxReceivePduSize) + " "

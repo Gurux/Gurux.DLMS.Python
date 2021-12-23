@@ -217,7 +217,7 @@ class GXDLMSSettings:
                 # If the final bit is not set.
                 if frame_ == (expected & ~0x10):
                     ReceiverFrame = frame_
-                    return True            
+                    return True
         else:
             expected = self.increaseSendSequence(self.receiverFrame) & 0xFF
             #  If answer for RR.
@@ -233,9 +233,10 @@ class GXDLMSSettings:
                 if frame_ == expected:
                     ReceiverFrame = frame_
                     return True
-                
+
         # If try to find data from bytestream and not real communicating.
-        if xml and ((not self.isServer and self.receiverFrame == 0xE) or (self.isServer and self.receiverFrame == 0xEE)):        
+        if xml and ((not self.isServer and self.receiverFrame == 0xE) or\
+            (self.isServer and self.receiverFrame == 0xEE)):
             ReceiverFrame = frame_
             return True
         print("Invalid HDLC Frame: " + hex(frame_) + " Expected: " + hex(expected))

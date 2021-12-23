@@ -58,13 +58,13 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
         return [self.logicalName,
                 self.sapAssignmentList]
 
-    def addSap(self, client, id, name):
+    def addSap(self, client, id_, name):
         """Add new SAP item."""
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         #Add structure size.
         data.setUInt8(2)
-        _GXCommon.setData(client.settings, data, DataType.UINT16, id)
+        _GXCommon.setData(client.settings, data, DataType.UINT16, id_)
         _GXCommon.setData(client.settings, data, DataType.OCTET_STRING, name.encode())
         return client.method(self, 1, data.array(), DataType.STRUCTURE)
 

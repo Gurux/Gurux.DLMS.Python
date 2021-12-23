@@ -361,6 +361,24 @@ class Command(GXIntEnum):
     #
     GATEWAY_RESPONSE = 0xE7
 
+    # PLC discover request.
+    DISCOVER_REQUEST = 0x1D
+
+    # PLC discover report.
+    DISCOVER_REPORT = 0x1E
+
+    # PLC register request.
+    REGISTER_REQUEST = 0x1C
+
+    # PLC ping request.
+    PING_REQUEST = 0x19
+
+    # PLC ping response.
+    PING_RESPONSE = 0x1A
+
+    #PLC repeat call request.
+    REPEAT_CALL_REQUEST = 0x1F
+
     @classmethod
     def toString(cls, value):
         str_ = None
@@ -467,9 +485,21 @@ class Command(GXIntEnum):
         elif value == Command.DED_METHOD_REQUEST:
             str_ = "DedMethodRequest"
         elif value == Command.GATEWAY_REQUEST:
-            str_ = "GatewayRequest "
+            str_ = "GatewayRequest"
         elif value == Command.GATEWAY_RESPONSE:
-            str_ = "GatewayResponse "
+            str_ = "GatewayResponse"
+        elif value == Command.DISCOVER_REQUEST:
+            str_ = "DiscoverRequest"
+        elif value == Command.DISCOVER_REPORT:
+            str_ = "DiscoverReport"
+        elif value == Command.REGISTER_REQUEST:
+            str_ = "RegisterRequest"
+        elif value == Command.PING_REQUEST:
+            str_ = "PingRequest"
+        elif value == Command.PING_RESPONSE:
+            str_ = "PingResponse"
+        elif value == Command.REPEAT_CALL_REQUEST:
+            str_ = "RepeatCallRequest"
         else:
             raise ValueError(str(value))
         return str_
@@ -572,6 +602,18 @@ class Command(GXIntEnum):
             ret = Command.GATEWAY_REQUEST
         elif "GatewayResponse".lower() == value.lower():
             ret = Command.GATEWAY_RESPONSE
+        elif "DiscoverRequest".lower() == value.lower():
+            ret = Command.DISCOVER_REQUEST
+        elif "DiscoverReport".lower() == value.lower():
+            ret = Command.DISCOVER_REPORT
+        elif "RegisterRequest".lower() == value.lower():
+            ret = Command.REGISTER_REQUEST
+        elif "PingRequest".lower() == value.lower():
+            ret = Command.PING_REQUEST
+        elif "PingResponse".lower() == value.lower():
+            ret = Command.PING_RESPONSE
+        elif "RepeatCallRequest".lower() == value.lower():
+            ret = Command.REPEAT_CALL_REQUEST
         else:
             raise ValueError(value)
         return ret

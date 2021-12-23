@@ -101,11 +101,11 @@ class GXReplyData:
         # Client address of the notification message.  Notification
         # message sets
         # this.
-        self.clientAddress = 0
+        self.targetAddress = 0
         # Server address of the notification message.  Notification
         # message sets
         # this.
-        self.serverAddress = 0
+        self.sourceAddress = 0
         # Gateway information.
         self.gateway = None
         # Data type.

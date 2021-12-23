@@ -68,14 +68,16 @@ class GXDLMSNotify(object):
         self.settings.serverAddress = serverAddress
         self.settings.interfaceType = interfaceType
 
-    def __getConformance(self):
+    def getConformance(self):
+        """What kind of services are used."""
         return self.settings.negotiatedConformance
 
-    def __setConformance(self, value):
+    def setConformance(self, value):
+        """What kind of services are used."""
         self.settings.negotiatedConformance = value
 
     # What kind of services are used.
-    conformance = property(__getConformance, __setConformance)
+    conformance = property(getConformance, setConformance)
 
     #
     # @param value
@@ -84,11 +86,11 @@ class GXDLMSNotify(object):
     def setCipher(self, value):
         self.settings.ipher = value
 
-    def __getObjects(self):
+    def getObjects(self):
         return self.settings.objects
 
     # Get list of meter's objects.
-    objects = property(__getObjects)
+    objects = property(getObjects)
 
     #
     # Information from the connection size that server can
@@ -106,10 +108,10 @@ class GXDLMSNotify(object):
     def hdlcSettings(self):
         return self.settings.hdlc
 
-    def __getMaxReceivePDUSize(self):
+    def getMaxReceivePDUSize(self):
         return self.settings.maxPduSize
 
-    def __setMaxReceivePDUSize(self, value):
+    def setMaxReceivePDUSize(self, value):
         self.settings.maxPduSize = value
 
     #
@@ -122,12 +124,12 @@ class GXDLMSNotify(object):
     # @see GXDLMSClient#useLogicalNameReferencing
     # Maximum size of received PDU.
     #
-    maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
+    maxReceivePDUSize = property(getMaxReceivePDUSize, setMaxReceivePDUSize)
 
-    def __getUseLogicalNameReferencing(self):
+    def getUseLogicalNameReferencing(self):
         return self.settings.getUseLogicalNameReferencing()
 
-    def __setUseLogicalNameReferencing(self, value):
+    def setUseLogicalNameReferencing(self, value):
         self.settings.setUseLogicalNameReferencing(value)
 
     #
@@ -140,40 +142,40 @@ class GXDLMSNotify(object):
     #
     # Is Logical Name referencing used.
     #
-    useLogicalNameReferencing = property(__getUseLogicalNameReferencing, __setUseLogicalNameReferencing)
+    useLogicalNameReferencing = property(getUseLogicalNameReferencing, setUseLogicalNameReferencing)
 
-    def __getPriority(self):
+    def getPriority(self):
         return self.settings.priority
 
-    def __setPriority(self, value):
+    def setPriority(self, value):
         self.settings.priority = value
 
     #
     # Used Priority.
     #
-    priority = property(__getPriority, __setPriority)
+    priority = property(getPriority, setPriority)
 
-    def __getServiceClass(self):
+    def getServiceClass(self):
         return self.settings.serviceClass
 
-    def __setServiceClass(self, value):
+    def setServiceClass(self, value):
         self.settings.serviceClass = value
 
     #
     # Used service class.
     #
-    serviceClass = property(__getServiceClass, __setServiceClass)
+    serviceClass = property(getServiceClass, setServiceClass)
 
-    def __getInvokeID(self):
+    def getInvokeID(self):
         return self.settings.invokeId
 
-    def __setInvokeID(self, value):
+    def setInvokeID(self, value):
         self.settings.invokeID = value
 
     #
     # Invoke ID.
     #
-    invokeID = property(__getInvokeID, __setInvokeID)
+    invokeID = property(getInvokeID, setInvokeID)
 
     #
     # Removes the HDLC frame from the packet, and returns COSEM data only.

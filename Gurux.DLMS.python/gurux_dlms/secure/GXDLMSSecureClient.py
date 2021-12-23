@@ -100,26 +100,26 @@ class GXDLMSSecureClient(GXDLMSClient):
         gcm = GXDLMSChipperingStream(None, False, kek, None, None, 0)
         return gcm.decryptAes(data)
 
-    def __getSecuritySuite(self):
+    def getSecuritySuite(self):
         return self.ciphering.securitySuite
 
-    def __setSecuritySuite(self, value):
+    def setSecuritySuite(self, value):
         self.ciphering.securitySuite = value
 
     # Used security suite.
-    securitySuite = property(__getSecuritySuite, __setSecuritySuite)
+    securitySuite = property(getSecuritySuite, setSecuritySuite)
 
-    def __getServerSystemTitle(self):
+    def getServerSystemTitle(self):
         return self.settings.preEstablishedSystemTitle
 
-    def __setServerSystemTitle(self, value):
+    def setServerSystemTitle(self, value):
         self.settings.preEstablishedSystemTitle = value
 
     # Server system title.
-    serverSystemTitle = property(__getServerSystemTitle, __setServerSystemTitle)
+    serverSystemTitle = property(getServerSystemTitle, setServerSystemTitle)
 
-    def __getCiphering(self):
+    def getCiphering(self):
         return self.settings.cipher
 
     # Ciphering.
-    ciphering = property(__getCiphering, None)
+    ciphering = property(getCiphering)

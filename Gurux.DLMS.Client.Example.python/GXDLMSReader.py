@@ -326,7 +326,7 @@ class GXDLMSReader:
         self.readDataBlock(data, reply)
         #Update data type on read.
         if item.getDataType(attributeIndex) == DataType.NONE:
-            item.setDataType(attributeIndex, reply.valueType);
+            item.setDataType(attributeIndex, reply.valueType)
         return self.client.updateValue(item, attributeIndex, reply.value)
 
     def readList(self, list_):
@@ -373,7 +373,7 @@ class GXDLMSReader:
         if list_:
             reply = GXReplyData()
             data = self.client.accessRequest(None, list_)
-            self.readDataBlock(data, reply);
+            self.readDataBlock(data, reply)
             self.client.parseAccessResponse(list_, reply.data)
 
     def readScalerAndUnits(self):
@@ -383,9 +383,9 @@ class GXDLMSReader:
         if self.client.negotiatedConformance & Conformance.ACCESS != 0:
             for it in objs:
                 if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
-                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3));
-                elif isinstance(it, (GXDLMSDemandRegister,)):
-                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4));
+                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3))
+                elif isinstance(it, (GXDLMSDemandRegister)):
+                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4))
             self.readByAccess(list_)
             return
         try:

@@ -64,6 +64,7 @@
     <Compile Include="gurux_dlms\enums\VdeStateError.py" />
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
+    <Compile Include="gurux_dlms\GXDLMSTranslatorMessage.py" />
     <Compile Include="gurux_dlms\GXDLMSExceptionResponse.py" />
     <Compile Include="gurux_dlms\GXHdlcSettings.py" />
     <Compile Include="gurux_dlms\GXIntFlag.py" />
@@ -107,6 +108,12 @@
     <Compile Include="gurux_dlms\objects\GXDLMSLlcSscsSetup.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSIECLocalPortSetup.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSUtilityTables.py" />
+    <Compile Include="gurux_dlms\Plc\enums\PlcSourceAddress.py" />
+    <Compile Include="gurux_dlms\Plc\enums\PlcMacSubframes.py" />
+    <Compile Include="gurux_dlms\Plc\enums\PlcHdlcSourceAddress.py" />
+    <Compile Include="gurux_dlms\Plc\enums\PlcDestinationAddress.py" />
+    <Compile Include="gurux_dlms\Plc\enums\PlcDataLinkData.py" />
+    <Compile Include="gurux_dlms\Plc\enums\__init__.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureClient.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureNotify.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureServer.py" />
@@ -294,7 +301,6 @@
     <Compile Include="gurux_dlms\objects\GXDLMSTokenGateway.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSWeekProfile.py" />
     <Compile Include="gurux_dlms\objects\GXNeighborDiscoverySetup.py" />
-    <Compile Include="gurux_dlms\objects\GXSendDestinationAndMethod.py" />
     <Compile Include="gurux_dlms\objects\GXTokenGatewayConfiguration.py" />
     <Compile Include="gurux_dlms\objects\GXUnitCharge.py" />
     <Compile Include="gurux_dlms\objects\GXxDLMSContextType.py" />
@@ -337,6 +343,8 @@
     <Folder Include="gurux_dlms\enums\" />
     <Folder Include="gurux_dlms\internal\" />
     <Folder Include="gurux_dlms\manufacturersettings\" />
+    <Folder Include="gurux_dlms\plc\" />
+    <Folder Include="gurux_dlms\Plc\enums\" />
     <Folder Include="gurux_dlms\secure\" />
     <Folder Include="gurux_dlms\objects\" />
     <Folder Include="gurux_dlms\objects\enums\" />

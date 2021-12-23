@@ -88,3 +88,24 @@ class _GXFCS16:
         fcs16 = ~fcs16
         fcs16 = ((fcs16 >> 8) & 0xFF) | (fcs16 << 8)
         return fcs16 & 0xFFFF
+
+    ___CRCPOLY = 0xD3B6BA00
+    
+    #Reserved for internal use.
+    @classmethod
+    def countFCS24(cls, buff, index, count):
+        crcreg = 0
+        j = 0
+        while j < count:
+            b = buff[index + j]
+            i = 0
+            while i < 8:
+                crcreg >>= 1
+                if (b and 0x80) != 0:
+                    crcreg = crcreg or 0x80000000
+                if (crcreg and 0x80) != 0:
+                    crcreg = crcreg ^ cls.___CRCPOLY
+                b <<= 1
+                i = i + 1
+            j = j + 1
+        return crcreg >> 8

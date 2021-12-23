@@ -48,6 +48,7 @@ class GXDLMSSecureServer(GXDLMSServer):
         # association: Association logical name.
         # type: Interface type.
         """
+        #pylint:disable=super-with-arguments
         super(GXDLMSSecureServer, self).__init__(association, interfaceType)
         self.settings.ciphering = GXCiphering("ABCDEFGH".encode())
         self.kek = None
@@ -55,14 +56,13 @@ class GXDLMSSecureServer(GXDLMSServer):
     def getCiphering(self):
         return self.settings.ciphering
 
-    def __getKek(self):
+    def getKek(self):
         return self.settings.kek
 
-    def __setKek(self, value):
+    def setKek(self, value):
         self.settings.kek = value
 
-    #Key Encrypting Key, also known as Master key.
-    kek = property(__getKek, __setKek)
+    kek = property(getKek, setKek, None, "Key Encrypting Key, also known as Master key.")
 
      #
     # Check is data sent to this server.

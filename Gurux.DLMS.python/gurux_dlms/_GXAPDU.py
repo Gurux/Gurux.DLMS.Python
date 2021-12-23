@@ -815,6 +815,7 @@ class _GXAPDU:
                     _GXAPDU.parseUserInformation(settings, cipher, buff, xml)
                 except Exception:
                     if xml is None:
+                        # pylint: disable=raise-missing-from
                         #  Check result component.  Some meters are returning invalid
                         #  user-information if connection failed.
                         if xml is None and resultComponent != AssociationResult.ACCEPTED and resultDiagnosticValue != SourceDiagnostic.NONE:

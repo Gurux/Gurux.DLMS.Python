@@ -1335,7 +1335,7 @@ class _GXCommon:
     #
     @classmethod
     def setTime(cls, buff, value):
-        dt = cls.__getDateTime(value)
+        dt = _GXCommon.__getDateTime(value)
         #  Add time.
         if dt.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
             buff.setUInt8(0xFF)
@@ -1368,7 +1368,7 @@ class _GXCommon:
     #
     @classmethod
     def setDate(cls, buff, value):
-        dt = cls.__getDateTime(value)
+        dt = _GXCommon.__getDateTime(value)
         #  Add year.
         if dt.skip & DateTimeSkips.YEAR != DateTimeSkips.NONE:
             buff.setUInt16(0xFFFF)
@@ -1814,7 +1814,7 @@ class _GXCommon:
         sb = '\n'
         sb += "IDIS system title:\n"
         sb += "Manufacturer Code: "
-        sb += cls.__getChar(st[0]) + cls.__getChar(st[1]) + cls.__getChar(st[2])
+        sb += _GXCommon.__getChar(st[0]) + _GXCommon.__getChar(st[1]) + _GXCommon.__getChar(st[2])
         sb += "\nFunction type: "
         ft = st[4] >> 4
         add = False
@@ -1846,7 +1846,7 @@ class _GXCommon:
         sb = '\n'
         sb += "IDIS system title:\n"
         sb += "Manufacturer Code: "
-        sb += cls.__getChar(st[0]) + cls.__getChar(st[1]) + cls.__getChar(st[2])
+        sb += _GXCommon.__getChar(st[0]) + _GXCommon.__getChar(st[1]) + _GXCommon.__getChar(st[2])
         sb += "Serial number: "
         sb += cls.__getChar(st[3]) + cls.__getChar(st[4]) + cls.__getChar(st[5]) + cls.__getChar(st[6]) + cls.__getChar(st[7])
         return sb
@@ -1875,12 +1875,12 @@ class _GXCommon:
     def systemTitleToString(cls, standard, st):
         ###Conver system title to string.
         #pylint: disable=too-many-boolean-expressions
-        if standard == Standard.ITALY or not cls.__getChar(st[0]).isalpha() or \
+        if standard == Standard.ITALY or not _GXCommon.__getChar(st[0]).isalpha() or \
             not cls.__getChar(st[1]).isalpha() or not cls.__getChar(st[2]).isalpha():
             return cls.uniSystemTitleToString(st)
-        if standard == Standard.IDIS or not cls.__getChar(st[3]).isdigit() or \
-            not cls.__getChar(st[4]).isdigit() or not cls.__getChar(st[5]).isdigit() or \
-            not cls.__getChar(st[6]).isdigit() or not cls.__getChar(st[7]).isdigit():
+        if standard == Standard.IDIS or not _GXCommon.__getChar(st[3]).isdigit() or \
+            not _GXCommon.__getChar(st[4]).isdigit() or not _GXCommon.__getChar(st[5]).isdigit() or \
+            not _GXCommon.__getChar(st[6]).isdigit() or not _GXCommon.__getChar(st[7]).isdigit():
             return cls.idisSystemTitleToString(st)
         return cls.dlmsSystemTitleToString(st)
 

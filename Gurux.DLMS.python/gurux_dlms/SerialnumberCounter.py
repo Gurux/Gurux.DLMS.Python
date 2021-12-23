@@ -61,24 +61,24 @@ class SerialNumberCounter:
     # formula: Formula to used.
     @classmethod
     def count(cls, sn, formula):
-        values = cls.__getValues(cls.__formatString(formula))
+        values = SerialNumberCounter.__getValues(SerialNumberCounter.__formatString(formula))
         if len(values) % 2 == 0:
             raise ValueError("Invalid serial number formula.")
         str_ = None
-        value = cls.__getValue(values[0], sn)
+        value = SerialNumberCounter.__getValue(values[0], sn)
         index = 1
         while index != len(values):
             str_ = values[index]
             if str_ == "%":
-                value = value % cls.__getValue(values[index + 1], sn)
+                value = value % SerialNumberCounter.__getValue(values[index + 1], sn)
             elif str_ == "+":
-                value = value + cls.__getValue(values[index + 1], sn)
+                value = value + SerialNumberCounter.__getValue(values[index + 1], sn)
             elif str_ == "-":
-                value = value - cls.__getValue(values[index + 1], sn)
+                value = value - SerialNumberCounter.__getValue(values[index + 1], sn)
             elif str_ == "*":
-                value = value * cls.__getValue(values[index + 1], sn)
+                value = value * SerialNumberCounter.__getValue(values[index + 1], sn)
             elif str_ == "/":
-                value = value / cls.__getValue(values[index + 1], sn)
+                value = value / SerialNumberCounter.__getValue(values[index + 1], sn)
             else:
                 raise ValueError("Invalid serial number formula.")
             index += 2

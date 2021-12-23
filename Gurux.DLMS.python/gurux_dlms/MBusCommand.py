@@ -35,6 +35,10 @@ from gurux_dlms.GXIntEnum import GXIntEnum
 
 class MBusCommand(GXIntEnum):
     """M-Bus command."""
-    SND_NR = 0x44
-    SND_UD2 = 0x43
-    RSP_UD = 0x08
+    #Access demand from Meter to Other Device. This message requests an access to
+    #the Meter (contains no application data).
+    RSP_UD = 0x8
+    #Send unsolicited/periodical application data without request (Send/No Reply)
+    SND_NR = 0x4
+    # Send a command (Send User Data).
+    SND_UD = 0x3

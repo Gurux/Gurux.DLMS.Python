@@ -54,8 +54,7 @@ class GXBitString:
 
     @classmethod
     def ___toBitString(cls, value, count):
-        if count > 8:
-            count = 8
+        count = min(count, 8)
         pos = 0
         sb = ""
         while pos != count:

@@ -46,7 +46,11 @@ from gurux_dlms.enums.DataType import DataType
 import locale
 from gurux_dlms.GXDateTime import GXDateTime
 from gurux_dlms.internal._GXCommon import _GXCommon
-from gurux_dlms import GXDLMSException, GXDLMSExceptionResponse, GXDLMSConfirmedServiceError
+from gurux_dlms import GXDLMSException, GXDLMSExceptionResponse, GXDLMSConfirmedServiceError, GXDLMSTranslator
+from gurux_dlms import GXByteBuffer, GXDLMSTranslatorMessage, GXReplyData
+from gurux_dlms.enums import RequestTypes, Security, InterfaceType
+from gurux_dlms.secure.GXDLMSSecureClient import GXDLMSSecureClient
+
 
 try:
     import pkg_resources
@@ -99,7 +103,7 @@ class sampleclient():
                 for k, v in settings.readObjects:
                     obj = settings.client.objects.findByLN(ObjectType.NONE, k)
                     if obj is None:
-                         raise Exception("Unknown logical name:" + k)
+                        raise Exception("Unknown logical name:" + k)
                     val = reader.read(obj, v)
                     reader.showValue(v, val)
                 if settings.outputFile:
@@ -122,4 +126,5 @@ class sampleclient():
             print("Ended. Press any key to continue.")
 
 if __name__ == '__main__':
+   
     sampleclient.main(sys.argv)

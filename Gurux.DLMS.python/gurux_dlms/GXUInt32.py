@@ -34,6 +34,7 @@
 import sys
 
 if sys.version_info < (3, 0):
+    # pylint: disable=undefined-variable
     __base = long
 else:
     __base = int

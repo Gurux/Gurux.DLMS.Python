@@ -80,9 +80,10 @@ from .enums.SourceDiagnostic import SourceDiagnostic
 from .AesGcmParameter import AesGcmParameter
 from .GXDLMSException import GXDLMSException
 from .enums.Standard import Standard
+from .GXDLMSTranslatorMessage import GXDLMSTranslatorMessage
+from .plc.enums import PlcSourceAddress, PlcDestinationAddress
 
-# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,
-# old-style-class
+# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,old-style-class
 class GXDLMSTranslator:
     """
     This class is used to translate DLMS frame or PDU to xml.
@@ -134,43 +135,81 @@ class GXDLMSTranslator:
 
     #
     # Find next frame from the string.  Position of data is set to the begin of
-    # new frame.  If PDU is null it is not updated.
+    # new frame.  If PDU is None it is not updated.
     #
     # @param data
     #            Data where frame is search.
     # @param pdu
     #            PDU of received frame is set here.
     # Is new frame found.
-    def findNextFrame(self, data, pdu):
+    def findNextFrame(self, msg, pdu):
+        if not isinstance(msg, (GXDLMSTranslatorMessage)):
+            if not isinstance(msg, (GXByteBuffer)):
+                data = GXByteBuffer(msg)
+            else:
+                data = msg
+            msg = GXDLMSTranslatorMessage()
+            msg.message = data
+        msg.sourceAddress = msg.targetAddress = 0
+        original = msg.message.position
+        msg.exception = None
+        data = msg.message
         settings = GXDLMSSettings(True)
         reply = GXReplyData()
+        reply.moreData = msg.moreData;
         reply.xml = (GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags))
-        pos = int()
-        found = bool()
+        pos = 0
+        found = False
         while data.position < len(data):
-            if data.getUInt8(data.position) == 0x7e:
+            if msg.interfaceType in (None, InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E) and data.getUInt8(data.position) == 0x7e:
                 pos = data.position
                 settings.interfaceType = InterfaceType.HDLC
                 found = GXDLMS.getData(settings, data, reply, None)
                 data.position = pos
                 if found:
                     break
-            elif data.getUInt16(data.position) == 0x1:
+            elif msg.interfaceType in (None, InterfaceType.WRAPPER) and data.getUInt16(data.position) == 0x1:
                 pos = data.position
                 settings.interfaceType = InterfaceType.WRAPPER
                 found = GXDLMS.getData(settings, data, reply, None)
                 data.position = pos
                 if found:
                     break
+            elif msg.interfaceType in (None, InterfaceType.PLC) and msg.message.getUInt8(msg.message.position) == 2:
+                pos = data.position
+                settings.interfaceType = InterfaceType.PLC
+                found = GXDLMS.getData(settings, data, reply, None)
+                data.position = pos
+                if found:
+                    break
+            elif msg.interfaceType in (None, InterfaceType.WIRED_MBUS) and GXDLMS.isWiredMBusData(msg.message):
+                pos = data.position
+                settings.interfaceType = InterfaceType.WIRED_MBUS
+                found = GXDLMS.getData(settings, data, reply, None)
+                data.position = pos
+                if found:
+                    break
+            elif msg.interfaceType in (None, InterfaceType.WIRELESS_MBUS) and GXDLMS.isWirelessMBusData(msg.message):
+                pos = data.position
+                settings.interfaceType = InterfaceType.WIRELESS_MBUS
+                found = GXDLMS.getData(settings, data, reply, None)
+                data.position = pos
+                if found:
+                    break
             data.position = data.position + 1
+        msg.moreData = reply.moreData
+        msg.sourceAddress = reply.sourceAddress
+        msg.targetAddress = reply.targetAddress
         if pdu:
             pdu.clear()
             pdu.set(data.data, 0, len(data))
-        return data.position != len(data)
-
+        r = data.position != len(data)
+        if not found:
+            data.position = original
+        return r
     #
     # Find next frame from the string.  Position of data is set to the begin of
-    # new frame.  If PDU is null it is not updated.
+    # new frame.  If PDU is None it is not updated.
     #
     # @param data
     #            Data where frame is search.
@@ -189,7 +228,7 @@ class GXDLMSTranslator:
         found = bool()
         try:
             while data.position < len(data):
-                if (type_ == InterfaceType.HDLC or type_ == InterfaceType.HDLC_WITH_MODE_E) and data.getUInt8(data.position) == 0x7e:
+                if type_ in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E) and data.getUInt8(data.position) == 0x7e:
                     pos = data.position
                     found = GXDLMS.getData(settings, data, reply, None)
                     data.position = pos
@@ -215,10 +254,6 @@ class GXDLMSTranslator:
             pdu.clear()
             pdu.set(data, 0, data.size)
         return data.position != len(data)
-
-    @classmethod
-    def __addTag(cls, list_, value, text):
-        list_.put(value, text)
 
     #
     # Get all tags.
@@ -275,7 +310,7 @@ class GXDLMSTranslator:
                 return InterfaceType.HDLC
             if value.available() > 1 and value.getUInt16(pos) == 1:
                 return InterfaceType.WRAPPER
-            if GXDLMS.isMBusData(value):
+            if GXDLMS.isWirelessMBusData(value):
                 return InterfaceType.WIRELESS_MBUS
             pos += 1
         raise ValueError("Invalid DLMS framing.")
@@ -331,32 +366,58 @@ class GXDLMSTranslator:
             else:
                 xml.appendComment("I frame.")
 
+    @classmethod
+    def __updateAddress(cls, settings, msg):
+        reply = True
+        if msg.command in (Command.READ_REQUEST, Command.WRITE_REQUEST, Command.GET_REQUEST,\
+            Command.SET_REQUEST,Command.METHOD_REQUEST, Command.SNRM, Command.AARQ,\
+            Command.DISCONNECT_REQUEST, Command.RELEASE_REQUEST, Command.ACCESS_REQUEST,\
+            Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST, Command.GLO_METHOD_REQUEST,\
+            Command.GLO_INITIATE_REQUEST, Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST,\
+            Command.DED_INITIATE_REQUEST,Command.DED_READ_REQUEST, Command.DED_WRITE_REQUEST,\
+            Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST,\
+            Command.GATEWAY_REQUEST,Command.DISCOVER_REQUEST, Command.REGISTER_REQUEST,Command.PING_REQUEST):
+            reply = False
+        if reply:
+            msg.targetAddress = settings.clientAddress
+            msg.sourceAddress = settings.serverAddress
+        else:
+            msg.sourceAddress = settings.clientAddress
+            msg.targetAddress = settings.serverAddress
+
     #
     #
     #
     # pylint:disable=broad-except
-    def messageToXml(self, value):
+    def messageToXml(self, msg):
         """
         Convert message to XML.
-        value : Bytes to convert.
+        msg : Translator message data.
         Returns Converted xml.
         """
         # pylint: disable=too-many-nested-blocks
-        if not isinstance(value, GXByteBuffer):
-            value = GXByteBuffer(value)
-        if not value:
-            raise ValueError("value")
+        if not isinstance(msg, (GXDLMSTranslatorMessage)):
+            if not isinstance(msg, GXByteBuffer):
+                data = GXByteBuffer(msg)
+                msg = GXDLMSTranslatorMessage()
+                msg.message = data
+            if not msg:
+                raise ValueError("msg")
+        msg.exception = None
+        xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
+        data = GXReplyData()
+        settings = GXDLMSSettings(True)
+        self.getCiphering(settings, True)
+        data.xml = xml
         try:
-            xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
-            data = GXReplyData()
-            data.xml = (xml)
-            offset = value.position
-            settings = GXDLMSSettings(True)
-            self.getCiphering(settings, True)
+            offset = msg.message.position
             #  If HDLC framing.
-            if value.getUInt8(value.position) == 0x7e:
-                settings.interfaceType = InterfaceType.HDLC
-                if GXDLMS.getData(settings, value, data, None):
+            if msg.interfaceType in (None, InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E) and msg.message.getUInt8(msg.message.position) == 0x7e:
+                msg.interfaceType = settings.interfaceType = InterfaceType.HDLC
+                if GXDLMS.getData(settings, msg.message, data, None):
+                    msg.moreData = data.moreData
+                    msg.sourceAddress = data.sourceAddress
+                    msg.targetAddress = data.targetAddress
                     if not self.pduOnly:
                         xml.appendLine("<HDLC len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
                         xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
@@ -405,11 +466,16 @@ class GXDLMSTranslator:
                                 xml.appendLine("</PDU>")
                     if not self.pduOnly:
                         xml.appendLine("</HDLC>")
-                return str(xml)
+                self.__updateAddress(settings, msg)
+                msg.xml = str(xml)
+                return msg.xml
             #  If wrapper.
-            if value.getUInt16(value.position) == 1:
-                settings.interfaceType = InterfaceType.WRAPPER
-                GXDLMS.getData(settings, value, data, None)
+            if msg.interfaceType in (None, InterfaceType.WRAPPER) and msg.message.getUInt16(msg.message.position) == 1:
+                msg.interfaceType = settings.interfaceType = InterfaceType.WRAPPER
+                GXDLMS.getData(settings, msg.message, data, None)
+                msg.moreData = data.moreData
+                msg.sourceAddress = data.sourceAddress
+                msg.targetAddress = data.targetAddress
                 if not self.pduOnly:
                     xml.appendLine("<WRAPPER len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
                     xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
@@ -426,11 +492,97 @@ class GXDLMSTranslator:
                         xml.appendLine("</PDU>")
                 if not self.pduOnly:
                     xml.appendLine("</WRAPPER>")
-                return xml.__str__()
-            if GXDLMS.isMBusData(value):
-                settings.interfaceType = InterfaceType.WIRELESS_MBUS
+                self.__updateAddress(settings, msg)
+                msg.xml = str(xml)
+                return msg.xml
+            #If PLC.
+            if msg.interfaceType in (None, InterfaceType.PLC) and msg.message.getUInt8(msg.message.position) == 2:
+                msg.interfaceType = settings.interfaceType = InterfaceType.PLC
+                GXDLMS.getData(settings, msg.message, data, None)
+                msg.moreData = data.moreData
+                msg.sourceAddress = data.sourceAddress
+                msg.targetAddress = data.targetAddress
+                if not self.pduOnly:
+                    xml.appendLine("<Plc len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
+                    if self.comments:
+                        if data.targetAddress == PlcSourceAddress.INITIATOR:
+                            xml.appendComment("Initiator")
+                        elif data.targetAddress == PlcSourceAddress.NEW:
+                            xml.appendComment("New")
+                    xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(data.targetAddress, 0) + "\" />")
+                    if self.comments and data.sourceAddress == PlcDestinationAddress.ALL_PHYSICAL:
+                        xml.appendComment("AllPhysical")
+                    xml.appendLine("<DestinationAddress Value=\"" + xml.integerToHex(data.sourceAddress, 0) + "\" />")
+                if data.data.size == 0:
+                    xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
+                else:
+                    if not self.pduOnly:
+                        xml.appendLine("<PDU>")
+                    xml.appendLine(self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace, msg))
+                    #Remove \r\n.
+                    xml.trim()
+                    if not self.pduOnly:
+                        xml.appendLine("</PDU>")
+                if not self.pduOnly:
+                    xml.appendLine("</Plc>")
+                self.__updateAddress(settings, msg)
+                msg.xml = str(xml)
+                return msg.xml
+            #If Wired M-Bus.
+            if msg.interfaceType in (None, InterfaceType.WIRED_MBUS) and GXDLMS.isWiredMBusData(msg.message):
+                msg.interfaceType = settings.interfaceType = InterfaceType.WIRED_MBUS
                 len_ = xml.getXmlLength()
-                GXDLMS.getData(settings, value, data, None)
+                GXDLMS.getData(settings, msg.message, data, None)
+                msg.moreData = data.moreData
+                msg.sourceAddress = data.sourceAddress
+                msg.targetAddress = data.targetAddress
+                tmp = str(xml)[0:len_]
+                xml.setXmlLength(len_)
+                if not self.pduOnly:
+                    xml.appendLine("<WiredMBus len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
+                    xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
+                    xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
+                    xml.append(tmp)
+                if data.data.size == 0:
+                    xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
+                else:
+                    if self.multipleFrames or (data.moreData & RequestTypes.FRAME) != 0:
+                        if self.completePdu:
+                            self.pduFrames.set(data.data)
+                            if data.moreData == RequestTypes.NONE:
+                                xml.appendLine(self.__pduToXml(self.pduFrames, True, True))
+                                self.pduFrames.clear()
+                        else:
+                            xml.appendLine("<NextFrame Value=\"" + data.data.toHex(False, data.data.position, data.data.available()) + "\" />")
+                        if data.moreData & RequestTypes.FRAME != 0:
+                            self.multipleFrames = True
+                        if data.moreData == RequestTypes.DATABLOCK:
+                            self.multipleFrames = False
+                    else:
+                        if not self.pduOnly:
+                            xml.appendLine("<PDU>")
+                        if self.pduFrames.size != 0:
+                            self.pduFrames.set(data.data)
+                            data.data.clear()
+                            data.data.set(self.pduFrames)
+                        xml.appendLine(self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace))
+                        #Remove \r\n.
+                        xml.trim()
+                        if not self.pduOnly:
+                            xml.appendLine("</PDU>")
+                if not self.pduOnly:
+                    xml.appendLine("</WiredMBus>")
+                self.__updateAddress(settings, msg)
+                msg.xml = str(xml)
+                return msg.xml
+            #If Wireless M-Bus.
+            if msg.interfaceType in (None, InterfaceType.WIRELESS_MBUS) and GXDLMS.isWirelessMBusData(msg.message):
+                msg.interfaceType = settings.interfaceType = InterfaceType.WIRELESS_MBUS
+                len_ = xml.getXmlLength()
+                GXDLMS.getData(settings, msg.message, data, None)
+                msg.moreData = data.moreData
+                msg.sourceAddress = data.sourceAddress
+                msg.targetAddress = data.targetAddress
                 tmp = str(xml)[0:len_]
                 xml.setXmlLength(len_)
                 if not self.pduOnly:
@@ -443,14 +595,16 @@ class GXDLMSTranslator:
                 else:
                     if not self.pduOnly:
                         xml.appendLine("<PDU>")
-                    xml.appendLine(self.__pduToXml(data.data, True, True))
-                    #  Remove \r\n.
+                    xml.appendLine(self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace, msg))
+                    #Remove \r\n.
                     xml.trim()
                     if not self.pduOnly:
                         xml.appendLine("</PDU>")
                 if not self.pduOnly:
-                    xml.appendLine("</WRAPPER>")
-                return xml.__str__()
+                    xml.appendLine("</WirelessMBus>")
+                self.__updateAddress(settings, msg)
+                msg.xml = str(xml)
+                return msg.xml
         except Exception as ex:
             print(ex)
         raise ValueError("Invalid DLMS framing.")

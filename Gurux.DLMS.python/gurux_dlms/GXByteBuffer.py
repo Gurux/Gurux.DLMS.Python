@@ -41,7 +41,7 @@ else:
     from collections.abc import Sequence
     __base = Sequence
 
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods,useless-object-inheritance
 class GXByteBuffer(__base):
     """
     Byte array class is used to save received bytes.
@@ -579,12 +579,12 @@ class GXByteBuffer(__base):
             for ch in value:
                 if ch != ' ':
                     if lastValue == -1:
-                        lastValue = cls.___getValue(ch)
+                        lastValue = GXByteBuffer.___getValue(ch)
                     elif lastValue != -1:
-                        buff.append(lastValue << GXByteBuffer.__NIBBLE | cls.___getValue(ch))
+                        buff.append(lastValue << GXByteBuffer.__NIBBLE | GXByteBuffer.___getValue(ch))
                         lastValue = -1
                 elif lastValue != -1:
-                    buff.append(cls.___getValue(ch))
+                    buff.append(GXByteBuffer.___getValue(ch))
                     lastValue = -1
         return buff
 

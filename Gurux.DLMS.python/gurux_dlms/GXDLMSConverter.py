@@ -177,7 +177,7 @@ class GXDLMSConverter:
     @classmethod
     def __readStandardObisInfo(cls, standard, codes):
         if standard != Standard.DLMS:
-            for it in cls.__getObjects(standard):
+            for it in GXDLMSConverter.__getObjects(standard):
                 tmp = GXStandardObisCode(it.logicalName.split('.'))
                 tmp.interfaces = str(it.objectType)
                 tmp.description = it.description

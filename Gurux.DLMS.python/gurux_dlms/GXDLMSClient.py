@@ -109,18 +109,18 @@ class GXDLMSClient(object):
         #Initialize PDU size that is restored after the connection is closed.
         self.initializePduSize = 0
         #Initialize Max HDLC transmission size that is restored after the connection is closed.
-        self.InitializeMaxInfoTX = 0
+        self.initializeMaxInfoTX = 0
         # Initialize Max HDLC receive size that is restored after the connection is closed.
-        self.InitializeMaxInfoRX = 0
+        self.initializeMaxInfoRX = 0
         #Initialize max HDLC window size in transmission that is restored after the connection is closed.
-        self.InitializeWindowSizeTX = 0
+        self.initializeWindowSizeTX = 0
         #Initialize max HDLC window size in receive that is restored after the connection is closed.
-        self.InitializeWindowSizeRX = 0
+        self.initializeWindowSizeRX = 0
 
-    def __getObjects(self):
+    def getObjects(self):
         return self.settings.objects
 
-    objects = property(__getObjects)
+    objects = property(getObjects)
 
     #
     # Set starting packet index.  Default is One based, but some meters
@@ -133,10 +133,10 @@ class GXDLMSClient(object):
     def setStartingPacketIndex(self, value):
         self.settings.setStartingPacketIndex(value)
 
-    def __getUserId(self):
+    def getUserId(self):
         return self.settings.userId
 
-    def __setUserId(self, value):
+    def setUserId(self, value):
         if value < -1 or value > 255:
             raise ValueError("Invalid user Id.")
         self.settings.userId = value
@@ -144,43 +144,44 @@ class GXDLMSClient(object):
     #
     # User id is the identifier of the user.  This value is used if user
     # list on Association LN is used.
-    userId = property(__getUserId, __setUserId)
+    userId = property(getUserId, setUserId)
 
-    def __getClientAddress(self):
+    def getClientAddress(self):
         return self.settings.clientAddress
 
-    def __setClientAddress(self, value):
+    def setClientAddress(self, value):
         self.settings.clientAddress = value
 
     #
     # Client address.
     #
-    clientAddress = property(__getClientAddress, __setClientAddress)
-
+    clientAddress = property(getClientAddress, setClientAddress)
 
     def __getServerAddress(self):
+        # pylint: disable=unused-private-member
         return self.settings.serverAddress
 
     def __setServerAddress(self, value):
+        # pylint: disable=unused-private-member
         self.settings.serverAddress = value
     #
     # Server Address.
     #
     serverAddress = property(__getServerAddress, __setServerAddress)
 
-    def __getServerAddressSize(self):
+    def getServerAddressSize(self):
         return self.settings.serverAddressSize
 
-    def __setServerAddressSize(self, value):
+    def setServerAddressSize(self, value):
         self.settings.serverAddressSize = value
 
     #
     # Server address size in bytes.  If it is Zero it is counted
     # automatically.
     #
-    serverAddressSize = property(__getServerAddressSize, __setServerAddressSize)
+    serverAddressSize = property(getServerAddressSize, setServerAddressSize)
 
-    def __getSourceSystemTitle(self):
+    def getSourceSystemTitle(self):
         return self.settings.sourceSystemTitle
 
     #
@@ -188,23 +189,23 @@ class GXDLMSClient(object):
     # Meter returns system title when ciphered connection is made or GMAC
     # authentication is used.
     #
-    sourceSystemTitle = property(__getSourceSystemTitle, None)
+    sourceSystemTitle = property(getSourceSystemTitle)
 
-    def __getGbtWindowSize(self):
+    def getGbtWindowSize(self):
         return self.settings.gbtWindowSize
 
-    def __setGbtWindowSize(self, value):
+    def setGbtWindowSize(self, value):
         self.settings.gbtWindowSize = value
 
     #
     # GBT window size.
     #
-    gbtWndowSize = property(__getGbtWindowSize, __setGbtWindowSize)
+    gbtWndowSize = property(getGbtWindowSize, setGbtWindowSize)
 
-    def __getMaxReceivePDUSize(self):
+    def getMaxReceivePDUSize(self):
         return self.settings.maxPduSize
 
-    def __setMaxReceivePDUSize(self, value):
+    def setMaxReceivePDUSize(self, value):
         self.settings.maxPduSize = value
 
     #
@@ -219,12 +220,12 @@ class GXDLMSClient(object):
     # @see GXDLMSClient.useLogicalNameReferencing
     # Maximum size of received PDU.
     #
-    maxReceivePDUSize = property(__getMaxReceivePDUSize, __setMaxReceivePDUSize)
+    maxReceivePDUSize = property(getMaxReceivePDUSize, setMaxReceivePDUSize)
 
-    def __getUseLogicalNameReferencing(self):
+    def getUseLogicalNameReferencing(self):
         return self.settings.getUseLogicalNameReferencing()
 
-    def __setUseLogicalNameReferencing(self, value):
+    def setUseLogicalNameReferencing(self, value):
         self.settings.setUseLogicalNameReferencing(value)
 
     #
@@ -239,12 +240,12 @@ class GXDLMSClient(object):
     #
     # Is Logical Name referencing used.
     #
-    useLogicalNameReferencing = property(__getUseLogicalNameReferencing, __setUseLogicalNameReferencing)
+    useLogicalNameReferencing = property(getUseLogicalNameReferencing, setUseLogicalNameReferencing)
 
-    def __getCtoSChallenge(self):
+    def getCtoSChallenge(self):
         return self.settings.ctoSChallenge
 
-    def __setCtoSChallenge(self, value):
+    def setCtoSChallenge(self, value):
         self.settings.useCustomChallenge = value is not None
         self.settings.ctoSChallenge = value
 
@@ -257,12 +258,12 @@ class GXDLMSClient(object):
     #
     # Client to Server custom challenge.
     #
-    ctoSChallenge = property(__getCtoSChallenge, __setCtoSChallenge)
+    ctoSChallenge = property(getCtoSChallenge, setCtoSChallenge)
 
-    def __getUseUtc2NormalTime(self):
+    def getUseUtc2NormalTime(self):
         return self.settings.useUtc2NormalTime
 
-    def __setUseUtc2NormalTime(self, value):
+    def setUseUtc2NormalTime(self, value):
         self.settings.useUtc2NormalTime = value
 
     #
@@ -272,42 +273,42 @@ class GXDLMSClient(object):
     #
     # True, if UTC time is used.
     #
-    useUtc2NormalTime = property(__getUseUtc2NormalTime, __setUseUtc2NormalTime)
+    useUtc2NormalTime = property(getUseUtc2NormalTime, setUseUtc2NormalTime)
 
-    def __getIncreaseInvocationCounterForGMacAuthentication(self):
+    def getIncreaseInvocationCounterForGMacAuthentication(self):
         return self.settings.increaseInvocationCounterForGMacAuthentication
 
-    def __setIncreaseInvocationCounterForGMacAuthentication(self, value):
+    def setIncreaseInvocationCounterForGMacAuthentication(self, value):
         self.settings.increaseInvocationCounterForGMacAuthentication = value
 
-    increaseInvocationCounterForGMacAuthentication = property(__getIncreaseInvocationCounterForGMacAuthentication, __setIncreaseInvocationCounterForGMacAuthentication)
+    increaseInvocationCounterForGMacAuthentication = property(getIncreaseInvocationCounterForGMacAuthentication, setIncreaseInvocationCounterForGMacAuthentication)
     """Some meters expect that Invocation Counter is increased for GMAC Authentication when connection is established."""
 
-    def __getDateTimeSkips(self):
+    def getDateTimeSkips(self):
         return self.settings.dateTimeSkips
 
-    def __setDateTimeSkips(self, value):
+    def setDateTimeSkips(self, value):
         self.settings.dateTimeSkips = value
 
-    dateTimeSkips = property(__getDateTimeSkips, __setDateTimeSkips)
+    dateTimeSkips = property(getDateTimeSkips, setDateTimeSkips)
     """Skipped date time fields. This value can be used if meter can't handle deviation or status."""
 
 
-    def __getStandard(self):
+    def getStandard(self):
         return self.settings.standard
 
-    def __setStandard(self, value):
+    def setStandard(self, value):
         self.settings.standard = value
 
     #
     # Used standard.
     #
-    standard = property(__getStandard, __setStandard)
+    standard = property(getStandard, setStandard)
 
-    def __getPassword(self):
+    def getPassword(self):
         return self.settings.password
 
-    def __setPassword(self, value):
+    def setPassword(self, value):
         self.settings.password = value
 
     #
@@ -318,35 +319,35 @@ class GXDLMSClient(object):
     # @see GXDLMSClient#getAuthentication
     # Used password.
     #
-    password = property(__getPassword, __setPassword)
+    password = property(getPassword, setPassword)
 
-    def __getNegotiatedConformance(self):
+    def getNegotiatedConformance(self):
         return self.settings.negotiatedConformance
 
-    def __setNegotiatedConformance(self, value):
+    def setNegotiatedConformance(self, value):
         self.settings.negotiatedConformance = value
 
     #
     # Functionality what server offers.
     #
-    negotiatedConformance = property(__getNegotiatedConformance, __setNegotiatedConformance)
+    negotiatedConformance = property(getNegotiatedConformance, setNegotiatedConformance)
 
 
-    def __getProposedConformance(self):
+    def getProposedConformance(self):
         return self.settings.proposedConformance
 
-    def __setProposedConformance(self, value):
+    def setProposedConformance(self, value):
         self.settings.proposedConformance = value
     #
     # When connection is made client tells what kind of services
     # it want's to use.
     #
-    proposedConformance = property(__getProposedConformance, __setProposedConformance)
+    proposedConformance = property(getProposedConformance, setProposedConformance)
 
-    def __getAuthentication(self):
+    def getAuthentication(self):
         return self.settings.authentication
 
-    def __setAuthentication(self, value):
+    def setAuthentication(self, value):
         self.settings.authentication = value
 
     #
@@ -360,50 +361,50 @@ class GXDLMSClient(object):
     # @see GXDLMSClient#getClientAddress
     # Used authentication.
     #
-    authentication = property(__getAuthentication, __setAuthentication)
+    authentication = property(getAuthentication, setAuthentication)
 
-    def __getPriority(self):
+    def getPriority(self):
         return self.settings.priority
 
-    def __setPriority(self, value):
+    def setPriority(self, value):
         self.settings.priority = value
 
     #
     # Used Priority.
     #
-    priority = property(__getPriority, __setPriority)
+    priority = property(getPriority, setPriority)
 
-    def __getServiceClass(self):
+    def getServiceClass(self):
         return self.settings.serviceClass
 
-    def __setServiceClass(self, value):
+    def setServiceClass(self, value):
         self.settings.serviceClass = value
     #
     # Used service class.
     #
-    serviceClass = property(__getServiceClass, __setServiceClass)
+    serviceClass = property(getServiceClass, setServiceClass)
 
-    def __getInvokeID(self):
+    def getInvokeID(self):
         return self.settings.invokeId
 
-    def __setInvokeID(self, value):
+    def setInvokeID(self, value):
         self.settings.invokeID = value
 
     #
     # Invoke ID.
     #
-    invokeID = property(__getInvokeID, __setInvokeID)
+    invokeID = property(getInvokeID, setInvokeID)
 
-    def __getInterfaceType(self):
+    def getInterfaceType(self):
         return self.settings.interfaceType
 
-    def __setInterfaceType(self, value):
+    def setInterfaceType(self, value):
         self.settings.interfaceType = value
 
     #
     # Interface type.
     #
-    interfaceType = property(__getInterfaceType, __setInterfaceType)
+    interfaceType = property(getInterfaceType, setInterfaceType)
     """Interface type."""
 
     #
@@ -422,27 +423,27 @@ class GXDLMSClient(object):
     def hdlcSettings(self):
         return self.settings.hdlc
 
-    def __getGateway(self):
+    def getGateway(self):
         return self.settings.gateway
 
-    def __setGateway(self, value):
+    def setGateway(self, value):
         self.settings.gateway = value
 
     #
     # Gateway settings.
     #
-    gateway = property(__getGateway, __setGateway)
+    gateway = property(getGateway, setGateway)
 
-    def __getProtocolVersion(self):
+    def getProtocolVersion(self):
         return self.settings.protocolVersion
 
-    def __setProtocolVersion(self, value):
+    def setProtocolVersion(self, value):
         self.settings.protocolVersion = value
 
     #
     # Protocol version.
     #
-    protocolVersion = property(__getProtocolVersion, __setProtocolVersion)
+    protocolVersion = property(getProtocolVersion, setProtocolVersion)
 
     #
     # Generates SNRM request.  his method is used to generate send
@@ -721,7 +722,7 @@ class GXDLMSClient(object):
     def __createDLMSObject(cls, classID, version, baseName, ln, accessRights):
         type_ = classID
         obj = cls.createObject(type_)
-        cls.__updateObjectData(obj, type_, version, baseName, ln, accessRights)
+        GXDLMSClient.__updateObjectData(obj, type_, version, baseName, ln, accessRights)
         return obj
 
     def parseSNObjects(self, buff, onlyKnownObjects, ignoreInactiveObjects):
@@ -745,7 +746,7 @@ class GXDLMSClient(object):
                 raise Exception("Invalid structure format.")
             classID = objects[1]
             baseName = int(objects[0]) & 0xFFFF
-            comp = self.__createDLMSObject(classID, objects[2], baseName, objects[3], None)
+            comp = GXDLMSClient.__createDLMSObject(classID, objects[2], baseName, objects[3], None)
             if (not onlyKnownObjects or type(comp) != GXDLMSObject):
                 if not ignoreInactiveObjects or comp.logicalName != "0.0.127.0.0.0":
                     items.append(comp)
@@ -814,7 +815,7 @@ class GXDLMSClient(object):
                 raise Exception("Invalid structure format.")
             classID = objects[0]
             if classID > 0:
-                comp = self.__createDLMSObject(classID, objects[1], 0, objects[2], objects[3])
+                comp = GXDLMSClient.__createDLMSObject(classID, objects[1], 0, objects[2], objects[3])
                 if (not onlyKnownObjects or type(comp) != GXDLMSObject):
                     if not ignoreInactiveObjects or comp.logicalName != "0.0.127.0.0.0":
                         items.append(comp)
@@ -1048,6 +1049,7 @@ class GXDLMSClient(object):
             count = (self.settings.maxPduSize - 12) / 10
             if len(list_) < count:
                 count = len(list_)
+            # pylint: disable=consider-using-min-builtin
             if count > 10:
                 count = 10
             _GXCommon.setObjectCount(count, data)
@@ -1336,7 +1338,7 @@ class GXDLMSClient(object):
                     comp = None
                     comp = self.objects.findByLN(classID, _GXCommon.toLogicalName(tmp[1]))
                     if comp is None:
-                        comp = self.__createDLMSObject(classID, 0, 0, tmp[1], None)
+                        comp = GXDLMSClient.__createDLMSObject(classID, 0, 0, tmp[1], None)
                         self.settings.objects.append(comp)
                         c.updateOBISCodeInformation(comp)
                     if comp.__class__ != GXDLMSObject.__class__:

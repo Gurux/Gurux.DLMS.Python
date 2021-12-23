@@ -145,6 +145,7 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
     def getUIDataType(self, index):
         if index == 3:
             return DataType.STRING
+        #pylint:disable=super-with-arguments
         return super(GXDLMSNtpSetup, self).getUIDataType(index)
 
     def getDataType(self, index):

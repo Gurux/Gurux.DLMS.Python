@@ -488,23 +488,23 @@ class TranslatorSimpleTags:
     @classmethod
     def getServiceErrorValue(cls, error, value):
         if error == ServiceError.APPLICATION_REFERENCE:
-            str_ = cls.__getApplicationReference().get(ApplicationReference(value))
+            str_ = TranslatorSimpleTags.__getApplicationReference().get(ApplicationReference(value))
         elif error == ServiceError.HARDWARE_RESOURCE:
-            str_ = cls.__getHardwareResource().get(HardwareResource(value))
+            str_ = TranslatorSimpleTags.__getHardwareResource().get(HardwareResource(value))
         elif error == ServiceError.VDE_STATE_ERROR:
-            str_ = cls.__getVdeStateError().get(VdeStateError(value))
+            str_ = TranslatorSimpleTags.__getVdeStateError().get(VdeStateError(value))
         elif error == ServiceError.SERVICE:
-            str_ = cls.__getService().get(Service(value))
+            str_ = TranslatorSimpleTags.__getService().get(Service(value))
         elif error == ServiceError.DEFINITION:
-            str_ = cls.__getDefinition().get(Definition(value))
+            str_ = TranslatorSimpleTags.__getDefinition().get(Definition(value))
         elif error == ServiceError.ACCESS:
-            str_ = cls.__getAccess().get(Access(value))
+            str_ = TranslatorSimpleTags.__getAccess().get(Access(value))
         elif error == ServiceError.INITIATE:
-            str_ = cls.__getInitiate().get(Initiate(value))
+            str_ = TranslatorSimpleTags.__getInitiate().get(Initiate(value))
         elif error == ServiceError.LOAD_DATASET:
-            str_ = cls.__getLoadDataSet().get(LoadDataSet(value))
+            str_ = TranslatorSimpleTags.__getLoadDataSet().get(LoadDataSet(value))
         elif error == ServiceError.TASK:
-            str_ = cls.__getTask().get(Task(value))
+            str_ = TranslatorSimpleTags.__getTask().get(Task(value))
         elif error == ServiceError.OTHER_ERROR:
             str_ = str(value)
         else:
@@ -518,12 +518,12 @@ class TranslatorSimpleTags:
     #
     @classmethod
     def serviceErrorToString(cls, error):
-        return cls.__getServiceErrors().get(error)
+        return TranslatorSimpleTags.__getServiceErrors().get(error)
 
     @classmethod
     def __getApplicationReferenceByValue(cls, value):
         ret = None
-        for k, v in cls.__getApplicationReference().items():
+        for k, v in TranslatorSimpleTags.__getApplicationReference().items():
             if value == v:
                 ret = k
                 break
@@ -539,7 +539,7 @@ class TranslatorSimpleTags:
     @classmethod
     def getServiceError(cls, value):
         error = None
-        for k, v in cls.__getServiceErrors().items():
+        for k, v in TranslatorSimpleTags.__getServiceErrors().items():
             if value == v:
                 error = k
                 break
@@ -550,7 +550,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getHardwareResourceByValue(cls, value):
         ret = None
-        for k, v in cls.__getHardwareResource().items():
+        for k, v in TranslatorSimpleTags.__getHardwareResource().items():
             if value == v:
                 ret = k
                 break
@@ -561,7 +561,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getVdeStateErrorByValue(cls, value):
         ret = None
-        for k, v in cls.__getVdeStateError().items():
+        for k, v in TranslatorSimpleTags.__getVdeStateError().items():
             if value == v:
                 ret = k
                 break
@@ -572,7 +572,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getServiceByValue(cls, value):
         ret = None
-        for k, v in cls.__getService().items():
+        for k, v in TranslatorSimpleTags.__getService().items():
             if value == v:
                 ret = k
                 break
@@ -583,7 +583,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getDefinitionByValue(cls, value):
         ret = None
-        for k, v in cls.__getDefinition().items():
+        for k, v in TranslatorSimpleTags.__getDefinition().items():
             if value == v:
                 ret = k
                 break
@@ -594,7 +594,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getAccessByValue(cls, value):
         ret = None
-        for k, v in cls.__getAccess().items():
+        for k, v in TranslatorSimpleTags.__getAccess().items():
             if value == v:
                 ret = k
                 break
@@ -605,7 +605,7 @@ class TranslatorSimpleTags:
     @classmethod
     def getInitiateByValue(cls, value):
         ret = None
-        for k, v in cls.__getInitiate().items():
+        for k, v in TranslatorSimpleTags.__getInitiate().items():
             if value == v:
                 ret = k
                 break
@@ -616,7 +616,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getLoadDataSetByValue(cls, value):
         ret = None
-        for k, v in cls.__getLoadDataSet().items():
+        for k, v in TranslatorSimpleTags.__getLoadDataSet().items():
             if value == v:
                 ret = k
                 break
@@ -627,7 +627,7 @@ class TranslatorSimpleTags:
     @classmethod
     def __getTaskByValue(cls, value):
         ret = None
-        for k, v in cls.__getTask().items():
+        for k, v in TranslatorSimpleTags.__getTask().items():
             if value == v:
                 ret = k
                 break
@@ -639,23 +639,23 @@ class TranslatorSimpleTags:
     def getError(cls, serviceError, value):
         ret = 0
         if serviceError == ServiceError.APPLICATION_REFERENCE:
-            ret = cls.__getApplicationReferenceByValue(value)
+            ret = TranslatorSimpleTags.__getApplicationReferenceByValue(value)
         elif serviceError == ServiceError.HARDWARE_RESOURCE:
-            ret = cls.__getHardwareResourceByValue(value)
+            ret = TranslatorSimpleTags.__getHardwareResourceByValue(value)
         elif serviceError == ServiceError.VDE_STATE_ERROR:
-            ret = cls.__getVdeStateErrorByValue(value)
+            ret = TranslatorSimpleTags.__getVdeStateErrorByValue(value)
         elif serviceError == ServiceError.SERVICE:
-            ret = cls.__getServiceByValue(value)
+            ret = TranslatorSimpleTags.__getServiceByValue(value)
         elif serviceError == ServiceError.DEFINITION:
-            ret = cls.__getDefinitionByValue(value)
+            ret = TranslatorSimpleTags.__getDefinitionByValue(value)
         elif serviceError == ServiceError.ACCESS:
-            ret = cls.__getAccessByValue(value)
+            ret = TranslatorSimpleTags.__getAccessByValue(value)
         elif serviceError == ServiceError.INITIATE:
-            ret = cls.getInitiateByValue(value)
+            ret = TranslatorSimpleTags.getInitiateByValue(value)
         elif serviceError == ServiceError.LOAD_DATASET:
-            ret = cls.__getLoadDataSetByValue(value)
+            ret = TranslatorSimpleTags.__getLoadDataSetByValue(value)
         elif serviceError == ServiceError.TASK:
-            ret = cls.__getTaskByValue(value)
+            ret = TranslatorSimpleTags.__getTaskByValue(value)
         elif serviceError == ServiceError.OTHER_ERROR:
             ret = int(value)
         return ret

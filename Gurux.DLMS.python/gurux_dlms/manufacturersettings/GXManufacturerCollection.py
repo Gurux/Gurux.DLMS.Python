@@ -142,7 +142,7 @@ class GXManufacturerCollection(list):
             for it in files:
                 if it.endswith(".obx"):
                     try:
-                        manufacturers.append(cls.__parse(os.path.join(path, it)))
+                        manufacturers.append(GXManufacturerCollection.__parse(os.path.join(path, it)))
                     except Exception as e:
                         print(e)
                         continue
