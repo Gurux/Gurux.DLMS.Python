@@ -44,7 +44,7 @@ from .VariableAccessSpecification import VariableAccessSpecification
 from .enums.DataType import DataType
 from .enums.Conformance import Conformance
 
-#pylint: disable=bad-option-value,useless-object-inheritance
+#pylint: disable=bad-option-value,useless-object-inheritance,too-many-public-methods
 class GXDLMSNotify(object):
     """This class is used to send data notify and push messages to the clients."""
 

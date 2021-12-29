@@ -156,7 +156,7 @@ class GXDLMSTranslator:
         data = msg.message
         settings = GXDLMSSettings(True)
         reply = GXReplyData()
-        reply.moreData = msg.moreData;
+        reply.moreData = msg.moreData
         reply.xml = (GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags))
         pos = 0
         found = False

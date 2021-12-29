@@ -114,6 +114,8 @@
     <Compile Include="gurux_dlms\Plc\enums\PlcDestinationAddress.py" />
     <Compile Include="gurux_dlms\Plc\enums\PlcDataLinkData.py" />
     <Compile Include="gurux_dlms\Plc\enums\__init__.py" />
+    <Compile Include="gurux_dlms\plc\GXDLMSPlcMeterInfo.py" />
+    <Compile Include="gurux_dlms\plc\__init__.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureClient.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureNotify.py" />
     <Compile Include="gurux_dlms\secure\GXDLMSSecureServer.py" />
