@@ -2074,6 +2074,7 @@ class GXDLMS:
                 if cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE,\
                     Command.GLO_METHOD_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE,\
                     Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
+                    data.command = Command.NONE
                     data.data.position = data.cipherIndex
                     GXDLMS.getPdu(settings, data)
                 if cmd == Command.READ_RESPONSE and data.totalCount > 1:
@@ -2154,21 +2155,25 @@ class GXDLMS:
 
     @classmethod
     def handleGloDedResponse(cls, settings, data, index):
-        if settings.cipher is None:
-            raise ValueError("Secure connection is not supported.")
-        if (data.moreData & RequestTypes.FRAME) == 0:
+        if data.xml and not data.xml.comments:
             data.data.position = data.data.position - 1
-            bb = GXByteBuffer(data.data)
-            data.data.size = data.data.position = index
-            p = None
-            if settings.cipher.dedicatedKey and (settings.connected & ConnectionState.DLMS) != 0:
-                p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
-            else:
-                p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
-            data.data.set(GXCiphering.decrypt(settings.cipher, p, bb))
-            data.command = Command.NONE
-            GXDLMS.getPdu(settings, data)
-            data.cipherIndex = data.data.size
+        else:
+            if settings.cipher is None:
+                raise ValueError("Secure connection is not supported.")
+            if (data.moreData & RequestTypes.FRAME) == 0:
+                data.data.position = data.data.position - 1
+                bb = GXByteBuffer(data.data)
+                data.data.size = data.data.position = index
+                p = None
+                if settings.cipher.dedicatedKey and (settings.connected & ConnectionState.DLMS) != 0:
+                    p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
+                else:
+                    p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                data.data.set(GXCiphering.decrypt(settings.cipher, p, bb))
+                data.cipheredCommand = data.command
+                data.command = Command.NONE
+                GXDLMS.getPdu(settings, data)
+                data.cipherIndex = data.data.size
 
     @classmethod
     def handleGeneralCiphering(cls, settings, data):

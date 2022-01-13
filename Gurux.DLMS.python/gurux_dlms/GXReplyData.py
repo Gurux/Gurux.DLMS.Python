@@ -127,6 +127,7 @@ class GXReplyData:
         self.packetLength = 0
         self.valueType = DataType.NONE
         self.cipherIndex = 0
+        self.cipheredCommand = 0
         self.time = None
         if self.xml:
             self.xml.xml = ""
