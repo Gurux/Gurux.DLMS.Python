@@ -176,8 +176,7 @@ class Unit(GXIntEnum):
 
     WOBBE = 61
 
-    #Mol % molar fraction of gas composition mole percent (Basic gas
-    #composition unit).
+    #Mol % molar fraction of gas composition mole percent (Basic gas composition unit).
     MOLE_PERCENT = 62
 
     MASS_DENSITY = 63
@@ -187,9 +186,162 @@ class Unit(GXIntEnum):
 
     JOULE_KILOGRAM = 65
 
-    #dBm Signal strength =e.g.  of GSM radio systems).
-    SIGNAL_STRENGTH = 70
+    # Pressure, gram per square centimeter.
+    PRESSURE_GRAM_PER_SQUARE_CENTIMETER = 66
 
+    # Pressure, atmosphere.
+    PRESSURE_ATMOSPHERE = 67
+
+    # dBm Signal strength =e.g.  of GSM radio systems).
+    SIGNAL_STRENGTH = 70
+   
+     # Signal strength dB microvolt.    
+    SIGNAL_STRENGTH_MICRO_VOLT = 71
+    
+    # Logarithmic unit that expresses the ratio between two values of a physical quantity    
+    DB = 72
+    
+    # Length in inches.
+    INCH = 128
+    
+    # Foot (Length).    
+    FOOT = 129
+    
+    # Pound (mass).
+    POUND = 130
+    
+    # Fahrenheit.
+    FAHRENHEIT = 131
+    
+    # Rankine.    
+    RANKINE = 132
+    
+    # Square inch.
+    SQUARE_INCH = 133
+    
+    # Square foot.
+    SQUARE_FOOT = 134
+    
+    # Acre.
+    ACRE = 135
+    
+    # Cubic inch.
+    CUBIC_INCH = 136
+    
+    # Cubic foot.
+    CUBIC_FOOT = 137
+    
+    # Acre foot.
+    ACRE_FOOT = 138
+    
+    # Gallon (imperial).
+    GALLON_IMPERIAL = 139
+    
+    #  Gallon (US).
+    GALLON_US = 140
+    
+    # Pound force.
+    POUND_FORCE = 141
+    
+    # Pound force per square inch.
+    POUND_FORCE_PER_SQUARE_INCH = 142
+    
+    # Pound per cubic foot.
+    POUND_PER_CUBIC_FOOT = 143
+    
+    # Pound per (foot second).
+    POUND_PER_FOOT_SECOND = 144
+    
+    # Square foot per second.
+    SQUARE_FOOT_PER_SECOND = 145
+    
+    # British thermal unit.
+    BRITISH_THERMAL_UNIT = 146
+    
+    # Therm EU.
+    THERM_EU = 147
+    
+    # Therm US.
+    THERM_US = 148
+    
+    # British thermal unit per pound.
+    BRITISH_THERMAL_UNIT_PER_POUND = 149
+    
+    # British thermal unit per cubic foot.
+    BRITISH_THERMAL_UNIT_PER_CUBIC_FOOT = 150
+    
+    # Cubic feet.
+    CUBIC_FEET = 151
+    
+    # Foot per second.
+    FOOT_PER_SECOND = 152
+    
+    # Cubic foot per second.
+    CUBIC_FOOT_PER_SECOND = 153
+    
+    # Cubic foot per min.
+    CUBIC_FOOT_PER_MIN = 154
+    
+    # Cubic foot per hour.
+    CUBIC_FOOT_PER_HOUR = 155
+    
+    # Cubic foot per day
+    CUBIC_FOOT_PER_DAY = 156
+    
+    # Acre foot per second.
+    ACRE_FOOT_PER_SECOND = 157
+    
+    # Acre foot per min.
+    ACRE_FOOT_PER_MIN = 158
+    
+    #  Acre foot per hour.
+    ACRE_FOOT_PER_HOUR = 159
+    
+    #  Acre foot per day.
+    ACRE_FOOT_PER_DAY = 160
+    
+    # Imperial gallon.
+    IMPERIAL_GALLON = 161
+    
+    # Imperial gallon per second.
+    IMPERIAL_GALLON_PER_SECOND = 162
+    
+    # Imperial gallon per min.
+    IMPERIAL_GALLON_PER_MIN = 163
+    
+    # Imperial gallon per hour.
+    IMPERIAL_GALLON_PER_HOUR = 164
+    
+    # Imperial gallon per day.
+    IMPERIAL_GALLON_PER_DAY = 165
+    
+    # US gallon.
+    US_GALLON = 166
+    
+    # US gallon per second.
+    US_GALLON_PER_SECOND = 167
+    
+    # US gallon per min.
+    US_GALLON_PER_MIN = 168
+    
+    # US gallon per hour.
+    US_GALLON_PER_HOUR = 169
+    
+    # US gallon per day.
+    US_GALLON_PER_DAY = 170
+    
+    # British thermal unit per second.
+    BRITISH_THERMAL_UNIT_PER_SECOND = 171
+    
+    # British thermal unit per minute.
+    BRITISH_THERMAL_UNIT_PER_MIN = 172
+    
+    # British thermal unit per hour.
+    BRITISH_THERMAL_UNIT_PER_HOUR = 173
+    
+    # British thermal unit per day.
+    BRITISH_THERMAL_UNIT_PER_DAY = 174
+   
     #Other Unit.
     OTHER_UNIT = 254
 

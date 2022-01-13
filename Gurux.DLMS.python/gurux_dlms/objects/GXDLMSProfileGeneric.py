@@ -471,7 +471,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                         if isinstance(data, GXDateTime):
                             lastDate = data.value
                         row[colIndex] = data
-                    elif type_ == DataType.DATETIME and data is None and self.capturePeriod != 0:
+                    elif type_ == DataType.DATETIME and data is None:
                         if not lastDate and self.buffer:
                             lastDate = self.buffer[len(self.buffer) - 1][colIndex].value
                         if lastDate:

@@ -1,4 +1,4 @@
 gurux-common==1.0.13
-gurux-dlms==1.0.117
+gurux-dlms==1.0.118
 gurux-net==1.0.17
 gurux-serial==1.0.17

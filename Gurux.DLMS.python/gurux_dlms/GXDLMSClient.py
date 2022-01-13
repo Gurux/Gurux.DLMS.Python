@@ -699,10 +699,9 @@ class GXDLMSClient(object):
         return reply
 
     def disconnectRequest(self, force=False):
-        self.settings.maxPduSize = 0xFFFF
         if not force and self.settings.connected == ConnectionState.NONE:
             return None
-        if self.interfaceType == InterfaceType.HDLC or self.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+        if GXDLMS.useHdlc(self.interfaceType):
             self.settings.connected = ConnectionState.NONE
             reply = GXDLMS.getHdlcFrame(self.settings, Command.DISCONNECT_REQUEST, None)
         elif force or self.settings.connected == ConnectionState.DLMS:

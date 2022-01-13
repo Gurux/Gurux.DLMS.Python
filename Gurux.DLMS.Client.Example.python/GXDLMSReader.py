@@ -497,16 +497,19 @@ class GXDLMSReader:
             try:
                 start = datetime.datetime.now()
                 end = start
-                start.replace(hour=0, minute=0, second=0, microsecond=0)
-                end.replace(minute=0, second=0, microsecond=0)
+                start = start.replace(hour=0, minute=0, second=0, microsecond=0)
+                end = end.replace(minute=0, second=0, microsecond=0)
                 cells = self.readRowsByRange(it, start, end)
                 for rows in cells:
+                    row = ""
                     for cell in rows:
+                        if row:
+                            row += " | "
                         if isinstance(cell, bytearray):
-                            print(GXByteBuffer.hex(cell) + " | ")
+                            row += GXByteBuffer.hex(cell)
                         else:
-                            self.writeTrace(str(cell) + " | ", TraceLevel.INFO)
-                    self.writeTrace("", TraceLevel.INFO)
+                            row += str(cell) 
+                    self.writeTrace(row, TraceLevel.INFO)
             except Exception as ex:
                 self.writeTrace("Error! Failed to read last day: " + str(ex), TraceLevel.ERROR)
 
