@@ -1,5 +1,7 @@
 Credits
 =======
+  - GXDLMSConverter.changeType issue fixed when string value is converted for boolean value.
+    * [alexav](https://www.gurux.fi/user/185756)
   - HDLC broadcast support fixed.
     * [Diego Fontana](https://github.com/diegofontana)
   - Profile generic sortMethod cast from int to SortMethod enum.

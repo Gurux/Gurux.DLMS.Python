@@ -347,15 +347,6 @@ class GXDLMSReader:
         data = self.client.write(item, attributeIndex)
         self.readDLMSPacket(data)
 
-    def GetColumns(self, pg):
-        entries = self.read(pg, 7)
-        print("Reading Profile Generic: " + pg.logicalName() + " " + pg.description() + " entries:" + str(entries))
-        reply = GXReplyData()
-        data = self.client.read(pg.name, pg.objectType, 3)[0]
-        self.readDataBlock(data, reply)
-        self.client.updateValue(pg, 3, reply.value)
-        return pg.captureObjects
-
     def readRowsByEntry(self, pg, index, count):
         data = self.client.readRowsByEntry(pg, index, count)
         reply = GXReplyData()

@@ -206,7 +206,7 @@ class GXDLMSConverter:
         if type_ == DataType.BCD:
             ret = int(value)
         elif type_ == DataType.BOOLEAN:
-            ret = bool(value)
+            ret = bool(int(value))
         elif type_ == DataType.COMPACT_ARRAY:
             raise ValueError("Can't change compact array types.")
         elif type_ == DataType.DATE:
