@@ -97,7 +97,7 @@ class GXReplyData:
         # Is GBT streaming in use.
         self.streaming = False
         # GBT Window size.  This is for internal use.
-        self.windowSize = 0
+        self.gbtWindowSize = 0
         # Client address of the notification message.  Notification
         # message sets
         # this.
@@ -195,7 +195,7 @@ class GXReplyData:
     # Is GBT streaming.
     #
     def isStreaming(self):
-        return (self.moreData & RequestTypes.FRAME) == 0 and self.streaming and (self.blockNumberAck * self.windowSize) + 1 > self.blockNumber
+        return (self.moreData & RequestTypes.FRAME) == 0 and self.streaming and (self.blockNumberAck * self.gbtWindowSize) + 1 > self.blockNumber
 
     def __str__(self):
         if self.xml:

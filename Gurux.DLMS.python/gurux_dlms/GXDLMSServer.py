@@ -108,10 +108,10 @@ class GXDLMSServer(object):
     items = property(getItems)
 
     def getGbtWindowSize(self):
-        return self.settings.windowSize
+        return self.settings.gbtWindowSize
 
     def setGbtWindowSize(self, value):
-        self.settings.windowSize = value
+        self.settings.gbtWindowSize = value
 
     #GBT Window size.
     gbtWindowSize = property(getGbtWindowSize, setGbtWindowSize)
@@ -897,7 +897,7 @@ class GXDLMSServer(object):
             if self.transaction.command == Command.GET_REQUEST:
                 if sr.count == 0:
                     self.settings.setBlockNumberAck(self.settings.blockNumberAck + 1)
-                    sr.setCount(self.settings.windowSize)
+                    sr.setCount(self.settings.gbtWindowSize)
                 GXDLMSLNCommandHandler.getRequestNextDataBlock(self.settings, 0, self, data, self.replyData, None, True)
                 if sr.count != 0:
                     sr.setCount(sr.getCount() - 1)
@@ -912,18 +912,18 @@ class GXDLMSServer(object):
                     self.replyData.set(self.generateConfirmedServiceError(ConfirmedServiceError.INITIATE_ERROR, ServiceError.SERVICE, Service.UNSUPPORTED))
                 else:
                     self.transaction.data.set(data)
-                    igonoreAck = (bc & 0x40) != 0 and (blockNumberAck * self.settings.windowSize) + 1 > blockNumber
-                    windowSize = self.settings.windowSize
+                    igonoreAck = (bc & 0x40) != 0 and (blockNumberAck * self.settings.gbtWindowSize) + 1 > blockNumber
+                    gbtWindowSize = self.settings.gbtWindowSize
                     bn = self.settings.blockIndex
                     if (bc & 0x80) != 0:
                         self.handleCommand(self.transaction.command, self.transaction.data, sr)
                         self.transaction = None
                         igonoreAck = False
-                        windowSize = 1
+                        gbtWindowSize = 1
                     if igonoreAck:
                         return False
                     self.replyData.setUInt8(Command.GENERAL_BLOCK_TRANSFER)
-                    self.replyData.setUInt8(int((0x80 | windowSize)))
+                    self.replyData.setUInt8(int((0x80 | gbtWindowSize)))
                     self.settings.blockIndex = self.settings.blockIndex + 1
                     self.replyData.setUInt16(bn)
                     self.replyData.setUInt16(blockNumber)
@@ -938,7 +938,7 @@ class GXDLMSServer(object):
             else:
                 self.transaction = GXDLMSLongTransaction(None, data.getUInt8(), data)
                 self.replyData.setUInt8(Command.GENERAL_BLOCK_TRANSFER)
-                self.replyData.setUInt8((0x80 | self.settings.windowSize))
+                self.replyData.setUInt8((0x80 | self.settings.gbtWindowSize))
                 self.replyData.setUInt16(blockNumber)
                 blockNumberAck += 1
                 self.replyData.setUInt16(blockNumberAck)

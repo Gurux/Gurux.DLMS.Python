@@ -276,7 +276,7 @@ class GXDLMSLNCommandHandler:
         settings.increaseBlockIndex()
         p = GXDLMSLNParameters(settings, invokeID, Command.GENERAL_BLOCK_TRANSFER if streaming else Command.GET_RESPONSE, 2, None, bb, ErrorCode.OK)
         p.streaming = streaming
-        p.windowSize = settings.gbtWndowSize
+        p.gbtWindowSize = settings.gbtWndowSize
         #  If transaction is not in progress.
         if server.getTransaction() is None:
             p.status = int(ErrorCode.NO_LONG_GET_OR_READ_IN_PROGRESS)

@@ -468,7 +468,7 @@ class GXDLMS:
                 value = 0x80
             elif p.streaming:
                 value |= 0x40
-            value |= p.windowSize
+            value |= p.gbtWindowSize
             reply.setUInt8(value)
             reply.setUInt16(p.blockIndex)
             p.blockIndex += 1
@@ -1921,10 +1921,10 @@ class GXDLMS:
     def handleGbt(cls, settings, data):
         # pylint: disable=broad-except
         index = data.data.position - 1
-        data.windowSize = settings.windowSize
+        data.gbtWindowSize = settings.gbtWindowSize
         bc = data.data.getUInt8()
         data.streaming = (bc & 0x40) != 0
-        windowSize = int(bc & 0x3F)
+        gbtWindowSize = int(bc & 0x3F)
         bn = data.data.getUInt16()
         bna = data.data.getUInt16()
 
@@ -1953,7 +1953,7 @@ class GXDLMS:
             if data.xml.comments:
                 data.xml.appendComment("Last block: " + (bc & 0x80) != 0)
                 data.xml.appendComment("Streaming: " + data.streaming)
-                data.xml.appendComment("Window size: " + windowSize)
+                data.xml.appendComment("Window size: " + gbtWindowSize)
             data.xml.appendLine(TranslatorTags.BLOCK_CONTROL, None, data.xml.integerToHex(bc, 2))
             data.xml.appendLine(TranslatorTags.BLOCK_NUMBER, None, data.xml.integerToHex(data.blockNumber, 4))
             data.xml.appendLine(TranslatorTags.BLOCK_NUMBER_ACK, None, data.xml.integerToHex(data.blockNumberAck, 4))

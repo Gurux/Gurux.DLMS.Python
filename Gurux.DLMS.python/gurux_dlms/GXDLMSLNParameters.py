@@ -69,7 +69,7 @@ class GXDLMSLNParameters:
         self.multipleBlocks = forSettings.count != forSettings.index
         # Is this last block in send.
         self.lastBlock = forSettings.count == forSettings.index
-        self.windowSize = 1
+        self.gbtWindowSize = 1
         # Is GBT streaming used.
         self.streaming = False
         if self.settings:
