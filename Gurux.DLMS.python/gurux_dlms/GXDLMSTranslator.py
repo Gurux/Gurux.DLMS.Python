@@ -1910,3 +1910,7 @@ class GXDLMSTranslator:
         s = GXDLMSXmlSettings(self.outputType, self.hex, self.showStringAsHex, self.tagsByName)
         self.__getAllDataNodes(ET.fromstring(xml).iter(), s)
         return s.data
+
+    def setcomments(self, c):
+        self.comments = c
+
