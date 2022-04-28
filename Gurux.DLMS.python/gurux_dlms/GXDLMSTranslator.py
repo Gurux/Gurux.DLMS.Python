@@ -399,8 +399,10 @@ class GXDLMSTranslator:
         if not isinstance(msg, (GXDLMSTranslatorMessage)):
             if not isinstance(msg, GXByteBuffer):
                 data = GXByteBuffer(msg)
-                msg = GXDLMSTranslatorMessage()
-                msg.message = data
+            else:
+                data = msg
+            msg = GXDLMSTranslatorMessage()
+            msg.message = data
             if not msg:
                 raise ValueError("msg")
         msg.exception = None
