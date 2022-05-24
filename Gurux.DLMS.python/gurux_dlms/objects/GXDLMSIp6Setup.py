@@ -54,6 +54,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSIp6Setup, self).__init__(ObjectType.IP6_SETUP, ln, sn)
         self.addressConfigMode = AddressConfigMode.AUTO
         self.dataLinkLayerReference = None

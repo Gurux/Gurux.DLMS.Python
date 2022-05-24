@@ -52,6 +52,7 @@ class GXDLMSMBusMasterPortSetup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSMBusMasterPortSetup, self).__init__(ObjectType.MBUS_MASTER_PORT_SETUP, ln, sn)
         # The communication speed supported by the port.
         self.commSpeed = BaudRate.BAUDRATE_2400

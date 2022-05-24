@@ -48,6 +48,7 @@ class GXObisValueItemCollection(list):
         if not isinstance(item, GXObisValueItem):
             raise TypeError('item is not of type GXObisValueItem')
         if not self.contains(item):
+            #pylint: disable=super-with-arguments
             super(GXObisValueItemCollection, self).append(item)
 
     def contains(self, item):

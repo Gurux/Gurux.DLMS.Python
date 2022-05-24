@@ -193,8 +193,7 @@ class _GXCommon:
         count2 = count
         sb = ""
         if count2 > 0:
-            if count2 > 8:
-                count2 = 8
+            count2 = min(count2, 8)
             pos = 7
             while pos != 8 - count2 - 1:
                 if (value & (1 << pos)) != 0:

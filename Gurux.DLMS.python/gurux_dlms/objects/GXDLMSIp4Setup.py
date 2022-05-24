@@ -54,6 +54,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSIp4Setup, self).__init__(ObjectType.IP4_SETUP, ln, sn)
         self.dataLinkLayerReference = None
         self.ipAddress = None

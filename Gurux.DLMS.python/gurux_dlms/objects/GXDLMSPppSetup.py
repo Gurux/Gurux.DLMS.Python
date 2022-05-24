@@ -57,6 +57,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
     # Short Name of the object.
     #
     def __init__(self, ln=None, sn=0):
+        #pylint: disable=super-with-arguments
         super(GXDLMSPppSetup, self).__init__(ObjectType.PPP_SETUP, ln, sn)
         self.ipcpOptions = list()
         self.phyReference = None

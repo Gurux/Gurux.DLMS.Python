@@ -54,6 +54,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSPushSetup, self).__init__(ObjectType.PUSH_SETUP, ln, sn)
         self.pushObjectList = list()
         self.communicationWindow = list()
@@ -72,6 +73,32 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 self.randomisationStartInterval,
                 self.numberOfRetries,
                 self.repetitionDelay]
+
+    def getPushValues(self, client, values):
+        """
+        Get received objects from push message.
+
+        values: Received values.
+        Returns clone of captured COSEM objects.
+        """
+        if len(values) != len(self.pushObjectList):
+            raise ValueError("Size of the push object list is different than values.")
+        pos = 0
+        objects = []
+        for k, v in self.pushObjectList:
+            co = GXDLMSCaptureObject()
+            co.attributeIndex = v.attributeIndex
+            co.dataIndex = v.dataIndex
+            objects.append((k, co))
+            if v.attributeIndex == 0:
+                tmp = values[pos]
+                index = 1
+                while index <= k.getAttributeCount():
+                    client.updateValue(k, index, tmp[index - 1])
+                    index = 1 + index
+            else:
+                client.updateValue(k, v.attributeIndex, values[pos])
+            pos = 1 + pos
 
     def invoke(self, settings, e):
         if e.index != 1:

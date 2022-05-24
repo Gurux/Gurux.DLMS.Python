@@ -62,6 +62,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     # @param sn
     # Short Name of the object.
     def __init__(self, ln=None, sn=0):
+        #pylint: disable=super-with-arguments
         super(GXDLMSProfileGeneric, self).__init__(ObjectType.PROFILE_GENERIC, ln, sn)
         self.version = 1
         self.buffer = list()

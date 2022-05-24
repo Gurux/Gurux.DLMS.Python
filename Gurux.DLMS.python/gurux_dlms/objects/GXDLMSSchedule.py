@@ -56,6 +56,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSSchedule, self).__init__(ObjectType.SCHEDULE, ln, sn)
         # Specifies the scripts to be executed at given times.
         self.entries = list()

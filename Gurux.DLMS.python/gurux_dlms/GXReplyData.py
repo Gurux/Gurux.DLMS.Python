@@ -110,6 +110,7 @@ class GXReplyData:
         self.gateway = None
         # Data type.
         self.valueType = DataType.NONE
+        self.cipheredCommand = Command.NONE
 
     def clear(self):
         """"
@@ -199,7 +200,7 @@ class GXReplyData:
 
     def __str__(self):
         if self.xml:
-            return self.xml
+            return str(self.xml)
         if self.data is None:
             return ""
         return str(self.data)

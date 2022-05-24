@@ -145,7 +145,10 @@ disable=print-statement,
         too-many-statements,
         missing-docstring,
         line-too-long,
-        too-many-lines
+        too-many-lines,
+        use-list-literal,
+        super-with-arguments,
+        use-dict-literal
 
 
 # Enable the message, report, category or checker with the given id(s). You can

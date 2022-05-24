@@ -1794,6 +1794,9 @@ class GXDLMS:
                 else:
                     reply.readPosition = reply.data.position
                     GXDLMS.getValueFromData(settings, reply)
+                    if reply.value is None:
+                        #Increase read position if data is null. This is a special case.
+                        reply.readPosition = 1 + reply.readPosition
                     reply.data.position = reply.readPosition
                     if values:
                         values[pos] = reply.value

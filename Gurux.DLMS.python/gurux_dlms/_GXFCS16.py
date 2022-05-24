@@ -90,7 +90,6 @@ class _GXFCS16:
         return fcs16 & 0xFFFF
 
     ___CRCPOLY = 0xD3B6BA00
-    
     #Reserved for internal use.
     @classmethod
     def countFCS24(cls, buff, index, count):

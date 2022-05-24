@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Read Short Name association view attibute 2.-->
+<Messages>
+  <ReadRequest Qty="01" >
+  <VariableName Value="FA08" />
+</ReadRequest>
+</Messages>

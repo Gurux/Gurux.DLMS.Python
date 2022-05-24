@@ -67,6 +67,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
     def getUIDataType(self, index):
         if index in (2, 5, 6):
             return DataType.DATETIME
+        #pylint: disable=super-with-arguments
         return super(GXDLMSClock, self).getUIDataType(index)
 
     def getValues(self):

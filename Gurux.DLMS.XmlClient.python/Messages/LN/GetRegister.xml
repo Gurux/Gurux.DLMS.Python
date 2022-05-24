@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Messages>
+    <GetRequest>
+        <GetRequestNormal>
+            <InvokeIdAndPriority Value="193" />
+            <AttributeDescriptor>
+                <!--REGISTER-->
+                <ClassId Value="3" />
+                <!--1.1.21.25.0.255-->
+                <InstanceId Value="0101151900FF" />
+                <AttributeId Value="2" />
+            </AttributeDescriptor>
+        </GetRequestNormal>
+    </GetRequest>
+    <GetResponse>
+        <GetResponseNormal>
+            <InvokeIdAndPriority Value="193" />
+            <Result>
+                <Data>
+                    <Int32 Value="379" />
+                </Data>
+            </Result>
+        </GetResponseNormal>
+    </GetResponse>
+</Messages>

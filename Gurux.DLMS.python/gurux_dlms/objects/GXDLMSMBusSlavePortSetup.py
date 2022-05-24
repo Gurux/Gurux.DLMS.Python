@@ -54,6 +54,7 @@ class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
     # Short Name of the object.
     #
     def __init__(self, ln=None, sn=0):
+        #pylint: disable=super-with-arguments
         super(GXDLMSMBusSlavePortSetup, self).__init__(ObjectType.MBUS_SLAVE_PORT_SETUP, ln, sn)
         # Defines the baud rate for the opening sequence.
         self.defaultBaud = BaudRate.BAUDRATE_300

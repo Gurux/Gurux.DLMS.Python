@@ -51,6 +51,7 @@ class GXDLMSMacAddressSetup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSMacAddressSetup, self).__init__(ObjectType.MAC_ADDRESS_SETUP, ln, sn)
         self.macAddress = None
 

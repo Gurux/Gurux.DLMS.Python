@@ -457,7 +457,7 @@ class GXDLMSTranslator:
                             else:
                                 if data.command == Command.SNRM or data.command == Command.UA:
                                     xml.appendStartTag(data.command)
-                                    self.__pduToXml_(xml, data.data, True, True, True)
+                                    self._pduToXml2(xml, data.data, True, True, True)
                                     xml.appendEndTag(data.command)
                                     xml.setXmlLength(xml.getXmlLength() + 2)
                                 else:
@@ -663,7 +663,7 @@ class GXDLMSTranslator:
     #
     def __pduToXml(self, value, omitDeclaration, omitNameSpace):
         xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
-        return self.__pduToXml_(xml, value, omitDeclaration, omitNameSpace, True)
+        return self._pduToXml2(xml, value, omitDeclaration, omitNameSpace, True)
 
     @classmethod
     def isCiphered(cls, cmd):
@@ -683,7 +683,7 @@ class GXDLMSTranslator:
     #            Bytes to convert.
     # Converted XML.
     #
-    def __pduToXml_(self, xml, value, omitDeclaration, omitNameSpace, allowUnknownCommand=True):
+    def _pduToXml2(self, xml, value, omitDeclaration, omitNameSpace, allowUnknownCommand=True):
         #pylint: disable=bad-option-value,too-many-arguments,too-many-locals,
         #too-many-nested-blocks,redefined-variable-type
         if not value:
@@ -814,7 +814,7 @@ class GXDLMSTranslator:
                         if p.blockCipherKey:
                             data2 = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, value))
                             xml.startComment("Decrypt data: " + str(data2))
-                            self.__pduToXml_(xml, data2, omitDeclaration, omitNameSpace, False)
+                            self._pduToXml2(xml, data2, omitDeclaration, omitNameSpace, False)
                             xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not correct.
@@ -836,7 +836,7 @@ class GXDLMSTranslator:
                     tmp = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, tmp))
                     len_ = xml.getXmlLength()
                     xml.startComment("Decrypt data: " + str(tmp))
-                    self.__pduToXml_(xml, tmp, omitDeclaration, omitNameSpace, False)
+                    self._pduToXml2(xml, tmp, omitDeclaration, omitNameSpace, False)
                     xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not
@@ -871,7 +871,7 @@ class GXDLMSTranslator:
             xml.appendStartTag(cmd)
             xml.appendLine(TranslatorTags.NETWORK_ID, None, str(id_))
             xml.appendLine(TranslatorTags.PHYSICAL_DEVICE_ADDRESS, None, GXByteBuffer.hex(tmp, False, 0, len_))
-            self.__pduToXml_(xml, GXByteBuffer(value.remaining()), omitDeclaration, omitNameSpace, allowUnknownCommand)
+            self._pduToXml2(xml, GXByteBuffer(value.remaining()), omitDeclaration, omitNameSpace, allowUnknownCommand)
             xml.appendEndTag(cmd)
         elif cmd == Command.EXCEPTION_RESPONSE:
             data.xml = xml

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Read clock from the meter.-->
+<Messages>
+  <GetRequest>
+    <GetRequestNormal>
+      <InvokeIdAndPriority Value="129" />
+      <AttributeDescriptor>
+        <!--CLOCK-->
+        <ClassId Value="0008" />
+        <!--0.0.1.0.0.255-->
+        <InstanceId Value="0000010000FF" />
+        <AttributeId Value="02" />
+      </AttributeDescriptor>
+    </GetRequestNormal>
+  </GetRequest>
+</Messages>

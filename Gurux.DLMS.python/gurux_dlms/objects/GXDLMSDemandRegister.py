@@ -101,6 +101,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
     def isRead(self, index):
         if index == 4:
             return self.unit != 0
+        #pylint: disable=super-with-arguments
         return super(GXDLMSDemandRegister, self).isRead(index)
 
     #
@@ -152,6 +153,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
         return 2
 
     def getDataType(self, index):
+        #pylint: disable=super-with-arguments
         if index == 1:
             ret = DataType.OCTET_STRING
         elif index == 2:

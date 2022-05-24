@@ -53,6 +53,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSMBusClient, self).__init__(ObjectType.MBUS_CLIENT, ln, sn)
         self.captureDefinition = list()
         self.mBusPortReference = None

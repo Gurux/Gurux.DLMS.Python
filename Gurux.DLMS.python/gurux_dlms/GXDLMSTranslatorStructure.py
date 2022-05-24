@@ -72,7 +72,7 @@ class GXDLMSTranslatorStructure:
         self.omitNameSpace = False
 
     def __str__(self):
-        return self.sb.__str__()
+        return str(self.sb)
 
     def getDataType(self, type_):
         return self.__getTag(_GXCommon.DATA_TYPE_OFFSET + type_)

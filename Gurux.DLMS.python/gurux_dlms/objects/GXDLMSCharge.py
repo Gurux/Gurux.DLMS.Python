@@ -179,6 +179,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
     def getUIDataType(self, index):
         if index in (7, 10):
             return DataType.DATETIME
+        #pylint: disable=super-with-arguments
         return super(GXDLMSCharge, self).getUIDataType(index)
 
     @classmethod

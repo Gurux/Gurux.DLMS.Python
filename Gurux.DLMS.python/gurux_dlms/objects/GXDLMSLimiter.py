@@ -54,6 +54,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSLimiter, self).__init__(ObjectType.LIMITER, ln, sn)
         self.monitoredValue = None
         self.monitoredAttributeIndex = 0
@@ -131,6 +132,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getDataType(self, index):
+        #pylint: disable=super-with-arguments
         if index == 1:
             ret = DataType.OCTET_STRING
         elif index == 2:

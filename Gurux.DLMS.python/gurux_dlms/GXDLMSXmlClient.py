@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import xml.etree.cElementTree as ET
 from .secure.GXDLMSSecureClient import GXDLMSSecureClient
 from .enums import InterfaceType, Command, DataType
 from .GXDLMS import GXDLMS
@@ -41,6 +42,7 @@ from .GXDLMSXmlSettings import GXDLMSXmlSettings
 from .GXDLMSTranslator import GXDLMSTranslator
 from .enums.Security import Security
 from .GXDLMSXmlPdu import GXDLMSXmlPdu
+from .TranslatorOutputType import TranslatorOutputType
 
 class GXDLMSXmlClient(GXDLMSSecureClient):
     """
@@ -54,7 +56,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
     # @param type
     #            XML type.
     #
-    def __init__(self, type_):
+    def __init__(self, type_ = TranslatorOutputType.SIMPLE_XML):
         GXDLMSSecureClient.__init__(self)
         # XML client don't throw exceptions. It serializes them as a default. Set
         # value to true, if exceptions are thrown.
@@ -67,7 +69,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
 
     @classmethod
     def removeRecursively(cls, node, nodeType, name):
-        if node.getNodeType() == nodeType and (name is None or node.getNodeName() == name):
+        if node.getNodeType() == nodeType and (name is None or node.tag == name):
             node.getParentNode().removeChild(node)
         else:
             #  check the children recursively
@@ -80,117 +82,75 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
     #
     # Load XML commands from the string or file.
     #
-    # @param xml
-    #            XML string
+    # @param filename
+    #            XML file name.
     # @param settings
     #            Load settings.
     # Loaded XML objects.
     # pylint: disable=too-many-locals,too-many-nested-blocks
-    def load(self, doc, loadSettings):
-        #  Remove comments.
-        self.removeRecursively(doc, Node.COMMENT_NODE, None)
+    def load(self, filename, loadSettings = None):
+        tree = ET.parse(filename)
+        root = tree.getroot()
         actions = list()
         description = None
         error = None
         errorUrl = None
         sleep = None
-        pos = 0
-        while pos != doc.getChildNodes().getLength():
-            m1 = doc.getChildNodes().item(pos)
-            if m1.getNodeType() == Node.ELEMENT_NODE:
-                pos2 = 0
-                while pos2 != m1.getChildNodes().getLength():
-                    node = m1.getChildNodes().item(pos2)
-                    if node.getNodeType() == Node.ELEMENT_NODE:
-                        if node.getNodeName() == "Description":
-                            description = node.getNodeValue()
-                            pos2 += 1
-                            continue
-                        if node.getNodeName() == "Error":
-                            error = node.getNodeValue()
-                            pos2 += 1
-                            continue
-                        if node.getNodeName() == "ErrorUrl":
-                            errorUrl = node.getNodeValue()
-                            pos2 += 1
-                            continue
-                        if node.getNodeName() == "Sleep":
-                            sleep = node.getNodeValue()
-                            pos2 += 1
-                            continue
-                        if loadSettings and node.getNodeName() == "GetRequest":
-                            if loadSettings.start() and loadSettings.end:
-                                pos3 = 0
-                                while pos3 != node.getChildNodes().getLength():
-                                    n1 = node.getChildNodes().item(pos3)
-                                    if n1.getNodeName() == "GetRequestNormal":
-                                        pos4 = 0
-                                        while pos4 != n1.getChildNodes().getLength():
-                                            n2 = n1.getChildNodes().item(pos4)
-                                            if n2.getNodeName() == "AccessSelection":
-                                                pos5 = 0
-                                                while pos5 != n2.getChildNodes().getLength():
-                                                    n3 = n2.getChildNodes().item(pos5)
-                                                    if n3.getNodeName() == "AccessSelector":
-                                                        if not n3.getAttributes().getNamedItem("Value").getNodeValue() == "1":
-                                                            break
-                                                    elif n3.getNodeName() == "AccessParameters":
-                                                        pos6 = 0
-                                                        while pos6 != n3.getChildNodes().getLength():
-                                                            n4 = n3.getChildNodes().item(pos6)
-                                                            if n4.getNodeName() == "Structure":
-                                                                start = True
-                                                                pos7 = 0
-                                                                while pos7 != n4.getChildNodes().getLength():
-                                                                    n5 = n4.getChildNodes().item(pos7)
-                                                                    if n5.getNodeName() == "OctetString":
-                                                                        bb = GXByteBuffer()
-                                                                        if start:
-                                                                            _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.getStart())
-                                                                            n5.getAttributes().getNamedItem("Value").setNodeValue(bb.toHex(False, 2))
-                                                                            start = False
-                                                                        else:
-                                                                            _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.getEnd())
-                                                                            n5.getAttributes().getNamedItem("Value").setNodeValue(bb.toHex(False, 2))
-                                                                            break
-                                                                    pos7 += 1
-                                                                break
-                                                            pos6 += 1
-                                                        break
-                                                    pos5 += 1
-                                                break
-                                            pos4 += 1
-                                        break
-                                    pos3 += 1
-                        s = GXDLMSXmlSettings(self.translator.outputType, self.translator.hex, self.translator.showStringAsHex, self.translator.tagsByName)
-                        s.settings.clientAddress = self.settings.clientAddress
-                        s.settings.serverAddress = self.settings.serverAddress
-                        reply = []
-                        reply = self.translator.xmlToPdu(GXDLMSXmlPdu.getOuterXml(node), s)
-                        if s.command == Command.SNRM and not s.settings.isServer:
-                            self.settings.hdlc.maxInfoTX = s.settings.hdlc.maxInfoTX
-                            self.settings.hdlc.maxInfoRX = s.settings.hdlc.maxInfoRX
-                            self.settings.hdlc.windowSizeRX = s.settings.hdlc.windowSizeRX
-                            self.settings.hdlc.windowSizeTX = s.settings.hdlc.windowSizeTX
-                        elif s.command == Command.UA and s.settings.isServer:
-                            self.settings.hdlc.maxInfoTX = s.settings.hdlc.maxInfoTX
-                            self.settings.hdlc.maxInfoRX = s.settings.hdlc.maxInfoRX
-                            self.settings.hdlc.windowSizeRX = s.settings.hdlc.windowSizeRX
-                            self.settings.hdlc.windowSizeTX = s.settings.hdlc.windowSizeTX
-                        if s.template:
-                            reply = None
-                        p = GXDLMSXmlPdu(s.command, node, reply)
-                        if description:
-                            p.description = description
-                        if error:
-                            p.error = error
-                        if errorUrl:
-                            p.errorUrl = errorUrl
-                        if sleep:
-                            p.sleep = int(sleep)
-                        actions.append(p)
-                    pos2 += 1
-            pos += 1
+        for node in root:
+            if node.tag == "Description":
+                description = node.text
+                continue
+            if node.tag == "Error":
+                error = node.text
+                continue
+            if node.tag == "ErrorUrl":
+                errorUrl = node.text
+                continue
+            if node.tag == "Sleep":
+                sleep = node.text
+                continue
+            if loadSettings and node.tag == "GetRequest":
+                structure = node.find("./GetRequestNormal/AccessSelection/AccessSelector/AccessParameters/Structure")
+                if structure:
+                    start = False
+                    for node2 in structure:
+                        if start:
+                            bb = GXByteBuffer()
+                            if start:
+                                _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.start)
+                                node2.attrib["Value"] = bb.toHex(False, 2)
+                                start = False
+                            else:
+                                _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.end)
+                                node2.attrib["Value"] = bb.toHex(False, 2)
+
+            s = GXDLMSXmlSettings(self.translator.outputType, self.translator.hex, self.translator.showStringAsHex, self.translator.tagsByName)
+            s.settings.clientAddress = self.settings.clientAddress
+            s.settings.serverAddress = self.settings.serverAddress
+            reply = []
+            reply = self.translator.xmlToPdu(GXDLMSXmlPdu.getOuterXml(node), s)
+            if s.command == Command.SNRM and not s.settings.isServer:
+                self.settings.hdlc.maxInfoTX = s.settings.hdlc.maxInfoTX
+                self.settings.hdlc.maxInfoRX = s.settings.hdlc.maxInfoRX
+                self.settings.hdlc.windowSizeRX = s.settings.hdlc.windowSizeRX
+                self.settings.hdlc.windowSizeTX = s.settings.hdlc.windowSizeTX
+            elif s.command == Command.UA and s.settings.isServer:
+                self.settings.hdlc.maxInfoTX = s.settings.hdlc.maxInfoTX
+                self.settings.hdlc.maxInfoRX = s.settings.hdlc.maxInfoRX
+                self.settings.hdlc.windowSizeRX = s.settings.hdlc.windowSizeRX
+                self.settings.hdlc.windowSizeTX = s.settings.hdlc.windowSizeTX
+            if s.template:
+                reply = None
+            p = GXDLMSXmlPdu(s.command, node, reply)
+            if description:
+                p.description = description
+            if error:
+                p.error = error
+            if errorUrl:
+                p.errorUrl = errorUrl
+            if sleep:
+                p.sleep = int(sleep)
+            actions.append(p)
         return actions
 
     def pduToMessages(self, pdu):

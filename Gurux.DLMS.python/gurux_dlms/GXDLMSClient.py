@@ -675,6 +675,9 @@ class GXDLMSClient(object):
         buff.setUInt8(0x80)
         buff.setUInt8(1)
         buff.setUInt8(00)
+        #Restore default values.
+        self.maxReceivePDUSize = self.initializePduSize
+        self.settings.setCtoSChallenge(self.initializeChallenge)
         if self.useProtectedRelease:
             #Increase IC.
             if self.settings.cipher and self.settings.cipher.isCiphered:
@@ -693,9 +696,6 @@ class GXDLMSClient(object):
         else:
             reply = GXDLMS.getSnMessages(GXDLMSSNParameters(self.settings, Command.RELEASE_REQUEST, 0xFF, 0xFF, None, buff))
         self.settings.connected = self.settings.connected & ~ConnectionState.DLMS
-        #Restore default values.
-        self.maxReceivePDUSize = self.initializePduSize
-        self.settings.setCtoSChallenge(self.initializeChallenge)
         return reply
 
     def disconnectRequest(self, force=False):
@@ -1225,11 +1225,13 @@ class GXDLMSClient(object):
                 if data.command == Command.SNRM or data.command == Command.UA:
                     data.xml.appendStartTag(data.command)
                     if data.data.size != 0:
-                        self.translator.pduToXml(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
+                        #pylint: disable=protected-access
+                        self.translator._pduToXml2(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
                     data.xml.appendEndTag(data.command)
                 else:
                     if data.data.size != 0:
-                        self.translator.pduToXml(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
+                        #pylint: disable=protected-access
+                        self.translator._pduToXml2(data.xml, data.data, self.translator.omitXmlDeclaration, self.translator.omitXmlNameSpace, True)
                     data.data = data2
             finally:
                 data.data.position = pos

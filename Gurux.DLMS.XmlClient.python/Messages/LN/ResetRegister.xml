@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Messages>
+<ActionRequest>
+  <ActionRequestNormal>
+    <InvokeIdAndPriority Value="193" />
+    <MethodDescriptor>
+      <!--REGISTER-->
+      <ClassId Value="3" />
+      <!--1.1.21.25.0.255-->
+      <InstanceId Value="0101151900FF" />
+      <MethodId Value="1" />
+    </MethodDescriptor>
+    <MethodInvocationParameters>
+      <Int8 Value="0" />
+    </MethodInvocationParameters>
+  </ActionRequestNormal>
+</ActionRequest>
+</Messages>

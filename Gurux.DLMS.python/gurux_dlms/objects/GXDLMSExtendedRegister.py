@@ -65,6 +65,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
     def getUIDataType(self, index):
         if index == 5:
             return DataType.DATETIME
+        #pylint: disable=super-with-arguments
         return super(GXDLMSExtendedRegister, self).getUIDataType(index)
 
     def getValues(self):
@@ -121,6 +122,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getDataType(self, index):
+        #pylint: disable=super-with-arguments
         if index == 1:
             ret = DataType.OCTET_STRING
         elif index == 2:

@@ -52,6 +52,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSRegister, self).__init__(ObjectType.REGISTER, ln, sn)
         self.value = None
         self.scaler = 1
@@ -78,6 +79,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def isRead(self, index):
         if index == 3:
             return self.unit != 0
+        #pylint: disable=super-with-arguments
         return super(GXDLMSRegister, self).isRead(index)
 
     #
@@ -113,6 +115,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
 
 
     def getDataType(self, index):
+        #pylint: disable=super-with-arguments
         if index == 1:
             return DataType.OCTET_STRING
         if index == 2:

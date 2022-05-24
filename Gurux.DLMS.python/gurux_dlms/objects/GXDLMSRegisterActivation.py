@@ -55,6 +55,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
     #            Short Name of the object.
     #
     def __init__(self, ln=None, sn=0):
+        #pylint: disable=super-with-arguments
         super(GXDLMSRegisterActivation, self).__init__(ObjectType.REGISTER_ACTIVATION, ln, sn)
         self.registerAssignment = list()
         self.maskList = list()

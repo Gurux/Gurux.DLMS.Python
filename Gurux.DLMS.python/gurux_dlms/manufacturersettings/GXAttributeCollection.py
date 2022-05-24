@@ -47,6 +47,7 @@ class GXAttributeCollection(list):
     def append(self, item):
         if not isinstance(item, GXDLMSAttributeSettings):
             raise TypeError('item is not of type GXDLMSAttributeSettings')
+        #pylint: disable=super-with-arguments
         super(GXAttributeCollection, self).append(item)
         item.parent = self
 

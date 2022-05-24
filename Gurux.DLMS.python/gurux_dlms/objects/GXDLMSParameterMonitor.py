@@ -52,6 +52,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSParameterMonitor, self).__init__(ObjectType.PARAMETER_MONITOR, ln, sn)
         self.parameters = list()
         self.captureTime = None

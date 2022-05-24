@@ -31,7 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+import xml.etree.cElementTree as ET
 from .enums.Command import Command
+
 # pylint: disable=bad-option-value,old-style-class
 class GXDLMSXmlPdu:
     #pylint: disable=too-many-instance-attributes
@@ -53,15 +55,15 @@ class GXDLMSXmlPdu:
 
     @classmethod
     def getOuterXml(cls, node):
-        return ""
+        return ET.tostring(node)
 
     #
     # Return PDU as XML string.
     #
     def getPduAsXml(self):
         if self.xmlNode is None:
-            return ""
-        return self.getOuterXml(self.xmlNode)
+            return None
+        return self.getOuterXml(self.xmlNode).decode("utf-8")
 
     @classmethod
     def compare(cls, expectedNode, actualNode, list_):

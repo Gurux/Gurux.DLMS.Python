@@ -50,16 +50,19 @@ class GXDLMSObjectCollection(list):
     # forParent: Parent object.
     #
     def __init__(self, forParent=None):
+        #pylint: disable=super-with-arguments
         super(GXDLMSObjectCollection, self).__init__()
         self.parent = forParent
 
     def append(self, item):
         if not isinstance(item, GXDLMSObject):
             raise TypeError('item is not of type GXDLMSObject')
+        #pylint: disable=super-with-arguments
         super(GXDLMSObjectCollection, self).append(item)
         item.parent = self
 
     def extend(self, items):
+        #pylint: disable=super-with-arguments
         if not isinstance(items, GXDLMSObjectCollection):
             raise TypeError('items is not of type GXDLMSObjectCollection')
         for it in items:

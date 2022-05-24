@@ -53,6 +53,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        #pylint: disable=super-with-arguments
         super(GXDLMSRegisterMonitor, self).__init__(ObjectType.REGISTER_MONITOR, ln, sn)
         self.thresholds = list()
         self.monitoredValue = GXDLMSMonitoredValue()

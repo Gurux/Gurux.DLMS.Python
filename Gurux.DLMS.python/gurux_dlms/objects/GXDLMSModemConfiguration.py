@@ -56,6 +56,7 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
     # Short Name of the object.
     #
     def __init__(self, ln=None, sn=0):
+        #pylint: disable=super-with-arguments
         super(GXDLMSModemConfiguration, self).__init__(ObjectType.MODEM_CONFIGURATION, ln, sn)
         self.initialisationStrings = list()
         self.communicationSpeed = BaudRate.BAUDRATE_300
