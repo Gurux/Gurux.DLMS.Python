@@ -154,6 +154,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
         return actions
 
     def pduToMessages(self, pdu):
+        self.settings.command = pdu.command
         messages = list()
         if pdu.command == Command.SNRM:
             messages.append(pdu.data)

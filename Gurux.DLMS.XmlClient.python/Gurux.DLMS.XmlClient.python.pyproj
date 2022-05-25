@@ -12,7 +12,7 @@
     <Name>Gurux.DLMS.XmlClient.python</Name>
     <RootNamespace>Gurux.DLMS.XmlClient.python</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-h localhost -p 4061 -t Verbose -x "Messages\LN\GetClock.xml" -a High -c 18 -P Gurux</CommandLineArguments>
+    <CommandLineArguments>-h localhost -p 4061 -t Verbose -x "Messages\LN\GetAssociationView.xml" -a High -c 18 -P Gurux</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

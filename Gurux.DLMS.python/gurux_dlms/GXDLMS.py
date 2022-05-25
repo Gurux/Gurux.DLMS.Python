@@ -1363,7 +1363,7 @@ class GXDLMS:
             return False
         if blockLength != data.size - data.position:
             raise ValueError("Invalid block length.")
-        reply.command = (Command.NONE)
+        reply.command = Command.NONE
         if reply.xml:
             data.strip()
             reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA_BLOCK_RESULT)
@@ -2067,13 +2067,13 @@ class GXDLMS:
                 if cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST, \
                     Command.GLO_METHOD_REQUEST, Command.GLO_EVENT_NOTIFICATION, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, \
                     Command.DED_METHOD_REQUEST, Command.DED_EVENT_NOTIFICATION):
-                    data.command = (Command.NONE)
+                    data.command = Command.NONE
                     data.data.position = data.getCipherIndex()
                     GXDLMS.getPdu(settings, data)
             else:
                 # Client do not need a command any more.
                 if data.isMoreData():
-                    data.command = (Command.NONE)
+                    data.command = Command.NONE
                 if cmd in (Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE,\
                     Command.GLO_METHOD_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE, Command.DED_METHOD_RESPONSE,\
                     Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
@@ -2189,7 +2189,7 @@ class GXDLMS:
             tmp = GXCiphering.decrypt(settings.cipher, p, data.data)
             data.data.clear()
             data.data.set(tmp)
-            data.command = (Command.NONE)
+            data.command = Command.NONE
             if p.security:
                 try:
                     GXDLMS.getPdu(settings, data)
