@@ -1,5 +1,7 @@
 Credits
 =======
+  - HDLC framing issue fixed for the listener example.
+    * [alex.wala](https://http://www.gurux.fi/user/187116)
   - GXDLMSConverter.changeType issue fixed when string value is converted for boolean value.
     * [alexav](https://www.gurux.fi/user/185756)
   - HDLC broadcast support fixed.

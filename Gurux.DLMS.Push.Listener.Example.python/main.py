@@ -128,9 +128,9 @@ class sampleclient(IGXMediaListener):
         data = GXReplyData()
         try:
             if not self.client.getData(self.reply, data, self.notify):
-                self.reply.clear()
                 #If all data is received.
                 if self.notify.complete:
+                    self.reply.clear()
                     if not self.notify.isMoreData():
                         #Show received data as XML.
                         xml = self.translator.dataToXml(self.notify.data)
