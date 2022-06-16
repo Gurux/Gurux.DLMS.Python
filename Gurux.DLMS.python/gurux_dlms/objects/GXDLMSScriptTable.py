@@ -184,7 +184,7 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
 
     def execute(self, client, script):
         if isinstance(script, GXDLMSScript):
-            script = script.getId()
+            script = script.id
         return client.method(self, 1, script, DataType.UINT16)
 
     def load(self, reader):

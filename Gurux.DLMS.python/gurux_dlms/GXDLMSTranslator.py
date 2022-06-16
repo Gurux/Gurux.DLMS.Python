@@ -472,26 +472,24 @@ class GXDLMSTranslator:
                 msg.xml = str(xml)
                 return msg.xml
             #  If wrapper.
-            if msg.interfaceType in (None, InterfaceType.WRAPPER) and msg.message.getUInt16(msg.message.position) == 1:
+            if msg.interfaceType in (None, InterfaceType.WRAPPER) and (msg.message.available() > 1) and msg.message.getUInt16(msg.message.position) == 1:
                 msg.interfaceType = settings.interfaceType = InterfaceType.WRAPPER
                 GXDLMS.getData(settings, msg.message, data, None)
                 msg.moreData = data.moreData
                 msg.sourceAddress = data.sourceAddress
                 msg.targetAddress = data.targetAddress
+                pdu = self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace)
                 if not self.pduOnly:
                     xml.appendLine("<WRAPPER len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
                     xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
                     xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
-                if not data.data:
-                    xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
-                else:
-                    if not self.pduOnly:
-                        xml.appendLine("<PDU>")
-                    xml.appendLine(self.__pduToXml(data.data, True, True))
-                    #  Remove \r\n.
-                    xml.trim()
-                    if not self.pduOnly:
-                        xml.appendLine("</PDU>")
+                if not self.pduOnly:
+                    xml.appendLine("<PDU>")
+                xml.appendLine(pdu)
+                #  Remove \r\n.
+                xml.trim()
+                if not self.pduOnly:
+                    xml.appendLine("</PDU>")
                 if not self.pduOnly:
                     xml.appendLine("</WRAPPER>")
                 self.__updateAddress(settings, msg)
@@ -667,14 +665,14 @@ class GXDLMSTranslator:
 
     @classmethod
     def isCiphered(cls, cmd):
-        return cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING,\
-            Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST,\
+        return cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST,\
             Command.GLO_SET_REQUEST, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,\
             Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST,\
             Command.GLO_METHOD_RESPONSE, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST,\
             Command.DED_READ_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
-            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE, Command.GLO_CONFIRMED_SERVICE_ERROR,\
-            Command.DED_CONFIRMED_SERVICE_ERROR, Command.GENERAL_CIPHERING)
+            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE, Command.GENERAL_GLO_CIPHERING,\
+            Command.GENERAL_DED_CIPHERING, Command.AARQ, Command.AARE, Command.GLO_CONFIRMED_SERVICE_ERROR,\
+            Command.DED_CONFIRMED_SERVICE_ERROR, Command.GENERAL_CIPHERING, Command.RELEASE_REQUEST)
 
     #
     # Convert bytes to XML.

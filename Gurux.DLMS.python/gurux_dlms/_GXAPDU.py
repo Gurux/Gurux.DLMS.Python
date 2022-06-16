@@ -509,6 +509,7 @@ class _GXAPDU:
         tag = data.getUInt8()
         originalPos = 0
         if tag in (Command.GLO_INITIATE_RESPONSE, Command.GLO_INITIATE_REQUEST,
+                   Command.DED_INITIATE_RESPONSE, Command.DED_INITIATE_REQUEST,
                    Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
             if xml:
                 originalPos = data.position
@@ -517,15 +518,18 @@ class _GXAPDU:
                     st = bytearray(cnt)
                     data.get(st)
                 else:
-                    st = settings.sourceSystemTitle
+                    if tag in (Command.GLO_INITIATE_REQUEST, Command.DED_INITIATE_REQUEST):
+                        st = settings.cipher.systemTitle
+                    else:
+                        st = settings.sourceSystemTitle
                 cnt = _GXCommon.getObjectCount(data)
                 encrypted = bytearray(cnt)
                 data.get(encrypted)
-                if cipher and xml.comments:
+                if st and cipher and cipher.blockCipherKey and cipher.authenticationKey and xml.comments:
                     pos = xml.getXmlLength()
                     try:
                         data.position = originalPos - 1
-                        p = AesGcmParameter(settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                        p = AesGcmParameter(0, st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
                         p.xml = (xml)
                         tmp = GXCiphering.decrypt(settings.cipher, p, data)
                         data.clear()
@@ -533,8 +537,8 @@ class _GXAPDU:
                         cipher.setSecurity(p.security)
                         tag1 = data.getUInt8()
                         xml.startComment("Decrypted data:")
-                        xml.appendLine("Security: " + p.security)
-                        xml.appendLine("Invocation Counter: " + p.invocationCounter)
+                        xml.appendLine("Security: " + str(Security(p.security)))
+                        xml.appendLine("Invocation Counter: " + str(p.invocationCounter))
                         cls.parse(initiateRequest, settings, cipher, data, xml, tag1)
                         xml.endComment()
                     except Exception:
