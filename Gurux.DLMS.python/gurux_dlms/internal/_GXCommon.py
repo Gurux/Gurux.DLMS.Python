@@ -1074,8 +1074,8 @@ class _GXCommon:
                     info.xml.appendComment(cls.toLogicalName(tmp))
                 else:
                     isString = True
-                    #  Try to move octect string to DateTie, Date or time.
-                    if len(tmp) == 5 or len(tmp) == 5 or len(tmp) == 4:
+                    #  Try to move octect string to DateTime, Date or time.
+                    if len(tmp) == 12 or len(tmp) == 5 or len(tmp) == 4:
                         try:
                             type_ = None
                             if len(tmp) == 12:
@@ -1086,7 +1086,7 @@ class _GXCommon:
                                 type_ = DataType.TIME
                             dt = _GXCommon.changeType(settings, tmp, type_)
                             year = dt.value.year
-                            if 1970 < year > 2100:
+                            if 1970 < year < 2100:
                                 info.xml.appendComment(str(dt))
                                 isString = False
                         except Exception:

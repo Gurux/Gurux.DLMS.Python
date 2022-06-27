@@ -602,7 +602,7 @@ class GXByteBuffer(__base):
             value = bytearray(value)
         if count is None:
             count = len(value)
-        for it in value[index:count]:
+        for it in value[index:index+count]:
             hexChars += GXByteBuffer.__HEX_ARRAY[it >> GXByteBuffer.__NIBBLE]
             hexChars += GXByteBuffer.__HEX_ARRAY[it & GXByteBuffer.__LOW_BYTE_PART]
             if addSpace:
