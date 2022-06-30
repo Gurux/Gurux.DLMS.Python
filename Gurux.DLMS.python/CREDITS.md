@@ -1,5 +1,8 @@
 Credits
 =======
+  - Comment issues fixed for GXDLMSTranslater.
+    * [ikudryav](http://www.gurux.fi/user/1084)
+
   - Listening window of Auto Answer issue fixed.
     * [isidroas](https://github.com/isidroas)
 
