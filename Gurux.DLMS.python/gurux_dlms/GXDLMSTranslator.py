@@ -98,7 +98,7 @@ class GXDLMSTranslator:
         # Are numeric values shows as hex.
         self.hex = True
         # Is string serialized as hex.  {@link messageToXml} {@link PduOnly}
-        self.showStringAsHex = True
+        self.showStringAsHex = False
         # Sending data in multiple frames.
         self.multipleFrames = False
         # If only PDUs are shown and PDU is received on parts.

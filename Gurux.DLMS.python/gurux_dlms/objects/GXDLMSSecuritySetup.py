@@ -104,8 +104,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         for it in list_:
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(2)
-            _GXCommon.setData(None, bb, DataType.ENUM, it.getKey())
-            tmp = GXDLMSSecureClient.encrypt(kek, it)
+            _GXCommon.setData(None, bb, DataType.ENUM, it[0])
+            tmp = GXDLMSSecureClient.encrypt(kek, it[1])
             _GXCommon.setData(None, bb, DataType.OCTET_STRING, tmp)
         return client.method(self, 2, bb.array(), DataType.ARRAY)
 
