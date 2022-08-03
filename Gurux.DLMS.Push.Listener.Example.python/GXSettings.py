@@ -72,7 +72,7 @@ class GXSettings:
         print("Start listener using TCP/IP connection.")
         print("python main -p [Meter Port No] -w")
         print("Start listener using serial port connection.")
-        print("GuruxDlmsSample -sp COM1:9600:8None1")
+        print("GuruxDlmsSample -S COM1:9600:8None1")
         print("------------------------------------------------------")
         print("Available serial ports:")
         print(GXSerial.getPortNames())
@@ -112,24 +112,28 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "p:S:r:t:wh:T:A:B:D:")
+        parameters = GXSettings.__getParameters(args, "p:S:r:i:t:T:A:B:D:")
         for it in parameters:
-            if it.tag == 'w':
-                self.client.interfaceType = InterfaceType.WRAPPER
-            elif it.tag == 'r':
+            if it.tag == 'r':
                 if it.value == "sn":
                     self.client.useLogicalNameReferencing = False
                 elif it.value == "ln":
                     self.client.useLogicalNameReferencing = True
                 else:
                     raise ValueError("Invalid reference option.")
-            elif it.tag == 'h':
-                #  Host address.
-                if not self.media:
-                    self.media = GXNet(NetworkType.TCP, it.value, 0)
-                    self.media.server = True
+            elif it.tag == 'i':
+                if it.value == "HDLC":
+                    self.client.interfaceType = InterfaceType.HDLC
+                elif it.value == "WRAPPER":
+                    self.client.interfaceType = InterfaceType.WRAPPER
+                elif it.value == "HdlcWithModeE":
+                    self.client.interfaceType = InterfaceType.HDLC_WITH_MODE_E
+                elif it.value == "Plc":
+                    self.clientinterfaceType = InterfaceType.PLC
+                elif it.value == "PlcHdlc":
+                    self.clientinterfaceType = InterfaceType.PLC_HDLC
                 else:
-                    self.media.hostName = it.value
+                    raise ValueError("Invalid interface type option." + it.value + " (HDLC, WRAPPER, HdlcWithModeE, Plc, PlcHdlc)");
             elif it.tag == 't':
                 #  Trace.
                 if it.value == "Off":

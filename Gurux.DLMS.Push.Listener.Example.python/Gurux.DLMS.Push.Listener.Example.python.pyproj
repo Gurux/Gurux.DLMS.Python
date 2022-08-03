@@ -12,7 +12,7 @@
     <Name>Gurux.DLMS.Push.Listener.Example.python</Name>
     <RootNamespace>Gurux.DLMS.Push.Listener.Example.python</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-h localhost -p 4059 -w</CommandLineArguments>
+    <CommandLineArguments>-p 4059 -i WRAPPER</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
