@@ -242,7 +242,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                     else:
                         self.destination = e.value[1].decode()
                 except Exception:
-                    self.destination = GXByteBuffer.toHex(e.value[1])
+                    self.destination = GXByteBuffer.hex(e.value[1])
                 self.message = e.value[2]
         elif e.index == 4:
             self.communicationWindow = []

@@ -374,6 +374,8 @@ class GXDLMSConverter:
             ret = "PrimeNbOfdmPlcMacNetworkAdministrationData"
         elif ot == ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION:
             ret = "PrimeNbOfdmPlcApplicationsIdentification"
+        elif ot == ObjectType.NTP_SETUP:
+            ret = "NtpSetup"
         else:
             ret = "Manufacture spesific."
         return ret
@@ -496,6 +498,8 @@ class GXDLMSConverter:
             ot = ObjectType.PRIME_NB_OFDM_PLC_MAC_NETWORK_ADMINISTRATION_DATA
         elif value == "PrimeNbOfdmPlcApplicationsIdentification":
             ot = ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION
+        elif value == "NtpSetup":
+            ot = ObjectType.NTP_SETUP
         else:
             ot = ObjectType.NONE
         return ot

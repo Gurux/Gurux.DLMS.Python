@@ -255,8 +255,8 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
         for it in self.keys:
             writer.writeStartElement("Item")
             writer.writeElementString("ID", str(it.key))
-            writer.writeElementString("Key", GXByteBuffer.toHex(it.value, False))
+            writer.writeElementString("Key", GXByteBuffer.hex(it.value, False))
             writer.writeEndElement()
         writer.writeEndElement()
         #Keys
-        writer.writeElementString("ClientKey", GXByteBuffer.toHex(self.clientKey, False))
+        writer.writeElementString("ClientKey", GXByteBuffer.hex(self.clientKey, False))
