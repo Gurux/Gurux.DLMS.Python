@@ -241,6 +241,9 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                         self.destination = _GXCommon.toLogicalName(e.value[1])
                     else:
                         self.destination = e.value[1].decode()
+                        #If destination is not ASCII string.
+                        if self.destination and GXByteBuffer.isAsciiString(self.destination) == False:
+                            self.destination = GXByteBuffer.toHex(self.destination)
                 except Exception:
                     self.destination = GXByteBuffer.hex(e.value[1])
                 self.message = e.value[2]
