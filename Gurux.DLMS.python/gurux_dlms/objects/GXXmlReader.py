@@ -108,7 +108,7 @@ class GXXmlReader:
     def readElementContentAsLong(self, name, defaultValue=0):
         return self.readElementContentAsInt(name, defaultValue)
 
-    def readElementContentAsULong(self, name, defaultValue):
+    def readElementContentAsULong(self, name, defaultValue=0):
         return self.readElementContentAsInt(name, defaultValue)
 
     def readElementContentAsDouble(self, name, defaultValue=0):

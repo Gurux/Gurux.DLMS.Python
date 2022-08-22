@@ -131,7 +131,10 @@ class GXDLMSObjectCollection(list):
                 elif "Version".lower() == target.lower():
                     obj.version = reader.readElementContentAsInt("Version")
                 else:
-                    obj.load(reader)
+                    try:                    
+                        obj.load(reader)
+                    except Exception as ex:
+                        print("Failed to load object " + str(obj) + " " +str(ex))
                     obj = None
             else:
                 reader.read()

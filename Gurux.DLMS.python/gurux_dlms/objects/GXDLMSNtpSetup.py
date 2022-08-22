@@ -244,7 +244,7 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
                 id_ = reader.readElementContentAsLong("ID")
                 key = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Key"))
                 self.keys[id_] = key
-        self.clientKey = GXByteBuffer.hexToBytes(reader.readElementContentAsString("ServerAddress", None))
+        self.clientKey = GXByteBuffer.hexToBytes(reader.readElementContentAsString("ClientKey", None))
 
     def save(self, writer):
         writer.writeElementString("Activated", self.activated)
