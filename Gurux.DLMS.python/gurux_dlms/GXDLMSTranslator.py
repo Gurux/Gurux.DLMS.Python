@@ -83,7 +83,7 @@ from .enums.Standard import Standard
 from .GXDLMSTranslatorMessage import GXDLMSTranslatorMessage
 from .plc.enums import PlcSourceAddress, PlcDestinationAddress
 
-# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,old-style-class
+# pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,old-style-class,raise-missing-from
 class GXDLMSTranslator:
     """
     This class is used to translate DLMS frame or PDU to xml.

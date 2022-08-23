@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import ServiceType, MessageType
 from .GXDLMSCaptureObject import GXDLMSCaptureObject
+from .._GXObjectFactory import _GXObjectFactory
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
@@ -56,8 +57,8 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         """
         #pylint: disable=super-with-arguments
         super(GXDLMSPushSetup, self).__init__(ObjectType.PUSH_SETUP, ln, sn)
-        self.pushObjectList = list()
-        self.communicationWindow = list()
+        self.pushObjectList = []
+        self.communicationWindow = []
         self.service = ServiceType.TCP
         self.message = MessageType.COSEM_APDU
         self.destination = None
@@ -242,7 +243,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                     else:
                         self.destination = e.value[1].decode()
                         #If destination is not ASCII string.
-                        if self.destination and GXByteBuffer.isAsciiString(self.destination) == False:
+                        if self.destination and not GXByteBuffer.isAsciiString(self.destination):
                             self.destination = GXByteBuffer.toHex(self.destination)
                 except Exception:
                     self.destination = GXByteBuffer.hex(e.value[1])
@@ -274,6 +275,9 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 reader.readEndElement("ObjectList")
                 co = GXDLMSCaptureObject(ai, di)
                 obj = reader.objects.findByLN(ot, ln)
+                if not obj:
+                    obj = _GXObjectFactory.createObject(ot)
+                    obj.LogicalName = ln
                 self.pushObjectList.append((obj, co))
             reader.readEndElement("ObjectList")
         self.service = ServiceType(reader.readElementContentAsInt("Service"))

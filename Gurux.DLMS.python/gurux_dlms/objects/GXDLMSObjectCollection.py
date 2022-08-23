@@ -117,6 +117,7 @@ class GXDLMSObjectCollection(list):
                     try:
                         type_ = GXDLMSConverter.valueOfObjectType(target[6:])
                     except Exception:
+                        # pylint:disable=raise-missing-from
                         raise ValueError("Invalid object type: " + target + ".")
                     obj = _GXObjectFactory.createObject(type_)
                     obj.version = 0
@@ -131,9 +132,10 @@ class GXDLMSObjectCollection(list):
                 elif "Version".lower() == target.lower():
                     obj.version = reader.readElementContentAsInt("Version")
                 else:
-                    try:                    
+                    try:
                         obj.load(reader)
                     except Exception as ex:
+                        # pylint:disable=broad-except
                         print("Failed to load object " + str(obj) + " " +str(ex))
                     obj = None
             else:
