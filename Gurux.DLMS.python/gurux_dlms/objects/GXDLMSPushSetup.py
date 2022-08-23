@@ -39,7 +39,6 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import ServiceType, MessageType
 from .GXDLMSCaptureObject import GXDLMSCaptureObject
-from .._GXObjectFactory import _GXObjectFactory
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
@@ -265,6 +264,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
+        from .._GXObjectFactory import _GXObjectFactory
         self.pushObjectList = []
         if reader.isStartElement("ObjectList", True):
             while reader.isStartElement("Item", True):

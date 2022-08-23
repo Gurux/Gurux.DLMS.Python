@@ -132,10 +132,10 @@ class GXDLMSObjectCollection(list):
                 elif "Version".lower() == target.lower():
                     obj.version = reader.readElementContentAsInt("Version")
                 else:
+                    # pylint:disable=broad-except
                     try:
                         obj.load(reader)
                     except Exception as ex:
-                        # pylint:disable=broad-except
                         print("Failed to load object " + str(obj) + " " +str(ex))
                     obj = None
             else:
