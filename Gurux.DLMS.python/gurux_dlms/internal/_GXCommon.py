@@ -629,10 +629,10 @@ class _GXCommon:
         value = buff.getDouble()
         if info.xml:
             if info.xml.comments:
-                info.xml.appendComment("{:.2f}".format(value))
+                info.xml.appendComment(('%f' % value).rstrip('0').rstrip('.'))
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT64, value)
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, GXByteBuffer.toHex(False, 1, len(tmp) - 1))
+            info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))
         return GXFloat64(value)
 
     #
@@ -654,7 +654,7 @@ class _GXCommon:
         value = buff.getFloat()
         if info.xml:
             if info.xml.comments:
-                info.xml.appendComment("{:.2f}".format(value))
+                info.xml.appendComment(('%f' % value).rstrip('0').rstrip('.'))
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT32, value)
             info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))

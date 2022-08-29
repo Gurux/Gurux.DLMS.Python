@@ -275,14 +275,31 @@ class GXByteBuffer(__base):
             self.setFloat(value, self.size)
             self.size += 4
         else:
-            self.set(struct.pack("f", value), index)
+            if index + 4 >= self.capacity:
+                self.capacity = (index + self.__ARRAY_CAPACITY)
+            tmp = struct.pack("f", value)
+            self._data[self.size] = tmp[3]
+            self._data[self.size + 1] = tmp[2]
+            self._data[self.size + 2] = tmp[1]
+            self._data[self.size + 3] = tmp[0]
 
     def setDouble(self, value, index=None):
         if index is None:
             self.setDouble(value, self.size)
             self.size += 8
         else:
-            self.set(struct.pack("d", value), index)
+            if index + 8 >= self.capacity:
+                self.capacity = (index + self.__ARRAY_CAPACITY)
+            tmp = struct.pack("d", value)
+            # Swap bytes.
+            self._data[self.size] = tmp[7]
+            self._data[self.size + 1] = tmp[6]
+            self._data[self.size + 2] = tmp[5]
+            self._data[self.size + 3] = tmp[4]
+            self._data[self.size + 4] = tmp[3]
+            self._data[self.size + 5] = tmp[2]
+            self._data[self.size + 6] = tmp[1]
+            self._data[self.size + 7] = tmp[0]
 
     def getUInt8(self, index=None):
         if index is None:
