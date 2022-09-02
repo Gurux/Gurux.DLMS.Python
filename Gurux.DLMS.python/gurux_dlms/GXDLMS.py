@@ -525,7 +525,7 @@ class GXDLMS:
         if p.command == Command.DATA_NOTIFICATION or p.command == Command.GENERAL_GLO_CIPHERING or p.command == Command.GENERAL_DED_CIPHERING:
             reply = GXByteBuffer()
             reply.setUInt8(tmp[0])
-            if p.settings.getStandard() == Standard.ITALY:
+            if p.settings.standard == Standard.ITALY:
                 reply.setUInt8(0)
             else:
                 _GXCommon.setObjectCount(len(p.settings.cipher.systemTitle), reply)
@@ -727,7 +727,7 @@ class GXDLMS:
         bb.setUInt16(1)
         if settings.isServer:
             bb.setUInt16(settings.serverAddress)
-            if settings.PushClientAddress != 0 and command in (Command.DATA_NOTIFICATION, Command.EVENT_NOTIFICATION):
+            if settings.pushClientAddress != 0 and command in (Command.DATA_NOTIFICATION, Command.EVENT_NOTIFICATION):
                 bb.setUInt16(settings.pushClientAddress)
             else:
                 bb.setUInt16(settings.clientAddress)

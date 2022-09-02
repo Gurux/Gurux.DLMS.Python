@@ -84,7 +84,7 @@ class GXDLMSNotify(object):
     #            Cipher interface that is used to cipher PDU.
     #
     def setCipher(self, value):
-        self.settings.ipher = value
+        self.settings.cipher = value
 
     def getObjects(self):
         return self.settings.objects
