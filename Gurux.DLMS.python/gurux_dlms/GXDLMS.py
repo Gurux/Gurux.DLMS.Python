@@ -516,22 +516,12 @@ class GXDLMS:
             else:
                 cmd = Command.GENERAL_GLO_CIPHERING
                 key = cipher.blockCipherKey
-        cipher.invocationCounter = cipher.invocationCounter + 1
         s = AesGcmParameter(cmd, cipher.systemTitle, key, cipher.authenticationKey)
         s.ignoreSystemTitle = p.settings.standard == Standard.ITALY
         s.security = cipher.security
         s.invocationCounter = cipher.invocationCounter
         tmp = GXCiphering.encrypt(s, data)
-        if p.command == Command.DATA_NOTIFICATION or p.command == Command.GENERAL_GLO_CIPHERING or p.command == Command.GENERAL_DED_CIPHERING:
-            reply = GXByteBuffer()
-            reply.setUInt8(tmp[0])
-            if p.settings.standard == Standard.ITALY:
-                reply.setUInt8(0)
-            else:
-                _GXCommon.setObjectCount(len(p.settings.cipher.systemTitle), reply)
-                reply.set(p.settings.cipher.systemTitle)
-            reply.set(tmp, 1, len(tmp))
-            return reply.array()
+        cipher.invocationCounter = cipher.invocationCounter + 1
         return tmp
 
     @classmethod

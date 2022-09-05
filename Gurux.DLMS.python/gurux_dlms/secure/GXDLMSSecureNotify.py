@@ -52,11 +52,10 @@ class GXDLMSSecureNotify(GXDLMSNotify):
     def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
         #pylint:disable=super-with-arguments
         super(GXDLMSSecureNotify, self).__init__(useLogicalNameReferencing, clientAddress, serverAddress, interfaceType)
-        self.ciphering = GXCiphering("ABCDEFGH".encode())
-        self.cipher = self.ciphering
+        self.settings.cipher = GXCiphering("ABCDEFGH".encode())
 
     #
     #      * @return Ciphering settings.
     #
     def getCiphering(self):
-        return self.ciphering
+        return self.settings.cipher
