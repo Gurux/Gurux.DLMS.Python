@@ -1,5 +1,7 @@
 Credits
 =======
+  - imageBlockTransfer issue fixed.
+    * [ikudryav](https://www.gurux.fi/user/1084)
   - Comment issues fixed for GXDLMSTranslater.
     * [ikudryav](https://www.gurux.fi/user/1084)
   - HDLC framing issue fixed for the listener example.

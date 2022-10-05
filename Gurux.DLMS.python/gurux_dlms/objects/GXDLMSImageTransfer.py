@@ -248,7 +248,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
-    def imageTransferInitiate(self, client, imageIdentifier, forImageSize):
+    def imageTransferInitiate(self, client, imageIdentifier, imageSize):
         if self.imageBlockSize == 0:
             raise ValueError("Invalid image block size.")
         if self.imageBlockSize > client.maxReceivePDUSize:
@@ -257,12 +257,12 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(2)
         _GXCommon.setData(None, data, DataType.OCTET_STRING, _GXCommon.getBytes(imageIdentifier))
-        _GXCommon.setData(None, data, DataType.UINT32, forImageSize)
+        _GXCommon.setData(None, data, DataType.UINT32, imageSize)
         return client.method(self, 1, data, DataType.ARRAY)
 
     def imageBlockTransfer(self, client, imageBlockValue, imageBlockCount):
-        cnt = len(imageBlockValue)
-        if (cnt % self.imageBlockSize) != 0:
+        cnt = int(len(imageBlockValue) / self.imageBlockSize)
+        if (len(imageBlockValue) % self.imageBlockSize) != 0:
             cnt += 1
         if imageBlockCount:
             imageBlockCount[0] = cnt
