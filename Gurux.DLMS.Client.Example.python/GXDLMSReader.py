@@ -371,21 +371,28 @@ class GXDLMSReader:
         #pylint: disable=broad-except
         objs = self.client.objects.getObjects([ObjectType.REGISTER, ObjectType.EXTENDED_REGISTER, ObjectType.DEMAND_REGISTER])
         list_ = list()
-        if self.client.negotiatedConformance & Conformance.ACCESS != 0:
-            for it in objs:
-                if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
-                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3))
-                elif isinstance(it, (GXDLMSDemandRegister)):
-                    list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4))
-            self.readByAccess(list_)
-            return
+        try:
+            if self.client.negotiatedConformance & Conformance.ACCESS != 0:
+                for it in objs:
+                    if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
+                        if it.canRead(3):
+                            list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3))
+                    elif isinstance(it, (GXDLMSDemandRegister)):
+                        if it.canRead(4):
+                            list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4))
+                self.readByAccess(list_)
+                return
+        except Exception:
+            print("Failed to read scalers and units with access.")
         try:
             if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES != 0:
                 for it in objs:
                     if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
-                        list_.append((it, 3))
+                        if it.canRead(3):
+                            list_.append((it, 3))
                     elif isinstance(it, (GXDLMSDemandRegister,)):
-                        list_.append((it, 4))
+                        if it.canRead(4):
+                            list_.append((it, 4))
                 self.readList(list_)
         except Exception:
             self.client.negotiatedConformance &= ~Conformance.MULTIPLE_REFERENCES
@@ -393,9 +400,11 @@ class GXDLMSReader:
             for it in objs:
                 try:
                     if isinstance(it, (GXDLMSRegister,)):
-                        self.read(it, 3)
+                        if it.canRead(3):
+                            self.read(it, 3)
                     elif isinstance(it, (GXDLMSDemandRegister,)):
-                        self.read(it, 4)
+                        if it.canRead(4):
+                            self.read(it, 4)
                 except Exception:
                     pass
 
