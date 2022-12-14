@@ -299,9 +299,9 @@ class GXSettings:
             elif it.tag == 'W':
                 self.client.gbtWindowSize = int(it.value)
             elif it.tag == 'w':
-                self.client.hdlcSettings.WindowSizeRX = self.client.hdlcSettings.WindowSizeTX = int(it.value)
+                self.client.hdlcSettings.windowSizeRX = self.client.hdlcSettings.windowSizeTX = int(it.value)
             elif it.tag == 'f':
-                self.client.hdlcSettings.MaxInfoRX = self.client.hdlcSettings.MaxInfoTX = int(it.value)
+                self.client.hdlcSettings.maxInfoRX = self.client.hdlcSettings.maxInfoTX = int(it.value)
             elif it.tag == 'L':
                 self.client.manufacturerId = it.value
             elif it.tag == '?':
