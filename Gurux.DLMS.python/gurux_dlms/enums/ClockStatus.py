@@ -31,9 +31,9 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..GXIntEnum import GXIntEnum
+from ..GXIntFlag import GXIntFlag
 
-class ClockStatus(GXIntEnum):
+class ClockStatus(GXIntFlag):
     """Defines Clock status."""
     #pylint: disable=too-few-public-methods
 
