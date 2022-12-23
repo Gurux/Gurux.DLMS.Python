@@ -72,23 +72,23 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
 
     def slaveInstall(self, client):
         """Installs a slave device."""
-        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+        return client.method(self, 1, 0, DataType.INT8)
 
     def slaveDeInstall(self, client):
         """De-installs a slave device."""
-        return client.method(self.getName(), self.objectType, 2, 0, DataType.INT8)
+        return client.method(self, 2, 0, DataType.INT8)
 
     def capture(self, client):
         """Captures values."""
-        return client.method(self.getName(), self.objectType, 3, 0, DataType.INT8)
+        return client.method(self, 3, 0, DataType.INT8)
 
     def resetAlarm(self, client):
         """Resets alarm state of the M-Bus slave device."""
-        return client.method(self.getName(), self.objectType, 4, 0, DataType.INT8)
+        return client.method(self, 4, 0, DataType.INT8)
 
     def synchronizeClock(self, client):
         """Synchronize the clock."""
-        return client.method(self.getName(), self.objectType, 5, 0, DataType.INT8)
+        return client.method(self, 5, 0, DataType.INT8)
 
     def sendData(self, client, data):
         """Sends data to the M-Bus slave device."""
@@ -106,7 +106,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setObjectCount(it.ValueInformation.Length, bb)
             bb.set(it.ValueInformation)
             _GXCommon.setData(None, bb, _GXCommon.getDLMSDataType(it.Data), it.Data)
-        return client.method(self.getName(), self.objectType, 6, bb, DataType.ARRAY)
+        return client.method(self, 6, bb, DataType.ARRAY)
 
     def setEncryptionKey(self, client, encryptionKey):
         """Sets the encryption key in the M-Bus client and enables encrypted communication with the M-Bus slave device."""
@@ -117,7 +117,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         else:
             _GXCommon.setObjectCount(encryptionKey.Length, bb)
             bb.set(encryptionKey)
-        return client.method(self.getName(), self.objectType, 7, bb, DataType.ARRAY)
+        return client.method(self, 7, bb, DataType.ARRAY)
 
     def transferKey(self, client, encryptionKey):
         """Transfers an encryption key to the M-Bus slave device."""
@@ -128,7 +128,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         else:
             _GXCommon.setObjectCount(encryptionKey.Length, bb)
             bb.set(encryptionKey)
-        return client.method(self.getName(), self.objectType, 8, bb, DataType.ARRAY)
+        return client.method(self, 8, bb, DataType.ARRAY)
 
     def getValues(self):
         if self.version == 0:

@@ -60,7 +60,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
 
     def reset(self, client):
         """Reset value."""
-        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+        return client.method(self, 1, 0, DataType.INT8)
 
     def getValues(self):
         return [self.logicalName,

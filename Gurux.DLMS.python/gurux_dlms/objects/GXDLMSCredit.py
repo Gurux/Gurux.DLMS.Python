@@ -81,15 +81,15 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
 
     def updateAmount(self, client):
         """Adjusts the value of the current credit amount attribute."""
-        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+        return client.method(self, 1, 0, DataType.INT8)
 
     def setAmountToValue(self, client, value):
         """Sets the value of the current credit amount attribute."""
-        return client.method(self.getName(), self.objectType, 2, value, DataType.INT32)
+        return client.method(self, 2, value, DataType.INT32)
 
     def invokeCredit(self, client, value):
         """Adjusts the value of the current credit amount attribute."""
-        return client.method(self.getName(), self.objectType, 3, value, DataType.UINT8)
+        return client.method(self, 3, value, DataType.UINT8)
 
     #
     # Returns collection of attributes to read.  If attribute is static and
