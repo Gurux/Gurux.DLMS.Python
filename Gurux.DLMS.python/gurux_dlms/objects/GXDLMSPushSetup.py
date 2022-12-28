@@ -108,7 +108,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
     # Activates the push process.
     #
     def activate(self, client):
-        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+        return client.method(self, 1, 0, DataType.INT8)
 
     def getAttributeIndexToRead(self, all_):
         attributes = list()

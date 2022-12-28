@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Connect to the LN meter and read Logical Device Name.-->
+<Messages>
+  <GetRequest>
+    <GetRequestNormal>
+      <InvokeIdAndPriority Value="193" />
+      <AttributeDescriptor>
+        <ClassId Value="15" />
+        <!--0.0.40.0.0.255-->
+        <InstanceId Value="0000280000FF" />
+        <AttributeId Value="2" />
+      </AttributeDescriptor>
+    </GetRequestNormal>
+  </GetRequest>
+</Messages>

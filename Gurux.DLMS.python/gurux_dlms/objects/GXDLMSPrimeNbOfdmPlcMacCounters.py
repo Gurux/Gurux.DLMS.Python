@@ -79,7 +79,7 @@ class GXDLMSPrimeNbOfdmPlcMacCounters(GXDLMSObject, IGXDLMSBase):
 
     def reset(self, client):
         """Reset all counters."""
-        return client.method(self.getName(), self.objectType, 1, 0, DataType.INT8)
+        return client.method(self, 1, 0, DataType.INT8)
 
     def invoke(self, settings, e):
         #  Resets the value to the default value.

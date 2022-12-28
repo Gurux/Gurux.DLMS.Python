@@ -1,5 +1,7 @@
 Credits
 =======
+  - Object methods are fixed to call the correct client's method.
+    * [Mahmoud Diab](https://github.com/mgehaddiab)
   - imageBlockTransfer issue fixed.
     * [ikudryav](https://www.gurux.fi/user/1084)
   - Comment issues fixed for GXDLMSTranslater.
