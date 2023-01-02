@@ -130,26 +130,30 @@ class sampleclient(IGXMediaListener):
             if not self.client.getData(self.reply, data, self.notify):
                 #If all data is received.
                 if self.notify.complete:
-                    self.reply.clear()
                     if not self.notify.isMoreData():
                         #Show received data as XML.
-                        xml = self.translator.dataToXml(self.notify.data)
-                        print(xml)
-                        #Print received data.
-                        self.printData(self.notify.value, 0)
+                        try:
+                            xml = self.translator.dataToXml(self.notify.data)
+                            print(xml)
+                            #Print received data.
+                            self.printData(self.notify.value, 0)
 
-                        #Example is sending list of push messages in first parameter.
-                        if isinstance(self.notify.value, list):
-                            objects = self.client.parsePushObjects(self.notify.value[0])
-                            #Remove first item because it's not needed anymore.
-                            objects.pop(0)
-                            Valueindex = 1
-                            for obj, index in objects:
-                                self.client.updateValue(obj, index, self.notify.value[Valueindex])
-                                Valueindex += 1
-                                #Print value
-                                print(str(obj.objectType) + " " + obj.logicalName + " " + str(index) + ": " + str(obj.getValues()[index - 1]))
-                        print("Server address:" + str(self.notify.serverAddress) + " Client Address:" + str(self.notify.clientAddress))
+                            #Example is sending list of push messages in first parameter.
+                            if isinstance(self.notify.value, list):
+                                objects = self.client.parsePushObjects(self.notify.value[0])
+                                #Remove first item because it's not needed anymore.
+                                objects.pop(0)
+                                Valueindex = 1
+                                for obj, index in objects:
+                                    self.client.updateValue(obj, index, self.notify.value[Valueindex])
+                                    Valueindex += 1
+                                    #Print value
+                                    print(str(obj.objectType) + " " + obj.logicalName + " " + str(index) + ": " + str(obj.getValues()[index - 1]))
+                            print("Server address:" + str(self.notify.serverAddress) + " Client Address:" + str(self.notify.clientAddress))
+                        except Exception:
+                            self.reply.position = 0
+                            xml = self.translator.messageToXml(self.reply)
+                            print(xml)
                         self.notify.clear()
                         self.reply.clear()
         except Exception as ex:
