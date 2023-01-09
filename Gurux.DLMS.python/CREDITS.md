@@ -1,5 +1,8 @@
 Credits
 =======
+  - updateAmount issue fixed for the Credit object.
+    * [Mahmoud Diab](https://github.com/mgehaddiab)
+
   - Comment issues fixed for GXDLMSTranslater.
     * [ikudryav](http://www.gurux.fi/user/1084)
 
