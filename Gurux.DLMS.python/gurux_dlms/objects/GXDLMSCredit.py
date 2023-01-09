@@ -79,9 +79,9 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
                 self.creditAvailableThreshold,
                 self.period]
 
-    def updateAmount(self, client):
+    def updateAmount(self, client, value):
         """Adjusts the value of the current credit amount attribute."""
-        return client.method(self, 1, 0, DataType.INT8)
+        return client.method(self, 1, value, DataType.INT32)
 
     def setAmountToValue(self, client, value):
         """Sets the value of the current credit amount attribute."""
