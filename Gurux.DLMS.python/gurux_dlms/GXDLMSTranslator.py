@@ -1392,7 +1392,7 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.RETURN_PARAMETERS:
                 s.attributeDescriptor.setUInt8(1)
             elif tag == TranslatorTags.ACCESS_SELECTION:
-                s.attributeDescriptor.setUInt8(s.attributeDescriptor.size - 1, 1)
+                s.attributeDescriptor.setUInt8(1, s.attributeDescriptor.size - 1)
             elif tag == TranslatorTags.VALUE:
                 pass
             elif tag == TranslatorTags.SERVICE:
