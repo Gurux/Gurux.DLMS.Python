@@ -1801,12 +1801,12 @@ class _GXCommon:
     @classmethod
     def decryptManufacturer(cls, value):
         tmp = (value >> 8 | value << 8)
-        c = str(((tmp & 0x1f) + 0x40))
+        c = chr(((tmp & 0x1f) + 0x40))
         tmp = (tmp >> 5)
-        c1 = str(((tmp & 0x1f) + 0x40))
+        c1 = chr(((tmp & 0x1f) + 0x40))
         tmp = (tmp >> 5)
-        c2 = str(((tmp & 0x1f) + 0x40))
-        return str(c2, c1, c)
+        c2 = chr(((tmp & 0x1f) + 0x40))
+        return "".join([c2, c1, c])
 
     @classmethod
     def idisSystemTitleToString(cls, st):
@@ -1858,7 +1858,7 @@ class _GXCommon:
         m = st[0] << 8 | st[1]
         sb += cls.decryptManufacturer(m)
         sb += "\nSerial number: "
-        sb += GXByteBuffer.toHex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
+        sb += GXByteBuffer.hex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
         return sb
 
     @classmethod
