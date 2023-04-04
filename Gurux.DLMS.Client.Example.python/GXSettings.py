@@ -186,9 +186,9 @@ class GXSettings:
                 elif it.value == "HdlcWithModeE":
                     self.client.interfaceType = InterfaceType.HDLC_WITH_MODE_E
                 elif it.value == "Plc":
-                    self.clientinterfaceType = InterfaceType.PLC
+                    self.client.interfaceType = InterfaceType.PLC
                 elif it.value == "PlcHdlc":
-                    self.clientinterfaceType = InterfaceType.PLC_HDLC
+                    self.client.interfaceType = InterfaceType.PLC_HDLC
                 else:
                     raise ValueError("Invalid interface type option." + it.value + " (HDLC, WRAPPER, HdlcWithModeE, Plc, PlcHdlc)");
                 if modeEDefaultValues and self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E and isinstance(self.media, GXSerial):

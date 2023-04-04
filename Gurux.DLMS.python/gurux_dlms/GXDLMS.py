@@ -316,7 +316,7 @@ class GXDLMS:
             if p.settings.gateway and p.settings.gateway.physicalDeviceAddress:
                 reply.setUInt8(Command.GATEWAY_REQUEST)
                 reply.setUInt8(p.settings.gateway.networkId)
-                reply.setUInt8()
+                reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
                 reply.set(p.settings.gateway.physicalDeviceAddress)
             reply.set(p.attributeDescriptor)
         else:
@@ -493,7 +493,7 @@ class GXDLMS:
                 reply.setUInt8(len(p.settings.gateway.physicalDeviceAddress))
                 reply.set(p.settings.gateway.physicalDeviceAddress)
                 reply.set(tmp)
-        if p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+        if GXDLMS.useHdlc(p.settings.interfaceType):
             GXDLMS.addLLCBytes(p.settings, reply)
 
     @classmethod
