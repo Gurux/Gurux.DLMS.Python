@@ -82,6 +82,7 @@ class GXSettings:
         print(" -I \t Auto increase invoke ID")
         print(" -o \t Cache association view to make reading faster. Ex. -o C:\\device.xml")
         print(" -T \t System title that is used with chiphering. Ex. -T 4775727578313233")
+        print(" -M \t Meter system title that is used with chiphering. Ex -T 4775727578313233")
         print(" -A \t Authentication key that is used with chiphering. Ex. -A D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF")
         print(" -B \t Block cipher key that is used with chiphering. Ex. -B 000102030405060708090A0B0C0D0E0F")
         print(" -D \t Dedicated key that is used with chiphering. Ex. -D 00112233445566778899AABBCCDDEEFF")
@@ -261,6 +262,8 @@ class GXSettings:
                     raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
             elif it.tag == 'T':
                 self.client.ciphering.systemTitle = GXByteBuffer.hexToBytes(it.value)
+            elif it.tag == 'M':
+                self.client.serverSystemTitle = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == 'A':
                 self.client.ciphering.authenticationKey = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == 'B':
@@ -329,6 +332,8 @@ class GXSettings:
                     raise ValueError("Missing mandatory invocation counter logical name option.")
                 if it.tag == 'T':
                     raise ValueError("Missing mandatory system title option.")
+                if it.tag == 'M':
+                    raise ValueError("Missing mandatory meter system title option.")
                 if it.tag == 'A':
                     raise ValueError("Missing mandatory authentication key option.")
                 if it.tag == 'B':
