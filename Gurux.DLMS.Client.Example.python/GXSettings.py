@@ -137,7 +137,7 @@ class GXSettings:
 
 
     def getParameters(self, args):
-        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:i:It:a:p:P:g:S:n:C:v:o:T:A:B:D:d:l:W:w:f:L:")
+        parameters = GXSettings.__getParameters(args, "h:p:c:s:r:i:It:a:p:P:g:S:n:C:v:o:T:A:B:D:d:l:W:w:f:L:M:")
         modeEDefaultValues = True
         for it in parameters:
             if it.tag == 'r':
