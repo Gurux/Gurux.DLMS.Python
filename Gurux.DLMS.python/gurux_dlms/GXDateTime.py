@@ -581,3 +581,25 @@ class GXDateTime:
         if isinstance(value, GXDateTime):
             return value.value.utctimetuple() * 1000.0
         return int(value.value)
+
+    #
+    # Get date time as hex string.
+    #
+    # @param addSpace
+    #           Add space between bytes.
+    # @param useMeterTimeZone
+    #           Date-Time values are shown using meter's time zone and it's not localized to use PC time.</param>
+    # Returns date time as a hex string.
+    #
+    def toHex(self, addSpace, useMeterTimeZone):
+        #pylint: disable=import-outside-toplevel
+        from .GXByteBuffer import GXByteBuffer
+        from .enums import DataType
+        from .internal._GXCommon import _GXCommon
+        from .GXDLMSSettings import GXDLMSSettings
+        buff = GXByteBuffer()
+        settings = GXDLMSSettings(False)
+        settings.UseUtc2NormalTime = useMeterTimeZone
+        _GXCommon.setData(settings, buff, DataType.OCTET_STRING, self)
+        #Dont add data type or length.
+        return buff.toHex(addSpace, 2)
