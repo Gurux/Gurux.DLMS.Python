@@ -122,7 +122,8 @@ class sampleclient(IGXMediaListener):
         sender : The source of the event.
         e : Event arguments.
         """
-        print("New data is received. " + str(e))
+        if sender.trace == TraceLevel.VERBOSE:
+            print("New data is received. " + GXCommon.toHex(e.data))
         #Data might come in fragments.
         self.reply.set(e.data)
         data = GXReplyData()
