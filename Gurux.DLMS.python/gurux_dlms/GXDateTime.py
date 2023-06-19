@@ -369,7 +369,7 @@ class GXDateTime:
             return self.value.strftime(pattern) + self.__getTimeZone()
         if useLocalTime:
             return self.__toLocal(self.value).strftime("%x %X")
-        return self.value.strftime("%x %X") + self.__getTimeZone()
+        return self.value.strftime(self.__get_pattern(True)) + self.__getTimeZone()
 
     @classmethod
     def _remove_(cls, value, tag, removeSeparator):
