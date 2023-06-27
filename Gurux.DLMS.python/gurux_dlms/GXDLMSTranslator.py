@@ -816,7 +816,7 @@ class GXDLMSTranslator:
                             xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not correct.
-                    xml.xml.setXmlLength(len_)
+                    xml.setXmlLength(len_)
                 value.position = originalPosition
             cnt = _GXCommon.getObjectCount(value)
             if cnt != len(value) - value.position:
