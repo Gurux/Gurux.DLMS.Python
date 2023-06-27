@@ -63,6 +63,7 @@ class GXDLMSTranslatorStructure:
         # Amount of spaces.
         self.offset = 0
         self.outputType = type_
+        self.comment_started = False
         numericsAshex = numericshex
         self.showNumericsAsHex = numericsAshex
         self.showStringAsHex = isHex
@@ -131,9 +132,11 @@ class GXDLMSTranslatorStructure:
     def appendComment(self, comment):
         if self.comments:
             self.appendSpaces(2 * self.offset)
-            self.sb += "<!--"
+            if not self.comment_started:
+                self.sb += "<!--"
             self.sb += comment
-            self.sb += "-->"
+            if not self.comment_started:
+                self.sb += "-->"
             self.sb += '\r'
             self.sb += '\n'
 
@@ -151,6 +154,7 @@ class GXDLMSTranslatorStructure:
             self.sb += '\r'
             self.sb += '\n'
             self.offset += 1
+            self.comment_started = True
 
     #
     # End comment section.
@@ -162,6 +166,7 @@ class GXDLMSTranslatorStructure:
             self.sb += "-->"
             self.sb += '\r'
             self.sb += '\n'
+            self.comment_started = False
 
     def append(self, tag, start=None):
         if isinstance(tag, str):
