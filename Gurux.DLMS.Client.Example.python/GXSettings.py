@@ -66,7 +66,7 @@ class GXSettings:
         print(" -h \t host name or IP address.")
         print(" -p \t port number or name (Example: 1000).")
         print(" -S \t serial port. (Example: COM1 or COM1:9600:8None1)")
-        print(" -a \t Authentication (None, Low, High).")
+        print(" -a \t Authentication (None, Low, High, HighMd5, HighSha1, HighGMac, HighSha256).")
         print(" -i \t Used communication interface. Ex. -i WRAPPER.")
         print(" -P \t ASCII password for authentication. Use 0x prefix if hex value is used. Ex. 0x00000000.")
         print(" -c \t Client address. (Default: 16)")
