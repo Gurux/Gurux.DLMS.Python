@@ -65,7 +65,7 @@ class GXCiphering(GXICipher):
         # recipient system title.
         self.recipientSystemTitle = None
         # Invocation Counter.
-        self.invocationCounter = 0
+        self.invocationCounter = 1
         # Used security suite.
         self.securitySuite = SecuritySuite.AES_GCM_128
         # Signing key pair.

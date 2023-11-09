@@ -120,11 +120,10 @@ class GXSettings:
             else:
                 if args[index][0] != '-' and args[index][0] != '/':
                     raise ValueError("Invalid parameter: " + args[index])
-
-                pos = optstring.index(args[index][1])
-                if pos == - 1:
-                    raise ValueError("Invalid parameter: " + args[index])
-
+                try:
+                    pos = optstring.index(args[index][1])
+                except Exception:
+                    raise ValueError("Invalid parameter: " + args[index])                    
                 c = GXCmdParameter()
                 c.tag = args[index][1]
                 list_.append(c)
@@ -155,15 +154,15 @@ class GXSettings:
                     self.media.hostName = it.value
             elif it.tag == 't':
                 #  Trace.
-                if it.value == "Off":
+                if it.value.lower() == "Off".lower():
                     self.trace = TraceLevel.OFF
-                elif it.value == "Error":
+                elif it.value.lower() == "Error".lower():
                     self.trace = TraceLevel.ERROR
-                elif it.value == "Warning":
+                elif it.value.lower() == "Warning".lower():
                     self.trace = TraceLevel.WARNING
-                elif it.value == "Info":
+                elif it.value.lower() == "Info".lower():
                     self.trace = TraceLevel.INFO
-                elif it.value == "Verbose":
+                elif it.value.lower() == "Verbose".lower():
                     self.trace = TraceLevel.VERBOSE
                 else:
                     raise ValueError("Invalid trace level(Off, Error, Warning, Info, Verbose).")
@@ -180,15 +179,15 @@ class GXSettings:
                 else:
                     self.client.password = it.value
             elif it.tag == 'i':
-                if it.value == "HDLC":
+                if it.value.lower() == "HDLC".lower():
                     self.client.interfaceType = InterfaceType.HDLC
-                elif it.value == "WRAPPER":
+                elif it.value.lower() == "WRAPPER".lower():
                     self.client.interfaceType = InterfaceType.WRAPPER
-                elif it.value == "HdlcWithModeE":
+                elif it.value.lower() == "HdlcWithModeE".lower():
                     self.client.interfaceType = InterfaceType.HDLC_WITH_MODE_E
-                elif it.value == "Plc":
+                elif it.value.lower() == "Plc".lower():
                     self.client.interfaceType = InterfaceType.PLC
-                elif it.value == "PlcHdlc":
+                elif it.value.lower() == "PlcHdlc".lower():
                     self.client.interfaceType = InterfaceType.PLC_HDLC
                 else:
                     raise ValueError("Invalid interface type option." + it.value + " (HDLC, WRAPPER, HdlcWithModeE, Plc, PlcHdlc)");
@@ -233,30 +232,32 @@ class GXSettings:
                         self.media.stopbits = StopBits.ONE
             elif it.tag == 'a':
                 try:
-                    if it.value == "None":
+                    if it.value.lower() == "None".lower():
                         self.client.authentication = Authentication.NONE
-                    elif it.value == "Low":
+                    elif it.value.lower() == "Low".lower():
                         self.client.authentication = Authentication.LOW
-                    elif it.value == "High":
+                    elif it.value.lower() == "High".lower():
                         self.client.authentication = Authentication.HIGH
-                    elif it.value == "HighMd5":
+                    elif it.value.lower() == "HighMd5".lower():
                         self.client.authentication = Authentication.HIGH_MD5
-                    elif it.value == "HighSha1":
+                    elif it.value.lower() == "HighSha1".lower():
                         self.client.authentication = Authentication.HIGH_SHA1
-                    elif it.value == "HighGMac":
+                    elif it.value.lower() == "HighGMac".lower():
                         self.client.authentication = Authentication.HIGH_GMAC
-                    elif it.value == "HighSha256":
+                    elif it.value.lower() == "HighSha256".lower():
                         self.client.authentication = Authentication.HIGH_SHA256
+                    else:
+                        raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
                 except Exception:
                     raise ValueError("Invalid Authentication option: '" + it.value + "'. (None, Low, High, HighMd5, HighSha1, HighGMac, HighSha256)")
             elif it.tag == 'C':
-                if it.value == "None":
+                if it.value.lower() == "None".lower():
                     self.client.ciphering.security = Security.NONE
-                elif it.value == "Authentication":
+                elif it.value.lower() == "Authentication".lower():
                     self.client.ciphering.security = Security.AUTHENTICATION
-                elif it.value == "Encryption":
+                elif it.value.lower() == "Encryption".lower():
                     self.client.ciphering.security = Security.ENCRYPTION
-                elif it.value == "AuthenticationEncryption":
+                elif it.value.lower() == "AuthenticationEncryption".lower():
                     self.client.ciphering.security = Security.AUTHENTICATION_ENCRYPTION
                 else:
                     raise ValueError("Invalid Ciphering option: '" + it.value + "'. (None, Authentication, Encryption, AuthenticationEncryption)")
@@ -273,18 +274,18 @@ class GXSettings:
             elif it.tag == 'o':
                 self.outputFile = it.value
             elif it.tag == 'd':
-                if it.value == "DLMS":
+                if it.value.lower() == "DLMS".lower():
                     self.client.standard = Standard.DLMS
-                elif it.value == "India":
+                elif it.value.lower() == "India".lower():
                     self.client.standard = Standard.INDIA
                     self.client.useUtc2NormalTime = True
-                elif it.value == "Italy":
+                elif it.value.lower() == "Italy".lower():
                     self.client.standard = Standard.ITALY
                     self.client.useUtc2NormalTime = True
-                elif it.value == "SaudiArabia":
+                elif it.value.lower() == "SaudiArabia".lower():
                     self.client.standard = Standard.SAUDI_ARABIA
                     self.client.useUtc2NormalTime = True
-                elif it.value == "IDIS":
+                elif it.value.lower() == "IDIS".lower():
                     self.client.standard = Standard.IDIS
                 else:
                     raise ValueError("Invalid DLMS standard option: '" + it.value + "'. (DLMS, India, Italy, SaudiArabia, IDIS)")
