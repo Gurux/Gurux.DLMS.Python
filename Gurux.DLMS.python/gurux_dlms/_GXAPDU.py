@@ -264,6 +264,7 @@ class _GXAPDU:
                 p.security = cipher.security
                 p.invocationCounter = cipher.invocationCounter
                 crypted = GXCiphering.encrypt(p, tmp.array())
+                cipher.invocationCounter = 1 + cipher.invocationCounter
                 #  Length for AARQ user field
                 data.setUInt8(2 + len(crypted))
                 #  Coding the choice for user-information (Octet string,
