@@ -811,12 +811,11 @@ class GXDLMSTranslator:
                             p = AesGcmParameter(0, st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
                         if p.blockCipherKey:
                             data2 = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, value))
-                            xml.startComment("Decrypt data: " + str(data2))
+                            xml.appendComment("Decrypt data: " + str(data2))
                             self._pduToXml2(xml, data2, omitDeclaration, omitNameSpace, False)
-                            xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not correct.
-                    xml.xml.setXmlLength(len_)
+                    xml.setXmlLength(len_)
                 value.position = originalPosition
             cnt = _GXCommon.getObjectCount(value)
             if cnt != len(value) - value.position:
@@ -833,9 +832,8 @@ class GXDLMSTranslator:
                     p.xml = xml
                     tmp = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, tmp))
                     len_ = xml.getXmlLength()
-                    xml.startComment("Decrypt data: " + str(tmp))
+                    xml.appendComment("Decrypt data: " + str(tmp))
                     self._pduToXml2(xml, tmp, omitDeclaration, omitNameSpace, False)
-                    xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not
                     #  correct.

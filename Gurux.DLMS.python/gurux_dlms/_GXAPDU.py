@@ -405,7 +405,7 @@ class _GXAPDU:
             raise GXDLMSConfirmedServiceError(ConfirmedServiceError(data.getUInt8()), ServiceError(data.getUInt8()), data.getUInt8())
         else:
             if xml:
-                xml.appendComment("Error: Failed to descypt data.")
+                xml.appendComment("Error: Failed to decrypt data.")
                 data.position = len(data)
                 return
             raise ValueError("Invalid tag.")
@@ -434,7 +434,7 @@ class _GXAPDU:
         #  The number of unused bits in the bit string.
         tag = data.getUInt8()
         v = cls.getConformanceToArray(data)
-        if settings.isServer:
+        if not response:
             settings.negotiatedConformance = v & settings.proposedConformance
             if xml:
                 xml.appendStartTag(TranslatorGeneralTags.PROPOSED_CONFORMANCE)
