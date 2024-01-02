@@ -34,12 +34,14 @@
 import sys
 import struct
 
-#pylint: disable=import-error, no-name-in-module
+# pylint: disable=import-error, no-name-in-module
 if sys.version_info < (3, 0):
     __base = object
 else:
     from collections.abc import Sequence
+
     __base = Sequence
+
 
 # pylint: disable=too-many-public-methods,useless-object-inheritance
 class GXByteBuffer(__base):
@@ -108,7 +110,7 @@ class GXByteBuffer(__base):
                 tmp = self._data
                 self._data = bytearray(capacity)
                 if self.size < capacity:
-                    self._data[0:self.size] = tmp
+                    self._data[0 : self.size] = tmp
                 else:
                     self._data[0:capacity] = self._data
                     self.__size = capacity
@@ -169,7 +171,7 @@ class GXByteBuffer(__base):
     def subArray(self, index, count):
         if count != 0:
             tmp = bytearray(count)
-            tmp[0:count] = self._data[index:index + count]
+            tmp[0:count] = self._data[index : index + count]
             return tmp
         return bytearray(0)
 
@@ -187,7 +189,7 @@ class GXByteBuffer(__base):
         if count < 0:
             raise ValueError("count")
         if count != 0:
-            self._data[destPos:destPos + count] = self._data[srcPos:srcPos + count]
+            self._data[destPos : destPos + count] = self._data[srcPos : srcPos + count]
             self.size = destPos + count
             if self.position > self.size:
                 self.position = self.size
@@ -238,7 +240,7 @@ class GXByteBuffer(__base):
             self.size += 2
         else:
             if index + 2 >= self.capacity:
-                self.capacity = (index + self.__ARRAY_CAPACITY)
+                self.capacity = index + self.__ARRAY_CAPACITY
             self._data[index] = int(((item >> 8) & 0xFF))
             self._data[index + 1] = int((item & 0xFF))
 
@@ -260,7 +262,7 @@ class GXByteBuffer(__base):
             self.size += 8
         else:
             if index + 8 >= self.capacity:
-                self.capacity = (index + self.__ARRAY_CAPACITY)
+                self.capacity = index + self.__ARRAY_CAPACITY
             self._data[self.size] = int(((item >> 56) & 0xFF))
             self._data[self.size + 1] = int(((item >> 48) & 0xFF))
             self._data[self.size + 2] = int(((item >> 40) & 0xFF))
@@ -276,7 +278,7 @@ class GXByteBuffer(__base):
             self.size += 4
         else:
             if index + 4 >= self.capacity:
-                self.capacity = (index + self.__ARRAY_CAPACITY)
+                self.capacity = index + self.__ARRAY_CAPACITY
             tmp = struct.pack("f", value)
             self._data[self.size] = tmp[3]
             self._data[self.size + 1] = tmp[2]
@@ -289,7 +291,7 @@ class GXByteBuffer(__base):
             self.size += 8
         else:
             if index + 8 >= self.capacity:
-                self.capacity = (index + self.__ARRAY_CAPACITY)
+                self.capacity = index + self.__ARRAY_CAPACITY
             tmp = struct.pack("d", value)
             # Swap bytes.
             self._data[self.size] = tmp[7]
@@ -305,58 +307,68 @@ class GXByteBuffer(__base):
         if index is None:
             index = self.position
             value = self._data[index] & 0xFF
-            value = value % 2 ** 8
+            value = value % 2**8
             self.position += 1
             return value
         if index >= self.size:
             raise ValueError("getUInt8")
         value = self._data[index] & 0xFF
-        value = value % 2 ** 8
+        value = value % 2**8
         return value
 
     def getInt8(self, index=None):
         if index is None:
             index = self.position
             value = self._data[index]
-            value = (value + 2 ** 7) % 2 ** 8 - 2 ** 7
+            value = (value + 2**7) % 2**8 - 2**7
             self.position += 1
             return value
         if index >= self.size:
             raise ValueError("getInt8")
         value = self._data[index]
-        value = (value + 2 ** 7) % 2 ** 8 - 2 ** 7
+        value = (value + 2**7) % 2**8 - 2**7
         return value
 
     def getUInt16(self, index=None):
         if index is None:
             index = self.position
             value = ((self._data[index] & 0xFF) << 8) | (self._data[index + 1] & 0xFF)
-            value = value % 2 ** 16
+            value = value % 2**16
             self.position += 2
             return value
         if index + 2 > self.size:
             raise ValueError("getUInt16")
         value = ((self._data[index] & 0xFF) << 8) | (self._data[index + 1] & 0xFF)
-        value = value % 2 ** 16
+        value = value % 2**16
         return value
 
     def getInt16(self):
-        return (self.getUInt16() + 2 ** 15) % 2 ** 16 - 2 ** 15
+        return (self.getUInt16() + 2**15) % 2**16 - 2**15
 
     def getInt32(self, index=None):
         if index is None:
             index = self.position
             if index + 4 > self.size:
                 raise ValueError("getInt32")
-            value = (self._data[index] & 0xFF) << 24 | (self._data[index + 1] & 0xFF) << 16 | (self._data[index + 2] & 0xFF) << 8 | (self._data[index + 3] & 0xFF)
-            value = (value + 2 ** 31) % 2 ** 32 - 2 ** 31
+            value = (
+                (self._data[index] & 0xFF) << 24
+                | (self._data[index + 1] & 0xFF) << 16
+                | (self._data[index + 2] & 0xFF) << 8
+                | (self._data[index + 3] & 0xFF)
+            )
+            value = (value + 2**31) % 2**32 - 2**31
             self.position += 4
             return value
 
         if index + 4 > self.size:
             raise ValueError("getInt32")
-        value = (self._data[index] & 0xFF) << 24 | (self._data[index + 1] & 0xFF) << 16 | (self._data[index + 2] & 0xFF) << 8 | (self._data[index + 3] & 0xFF)
-        value = (value + 2 ** 31) % 2 ** 32 - 2 ** 31
+        value = (
+            (self._data[index] & 0xFF) << 24
+            | (self._data[index + 1] & 0xFF) << 16
+            | (self._data[index + 2] & 0xFF) << 8
+            | (self._data[index + 3] & 0xFF)
+        )
+        value = (value + 2**31) % 2**32 - 2**31
         return value
 
     def getUInt32(self, index=None):
@@ -369,8 +381,8 @@ class GXByteBuffer(__base):
         value = value << 24
         value |= (self._data[index + 1] & 0xFF) << 16
         value |= (self._data[index + 2] & 0xFF) << 8
-        value |= (self._data[index + 3] & 0xFF)
-        value = value % 2 ** 32
+        value |= self._data[index + 3] & 0xFF
+        value = value % 2**32
         return value
 
     def getFloat(self):
@@ -414,13 +426,13 @@ class GXByteBuffer(__base):
         value |= ((self._data[index + 4] & 0xFF)) << 24
         value |= (self._data[index + 5] & 0xFF) << 16
         value |= (self._data[index + 6] & 0xFF) << 8
-        value |= (self._data[index + 7] & 0xFF)
-        value = (value + 2 ** 63) % 2 ** 64 - 2 ** 63
+        value |= self._data[index + 7] & 0xFF
+        value = (value + 2**63) % 2**64 - 2**63
         return value
 
     def getUInt64(self, index=None):
         value = self.getInt64(index)
-        return value % 2 ** 64
+        return value % 2**64
 
     #
     #      Check is byte buffer ASCII string.
@@ -434,15 +446,21 @@ class GXByteBuffer(__base):
         # pylint: disable=too-many-boolean-expressions
         if value:
             for it in value:
-                if (it < 32 or it > 127) and it != '\r' and it != '\n' and it != '\t' and it != 0:
+                if (
+                    (it < 32 or it > 127)
+                    and it != "\r"
+                    and it != "\n"
+                    and it != "\t"
+                    and it != 0
+                ):
                     return False
         return True
 
     def getString(self, index, count):
         if index is None and count is None:
-            tmp = self._data[0:self.size]
+            tmp = self._data[0 : self.size]
             if self.isAsciiString(tmp):
-                str_ = tmp.decode("utf-8").rstrip('\x00')
+                str_ = tmp.decode("utf-8").rstrip("\x00")
             else:
                 str_ = self.hex(tmp)
             self.position += count
@@ -450,9 +468,9 @@ class GXByteBuffer(__base):
 
         if index + count > self.size:
             raise ValueError("getString")
-        tmp = self._data[index:index + count]
+        tmp = self._data[index : index + count]
         if self.isAsciiString(tmp):
-            return tmp.decode("utf-8").rstrip('\x00')
+            return tmp.decode("utf-8").rstrip("\x00")
         return self.hex(tmp)
 
     def set(self, value, index=None, count=None):
@@ -473,7 +491,7 @@ class GXByteBuffer(__base):
             elif value and count != 0:
                 if self.size + count > self.capacity:
                     self.capacity = self.size + count + self.__ARRAY_CAPACITY
-                self._data[self.size:self.size + count] = value[index:index + count]
+                self._data[self.size : self.size + count] = value[index : index + count]
                 self.size += count
 
     def get(self, target):
@@ -573,10 +591,10 @@ class GXByteBuffer(__base):
             count = len(self) - index
         return self.hex(self._data, addSpace, index, count)
 
-    #Convert char hex value to byte value.
+    # Convert char hex value to byte value.
     @classmethod
     def ___getValue(cls, c):
-        #Id char.
+        # Id char.
         if c.islower():
             c = c.upper()
         pos = GXByteBuffer.__HEX_ARRAY.find(c)
@@ -594,11 +612,14 @@ class GXByteBuffer(__base):
         if value:
             lastValue = -1
             for ch in value:
-                if ch != ' ':
+                if ch != " ":
                     if lastValue == -1:
                         lastValue = GXByteBuffer.___getValue(ch)
                     elif lastValue != -1:
-                        buff.append(lastValue << GXByteBuffer.__NIBBLE | GXByteBuffer.___getValue(ch))
+                        buff.append(
+                            lastValue << GXByteBuffer.__NIBBLE
+                            | GXByteBuffer.___getValue(ch)
+                        )
                         lastValue = -1
                 elif lastValue != -1:
                     buff.append(GXByteBuffer.___getValue(ch))
@@ -610,18 +631,18 @@ class GXByteBuffer(__base):
         """
         Convert byte array to hex string.
         """
-        #Return empty string if array is empty.
+        # Return empty string if array is empty.
         if not value:
             return ""
         hexChars = ""
-        #Python 2.7 handles bytes as a string array. It's changed to bytearray.
+        # Python 2.7 handles bytes as a string array. It's changed to bytearray.
         if sys.version_info < (3, 0) and not isinstance(value, bytearray):
             value = bytearray(value)
         if count is None:
             count = len(value)
-        for it in value[index:index+count]:
+        for it in value[index : index + count]:
             hexChars += GXByteBuffer.__HEX_ARRAY[it >> GXByteBuffer.__NIBBLE]
             hexChars += GXByteBuffer.__HEX_ARRAY[it & GXByteBuffer.__LOW_BYTE_PART]
             if addSpace:
-                hexChars += ' '
+                hexChars += " "
         return hexChars.strip()

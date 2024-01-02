@@ -834,7 +834,7 @@ class GXDLMS:
             reply.position = reply.position - 1
             return GXDLMS.getHdlcData(server, settings, reply, data, notify)
         if (frame_ & 0x7) != 0:
-            frameLen = ((frame_ & 0x7) << 8)
+            frameLen = (frame_ & 0x7) << 8
         ch = reply.getUInt8()
         frameLen += ch
         if len(reply) - reply.position + 1 < frameLen:
@@ -894,14 +894,14 @@ class GXDLMS:
             if crc != crcRead:
                 raise Exception("Wrong CRC.")
             if isNotify:
-                notify.packetLength = (eopPos - 2)
+                notify.packetLength = eopPos - 2
             else:
-                data.packetLength = (eopPos - 2)
+                data.packetLength = eopPos - 2
         else:
             if isNotify:
-                notify.packetLength = (reply.position + 1)
+                notify.packetLength = reply.position + 1
             else:
-                data.packetLength = (reply.position + 1)
+                data.packetLength = reply.position + 1
         if cf != 0x13 and cf != 0x3 and (cf & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
@@ -926,7 +926,7 @@ class GXDLMS:
             if reply.position == packetStartID + frameLen + 1:
                 reply.getUInt8()
                 if (cf & 0x1) == 0x1:
-                    data.moreData = (RequestTypes.FRAME)
+                    data.moreData = RequestTypes.FRAME
             else:
                 if not GXDLMS.getLLCBytes(server, reply) and data.xml:
                     GXDLMS.getLLCBytes(not server, reply)

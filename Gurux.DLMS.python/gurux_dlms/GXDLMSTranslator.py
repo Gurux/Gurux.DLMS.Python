@@ -83,11 +83,13 @@ from .enums.Standard import Standard
 from .GXDLMSTranslatorMessage import GXDLMSTranslatorMessage
 from .plc.enums import PlcSourceAddress, PlcDestinationAddress
 
+
 # pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,old-style-class,raise-missing-from
 class GXDLMSTranslator:
     """
     This class is used to translate DLMS frame or PDU to xml.
     """
+
     def __init__(self, type_=TranslatorOutputType.SIMPLE_XML):
         """
         Constructor.
@@ -118,9 +120,47 @@ class GXDLMSTranslator:
         # System title.
         self.systemTitle = "ABCDEFGH".encode()
         # Block cipher key.
-        self.blockCipherKey = bytearray((0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F))
+        self.blockCipherKey = bytearray(
+            (
+                0x00,
+                0x01,
+                0x02,
+                0x03,
+                0x04,
+                0x05,
+                0x06,
+                0x07,
+                0x08,
+                0x09,
+                0x0A,
+                0x0B,
+                0x0C,
+                0x0D,
+                0x0E,
+                0x0F,
+            )
+        )
         # Authentication key.
-        self.authenticationKey = bytearray((0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF))
+        self.authenticationKey = bytearray(
+            (
+                0xD0,
+                0xD1,
+                0xD2,
+                0xD3,
+                0xD4,
+                0xD5,
+                0xD6,
+                0xD7,
+                0xD8,
+                0xD9,
+                0xDA,
+                0xDB,
+                0xDC,
+                0xDD,
+                0xDE,
+                0xDF,
+            )
+        )
         # Invocation Counter.
         self.invocationCounter = 0
         # Dedicated key.
@@ -157,39 +197,62 @@ class GXDLMSTranslator:
         settings = GXDLMSSettings(True)
         reply = GXReplyData()
         reply.moreData = msg.moreData
-        reply.xml = (GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags))
+        reply.xml = GXDLMSTranslatorStructure(
+            self.outputType,
+            self.omitXmlNameSpace,
+            self.hex,
+            self.showStringAsHex,
+            self.comments,
+            self.tags,
+        )
         pos = 0
         found = False
         while data.position < len(data):
-            if msg.interfaceType in (None, InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E) and data.getUInt8(data.position) == 0x7e:
+            if (
+                msg.interfaceType
+                in (None, InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E)
+                and data.getUInt8(data.position) == 0x7E
+            ):
                 pos = data.position
                 settings.interfaceType = InterfaceType.HDLC
                 found = GXDLMS.getData(settings, data, reply, None)
                 data.position = pos
                 if found:
                     break
-            elif msg.interfaceType in (None, InterfaceType.WRAPPER) and data.getUInt16(data.position) == 0x1:
+            elif (
+                msg.interfaceType in (None, InterfaceType.WRAPPER)
+                and data.getUInt16(data.position) == 0x1
+            ):
                 pos = data.position
                 settings.interfaceType = InterfaceType.WRAPPER
                 found = GXDLMS.getData(settings, data, reply, None)
                 data.position = pos
                 if found:
                     break
-            elif msg.interfaceType in (None, InterfaceType.PLC) and msg.message.getUInt8(msg.message.position) == 2:
+            elif (
+                msg.interfaceType in (None, InterfaceType.PLC)
+                and msg.message.getUInt8(msg.message.position) == 2
+            ):
                 pos = data.position
                 settings.interfaceType = InterfaceType.PLC
                 found = GXDLMS.getData(settings, data, reply, None)
                 data.position = pos
                 if found:
                     break
-            elif msg.interfaceType in (None, InterfaceType.WIRED_MBUS) and GXDLMS.isWiredMBusData(msg.message):
+            elif msg.interfaceType in (
+                None,
+                InterfaceType.WIRED_MBUS,
+            ) and GXDLMS.isWiredMBusData(msg.message):
                 pos = data.position
                 settings.interfaceType = InterfaceType.WIRED_MBUS
                 found = GXDLMS.getData(settings, data, reply, None)
                 data.position = pos
                 if found:
                     break
-            elif msg.interfaceType in (None, InterfaceType.WIRELESS_MBUS) and GXDLMS.isWirelessMBusData(msg.message):
+            elif msg.interfaceType in (
+                None,
+                InterfaceType.WIRELESS_MBUS,
+            ) and GXDLMS.isWirelessMBusData(msg.message):
                 pos = data.position
                 settings.interfaceType = InterfaceType.WIRELESS_MBUS
                 found = GXDLMS.getData(settings, data, reply, None)
@@ -207,6 +270,7 @@ class GXDLMSTranslator:
         if not found:
             data.position = original
         return r
+
     #
     # Find next frame from the string.  Position of data is set to the begin of
     # new frame.  If PDU is None it is not updated.
@@ -223,18 +287,32 @@ class GXDLMSTranslator:
         settings = GXDLMSSettings(True)
         settings.iInterfaceType = type_
         reply = GXReplyData()
-        reply.xml = (GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags))
+        reply.xml = GXDLMSTranslatorStructure(
+            self.outputType,
+            self.omitXmlNameSpace,
+            self.hex,
+            self.showStringAsHex,
+            self.comments,
+            self.tags,
+        )
         pos = int()
         found = bool()
         try:
             while data.position < len(data):
-                if type_ in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E) and data.getUInt8(data.position) == 0x7e:
+                if (
+                    type_ in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E)
+                    and data.getUInt8(data.position) == 0x7E
+                ):
                     pos = data.position
                     found = GXDLMS.getData(settings, data, reply, None)
                     data.position = pos
                     if found:
                         break
-                elif data.available() > 1 and type_ == InterfaceType.WRAPPER and data.getUInt16(data.position) == 0x1:
+                elif (
+                    data.available() > 1
+                    and type_ == InterfaceType.WRAPPER
+                    and data.getUInt16(data.position) == 0x1
+                ):
                     pos = data.position
                     found = GXDLMS.getData(settings, data, reply, None)
                     data.position = pos
@@ -306,7 +384,7 @@ class GXDLMSTranslator:
     def getDlmsFraming(cls, value):
         pos = value.position
         while pos != len(value):
-            if value.getUInt8(pos) == 0x7e:
+            if value.getUInt8(pos) == 0x7E:
                 return InterfaceType.HDLC
             if value.available() > 1 and value.getUInt16(pos) == 1:
                 return InterfaceType.WRAPPER
@@ -318,7 +396,14 @@ class GXDLMSTranslator:
     def getPdu_0(self, value):
         framing = self.getDlmsFraming(value)
         data = GXReplyData()
-        data.xml = (GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags))
+        data.xml = GXDLMSTranslatorStructure(
+            self.outputType,
+            self.omitXmlNameSpace,
+            self.hex,
+            self.showStringAsHex,
+            self.comments,
+            self.tags,
+        )
         settings = GXDLMSSettings(True)
         settings.interfaceType = framing
         GXDLMS.getData(settings, value, data, None)
@@ -366,17 +451,50 @@ class GXDLMSTranslator:
             else:
                 xml.appendComment("I frame.")
 
+    #
+    # Get logical and physical address from the server address.
+    #
+    @classmethod
+    def __getLogicalAndPhysicalAddress(cls, value):
+        if value > 0x3FFF:
+            logical = int(value >> 14)
+            physical = int(value & 0x3FFF)
+        else:
+            logical = int(value >> 7)
+            physical = int(value & 0x7F)
+        return (logical, physical)
+
     @classmethod
     def __updateAddress(cls, settings, msg):
         reply = True
-        if msg.command in (Command.READ_REQUEST, Command.WRITE_REQUEST, Command.GET_REQUEST,\
-            Command.SET_REQUEST,Command.METHOD_REQUEST, Command.SNRM, Command.AARQ,\
-            Command.DISCONNECT_REQUEST, Command.RELEASE_REQUEST, Command.ACCESS_REQUEST,\
-            Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST, Command.GLO_METHOD_REQUEST,\
-            Command.GLO_INITIATE_REQUEST, Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST,\
-            Command.DED_INITIATE_REQUEST,Command.DED_READ_REQUEST, Command.DED_WRITE_REQUEST,\
-            Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST,\
-            Command.GATEWAY_REQUEST,Command.DISCOVER_REQUEST, Command.REGISTER_REQUEST,Command.PING_REQUEST):
+        if msg.command in (
+            Command.READ_REQUEST,
+            Command.WRITE_REQUEST,
+            Command.GET_REQUEST,
+            Command.SET_REQUEST,
+            Command.METHOD_REQUEST,
+            Command.SNRM,
+            Command.AARQ,
+            Command.DISCONNECT_REQUEST,
+            Command.RELEASE_REQUEST,
+            Command.ACCESS_REQUEST,
+            Command.GLO_GET_REQUEST,
+            Command.GLO_SET_REQUEST,
+            Command.GLO_METHOD_REQUEST,
+            Command.GLO_INITIATE_REQUEST,
+            Command.GLO_READ_REQUEST,
+            Command.GLO_WRITE_REQUEST,
+            Command.DED_INITIATE_REQUEST,
+            Command.DED_READ_REQUEST,
+            Command.DED_WRITE_REQUEST,
+            Command.DED_GET_REQUEST,
+            Command.DED_SET_REQUEST,
+            Command.DED_METHOD_REQUEST,
+            Command.GATEWAY_REQUEST,
+            Command.DISCOVER_REQUEST,
+            Command.REGISTER_REQUEST,
+            Command.PING_REQUEST,
+        ):
             reply = False
         if reply:
             msg.targetAddress = settings.clientAddress
@@ -406,7 +524,14 @@ class GXDLMSTranslator:
             if not msg:
                 raise ValueError("msg")
         msg.exception = None
-        xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
+        xml = GXDLMSTranslatorStructure(
+            self.outputType,
+            self.omitXmlNameSpace,
+            self.hex,
+            self.showStringAsHex,
+            self.comments,
+            self.tags,
+        )
         data = GXReplyData()
         settings = GXDLMSSettings(True)
         self.getCiphering(settings, True)
@@ -414,24 +539,57 @@ class GXDLMSTranslator:
         try:
             offset = msg.message.position
             #  If HDLC framing.
-            if msg.interfaceType in (None, InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E) and msg.message.getUInt8(msg.message.position) == 0x7e:
+            if (
+                msg.interfaceType
+                in (None, InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E)
+                and msg.message.getUInt8(msg.message.position) == 0x7E
+            ):
                 msg.interfaceType = settings.interfaceType = InterfaceType.HDLC
                 if GXDLMS.getData(settings, msg.message, data, None):
                     msg.moreData = data.moreData
                     msg.sourceAddress = data.sourceAddress
                     msg.targetAddress = data.targetAddress
                     if not self.pduOnly:
-                        xml.appendLine("<HDLC len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
-                        xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
-                        xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
+                        xml.appendLine(
+                            '<HDLC len="'
+                            + xml.integerToHex(data.packetLength - offset, 0)
+                            + '" >'
+                        )
+                        (
+                            logical,
+                            physical,
+                        ) = GXDLMSTranslator.__getLogicalAndPhysicalAddress(
+                            settings.serverAddress
+                        )
+                        if logical != 0:
+                            xml.appendComment(
+                                "Logical address:"
+                                + str(logical)
+                                + ", Physical address:"
+                                + str(physical)
+                            )
+                        xml.appendLine(
+                            '<TargetAddress Value="'
+                            + xml.integerToHex(settings.serverAddress, 0)
+                            + '" />'
+                        )
+                        xml.appendLine(
+                            '<SourceAddress Value="'
+                            + xml.integerToHex(settings.clientAddress, 0)
+                            + '" />'
+                        )
                         #  Check frame.
                         if self.comments:
                             self.checkFrame(data.frameId, xml)
-                        xml.appendLine("<FrameType Value=\"" + xml.integerToHex(data.frameId, 2, True) + "\" />")
+                        xml.appendLine(
+                            '<FrameType Value="'
+                            + xml.integerToHex(data.frameId, 2, True)
+                            + '" />'
+                        )
                     if not data.data:
                         if (data.frameId & 1) != 0 and data.command == Command.NONE:
                             if not self.completePdu:
-                                xml.appendLine("<Command Value=\"NextFrame\" />")
+                                xml.appendLine('<Command Value="NextFrame" />')
                             self.multipleFrames = True
                         else:
                             xml.appendStartTag(data.command)
@@ -441,10 +599,20 @@ class GXDLMSTranslator:
                             if self.completePdu:
                                 self.pduFrames.set(data.data)
                                 if data.moreData == RequestTypes.NONE:
-                                    xml.appendLine(self.__pduToXml(self.pduFrames, True, True))
+                                    xml.appendLine(
+                                        self.__pduToXml(self.pduFrames, True, True)
+                                    )
                                     self.pduFrames.clear()
                             else:
-                                xml.appendLine("<NextFrame Value=\"" + data.data.toHex(False, data.data.position, data.data.size - data.data.position) + "\" />")
+                                xml.appendLine(
+                                    '<NextFrame Value="'
+                                    + data.data.toHex(
+                                        False,
+                                        data.data.position,
+                                        data.data.size - data.data.position,
+                                    )
+                                    + '" />'
+                                )
                             if data.moreData != RequestTypes.DATABLOCK:
                                 self.multipleFrames = False
                         else:
@@ -452,16 +620,23 @@ class GXDLMSTranslator:
                                 xml.appendLine("<PDU>")
                             if self.pduFrames:
                                 self.pduFrames.set(data.data.data)
-                                xml.appendLine(self.__pduToXml(self.pduFrames, True, True))
+                                xml.appendLine(
+                                    self.__pduToXml(self.pduFrames, True, True)
+                                )
                                 self.pduFrames.clear()
                             else:
-                                if data.command == Command.SNRM or data.command == Command.UA:
+                                if (
+                                    data.command == Command.SNRM
+                                    or data.command == Command.UA
+                                ):
                                     xml.appendStartTag(data.command)
                                     self._pduToXml2(xml, data.data, True, True, True)
                                     xml.appendEndTag(data.command)
                                     xml.setXmlLength(xml.getXmlLength() + 2)
                                 else:
-                                    xml.appendLine(self.__pduToXml(data.data, True, True))
+                                    xml.appendLine(
+                                        self.__pduToXml(data.data, True, True)
+                                    )
                             #  Remove \r\n.
                             xml.trim()
                             if not self.pduOnly:
@@ -472,17 +647,35 @@ class GXDLMSTranslator:
                 msg.xml = str(xml)
                 return msg.xml
             #  If wrapper.
-            if msg.interfaceType in (None, InterfaceType.WRAPPER) and (msg.message.available() > 1) and msg.message.getUInt16(msg.message.position) == 1:
+            if (
+                msg.interfaceType in (None, InterfaceType.WRAPPER)
+                and (msg.message.available() > 1)
+                and msg.message.getUInt16(msg.message.position) == 1
+            ):
                 msg.interfaceType = settings.interfaceType = InterfaceType.WRAPPER
                 GXDLMS.getData(settings, msg.message, data, None)
                 msg.moreData = data.moreData
                 msg.sourceAddress = data.sourceAddress
                 msg.targetAddress = data.targetAddress
-                pdu = self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace)
+                pdu = self.__pduToXml(
+                    data.data, self.omitXmlDeclaration, self.omitXmlNameSpace
+                )
                 if not self.pduOnly:
-                    xml.appendLine("<WRAPPER len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
-                    xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
-                    xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
+                    xml.appendLine(
+                        '<WRAPPER len="'
+                        + xml.integerToHex(data.packetLength - offset, 0)
+                        + '" >'
+                    )
+                    xml.appendLine(
+                        '<TargetAddress Value="'
+                        + xml.integerToHex(settings.clientAddress, 0)
+                        + '" />'
+                    )
+                    xml.appendLine(
+                        '<SourceAddress Value="'
+                        + xml.integerToHex(settings.serverAddress, 0)
+                        + '" />'
+                    )
                 if not self.pduOnly:
                     xml.appendLine("<PDU>")
                 xml.appendLine(pdu)
@@ -495,31 +688,58 @@ class GXDLMSTranslator:
                 self.__updateAddress(settings, msg)
                 msg.xml = str(xml)
                 return msg.xml
-            #If PLC.
-            if msg.interfaceType in (None, InterfaceType.PLC) and msg.message.getUInt8(msg.message.position) == 2:
+            # If PLC.
+            if (
+                msg.interfaceType in (None, InterfaceType.PLC)
+                and msg.message.getUInt8(msg.message.position) == 2
+            ):
                 msg.interfaceType = settings.interfaceType = InterfaceType.PLC
                 GXDLMS.getData(settings, msg.message, data, None)
                 msg.moreData = data.moreData
                 msg.sourceAddress = data.sourceAddress
                 msg.targetAddress = data.targetAddress
                 if not self.pduOnly:
-                    xml.appendLine("<Plc len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
+                    xml.appendLine(
+                        '<Plc len="'
+                        + xml.integerToHex(data.packetLength - offset, 0)
+                        + '" >'
+                    )
                     if self.comments:
                         if data.targetAddress == PlcSourceAddress.INITIATOR:
                             xml.appendComment("Initiator")
                         elif data.targetAddress == PlcSourceAddress.NEW:
                             xml.appendComment("New")
-                    xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(data.targetAddress, 0) + "\" />")
-                    if self.comments and data.sourceAddress == PlcDestinationAddress.ALL_PHYSICAL:
+                    xml.appendLine(
+                        '<SourceAddress Value="'
+                        + xml.integerToHex(data.targetAddress, 0)
+                        + '" />'
+                    )
+                    if (
+                        self.comments
+                        and data.sourceAddress == PlcDestinationAddress.ALL_PHYSICAL
+                    ):
                         xml.appendComment("AllPhysical")
-                    xml.appendLine("<DestinationAddress Value=\"" + xml.integerToHex(data.sourceAddress, 0) + "\" />")
+                    xml.appendLine(
+                        '<DestinationAddress Value="'
+                        + xml.integerToHex(data.sourceAddress, 0)
+                        + '" />'
+                    )
                 if data.data.size == 0:
-                    xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
+                    xml.appendLine(
+                        '<Command Value="' + Command.toString(data.command) + '" />'
+                    )
                 else:
                     if not self.pduOnly:
                         xml.appendLine("<PDU>")
-                    xml.appendLine(self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace, msg))
-                    #Remove \r\n.
+                    xml.appendLine(
+                        self.__pduToXml(
+                            data.data,
+                            self.omitXmlDeclaration,
+                            self.omitXmlNameSpace,
+                            msg,
+                        )
+                    )
+                    # Remove \r\n.
                     xml.trim()
                     if not self.pduOnly:
                         xml.appendLine("</PDU>")
@@ -528,8 +748,11 @@ class GXDLMSTranslator:
                 self.__updateAddress(settings, msg)
                 msg.xml = str(xml)
                 return msg.xml
-            #If Wired M-Bus.
-            if msg.interfaceType in (None, InterfaceType.WIRED_MBUS) and GXDLMS.isWiredMBusData(msg.message):
+            # If Wired M-Bus.
+            if msg.interfaceType in (
+                None,
+                InterfaceType.WIRED_MBUS,
+            ) and GXDLMS.isWiredMBusData(msg.message):
                 msg.interfaceType = settings.interfaceType = InterfaceType.WIRED_MBUS
                 len_ = xml.getXmlLength()
                 GXDLMS.getData(settings, msg.message, data, None)
@@ -539,21 +762,43 @@ class GXDLMSTranslator:
                 tmp = str(xml)[0:len_]
                 xml.setXmlLength(len_)
                 if not self.pduOnly:
-                    xml.appendLine("<WiredMBus len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
-                    xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
-                    xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
+                    xml.appendLine(
+                        '<WiredMBus len="'
+                        + xml.integerToHex(data.packetLength - offset, 0)
+                        + '" >'
+                    )
+                    xml.appendLine(
+                        '<TargetAddress Value="'
+                        + xml.integerToHex(settings.serverAddress, 0)
+                        + '" />'
+                    )
+                    xml.appendLine(
+                        '<SourceAddress Value="'
+                        + xml.integerToHex(settings.clientAddress, 0)
+                        + '" />'
+                    )
                     xml.append(tmp)
                 if data.data.size == 0:
-                    xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
+                    xml.appendLine(
+                        '<Command Value="' + Command.toString(data.command) + '" />'
+                    )
                 else:
                     if self.multipleFrames or (data.moreData & RequestTypes.FRAME) != 0:
                         if self.completePdu:
                             self.pduFrames.set(data.data)
                             if data.moreData == RequestTypes.NONE:
-                                xml.appendLine(self.__pduToXml(self.pduFrames, True, True))
+                                xml.appendLine(
+                                    self.__pduToXml(self.pduFrames, True, True)
+                                )
                                 self.pduFrames.clear()
                         else:
-                            xml.appendLine("<NextFrame Value=\"" + data.data.toHex(False, data.data.position, data.data.available()) + "\" />")
+                            xml.appendLine(
+                                '<NextFrame Value="'
+                                + data.data.toHex(
+                                    False, data.data.position, data.data.available()
+                                )
+                                + '" />'
+                            )
                         if data.moreData & RequestTypes.FRAME != 0:
                             self.multipleFrames = True
                         if data.moreData == RequestTypes.DATABLOCK:
@@ -565,8 +810,14 @@ class GXDLMSTranslator:
                             self.pduFrames.set(data.data)
                             data.data.clear()
                             data.data.set(self.pduFrames)
-                        xml.appendLine(self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace))
-                        #Remove \r\n.
+                        xml.appendLine(
+                            self.__pduToXml(
+                                data.data,
+                                self.omitXmlDeclaration,
+                                self.omitXmlNameSpace,
+                            )
+                        )
+                        # Remove \r\n.
                         xml.trim()
                         if not self.pduOnly:
                             xml.appendLine("</PDU>")
@@ -575,8 +826,11 @@ class GXDLMSTranslator:
                 self.__updateAddress(settings, msg)
                 msg.xml = str(xml)
                 return msg.xml
-            #If Wireless M-Bus.
-            if msg.interfaceType in (None, InterfaceType.WIRELESS_MBUS) and GXDLMS.isWirelessMBusData(msg.message):
+            # If Wireless M-Bus.
+            if msg.interfaceType in (
+                None,
+                InterfaceType.WIRELESS_MBUS,
+            ) and GXDLMS.isWirelessMBusData(msg.message):
                 msg.interfaceType = settings.interfaceType = InterfaceType.WIRELESS_MBUS
                 len_ = xml.getXmlLength()
                 GXDLMS.getData(settings, msg.message, data, None)
@@ -586,17 +840,38 @@ class GXDLMSTranslator:
                 tmp = str(xml)[0:len_]
                 xml.setXmlLength(len_)
                 if not self.pduOnly:
-                    xml.appendLine("<WirelessMBus len=\"" + xml.integerToHex(data.packetLength - offset, 0) + "\" >")
-                    xml.appendLine("<TargetAddress Value=\"" + xml.integerToHex(settings.serverAddress, 0) + "\" />")
-                    xml.appendLine("<SourceAddress Value=\"" + xml.integerToHex(settings.clientAddress, 0) + "\" />")
+                    xml.appendLine(
+                        '<WirelessMBus len="'
+                        + xml.integerToHex(data.packetLength - offset, 0)
+                        + '" >'
+                    )
+                    xml.appendLine(
+                        '<TargetAddress Value="'
+                        + xml.integerToHex(settings.serverAddress, 0)
+                        + '" />'
+                    )
+                    xml.appendLine(
+                        '<SourceAddress Value="'
+                        + xml.integerToHex(settings.clientAddress, 0)
+                        + '" />'
+                    )
                     xml.append(tmp)
                 if data.data.size == 0:
-                    xml.appendLine("<Command Value=\"" + Command.toString(data.command) + "\" />")
+                    xml.appendLine(
+                        '<Command Value="' + Command.toString(data.command) + '" />'
+                    )
                 else:
                     if not self.pduOnly:
                         xml.appendLine("<PDU>")
-                    xml.appendLine(self.__pduToXml(data.data, self.omitXmlDeclaration, self.omitXmlNameSpace, msg))
-                    #Remove \r\n.
+                    xml.appendLine(
+                        self.__pduToXml(
+                            data.data,
+                            self.omitXmlDeclaration,
+                            self.omitXmlNameSpace,
+                            msg,
+                        )
+                    )
+                    # Remove \r\n.
                     xml.trim()
                     if not self.pduOnly:
                         xml.appendLine("</PDU>")
@@ -642,13 +917,13 @@ class GXDLMSTranslator:
             else:
                 raise GXDLMSException("Invalid Exception.")
             if id_ == _HDLCInfo.MAX_INFO_TX:
-                xml.appendLine("<MaxInfoTX Value=\"" + str(val) + "\" />")
+                xml.appendLine('<MaxInfoTX Value="' + str(val) + '" />')
             elif id_ == _HDLCInfo.MAX_INFO_RX:
-                xml.appendLine("<MaxInfoRX Value=\"" + str(val) + "\" />")
+                xml.appendLine('<MaxInfoRX Value="' + str(val) + '" />')
             elif id_ == _HDLCInfo.WINDOW_SIZE_TX:
-                xml.appendLine("<WindowSizeTX Value=\"" + str(val) + "\" />")
+                xml.appendLine('<WindowSizeTX Value="' + str(val) + '" />')
             elif id_ == _HDLCInfo.WINDOW_SIZE_RX:
-                xml.appendLine("<WindowSizeRX Value=\"" + str(val) + "\" />")
+                xml.appendLine('<WindowSizeRX Value="' + str(val) + '" />')
             else:
                 raise GXDLMSException("Invalid UA response.")
 
@@ -660,19 +935,45 @@ class GXDLMSTranslator:
     # Converted XML.
     #
     def __pduToXml(self, value, omitDeclaration, omitNameSpace):
-        xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
+        xml = GXDLMSTranslatorStructure(
+            self.outputType,
+            self.omitXmlNameSpace,
+            self.hex,
+            self.showStringAsHex,
+            self.comments,
+            self.tags,
+        )
         return self._pduToXml2(xml, value, omitDeclaration, omitNameSpace, True)
 
     @classmethod
     def isCiphered(cls, cmd):
-        return cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST,\
-            Command.GLO_SET_REQUEST, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,\
-            Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST,\
-            Command.GLO_METHOD_RESPONSE, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST,\
-            Command.DED_READ_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
-            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE, Command.GENERAL_GLO_CIPHERING,\
-            Command.GENERAL_DED_CIPHERING, Command.AARQ, Command.AARE, Command.GLO_CONFIRMED_SERVICE_ERROR,\
-            Command.DED_CONFIRMED_SERVICE_ERROR, Command.GENERAL_CIPHERING, Command.RELEASE_REQUEST)
+        return cmd in (
+            Command.GLO_READ_REQUEST,
+            Command.GLO_WRITE_REQUEST,
+            Command.GLO_GET_REQUEST,
+            Command.GLO_SET_REQUEST,
+            Command.GLO_READ_RESPONSE,
+            Command.GLO_WRITE_RESPONSE,
+            Command.GLO_GET_RESPONSE,
+            Command.GLO_SET_RESPONSE,
+            Command.GLO_METHOD_REQUEST,
+            Command.GLO_METHOD_RESPONSE,
+            Command.DED_GET_REQUEST,
+            Command.DED_SET_REQUEST,
+            Command.DED_READ_RESPONSE,
+            Command.DED_GET_RESPONSE,
+            Command.DED_SET_RESPONSE,
+            Command.DED_METHOD_REQUEST,
+            Command.DED_METHOD_RESPONSE,
+            Command.GENERAL_GLO_CIPHERING,
+            Command.GENERAL_DED_CIPHERING,
+            Command.AARQ,
+            Command.AARE,
+            Command.GLO_CONFIRMED_SERVICE_ERROR,
+            Command.DED_CONFIRMED_SERVICE_ERROR,
+            Command.GENERAL_CIPHERING,
+            Command.RELEASE_REQUEST,
+        )
 
     #
     # Convert bytes to XML.
@@ -681,9 +982,11 @@ class GXDLMSTranslator:
     #            Bytes to convert.
     # Converted XML.
     #
-    def _pduToXml2(self, xml, value, omitDeclaration, omitNameSpace, allowUnknownCommand=True):
-        #pylint: disable=bad-option-value,too-many-arguments,too-many-locals,
-        #too-many-nested-blocks,redefined-variable-type
+    def _pduToXml2(
+        self, xml, value, omitDeclaration, omitNameSpace, allowUnknownCommand=True
+    ):
+        # pylint: disable=bad-option-value,too-many-arguments,too-many-locals,
+        # too-many-nested-blocks,redefined-variable-type
         if not value:
             raise ValueError("value")
         settings = GXDLMSSettings(True)
@@ -720,34 +1023,42 @@ class GXDLMSTranslator:
         elif cmd == Command.READ_REQUEST:
             GXDLMSSNCommandHandler.handleReadRequest(settings, None, value, None, xml)
         elif cmd == Command.METHOD_REQUEST:
-            GXDLMSLNCommandHandler.handleMethodRequest(settings, None, value, None, None, xml)
+            GXDLMSLNCommandHandler.handleMethodRequest(
+                settings, None, value, None, None, xml
+            )
         elif cmd == Command.WRITE_REQUEST:
             GXDLMSSNCommandHandler.handleWriteRequest(settings, None, value, None, xml)
         elif cmd == Command.ACCESS_REQUEST:
             GXDLMSLNCommandHandler.handleAccessRequest(settings, None, value, None, xml)
         elif cmd == Command.DATA_NOTIFICATION:
-            data.xml = (xml)
+            data.xml = xml
             data.data = value
             value.position = 0
             GXDLMS.getPdu(settings, data)
         elif cmd == Command.INFORMATION_REPORT:
-            data.xml = (xml)
+            data.xml = xml
             data.data = value
             GXDLMSSNCommandHandler.handleInformationReport(settings, data, None)
         elif cmd == Command.EVENT_NOTIFICATION:
-            data.xml = (xml)
+            data.xml = xml
             data.data = value
             GXDLMSLNCommandHandler.handleEventNotification(settings, data, None)
-        elif cmd in (Command.READ_RESPONSE, Command.WRITE_RESPONSE, Command.GET_RESPONSE,
-                     Command.SET_RESPONSE, Command.METHOD_RESPONSE, Command.ACCESS_RESPONSE,
-                     Command.GENERAL_BLOCK_TRANSFER):
+        elif cmd in (
+            Command.READ_RESPONSE,
+            Command.WRITE_RESPONSE,
+            Command.GET_RESPONSE,
+            Command.SET_RESPONSE,
+            Command.METHOD_RESPONSE,
+            Command.ACCESS_RESPONSE,
+            Command.GENERAL_BLOCK_TRANSFER,
+        ):
             data.xml = xml
             data.data = value
             value.position = 0
             GXDLMS.getPdu(settings, data)
         elif cmd == Command.GENERAL_CIPHERING:
             settings.cipher = GXCiphering("ABCDEFGH".encode())
-            data.xml = (xml)
+            data.xml = xml
             data.data = value
             value.position = 0
             GXDLMS.getPdu(settings, data)
@@ -761,9 +1072,13 @@ class GXDLMSTranslator:
                 #  Len.
                 value.getUInt8()
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
-                    str_ = TranslatorSimpleTags.releaseRequestReasonToString(value.getUInt8())
+                    str_ = TranslatorSimpleTags.releaseRequestReasonToString(
+                        value.getUInt8()
+                    )
                 else:
-                    str_ = TranslatorStandardTags.releaseRequestReasonToString(value.getUInt8())
+                    str_ = TranslatorStandardTags.releaseRequestReasonToString(
+                        value.getUInt8()
+                    )
                 xml.appendLine(TranslatorTags.REASON, "Value", str_)
                 if value.available() != 0:
                     _GXAPDU.parsePDU2(settings, settings.cipher, value, xml)
@@ -778,41 +1093,87 @@ class GXDLMSTranslator:
                 #  Len.
                 value.getUInt8()
                 if xml.outputType == TranslatorOutputType.SIMPLE_XML:
-                    str_ = TranslatorSimpleTags.releaseResponseReasonToString(value.getUInt8())
+                    str_ = TranslatorSimpleTags.releaseResponseReasonToString(
+                        value.getUInt8()
+                    )
                 else:
-                    str_ = TranslatorStandardTags.releaseResponseReasonToString(value.getUInt8())
+                    str_ = TranslatorStandardTags.releaseResponseReasonToString(
+                        value.getUInt8()
+                    )
                 xml.appendLine(TranslatorTags.REASON, "Value", str_)
                 if value.available() != 0:
                     _GXAPDU.parsePDU2(settings, settings.cipher, value, xml)
             xml.appendEndTag(cmd)
-        elif cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST,
-                     Command.GLO_SET_REQUEST, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,
-                     Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST,
-                     Command.GLO_METHOD_RESPONSE, Command.DED_GET_REQUEST, Command.DED_SET_REQUEST,
-                     Command.DED_READ_RESPONSE, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,
-                     Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE,
-                     Command.GLO_CONFIRMED_SERVICE_ERROR, Command.DED_CONFIRMED_SERVICE_ERROR):
+        elif cmd in (
+            Command.GLO_READ_REQUEST,
+            Command.GLO_WRITE_REQUEST,
+            Command.GLO_GET_REQUEST,
+            Command.GLO_SET_REQUEST,
+            Command.GLO_READ_RESPONSE,
+            Command.GLO_WRITE_RESPONSE,
+            Command.GLO_GET_RESPONSE,
+            Command.GLO_SET_RESPONSE,
+            Command.GLO_METHOD_REQUEST,
+            Command.GLO_METHOD_RESPONSE,
+            Command.DED_GET_REQUEST,
+            Command.DED_SET_REQUEST,
+            Command.DED_READ_RESPONSE,
+            Command.DED_GET_RESPONSE,
+            Command.DED_SET_RESPONSE,
+            Command.DED_METHOD_REQUEST,
+            Command.DED_METHOD_RESPONSE,
+            Command.GLO_CONFIRMED_SERVICE_ERROR,
+            Command.DED_CONFIRMED_SERVICE_ERROR,
+        ):
             if settings.cipher and self.comments:
                 originalPosition = value.position
                 len_ = xml.getXmlLength()
                 try:
                     value.position = value.position - 1
-                    if cmd in (Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_GET_REQUEST,
-                               Command.GLO_SET_REQUEST, Command.GLO_METHOD_REQUEST, Command.DED_GET_REQUEST,
-                               Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST):
+                    if cmd in (
+                        Command.GLO_READ_REQUEST,
+                        Command.GLO_WRITE_REQUEST,
+                        Command.GLO_GET_REQUEST,
+                        Command.GLO_SET_REQUEST,
+                        Command.GLO_METHOD_REQUEST,
+                        Command.DED_GET_REQUEST,
+                        Command.DED_SET_REQUEST,
+                        Command.DED_METHOD_REQUEST,
+                    ):
                         st = settings.cipher.getSystemTitle()
                     else:
                         st = settings.sourceSystemTitle
-                    if st or cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
+                    if st or cmd in (
+                        Command.GENERAL_GLO_CIPHERING,
+                        Command.GENERAL_DED_CIPHERING,
+                    ):
                         p = None
-                        if cmd in (Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST):
-                            p = AesGcmParameter(0, st, settings.cipher.dedicatedKey, settings.cipher.authenticationKey)
+                        if cmd in (
+                            Command.DED_GET_REQUEST,
+                            Command.DED_SET_REQUEST,
+                            Command.DED_METHOD_REQUEST,
+                        ):
+                            p = AesGcmParameter(
+                                0,
+                                st,
+                                settings.cipher.dedicatedKey,
+                                settings.cipher.authenticationKey,
+                            )
                         else:
-                            p = AesGcmParameter(0, st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                            p = AesGcmParameter(
+                                0,
+                                st,
+                                settings.cipher.blockCipherKey,
+                                settings.cipher.authenticationKey,
+                            )
                         if p.blockCipherKey:
-                            data2 = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, value))
+                            data2 = GXByteBuffer(
+                                GXCiphering.decrypt(settings.cipher, p, value)
+                            )
                             xml.startComment("Decrypt data: " + str(data2))
-                            self._pduToXml2(xml, data2, omitDeclaration, omitNameSpace, False)
+                            self._pduToXml2(
+                                xml, data2, omitDeclaration, omitNameSpace, False
+                            )
                             xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not correct.
@@ -820,8 +1181,17 @@ class GXDLMSTranslator:
                 value.position = originalPosition
             cnt = _GXCommon.getObjectCount(value)
             if cnt != len(value) - value.position:
-                xml.appendComment("Invalid length: " + str(cnt) + ". It should be: " + str(len(value) - value.position))
-            xml.appendLine(cmd, "Value", value.toHex(False, value.position, len(value) - value.position))
+                xml.appendComment(
+                    "Invalid length: "
+                    + str(cnt)
+                    + ". It should be: "
+                    + str(len(value) - value.position)
+                )
+            xml.appendLine(
+                cmd,
+                "Value",
+                value.toHex(False, value.position, len(value) - value.position),
+            )
         elif cmd in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING):
             if settings.cipher and self.comments:
                 len_ = xml.getXmlLength()
@@ -829,7 +1199,12 @@ class GXDLMSTranslator:
                 try:
                     tmp = GXByteBuffer()
                     tmp.set(value, value.position - 1, len(value) - value.position + 1)
-                    p = AesGcmParameter(0, settings.cipher.systemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
+                    p = AesGcmParameter(
+                        0,
+                        settings.cipher.systemTitle,
+                        settings.cipher.blockCipherKey,
+                        settings.cipher.authenticationKey,
+                    )
                     p.xml = xml
                     tmp = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, tmp))
                     len_ = xml.getXmlLength()
@@ -845,11 +1220,17 @@ class GXDLMSTranslator:
             tmp = bytearray(len_)
             value.get(tmp)
             xml.appendStartTag(Command.GENERAL_GLO_CIPHERING)
-            xml.appendLine(TranslatorTags.SYSTEM_TITLE, None, GXByteBuffer.hex(tmp, False, 0, len_))
+            xml.appendLine(
+                TranslatorTags.SYSTEM_TITLE, None, GXByteBuffer.hex(tmp, False, 0, len_)
+            )
             len_ = _GXCommon.getObjectCount(value)
             tmp = bytearray(len_)
             value.get(tmp)
-            xml.appendLine(TranslatorTags.CIPHERED_SERVICE, None, GXByteBuffer.hex(tmp, False, 0, len_))
+            xml.appendLine(
+                TranslatorTags.CIPHERED_SERVICE,
+                None,
+                GXByteBuffer.hex(tmp, False, 0, len_),
+            )
             xml.appendEndTag(Command.GENERAL_GLO_CIPHERING)
         elif cmd == Command.CONFIRMED_SERVICE_ERROR:
             data.xml = xml
@@ -868,8 +1249,18 @@ class GXDLMSTranslator:
             value.get(tmp)
             xml.appendStartTag(cmd)
             xml.appendLine(TranslatorTags.NETWORK_ID, None, str(id_))
-            xml.appendLine(TranslatorTags.PHYSICAL_DEVICE_ADDRESS, None, GXByteBuffer.hex(tmp, False, 0, len_))
-            self._pduToXml2(xml, GXByteBuffer(value.remaining()), omitDeclaration, omitNameSpace, allowUnknownCommand)
+            xml.appendLine(
+                TranslatorTags.PHYSICAL_DEVICE_ADDRESS,
+                None,
+                GXByteBuffer.hex(tmp, False, 0, len_),
+            )
+            self._pduToXml2(
+                xml,
+                GXByteBuffer(value.remaining()),
+                omitDeclaration,
+                omitNameSpace,
+                allowUnknownCommand,
+            )
             xml.appendEndTag(cmd)
         elif cmd == Command.EXCEPTION_RESPONSE:
             data.xml = xml
@@ -879,20 +1270,34 @@ class GXDLMSTranslator:
             if not allowUnknownCommand:
                 raise Exception("Invalid command.")
             value.position -= 1
-            xml.appendLine("<Data=\"" + value.toHex(False, value.position, len(value) - value.position) + "\" />")
+            xml.appendLine(
+                '<Data="'
+                + value.toHex(False, value.position, len(value) - value.position)
+                + '" />'
+            )
         if self.outputType == TranslatorOutputType.STANDARD_XML:
             sb = ""
             if not omitDeclaration:
-                sb += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
+                sb += '<?xml version="1.0" encoding="utf-8"?>\r\n'
             if not omitNameSpace:
-                if not cmd in (Command.AARE, Command.AARQ, Command.RELEASE_REQUEST, Command.RELEASE_RESPONSE):
-                    sb += "<x:xDLMS-APDU xmlns:x=\"http://www.dlms.com/COSEMpdu\">\r\n"
+                if not cmd in (
+                    Command.AARE,
+                    Command.AARQ,
+                    Command.RELEASE_REQUEST,
+                    Command.RELEASE_RESPONSE,
+                ):
+                    sb += '<x:xDLMS-APDU xmlns:x="http://www.dlms.com/COSEMpdu">\r\n'
                 else:
-                    sb += "<x:aCSE-APDU xmlns:x=\"http://www.dlms.com/COSEMpdu\">\r\n"
+                    sb += '<x:aCSE-APDU xmlns:x="http://www.dlms.com/COSEMpdu">\r\n'
 
             sb += str(xml)
             if not omitNameSpace:
-                if not cmd in (Command.AARE, Command.AARQ, Command.RELEASE_REQUEST, Command.RELEASE_RESPONSE):
+                if not cmd in (
+                    Command.AARE,
+                    Command.AARQ,
+                    Command.RELEASE_REQUEST,
+                    Command.RELEASE_RESPONSE,
+                ):
                     sb += "</x:xDLMS-APDU>\r\n"
                 else:
                     sb += "</x:aCSE-APDU>\r\n"
@@ -912,27 +1317,66 @@ class GXDLMSTranslator:
     @classmethod
     def getCommand(cls, node, s, tag):
         s.command = tag
-        if tag in (Command.SNRM, Command.AARQ, Command.READ_REQUEST, Command.WRITE_REQUEST,\
-            Command.GET_REQUEST, Command.SET_REQUEST, Command.RELEASE_REQUEST, Command.METHOD_REQUEST,\
-            Command.ACCESS_REQUEST, Command.INITIATE_REQUEST, Command.CONFIRMED_SERVICE_ERROR, Command.EXCEPTION_RESPONSE):
+        if tag in (
+            Command.SNRM,
+            Command.AARQ,
+            Command.READ_REQUEST,
+            Command.WRITE_REQUEST,
+            Command.GET_REQUEST,
+            Command.SET_REQUEST,
+            Command.RELEASE_REQUEST,
+            Command.METHOD_REQUEST,
+            Command.ACCESS_REQUEST,
+            Command.INITIATE_REQUEST,
+            Command.CONFIRMED_SERVICE_ERROR,
+            Command.EXCEPTION_RESPONSE,
+        ):
             s.settings.server = False
-        elif tag in (Command.GLO_INITIATE_REQUEST, Command.GLO_GET_REQUEST, Command.GLO_SET_REQUEST,\
-            Command.GLO_METHOD_REQUEST, Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST,\
-           Command.DED_GET_REQUEST, Command.DED_SET_REQUEST, Command.DED_METHOD_REQUEST):
+        elif tag in (
+            Command.GLO_INITIATE_REQUEST,
+            Command.GLO_GET_REQUEST,
+            Command.GLO_SET_REQUEST,
+            Command.GLO_METHOD_REQUEST,
+            Command.GLO_READ_REQUEST,
+            Command.GLO_WRITE_REQUEST,
+            Command.DED_GET_REQUEST,
+            Command.DED_SET_REQUEST,
+            Command.DED_METHOD_REQUEST,
+        ):
             s.settings.server = False
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             s.settings.getCipher().setSecurity(Security(tmp[0]))
             s.data.set(tmp)
-        elif tag in (Command.UA, Command.AARE, Command.GET_RESPONSE, Command.SET_RESPONSE,\
-            Command.READ_RESPONSE, Command.WRITE_RESPONSE, Command.METHOD_RESPONSE,\
-            Command.RELEASE_RESPONSE, Command.DATA_NOTIFICATION, Command.ACCESS_RESPONSE,\
-            Command.INITIATE_RESPONSE, Command.INFORMATION_REPORT, Command.EVENT_NOTIFICATION,\
-            Command.DISCONNECT_REQUEST):
+        elif tag in (
+            Command.UA,
+            Command.AARE,
+            Command.GET_RESPONSE,
+            Command.SET_RESPONSE,
+            Command.READ_RESPONSE,
+            Command.WRITE_RESPONSE,
+            Command.METHOD_RESPONSE,
+            Command.RELEASE_RESPONSE,
+            Command.DATA_NOTIFICATION,
+            Command.ACCESS_RESPONSE,
+            Command.INITIATE_RESPONSE,
+            Command.INFORMATION_REPORT,
+            Command.EVENT_NOTIFICATION,
+            Command.DISCONNECT_REQUEST,
+        ):
             pass
-        elif tag in (Command.GLO_INITIATE_RESPONSE, Command.GLO_GET_RESPONSE, Command.GLO_SET_RESPONSE,\
-           Command.GLO_METHOD_RESPONSE, Command.GLO_READ_RESPONSE, Command.GLO_WRITE_RESPONSE,\
-           Command.GLO_EVENT_NOTIFICATION, Command.DED_GET_RESPONSE, Command.DED_SET_RESPONSE,\
-           Command.DED_METHOD_RESPONSE, Command.DED_EVENT_NOTIFICATION):
+        elif tag in (
+            Command.GLO_INITIATE_RESPONSE,
+            Command.GLO_GET_RESPONSE,
+            Command.GLO_SET_RESPONSE,
+            Command.GLO_METHOD_RESPONSE,
+            Command.GLO_READ_RESPONSE,
+            Command.GLO_WRITE_RESPONSE,
+            Command.GLO_EVENT_NOTIFICATION,
+            Command.DED_GET_RESPONSE,
+            Command.DED_SET_RESPONSE,
+            Command.DED_METHOD_RESPONSE,
+            Command.DED_EVENT_NOTIFICATION,
+        ):
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             s.settings.getCipher().setSecurity(Security(tmp[0]))
             s.data.set(tmp)
@@ -974,7 +1418,7 @@ class GXDLMSTranslator:
 
     @classmethod
     def handleAarqAare(cls, node, s, tag):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         tmp = []
         list_ = None
         value = int()
@@ -992,20 +1436,26 @@ class GXDLMSTranslator:
                 else:
                     raise ValueError("Invalid application context name.")
             else:
-                if node.attrib["Value"] == "SN" or node.attrib["Value"] == "SN_WITH_CIPHERING":
+                if (
+                    node.attrib["Value"] == "SN"
+                    or node.attrib["Value"] == "SN_WITH_CIPHERING"
+                ):
                     s.settings.setUseLogicalNameReferencing(False)
-                elif node.attrib["Value"] == "LN" or node.attrib["Value"] == "LN_WITH_CIPHERING":
+                elif (
+                    node.attrib["Value"] == "LN"
+                    or node.attrib["Value"] == "LN_WITH_CIPHERING"
+                ):
                     s.settings.setUseLogicalNameReferencing(True)
                 else:
                     raise ValueError("Invalid Reference type name.")
         elif tag == Command.GLO_INITIATE_REQUEST:
             s.settings.setServer(False)
-            s.command = (tag)
+            s.command = tag
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             s.settings.getCipher().setSecurity(Security(tmp[0]))
             s.data.set(tmp)
         elif tag == Command.GLO_INITIATE_RESPONSE:
-            s.command = (tag)
+            s.command = tag
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             s.settings.getCipher().setSecurity(Security(tmp[0]))
             s.data.set(tmp)
@@ -1020,7 +1470,9 @@ class GXDLMSTranslator:
                 bb.set(tmp)
                 if s.settings.isServer:
                     s.settings.setProposedConformance(0xFFFFFF)
-                _GXAPDU.parseInitiate(False, s.settings, s.settings.getCipher(), bb, None)
+                _GXAPDU.parseInitiate(
+                    False, s.settings, s.settings.getCipher(), bb, None
+                )
                 if not s.settings.isServer:
                     s.settings.proposedConformance = s.settings.negotiatedConformance
         elif tag == 0xBE00:
@@ -1041,14 +1493,18 @@ class GXDLMSTranslator:
             pass
         elif tag == 0x89:
             if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                s.settings.authentication = Authentication.valueofString(cls.getValue(node, s))
+                s.settings.authentication = Authentication.valueofString(
+                    cls.getValue(node, s)
+                )
             else:
                 s.settings.authentication = Authentication(int(cls.getValue(node, s)))
         elif tag == 0xAC:
             if s.settings.authentication == Authentication.LOW:
                 s.settings.password = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             else:
-                s.settings.setCtoSChallenge(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                s.settings.setCtoSChallenge(
+                    GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                )
         elif tag == TranslatorGeneralTags.DEDICATED_KEY:
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             s.settings.getCipher().setDedicatedKey(tmp)
@@ -1074,7 +1530,9 @@ class GXDLMSTranslator:
                 nodes = node.getFirstChild().getNodeValue()
                 for it in nodes.split(" "):
                     if it.strip():
-                        list_.append(TranslatorStandardTags.value_ofConformance(it.strip()))
+                        list_.append(
+                            TranslatorStandardTags.value_ofConformance(it.strip())
+                        )
         elif tag == 0xBE08:
             if s.settings.isServer:
                 list_ = s.settings.negotiatedConformance
@@ -1098,9 +1556,13 @@ class GXDLMSTranslator:
                 s.settings.password = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             else:
                 if s.command == Command.AARQ:
-                    s.settings.setCtoSChallenge(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                    s.settings.setCtoSChallenge(
+                        GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                    )
                 else:
-                    s.settings.setStoCChallenge(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                    s.settings.setStoCChallenge(
+                        GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                    )
         elif tag == TranslatorGeneralTags.RESPONDER_ACSE_REQUIREMENT:
             pass
         elif tag == TranslatorGeneralTags.RESPONDING_AUTHENTICATION:
@@ -1110,18 +1572,26 @@ class GXDLMSTranslator:
         elif tag == Command.CONFIRMED_SERVICE_ERROR:
             if s.command == Command.NONE:
                 s.settings.setServer(False)
-                s.command = (tag)
+                s.command = tag
         elif tag == TranslatorTags.REASON:
             if s.command == Command.RELEASE_REQUEST:
                 if s.OutputType == TranslatorOutputType.SIMPLE_XML:
-                    s.reason = TranslatorSimpleTags.value_ofReleaseRequestReason(cls.getValue(node, s))
+                    s.reason = TranslatorSimpleTags.value_ofReleaseRequestReason(
+                        cls.getValue(node, s)
+                    )
                 else:
-                    s.reason = TranslatorStandardTags.value_ofReleaseRequestReason(cls.getValue(node, s))
+                    s.reason = TranslatorStandardTags.value_ofReleaseRequestReason(
+                        cls.getValue(node, s)
+                    )
             else:
                 if s.OutputType == TranslatorOutputType.SIMPLE_XML:
-                    s.reason = TranslatorSimpleTags.value_ofReleaseResponseReason(cls.getValue(node, s))
+                    s.reason = TranslatorSimpleTags.value_ofReleaseResponseReason(
+                        cls.getValue(node, s)
+                    )
                 else:
-                    s.reason = TranslatorStandardTags.value_ofReleaseResponseReason(cls.getValue(node, s))
+                    s.reason = TranslatorStandardTags.value_ofReleaseResponseReason(
+                        cls.getValue(node, s)
+                    )
         elif tag == TranslatorTags.SERVICE:
             s.attributeDescriptor.setUInt8(0xE)
             s.attributeDescriptor.setUInt8(s.parseInt(cls.getValue(node, s)))
@@ -1129,7 +1599,11 @@ class GXDLMSTranslator:
             if s.command == Command.AARE:
                 s.attributeDescriptor.setUInt8(6)
                 for childNode in node:
-                    s.attributeDescriptor.setUInt8(TranslatorSimpleTags.getInitiateByValue(cls.getValue(childNode, s)))
+                    s.attributeDescriptor.setUInt8(
+                        TranslatorSimpleTags.getInitiateByValue(
+                            cls.getValue(childNode, s)
+                        )
+                    )
                 return False
         elif tag == TranslatorTags.PROTOCOL_VERSION:
             str_ = cls.getValue(node, s)
@@ -1141,7 +1615,9 @@ class GXDLMSTranslator:
             pass
         elif tag == TranslatorTags.CALLED_AE_QUALIFIER:
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
-            s.attributeDescriptor.setUInt8(int((0xA2 if tag == int(TranslatorTags.CALLED_AP_TITLE) else 0xA3)))
+            s.attributeDescriptor.setUInt8(
+                int((0xA2 if tag == int(TranslatorTags.CALLED_AP_TITLE) else 0xA3))
+            )
             s.attributeDescriptor.setUInt8(3)
             s.attributeDescriptor.setUInt8(BerType.OCTET_STRING)
             s.attributeDescriptor.setUInt8(len(tmp))
@@ -1175,7 +1651,7 @@ class GXDLMSTranslator:
             if node.text:
                 str_ = node.text.strip()
         else:
-            #Get first element.
+            # Get first element.
             for it in node.attrib:
                 str_ = node.attrib[it]
                 break
@@ -1195,7 +1671,7 @@ class GXDLMSTranslator:
 
     @classmethod
     def readNode(cls, node, s):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         value = 0
         tmp = []
         preData = None
@@ -1203,22 +1679,35 @@ class GXDLMSTranslator:
         if s.outputType == TranslatorOutputType.SIMPLE_XML:
             str_ = node.tag.lower()
         else:
-            pos = node.tag.find('}')
+            pos = node.tag.find("}")
             if pos != -1:
-                str_ = node.tag[1 + pos:]
+                str_ = node.tag[1 + pos :]
             else:
                 str_ = node.tag
         tag = 0
         if s.command != Command.CONFIRMED_SERVICE_ERROR or s.tags.containsKey(str_):
             tag = s.tags.get(str_)
         if s.command == Command.NONE:
-            if not ((s.settings.clientAddress == 0 or s.settings.serverAddress == 0) and cls.getFrame(node, s, tag) or tag in (TranslatorTags.PDU_DLMS, TranslatorTags.PDU_CSE)):
+            if not (
+                (s.settings.clientAddress == 0 or s.settings.serverAddress == 0)
+                and cls.getFrame(node, s, tag)
+                or tag in (TranslatorTags.PDU_DLMS, TranslatorTags.PDU_CSE)
+            ):
                 cls.getCommand(node, s, tag)
-        elif s.command in (Command.AARQ, Command.AARE, Command.INITIATE_REQUEST, Command.INITIATE_RESPONSE, Command.RELEASE_REQUEST, Command.RELEASE_RESPONSE):
+        elif s.command in (
+            Command.AARQ,
+            Command.AARE,
+            Command.INITIATE_REQUEST,
+            Command.INITIATE_RESPONSE,
+            Command.RELEASE_REQUEST,
+            Command.RELEASE_RESPONSE,
+        ):
             if not cls.handleAarqAare(node, s, tag):
                 return
         elif tag >= _GXCommon.DATA_TYPE_OFFSET:
-            if tag == DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET or (s.command == Command.EVENT_NOTIFICATION and not s.attributeDescriptor):
+            if tag == DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET or (
+                s.command == Command.EVENT_NOTIFICATION and not s.attributeDescriptor
+            ):
                 preData = cls.updateDateTime(node, s, preData)
                 if preData is None and s.command == Command.GENERAL_CIPHERING:
                     s.data.setUInt8(0)
@@ -1231,39 +1720,59 @@ class GXDLMSTranslator:
                 else:
                     se = TranslatorStandardTags.getServiceError(str_[2:])
                     s.attributeDescriptor.setUInt8(se)
-                    s.attributeDescriptor.setUInt8(TranslatorStandardTags.getError(se, cls.getValue(node, s)))
+                    s.attributeDescriptor.setUInt8(
+                        TranslatorStandardTags.getError(se, cls.getValue(node, s))
+                    )
             else:
                 if tag != TranslatorTags.SERVICE_ERROR:
                     if s.attributeDescriptor.size == 0:
-                        s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
+                        s.attributeDescriptor.setUInt8(
+                            s.parseShort(cls.getValue(node, s))
+                        )
                     else:
                         se = TranslatorSimpleTags.getServiceError(str_)
                         s.attributeDescriptor.setUInt8(se)
-                        s.attributeDescriptor.setUInt8(TranslatorSimpleTags.getError(se, cls.getValue(node, s)))
+                        s.attributeDescriptor.setUInt8(
+                            TranslatorSimpleTags.getError(se, cls.getValue(node, s))
+                        )
         else:
-            if tag in (Command.GET_REQUEST << 8 | GetCommandType.NORMAL,
-                       Command.GET_REQUEST << 8 | GetCommandType.NEXT_DATA_BLOCK,
-                       Command.GET_REQUEST << 8 | GetCommandType.WITH_LIST,
-                       Command.SET_REQUEST << 8 | SetRequestType.NORMAL,
-                       Command.SET_REQUEST << 8 | SetRequestType.FIRST_DATA_BLOCK,
-                       Command.SET_REQUEST << 8 | SetRequestType.WITH_DATA_BLOCK,
-                       Command.SET_REQUEST << 8 | SetRequestType.WITH_LIST):
+            if tag in (
+                Command.GET_REQUEST << 8 | GetCommandType.NORMAL,
+                Command.GET_REQUEST << 8 | GetCommandType.NEXT_DATA_BLOCK,
+                Command.GET_REQUEST << 8 | GetCommandType.WITH_LIST,
+                Command.SET_REQUEST << 8 | SetRequestType.NORMAL,
+                Command.SET_REQUEST << 8 | SetRequestType.FIRST_DATA_BLOCK,
+                Command.SET_REQUEST << 8 | SetRequestType.WITH_DATA_BLOCK,
+                Command.SET_REQUEST << 8 | SetRequestType.WITH_LIST,
+            ):
                 s.requestType = tag & 0xF
-            elif tag in (Command.GET_RESPONSE << 8 | GetCommandType.NORMAL,
-                         Command.GET_RESPONSE << 8 | GetCommandType.NEXT_DATA_BLOCK,
-                         Command.GET_RESPONSE << 8 | GetCommandType.WITH_LIST,
-                         Command.SET_RESPONSE << 8 | SetResponseType.NORMAL,
-                         Command.SET_RESPONSE << 8 | SetResponseType.DATA_BLOCK,
-                         Command.SET_RESPONSE << 8 | SetResponseType.LAST_DATA_BLOCK,
-                         Command.SET_RESPONSE << 8 | SetResponseType.WITH_LIST,
-                         Command.SET_RESPONSE << 8 | SetResponseType.LAST_DATA_BLOCK_WITH_LIST):
+            elif tag in (
+                Command.GET_RESPONSE << 8 | GetCommandType.NORMAL,
+                Command.GET_RESPONSE << 8 | GetCommandType.NEXT_DATA_BLOCK,
+                Command.GET_RESPONSE << 8 | GetCommandType.WITH_LIST,
+                Command.SET_RESPONSE << 8 | SetResponseType.NORMAL,
+                Command.SET_RESPONSE << 8 | SetResponseType.DATA_BLOCK,
+                Command.SET_RESPONSE << 8 | SetResponseType.LAST_DATA_BLOCK,
+                Command.SET_RESPONSE << 8 | SetResponseType.WITH_LIST,
+                Command.SET_RESPONSE << 8 | SetResponseType.LAST_DATA_BLOCK_WITH_LIST,
+            ):
                 s.requestType = tag & 0xF
-            elif tag == Command.READ_RESPONSE << 8 | SingleReadResponse.DATA_BLOCK_RESULT:
+            elif (
+                tag == Command.READ_RESPONSE << 8 | SingleReadResponse.DATA_BLOCK_RESULT
+            ):
                 s.count = s.count + 1
                 s.requestType = tag & 0xF
-            elif tag == Command.READ_REQUEST << 8 | VariableAccessSpecification.PARAMETERISED_ACCESS:
+            elif (
+                tag
+                == Command.READ_REQUEST << 8
+                | VariableAccessSpecification.PARAMETERISED_ACCESS
+            ):
                 s.requestType = VariableAccessSpecification.PARAMETERISED_ACCESS
-            elif tag == Command.READ_REQUEST << 8 | VariableAccessSpecification.BLOCK_NUMBER_ACCESS:
+            elif (
+                tag
+                == Command.READ_REQUEST << 8
+                | VariableAccessSpecification.BLOCK_NUMBER_ACCESS
+            ):
                 s.requestType = VariableAccessSpecification.BLOCK_NUMBER_ACCESS
                 s.count = s.count + 1
             elif tag == Command.METHOD_REQUEST << 8 | ActionRequestType.NORMAL:
@@ -1274,12 +1783,21 @@ class GXDLMSTranslator:
                 s.requestType = tag & 0xF
             elif tag == Command.METHOD_RESPONSE << 8 | ActionResponseType.NORMAL:
                 s.requestType = tag & 0xF
-            elif tag in (Command.READ_RESPONSE << 8 | SingleReadResponse.DATA,
-                         TranslatorTags.DATA):
-                if s.command == Command.READ_REQUEST or s.command == Command.READ_RESPONSE or s.command == Command.GET_REQUEST:
+            elif tag in (
+                Command.READ_RESPONSE << 8 | SingleReadResponse.DATA,
+                TranslatorTags.DATA,
+            ):
+                if (
+                    s.command == Command.READ_REQUEST
+                    or s.command == Command.READ_RESPONSE
+                    or s.command == Command.GET_REQUEST
+                ):
                     s.count = s.count + 1
                     s.requestType = 0
-                elif s.command == Command.GET_RESPONSE or s.command == Command.METHOD_RESPONSE:
+                elif (
+                    s.command == Command.GET_RESPONSE
+                    or s.command == Command.METHOD_RESPONSE
+                ):
                     s.data.setUInt8(0)
             elif tag == TranslatorTags.SUCCESS:
                 s.count = s.count + 1
@@ -1287,7 +1805,9 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.DATA_ACCESS_ERROR:
                 s.count = s.count + 1
                 s.attributeDescriptor.setUInt8(1)
-                s.attributeDescriptor.setUInt8(cls.value_ofErrorCode(s.outputType, cls.getValue(node, s)))
+                s.attributeDescriptor.setUInt8(
+                    cls.value_ofErrorCode(s.outputType, cls.getValue(node, s))
+                )
             elif tag == TranslatorTags.LIST_OF_VARIABLE_ACCESS_SPECIFICATION:
                 if s.command == Command.WRITE_REQUEST:
                     _GXCommon.setObjectCount(cls.getNodeCount(node), s.data)
@@ -1296,11 +1816,16 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.LIST_OF_DATA:
                 if s.command == Command.ACCESS_RESPONSE and not s.data:
                     s.data.setUInt8(0)
-                if s.outputType == TranslatorOutputType.SIMPLE_XML or s.command != Command.WRITE_REQUEST:
+                if (
+                    s.outputType == TranslatorOutputType.SIMPLE_XML
+                    or s.command != Command.WRITE_REQUEST
+                ):
                     _GXCommon.setObjectCount(cls.getNodeCount(node), s.data)
-            elif tag in (Command.ACCESS_RESPONSE << 8 | AccessServiceCommandType.GET,
-                         Command.ACCESS_RESPONSE << 8 | AccessServiceCommandType.SET,
-                         Command.ACCESS_RESPONSE << 8 | AccessServiceCommandType.ACTION):
+            elif tag in (
+                Command.ACCESS_RESPONSE << 8 | AccessServiceCommandType.GET,
+                Command.ACCESS_RESPONSE << 8 | AccessServiceCommandType.SET,
+                Command.ACCESS_RESPONSE << 8 | AccessServiceCommandType.ACTION,
+            ):
                 s.requestType = tag & 0xF
             elif tag == TranslatorTags.DATE_TIME:
                 preData = cls.updateDateTime(node, s, preData)
@@ -1332,27 +1857,43 @@ class GXDLMSTranslator:
                 # ResponderACSERequirement
                 pass
             elif tag == 0x80:
-                s.settings.stoCChallenge = GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                s.settings.stoCChallenge = GXByteBuffer.hexToBytes(
+                    cls.getValue(node, s)
+                )
             elif tag == TranslatorTags.ATTRIBUTE_DESCRIPTOR:
                 pass
             elif tag == TranslatorTags.CLASS_ID:
                 s.attributeDescriptor.setUInt16(s.parseInt(cls.getValue(node, s)))
             elif tag == TranslatorTags.INSTANCE_ID:
-                s.attributeDescriptor.set(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                s.attributeDescriptor.set(
+                    GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                )
             elif tag == TranslatorTags.ATTRIBUTE_ID:
                 s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
-                if s.command not in (Command.ACCESS_REQUEST, Command.EVENT_NOTIFICATION):
+                if s.command not in (
+                    Command.ACCESS_REQUEST,
+                    Command.EVENT_NOTIFICATION,
+                ):
                     s.attributeDescriptor.setUInt8(0)
             elif tag == TranslatorTags.METHOD_INVOCATION_PARAMETERS:
                 s.attributeDescriptor.setUInt8(1, len(s.attributeDescriptor) - 1)
             elif tag == TranslatorTags.SELECTOR:
-                s.attributeDescriptor.set(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                s.attributeDescriptor.set(
+                    GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                )
             elif tag == TranslatorTags.PARAMETER:
                 pass
             elif tag == TranslatorTags.LAST_BLOCK:
                 s.data.setUInt8(s.parseShort(cls.getValue(node, s)))
             elif tag == TranslatorTags.BLOCK_NUMBER:
-                if s.command in (Command.GET_REQUEST, Command.GET_RESPONSE, Command.SET_REQUEST, Command.SET_RESPONSE, Command.METHOD_REQUEST, Command.METHOD_RESPONSE):
+                if s.command in (
+                    Command.GET_REQUEST,
+                    Command.GET_RESPONSE,
+                    Command.SET_REQUEST,
+                    Command.SET_RESPONSE,
+                    Command.METHOD_REQUEST,
+                    Command.METHOD_RESPONSE,
+                ):
                     s.data.setUInt32(s.parseLong(cls.getValue(node, s)))
                 else:
                     s.data.setUInt16(s.parseInt(cls.getValue(node, s)))
@@ -1367,13 +1908,23 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.METHOD_ID:
                 s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
                 s.attributeDescriptor.setUInt8(0)
-            elif tag in (TranslatorTags.RESULT, TranslatorGeneralTags.ASSOCIATION_RESULT):
+            elif tag in (
+                TranslatorTags.RESULT,
+                TranslatorGeneralTags.ASSOCIATION_RESULT,
+            ):
                 if s.command == Command.GET_REQUEST or s.requestType == 3:
-                    _GXCommon.setObjectCount(node.getChildNodes().getLength(), s.attributeDescriptor)
-                elif s.command == Command.METHOD_RESPONSE or s.command == Command.SET_RESPONSE:
+                    _GXCommon.setObjectCount(
+                        node.getChildNodes().getLength(), s.attributeDescriptor
+                    )
+                elif (
+                    s.command == Command.METHOD_RESPONSE
+                    or s.command == Command.SET_RESPONSE
+                ):
                     str_ = cls.getValue(node, s)
                     if str_:
-                        s.attributeDescriptor.setUInt8(cls.value_ofErrorCode(s.outputType, str_))
+                        s.attributeDescriptor.setUInt8(
+                            cls.value_ofErrorCode(s.outputType, str_)
+                        )
                 elif s.command == Command.ACCESS_RESPONSE:
                     str_ = cls.getValue(node, s)
                     if str_:
@@ -1381,14 +1932,30 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.REASON:
                 if s.command == Command.RELEASE_REQUEST:
                     if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                        s.reason = int(TranslatorSimpleTags.value_ofReleaseRequestReason(cls.getValue(node, s)))
+                        s.reason = int(
+                            TranslatorSimpleTags.value_ofReleaseRequestReason(
+                                cls.getValue(node, s)
+                            )
+                        )
                     else:
-                        s.reason = int(TranslatorStandardTags.value_ofReleaseRequestReason(cls.getValue(node, s)))
+                        s.reason = int(
+                            TranslatorStandardTags.value_ofReleaseRequestReason(
+                                cls.getValue(node, s)
+                            )
+                        )
                 else:
                     if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                        s.reason = int(TranslatorSimpleTags.value_ofReleaseResponseReason(cls.getValue(node, s)))
+                        s.reason = int(
+                            TranslatorSimpleTags.value_ofReleaseResponseReason(
+                                cls.getValue(node, s)
+                            )
+                        )
                     else:
-                        s.reason = int(TranslatorStandardTags.value_ofReleaseResponseReason(cls.getValue(node, s)))
+                        s.reason = int(
+                            TranslatorStandardTags.value_ofReleaseResponseReason(
+                                cls.getValue(node, s)
+                            )
+                        )
             elif tag == TranslatorTags.RETURN_PARAMETERS:
                 s.attributeDescriptor.setUInt8(1)
             elif tag == TranslatorTags.ACCESS_SELECTION:
@@ -1400,26 +1967,38 @@ class GXDLMSTranslator:
                     s.attributeDescriptor.setUInt8(s.parseShort(cls.getValue(node, s)))
                 else:
                     s.attributeDescriptor.setUInt8(ServiceError.SERVICE)
-                    s.attributeDescriptor.setUInt8(Service.valueofString(cls.getValue(node, s)).value)
+                    s.attributeDescriptor.setUInt8(
+                        Service.valueofString(cls.getValue(node, s)).value
+                    )
             elif tag == TranslatorTags.ACCESS_SELECTOR:
                 s.data.setUInt8(s.parseShort(cls.getValue(node, s)))
             elif tag == TranslatorTags.ACCESS_PARAMETERS:
                 pass
             elif tag == TranslatorTags.ATTRIBUTE_DESCRIPTOR_LIST:
                 _GXCommon.setObjectCount(cls.getNodeCount(node), s.attributeDescriptor)
-            elif tag in (TranslatorTags.ATTRIBUTE_DESCRIPTOR_WITH_SELECTION,
-                         Command.ACCESS_REQUEST << 8 | AccessServiceCommandType.GET,
-                         Command.ACCESS_REQUEST << 8 | AccessServiceCommandType.SET,
-                         Command.ACCESS_REQUEST << 8 | AccessServiceCommandType.ACTION):
+            elif tag in (
+                TranslatorTags.ATTRIBUTE_DESCRIPTOR_WITH_SELECTION,
+                Command.ACCESS_REQUEST << 8 | AccessServiceCommandType.GET,
+                Command.ACCESS_REQUEST << 8 | AccessServiceCommandType.SET,
+                Command.ACCESS_REQUEST << 8 | AccessServiceCommandType.ACTION,
+            ):
                 if s.command != Command.SET_REQUEST:
                     s.attributeDescriptor.setUInt8(tag & 0xFF)
-            elif tag in (Command.READ_REQUEST << 8 | VariableAccessSpecification.VARIABLE_NAME,
-                         Command.WRITE_REQUEST << 8 | VariableAccessSpecification.VARIABLE_NAME,
-                         Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA):
+            elif tag in (
+                Command.READ_REQUEST << 8 | VariableAccessSpecification.VARIABLE_NAME,
+                Command.WRITE_REQUEST << 8 | VariableAccessSpecification.VARIABLE_NAME,
+                Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA,
+            ):
                 if s.command not in (Command.ACCESS_REQUEST, Command.ACCESS_RESPONSE):
-                    if not (s.outputType == TranslatorOutputType.STANDARD_XML and tag == (Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)):
+                    if not (
+                        s.outputType == TranslatorOutputType.STANDARD_XML
+                        and tag
+                        == (Command.WRITE_REQUEST << 8 | SingleReadResponse.DATA)
+                    ):
                         if s.requestType == 0xFF:
-                            s.attributeDescriptor.setUInt8(VariableAccessSpecification.VARIABLE_NAME)
+                            s.attributeDescriptor.setUInt8(
+                                VariableAccessSpecification.VARIABLE_NAME
+                            )
                         else:
                             s.attributeDescriptor.setUInt8(s.requestType)
                             s.requestType = 0xFF
@@ -1434,7 +2013,9 @@ class GXDLMSTranslator:
                             s.attributeDescriptor.setUInt16(int(str_))
             elif tag == TranslatorTags.CHOICE:
                 pass
-            elif tag == Command.READ_RESPONSE << 8 | SingleReadResponse.DATA_ACCESS_ERROR:
+            elif (
+                tag == Command.READ_RESPONSE << 8 | SingleReadResponse.DATA_ACCESS_ERROR
+            ):
                 err = cls.value_ofErrorCode(s.outputType, cls.getValue(node, s))
                 s.count = s.count + 1
                 s.data.setUInt8(1)
@@ -1517,28 +2098,36 @@ class GXDLMSTranslator:
                 pass
             elif tag == TranslatorTags.MAX_INFO_TX:
                 value = int(cls.getValue(node, s))
-                if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
+                if (s.command == Command.SNRM and not s.settings.isServer) or (
+                    s.command == Command.UA and s.settings.isServer
+                ):
                     s.settings.hdlc.setMaxInfoRX(int(value))
                 s.data.setUInt8(_HDLCInfo.MAX_INFO_RX)
                 s.data.setUInt8(1)
                 s.data.setUInt8(int(value))
             elif tag == TranslatorTags.MAX_INFO_RX:
                 value = int(cls.getValue(node, s))
-                if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
+                if (s.command == Command.SNRM and not s.settings.isServer) or (
+                    s.command == Command.UA and s.settings.isServer
+                ):
                     s.settings.hdlc.setMaxInfoTX(int(value))
                 s.data.setUInt8(_HDLCInfo.MAX_INFO_TX)
                 s.data.setUInt8(1)
                 s.data.setUInt8(int(value))
             elif tag == TranslatorTags.WINDOW_SIZE_TX:
                 value = int(cls.getValue(node, s))
-                if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
+                if (s.command == Command.SNRM and not s.settings.isServer) or (
+                    s.command == Command.UA and s.settings.isServer
+                ):
                     s.settings.hdlc.setWindowSizeRX(int(value))
                 s.data.setUInt8(int(_HDLCInfo.WINDOW_SIZE_RX))
                 s.data.setUInt8(4)
                 s.data.setUInt32(value)
             elif tag == TranslatorTags.WINDOW_SIZE_RX:
                 value = int(cls.getValue(node, s))
-                if (s.command == Command.SNRM and not s.settings.isServer) or (s.command == Command.UA and s.settings.isServer):
+                if (s.command == Command.SNRM and not s.settings.isServer) or (
+                    s.command == Command.UA and s.settings.isServer
+                ):
                     s.settings.hdlc.setWindowSizeTX(int(value))
                 s.data.setUInt8(_HDLCInfo.WINDOW_SIZE_TX)
                 s.data.setUInt8(4)
@@ -1548,7 +2137,9 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.VALUE_LIST:
                 _GXCommon.setObjectCount(cls.getNodeCount(node), s.data)
             elif tag == TranslatorTags.DATA_ACCESS_RESULT:
-                s.data.setUInt8(cls.value_ofErrorCode(s.outputType, cls.getValue(node, s)))
+                s.data.setUInt8(
+                    cls.value_ofErrorCode(s.outputType, cls.getValue(node, s))
+                )
             elif tag == TranslatorTags.WRITE_DATA_BLOCK_ACCESS:
                 pass
             elif tag == TranslatorTags.FRAME_TYPE:
@@ -1572,18 +2163,32 @@ class GXDLMSTranslator:
             elif tag == TranslatorTags.NETWORK_ID:
                 s.setNetworkId(s.parseShort(cls.getValue(node, s)))
             elif tag == TranslatorTags.PHYSICAL_DEVICE_ADDRESS:
-                s.setPhysicalDeviceAddress(GXByteBuffer.hexToBytes(cls.getValue(node, s)))
-                s.command = (Command.NONE)
+                s.setPhysicalDeviceAddress(
+                    GXByteBuffer.hexToBytes(cls.getValue(node, s))
+                )
+                s.command = Command.NONE
             elif tag == TranslatorTags.STATE_ERROR:
                 if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                    s.attributeDescriptor.setUInt8(TranslatorSimpleTags.valueofStateError(cls.getValue(node, s)))
+                    s.attributeDescriptor.setUInt8(
+                        TranslatorSimpleTags.valueofStateError(cls.getValue(node, s))
+                    )
                 else:
-                    s.attributeDescriptor.setUInt8(TranslatorStandardTags.valueofStateError(cls.getValue(node, s)))
+                    s.attributeDescriptor.setUInt8(
+                        TranslatorStandardTags.valueofStateError(cls.getValue(node, s))
+                    )
             elif tag == TranslatorTags.SERVICE_ERROR:
                 if s.outputType == TranslatorOutputType.SIMPLE_XML:
-                    s.attributeDescriptor.setUInt8(TranslatorSimpleTags.valueOfExceptionServiceError(cls.getValue(node, s)))
+                    s.attributeDescriptor.setUInt8(
+                        TranslatorSimpleTags.valueOfExceptionServiceError(
+                            cls.getValue(node, s)
+                        )
+                    )
                 else:
-                    s.attributeDescriptor.setUInt8(TranslatorStandardTags.valueOfExceptionServiceError(cls.getValue(node, s)))
+                    s.attributeDescriptor.setUInt8(
+                        TranslatorStandardTags.valueOfExceptionServiceError(
+                            cls.getValue(node, s)
+                        )
+                    )
             else:
                 raise ValueError("Invalid node: " + node.tag)
         cnt = 0
@@ -1618,7 +2223,12 @@ class GXDLMSTranslator:
                     col = 0
                     for it in r.strip().split(";"):
                         tmp.clear()
-                        _GXCommon.setData(None, tmp, types[len(types)], GXDLMSConverter.changeType(it, types[len(types)]))
+                        _GXCommon.setData(
+                            None,
+                            tmp,
+                            types[len(types)],
+                            GXDLMSConverter.changeType(it, types[len(types)]),
+                        )
                         if len(tmp) == 1:
                             s.data.setUInt8(0)
                         else:
@@ -1646,7 +2256,9 @@ class GXDLMSTranslator:
     def updateDateTime(cls, node, s, preData):
         bb = preData
         if s.requestType != 0xFF:
-            bb = cls.updateDataType(node, s, DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET)
+            bb = cls.updateDataType(
+                node, s, DataType.DATETIME + _GXCommon.DATA_TYPE_OFFSET
+            )
         else:
             dt = DataType.DATETIME
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
@@ -1660,7 +2272,7 @@ class GXDLMSTranslator:
 
     @classmethod
     def updateDataType(cls, node, s, tag):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         preData = None
         v = cls.getValue(node, s)
         if s.template or v == "*":
@@ -1672,13 +2284,24 @@ class GXDLMSTranslator:
             preData = GXByteBuffer(s.data)
             s.data.size = 0
         elif dt == DataType.BCD:
-            _GXCommon.setData(None, s.data, DataType.BCD, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.BCD, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.BITSTRING:
             _GXCommon.setData(None, s.data, DataType.BITSTRING, cls.getValue(node, s))
         elif dt == DataType.BOOLEAN:
-            _GXCommon.setData(None, s.data, DataType.BOOLEAN, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.BOOLEAN, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.DATE:
-            _GXCommon.setData(None, s.data, DataType.DATE, _GXCommon.changeType(None, GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.DATE))
+            _GXCommon.setData(
+                None,
+                s.data,
+                DataType.DATE,
+                _GXCommon.changeType(
+                    None, GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.DATE
+                ),
+            )
         elif dt == DataType.DATETIME:
             tmp = GXByteBuffer.hexToBytes(cls.getValue(node, s))
             if len(tmp) == 5:
@@ -1687,47 +2310,84 @@ class GXDLMSTranslator:
                 dt = DataType.TIME
             _GXCommon.setData(None, s.data, dt, _GXCommon.changeType(None, tmp, dt))
         elif dt == DataType.ENUM:
-            _GXCommon.setData(None, s.data, DataType.ENUM, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.ENUM, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.FLOAT32:
             cls.getFloat32(node, s)
         elif dt == DataType.FLOAT64:
             cls.getFloat64(node, s)
         elif dt == DataType.INT16:
-            _GXCommon.setData(None, s.data, DataType.INT16, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.INT16, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.INT32:
-            _GXCommon.setData(None, s.data, DataType.INT32, s.parseInt(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.INT32, s.parseInt(cls.getValue(node, s))
+            )
         elif dt == DataType.INT64:
-            _GXCommon.setData(None, s.data, DataType.INT64, s.parseLong(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.INT64, s.parseLong(cls.getValue(node, s))
+            )
         elif dt == DataType.INT8:
-            _GXCommon.setData(None, s.data, DataType.INT8, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.INT8, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.NONE:
             _GXCommon.setData(None, s.data, DataType.NONE, None)
         elif dt == DataType.OCTET_STRING:
             cls.getOctetString(node, s)
         elif dt == DataType.STRING:
             if s.showStringAsHex:
-                _GXCommon.setData(None, s.data, DataType.STRING, GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                _GXCommon.setData(
+                    None,
+                    s.data,
+                    DataType.STRING,
+                    GXByteBuffer.hexToBytes(cls.getValue(node, s)),
+                )
             else:
                 _GXCommon.setData(None, s.data, DataType.STRING, cls.getValue(node, s))
         elif dt == DataType.STRING_UTF8:
             if s.showStringAsHex:
-                _GXCommon.setData(None, s.data, DataType.STRING_UTF8, GXByteBuffer.hexToBytes(cls.getValue(node, s)))
+                _GXCommon.setData(
+                    None,
+                    s.data,
+                    DataType.STRING_UTF8,
+                    GXByteBuffer.hexToBytes(cls.getValue(node, s)),
+                )
             else:
-                _GXCommon.setData(None, s.data, DataType.STRING_UTF8, cls.getValue(node, s))
+                _GXCommon.setData(
+                    None, s.data, DataType.STRING_UTF8, cls.getValue(node, s)
+                )
         elif dt == DataType.STRUCTURE:
             s.data.setUInt8(DataType.STRUCTURE)
             preData = GXByteBuffer(s.data)
             s.data.size = 0
         elif dt == DataType.TIME:
-            _GXCommon.setData(None, s.data, DataType.TIME, _GXCommon.changeType(None, GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.TIME))
+            _GXCommon.setData(
+                None,
+                s.data,
+                DataType.TIME,
+                _GXCommon.changeType(
+                    None, GXByteBuffer.hexToBytes(cls.getValue(node, s)), DataType.TIME
+                ),
+            )
         elif dt == DataType.UINT16:
-            _GXCommon.setData(None, s.data, DataType.UINT16, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.UINT16, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.UINT32:
-            _GXCommon.setData(None, s.data, DataType.UINT32, s.parseLong(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.UINT32, s.parseLong(cls.getValue(node, s))
+            )
         elif dt == DataType.UINT64:
-            _GXCommon.setData(None, s.data, DataType.UINT64, s.parseLong(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.UINT64, s.parseLong(cls.getValue(node, s))
+            )
         elif dt == DataType.UINT8:
-            _GXCommon.setData(None, s.data, DataType.UINT8, s.parseShort(cls.getValue(node, s)))
+            _GXCommon.setData(
+                None, s.data, DataType.UINT8, s.parseShort(cls.getValue(node, s))
+            )
         elif dt == DataType.COMPACT_ARRAY:
             s.data.setUInt8(dt.value)
         else:
@@ -1758,10 +2418,12 @@ class GXDLMSTranslator:
     def xmlToPdu(self, xml, settings=None):
         s = settings
         if s is None:
-            s = GXDLMSXmlSettings(self.outputType, self.hex, self.showStringAsHex, self.tagsByName)
+            s = GXDLMSXmlSettings(
+                self.outputType, self.hex, self.showStringAsHex, self.tagsByName
+            )
 
         tmp = ET.fromstring(xml)
-        if tmp.tag == '{http://www.dlms.com/COSEMpdu}xDLMS-APDU':
+        if tmp.tag == "{http://www.dlms.com/COSEMpdu}xDLMS-APDU":
             for it in tmp:
                 tmp = it
                 break
@@ -1773,16 +2435,57 @@ class GXDLMSTranslator:
             _GXAPDU.getInitiateRequest(s.settings, bb)
         elif s.command == Command.INITIATE_RESPONSE:
             bb.set(_GXAPDU.getUserInformation(s.settings, s.settings.cipher))
-        elif s.command in (Command.READ_REQUEST, Command.WRITE_REQUEST, Command.READ_RESPONSE, Command.WRITE_RESPONSE):
-            sn = GXDLMSSNParameters(s.settings, s.command, s.count, s.requestType, s.attributeDescriptor, s.data)
+        elif s.command in (
+            Command.READ_REQUEST,
+            Command.WRITE_REQUEST,
+            Command.READ_RESPONSE,
+            Command.WRITE_RESPONSE,
+        ):
+            sn = GXDLMSSNParameters(
+                s.settings,
+                s.command,
+                s.count,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+            )
             GXDLMS.getSNPdu(sn, bb)
-        elif s.command in (Command.GET_REQUEST, Command.GET_RESPONSE, Command.SET_REQUEST, Command.SET_RESPONSE, Command.METHOD_REQUEST, Command.METHOD_RESPONSE):
-            ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff)
+        elif s.command in (
+            Command.GET_REQUEST,
+            Command.GET_RESPONSE,
+            Command.SET_REQUEST,
+            Command.SET_RESPONSE,
+            Command.METHOD_REQUEST,
+            Command.METHOD_RESPONSE,
+        ):
+            ln = GXDLMSLNParameters(
+                s.settings,
+                0,
+                s.command,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+                0xFF,
+            )
             GXDLMS.getLNPdu(ln, bb)
-        elif s.command in (Command.GLO_GET_REQUEST, Command.GLO_GET_RESPONSE, Command.GLO_SET_REQUEST, Command.GLO_SET_RESPONSE, \
-            Command.GLO_METHOD_REQUEST, Command.GLO_METHOD_RESPONSE, Command.GLO_READ_REQUEST, Command.GLO_WRITE_REQUEST, Command.GLO_READ_RESPONSE, \
-            Command.GLO_WRITE_RESPONSE, Command.DED_GET_REQUEST, Command.DED_GET_RESPONSE, Command.DED_SET_REQUEST, Command.DED_SET_RESPONSE, \
-            Command.DED_METHOD_REQUEST, Command.DED_METHOD_RESPONSE):
+        elif s.command in (
+            Command.GLO_GET_REQUEST,
+            Command.GLO_GET_RESPONSE,
+            Command.GLO_SET_REQUEST,
+            Command.GLO_SET_RESPONSE,
+            Command.GLO_METHOD_REQUEST,
+            Command.GLO_METHOD_RESPONSE,
+            Command.GLO_READ_REQUEST,
+            Command.GLO_WRITE_REQUEST,
+            Command.GLO_READ_RESPONSE,
+            Command.GLO_WRITE_RESPONSE,
+            Command.DED_GET_REQUEST,
+            Command.DED_GET_RESPONSE,
+            Command.DED_SET_REQUEST,
+            Command.DED_SET_RESPONSE,
+            Command.DED_METHOD_REQUEST,
+            Command.DED_METHOD_RESPONSE,
+        ):
             bb.setUInt8(s.command)
             _GXCommon.setObjectCount(len(s.data), bb)
             bb.set(s.data)
@@ -1812,7 +2515,15 @@ class GXDLMSTranslator:
         elif s.command in (Command.AARQ, Command.GLO_INITIATE_REQUEST):
             _GXAPDU.generateAarq(s.settings, s.settings.cipher, s.data, bb)
         elif s.command in (Command.AARE, Command.GLO_INITIATE_RESPONSE):
-            _GXAPDU.generateAARE(s.settings, bb, s.result, s.diagnostic, s.settings.cipher, s.attributeDescriptor, s.data)
+            _GXAPDU.generateAARE(
+                s.settings,
+                bb,
+                s.result,
+                s.diagnostic,
+                s.settings.cipher,
+                s.attributeDescriptor,
+                s.data,
+            )
         elif s.command == Command.DISCONNECT_REQUEST:
             pass
         elif s.command == Command.RELEASE_REQUEST:
@@ -1837,24 +2548,72 @@ class GXDLMSTranslator:
         elif s.command == Command.EXCEPTION_RESPONSE:
             pass
         elif s.command == Command.GENERAL_BLOCK_TRANSFER:
-            ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff, Command.NONE)
+            ln = GXDLMSLNParameters(
+                s.settings,
+                0,
+                s.command,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+                0xFF,
+                Command.NONE,
+            )
             GXDLMS.getLNPdu(ln, bb)
         elif s.command == Command.ACCESS_REQUEST:
-            ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff)
+            ln = GXDLMSLNParameters(
+                s.settings,
+                0,
+                s.command,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+                0xFF,
+            )
             GXDLMS.getLNPdu(ln, bb)
         elif s.command == Command.ACCESS_RESPONSE:
-            ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff)
+            ln = GXDLMSLNParameters(
+                s.settings,
+                0,
+                s.command,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+                0xFF,
+            )
             GXDLMS.getLNPdu(ln, bb)
         elif s.command == Command.DATA_NOTIFICATION:
-            ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff)
+            ln = GXDLMSLNParameters(
+                s.settings,
+                0,
+                s.command,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+                0xFF,
+            )
             ln.time = s.time
             GXDLMS.getLNPdu(ln, bb)
         elif s.command == Command.INFORMATION_REPORT:
-            sn = GXDLMSSNParameters(s.settings, s.command, s.count, s.requestType, s.attributeDescriptor, s.data)
+            sn = GXDLMSSNParameters(
+                s.settings,
+                s.command,
+                s.count,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+            )
             sn.time = s.time
             GXDLMS.getSNPdu(sn, bb)
         elif s.command == Command.EVENT_NOTIFICATION:
-            ln = GXDLMSLNParameters(s.settings, 0, s.command, s.requestType, s.attributeDescriptor, s.data, 0xff)
+            ln = GXDLMSLNParameters(
+                s.settings,
+                0,
+                s.command,
+                s.requestType,
+                s.attributeDescriptor,
+                s.data,
+                0xFF,
+            )
             ln.time = s.time
             GXDLMS.getLNPdu(ln, bb)
         elif s.command == Command.GENERAL_GLO_CIPHERING:
@@ -1882,7 +2641,14 @@ class GXDLMSTranslator:
 
     def dataToXml(self, data):
         di = _GXDataInfo()
-        xml = GXDLMSTranslatorStructure(self.outputType, self.omitXmlNameSpace, self.hex, self.showStringAsHex, self.comments, self.tags)
+        xml = GXDLMSTranslatorStructure(
+            self.outputType,
+            self.omitXmlNameSpace,
+            self.hex,
+            self.showStringAsHex,
+            self.comments,
+            self.tags,
+        )
         di.xml = xml
         _GXCommon.getData(None, data, di)
         return str(di.xml)
@@ -1907,6 +2673,8 @@ class GXDLMSTranslator:
                     self.__getAllDataNodes(it.getChildNodes(), s)
 
     def XmlToData(self, xml):
-        s = GXDLMSXmlSettings(self.outputType, self.hex, self.showStringAsHex, self.tagsByName)
+        s = GXDLMSXmlSettings(
+            self.outputType, self.hex, self.showStringAsHex, self.tagsByName
+        )
         self.__getAllDataNodes(ET.fromstring(xml).iter(), s)
         return s.data
