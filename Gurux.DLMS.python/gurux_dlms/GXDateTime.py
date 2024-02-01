@@ -303,7 +303,6 @@ class GXDateTime:
     def __toFormatString(self, useLocalTime, pattern=None):
         if not self.value:
             return ""
-
         if self.skip != DateTimeSkips.NONE:
             #  Separate date and time parts.
             if not pattern:
@@ -367,6 +366,10 @@ class GXDateTime:
             if useLocalTime:
                 return self.__toLocal(self.value).strftime(pattern)
             return self.value.strftime(pattern) + self.__getTimeZone()
+        if pattern:
+            if useLocalTime:
+                return self.__toLocal(self.value).strftime(pattern)
+            return self.value.strftime(pattern) + self.__getTimeZone()
         if useLocalTime:
             return self.__toLocal(self.value).strftime("%x %X")
         return self.value.strftime(self.__get_pattern(True)) + self.__getTimeZone()
@@ -391,6 +394,9 @@ class GXDateTime:
     def __str__(self):
         #Returns date-time of the meter using local time zone.
         return self.__toString(True)
+
+    def toString(self, pattern=None):
+        return self.__toString(True, pattern)
 
     def toMeterString(self, pattern=None):
         #Returns date-time of the meter using meter time zone.
@@ -450,6 +456,10 @@ class GXDateTime:
             if useLocalTime:
                 return self.__toLocal(self.value).strftime(pattern.strip())
             return self.value.strftime(pattern.strip()) + self.__getTimeZone()
+        if pattern:
+            if useLocalTime:
+                return self.__toLocal(self.value).strftime(pattern)
+            return self.value.strftime(pattern) + self.__getTimeZone()
         if useLocalTime:
             return self.__toLocal(self.value).strftime("%x %X")
         return self.value.strftime("%x %X") + self.__getTimeZone()
