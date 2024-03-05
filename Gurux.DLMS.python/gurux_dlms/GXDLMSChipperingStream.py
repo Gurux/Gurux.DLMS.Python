@@ -242,7 +242,7 @@ class GXDLMSChipperingStream:
         if self.encrypt:
             bufLength = GXDLMSChipperingStream.BLOCK_SIZE
         else:
-            bufLength = (GXDLMSChipperingStream.BLOCK_SIZE + GXDLMSChipperingStream.TAG_SIZE)
+            bufLength = GXDLMSChipperingStream.BLOCK_SIZE + GXDLMSChipperingStream.TAG_SIZE
         self.bufBlock = bytearray(bufLength)
         self.aad = forAad
         self.h = bytearray(GXDLMSChipperingStream.BLOCK_SIZE)
@@ -358,12 +358,12 @@ class GXDLMSChipperingStream:
         self.c2 ^= key[0][2]
         self.c3 ^= key[0][3]
         while r < self.rounds - 1:
-            r0 = (self.AES[self.c0 & 0xFF] & 0xFFFFFFFF)
-            r0 ^= (self.shift(self.AES[(self.c1 >> 8) & 0xFF], 24) & 0xFFFFFFFF)
-            r0 ^= (self.shift(self.AES[(self.c2 >> 16) & 0xFF], 16) & 0xFFFFFFFF)
-            r0 ^= (self.shift(self.AES[(self.c3 >> 24) & 0xFF], 8) & 0xFFFFFFFF)
-            r0 ^= (key[r][0] & 0xFFFFFFFF)
-            r1 = (self.AES[self.c1 & 0xFF] & 0xFFFFFFFF)
+            r0 = self.AES[self.c0 & 0xFF] & 0xFFFFFFFF
+            r0 ^= self.shift(self.AES[(self.c1 >> 8) & 0xFF], 24) & 0xFFFFFFFF
+            r0 ^= self.shift(self.AES[(self.c2 >> 16) & 0xFF], 16) & 0xFFFFFFFF
+            r0 ^= self.shift(self.AES[(self.c3 >> 24) & 0xFF], 8) & 0xFFFFFFFF
+            r0 ^= key[r][0] & 0xFFFFFFFF
+            r1 = self.AES[self.c1 & 0xFF] & 0xFFFFFFFF
             r1 ^= self.shift(self.AES[(self.c2 >> 8) & 0xFF], 24) & 0xFFFFFFFF
             r1 ^= self.shift(self.AES[(self.c3 >> 16) & 0xFF], 16) & 0xFFFFFFFF
             r1 ^= self.shift(self.AES[(self.c0 >> 24) & 0xFF], 8) & 0xFFFFFFFF

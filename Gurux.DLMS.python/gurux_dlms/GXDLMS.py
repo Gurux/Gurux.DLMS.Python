@@ -1162,9 +1162,9 @@ class GXDLMS:
             #MAC Addresses.
             mac = buff.getUInt24()
             #SA.
-            macSa = (mac >> 12)
+            macSa = mac >> 12
             #DA.
-            macDa = (mac and 0xFFF)
+            macDa = mac and 0xFFF
             #PAD length.
             padLen = buff.getUInt8()
             if buff.size < len_ + padLen + 2:
@@ -1340,9 +1340,9 @@ class GXDLMS:
         number = data.getUInt16()
         blockLength = _GXCommon.getObjectCount(data)
         if lastBlock == 0:
-            reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
+            reply.moreData = RequestTypes(reply.moreData | RequestTypes.DATABLOCK)
         else:
-            reply.moreData = (RequestTypes(reply.moreData & ~RequestTypes.DATABLOCK))
+            reply.moreData = RequestTypes(reply.moreData & ~RequestTypes.DATABLOCK)
         if number != 1 and settings.blockIndex == 1:
             settings.setBlockIndex(number)
         expectedIndex = settings.blockIndex
@@ -1438,7 +1438,7 @@ class GXDLMS:
                 if number != settings.blockIndex:
                     raise ValueError("Invalid Block number. It is " + str(number) + " and it should be " + str(settings.blockIndex) + ".")
                 settings.increaseBlockIndex()
-                reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
+                reply.moreData = RequestTypes(reply.moreData | RequestTypes.DATABLOCK)
             else:
                 raise Exception("HandleReadResponse failed. Invalid tag.")
             pos += 1
@@ -1489,7 +1489,7 @@ class GXDLMS:
                 else:
                     data.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     di = _GXDataInfo()
-                    di.xml = (data.xml)
+                    di.xml = data.xml
                     _GXCommon.getData(settings, data.data, di)
                     data.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                 data.xml.appendEndTag(TranslatorTags.RETURN_PARAMETERS)
@@ -1594,9 +1594,9 @@ class GXDLMS:
         index = data.position - 1
         last = data.getUInt8()
         if (last & 0x80) == 0:
-            reply.moreData = (RequestTypes(reply.moreData | RequestTypes.DATABLOCK))
+            reply.moreData = RequestTypes(reply.moreData | RequestTypes.DATABLOCK)
         else:
-            reply.moreData = (RequestTypes(reply.moreData & ~RequestTypes.DATABLOCK))
+            reply.moreData = RequestTypes(reply.moreData & ~RequestTypes.DATABLOCK)
         data.getUInt8()
         data.getUInt8()
         data.getUInt8()
@@ -1968,9 +1968,9 @@ class GXDLMS:
             return
         GXDLMS.getDataFromBlock(data.data, index)
         if (bc & 0x80) == 0:
-            data.moreData = (RequestTypes(data.moreData | RequestTypes.GBT))
+            data.moreData = RequestTypes(data.moreData | RequestTypes.GBT)
         else:
-            data.moreData = (RequestTypes(data.moreData & ~RequestTypes.GBT))
+            data.moreData = RequestTypes(data.moreData & ~RequestTypes.GBT)
             if data.data.size != 0:
                 data.data.position = 0
                 GXDLMS.getPdu(settings, data)

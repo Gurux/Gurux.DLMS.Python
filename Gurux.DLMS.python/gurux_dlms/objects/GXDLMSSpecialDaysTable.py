@@ -166,7 +166,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def invoke(self, settings, e):
-        if e.index != 1 and e.index != 2:
+        if e.index not in (1, 2):
             e.error = ErrorCode.READ_WRITE_DENIED
         else:
             items = list()

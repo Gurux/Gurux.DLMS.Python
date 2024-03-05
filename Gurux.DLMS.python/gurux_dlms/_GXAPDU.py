@@ -719,7 +719,7 @@ class _GXAPDU:
                     resultComponent = AssociationResult(buff.getUInt8())
                     if xml:
                         if resultComponent != AssociationResult.ACCEPTED:
-                            xml.appendComment(resultComponent.__str__())
+                            xml.appendComment(str(resultComponent))
                         xml.appendLine(TranslatorGeneralTags.ASSOCIATION_RESULT, "Value", xml.integerToHex(resultComponent, 2))
                         xml.appendStartTag(TranslatorGeneralTags.RESULT_SOURCE_DIAGNOSTIC)
             elif tag == BerType.CONTEXT | BerType.CONSTRUCTED | PduType.CALLED_AE_QUALIFIER:
@@ -898,7 +898,7 @@ class _GXAPDU:
             resultDiagnosticValue = SourceDiagnostic(buff.getUInt8())
             if xml:
                 if resultDiagnosticValue != SourceDiagnostic.NONE:
-                    xml.appendComment(resultDiagnosticValue.__str__())
+                    xml.appendComment(str(resultDiagnosticValue))
                 xml.appendLine(TranslatorGeneralTags.ACSE_SERVICE_USER, "Value", xml.integerToHex(resultDiagnosticValue, 2))
                 xml.appendEndTag(TranslatorGeneralTags.RESULT_SOURCE_DIAGNOSTIC)
         return resultDiagnosticValue

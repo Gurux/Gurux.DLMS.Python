@@ -61,6 +61,31 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
         self.maskList = list()
         self.activeMask = bytearray()
 
+    def addRegister(self, client, target):
+        """Add new register."""
+        bb = GXByteBuffer()
+        bb.setUInt8(DataType.STRUCTURE)
+        bb.setUInt8(2)
+        _GXCommon.setData(None, bb, DataType.UINT16, target.objectType)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(target.logicalName))
+        return client.method(self, 1, bb.array(), DataType.ARRAY)
+
+    def addMask(self, client, name, indexes):
+        """Add new register activation mask."""
+        bb = GXByteBuffer()
+        bb.setUInt8(DataType.STRUCTURE)
+        bb.setUInt8(2)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, name)
+        bb.setUInt8(DataType.ARRAY)
+        bb.setUInt8(len(indexes))
+        for it in indexes:
+            _GXCommon.setData(None, bb, DataType.UINT8, it)       
+        return client.method(self, 2, bb.array(), DataType.ARRAY)
+
+    def removeMask(self, client, name):
+        """Remove register activation mask."""
+        return client.method(self, 3, name, DataType.OCTET_STRING)
+
     def getValues(self):
         return [self.logicalName,
                 self.registerAssignment,

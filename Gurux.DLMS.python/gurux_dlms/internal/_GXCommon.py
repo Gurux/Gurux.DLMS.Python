@@ -1791,20 +1791,20 @@ class _GXCommon:
     def encryptManufacturer(cls, flagName):
         if len(flagName) != 3:
             raise ValueError("Invalid Flag name.")
-        value = ((flagName.charAt(0) - 0x40) & 0x1f)
+        value = (flagName.charAt(0) - 0x40) & 0x1f
         value <<= 5
-        value += ((flagName.charAt(0) - 0x40) & 0x1f)
+        value += (flagName.charAt(0) - 0x40) & 0x1f
         value <<= 5
         value += ((flagName.charAt(0) - 0x40) & 0x1f)
         return value
 
     @classmethod
     def decryptManufacturer(cls, value):
-        tmp = (value >> 8 | value << 8)
+        tmp = value >> 8 | value << 8
         c = chr(((tmp & 0x1f) + 0x40))
-        tmp = (tmp >> 5)
+        tmp = tmp >> 5
         c1 = chr(((tmp & 0x1f) + 0x40))
-        tmp = (tmp >> 5)
+        tmp = tmp >> 5
         c2 = chr(((tmp & 0x1f) + 0x40))
         return "".join([c2, c1, c])
 

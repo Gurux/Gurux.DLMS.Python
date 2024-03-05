@@ -52,10 +52,10 @@ class GXDLMSChippering:
     def getNonse(cls, invocationCounter, systemTitle):
         nonce = bytearray(12)
         nonce[0:8] = systemTitle
-        nonce[8] = ((invocationCounter >> 24) & 0xFF)
-        nonce[9] = ((invocationCounter >> 16) & 0xFF)
-        nonce[10] = ((invocationCounter >> 8) & 0xFF)
-        nonce[11] = (invocationCounter & 0xFF)
+        nonce[8] = (invocationCounter >> 24) & 0xFF
+        nonce[9] = (invocationCounter >> 16) & 0xFF
+        nonce[10] = (invocationCounter >> 8) & 0xFF
+        nonce[11] = invocationCounter & 0xFF
         return nonce
 
     @classmethod
@@ -68,10 +68,10 @@ class GXDLMSChippering:
         invocationCounter = 0
         if p.securitySuite == SecuritySuite.AES_GCM_128:
             invocationCounter = p.invocationCounter
-        tmp[0] = ((invocationCounter >> 24) & 0xFF)
-        tmp[1] = ((invocationCounter >> 16) & 0xFF)
-        tmp[2] = ((invocationCounter >> 8) & 0xFF)
-        tmp[3] = (invocationCounter & 0xFF)
+        tmp[0] = (invocationCounter >> 24) & 0xFF
+        tmp[1] = (invocationCounter >> 16) & 0xFF
+        tmp[2] = (invocationCounter >> 8) & 0xFF
+        tmp[3] = invocationCounter & 0xFF
         aad = cls.getAuthenticatedData(p, plainText)
         iv = cls.getNonse(invocationCounter, p.systemTitle)
         gcm = GXDLMSChipperingStream(p.security, True, p.blockCipherKey, aad, iv, None)
