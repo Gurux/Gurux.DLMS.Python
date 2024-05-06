@@ -179,7 +179,7 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
                     date = GXDateTime(_GXCommon.changeType(settings, it[1], DataType.DATE))
                     tmp = GXDateTime(date)
                     tmp.value = tmp.value.replace(hour=time.value.hour, minute=time.value.minute, second=time.value.second)
-                    tmp.skip = (date.skip & (DateTimeSkips.YEAR | DateTimeSkips.MONTH | DateTimeSkips.DAY | DateTimeSkips.DAY_OF_WEEK))
+                    tmp.skip = date.skip & (DateTimeSkips.YEAR | DateTimeSkips.MONTH | DateTimeSkips.DAY | DateTimeSkips.DAY_OF_WEEK)
                     tmp.skip |= (time.skip & (DateTimeSkips.HOUR | DateTimeSkips.MINUTE | DateTimeSkips.SECOND | DateTimeSkips.MILLISECOND))
                     self.executionTime.append(tmp)
         else:

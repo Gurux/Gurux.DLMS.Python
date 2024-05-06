@@ -322,7 +322,7 @@ class GXDLMS:
         else:
             if p.command != Command.GENERAL_BLOCK_TRANSFER:
                 reply.setUInt8(p.command)
-            if p.command == Command.EVENT_NOTIFICATION or p.command == Command.DATA_NOTIFICATION or p.command == Command.ACCESS_REQUEST or p.command == Command.ACCESS_RESPONSE:
+            if p.command in (Command.EVENT_NOTIFICATION, Command.DATA_NOTIFICATION, Command.ACCESS_REQUEST, Command.ACCESS_RESPONSE):
                 if p.command != Command.EVENT_NOTIFICATION:
                     if p.invokeId != 0:
                         reply.setUInt32(p.invokeId)
@@ -336,7 +336,7 @@ class GXDLMS:
                     if p.command != Command.EVENT_NOTIFICATION:
                         reply.move(pos + 1, pos, len(reply) - pos - 1)
                 GXDLMS.multipleBlocks(p, reply, ciphering)
-            elif p.command != Command.RELEASE_REQUEST and p.command != Command.EXCEPTION_RESPONSE:
+            elif p.command not in (Command.RELEASE_REQUEST, Command.EXCEPTION_RESPONSE):
                 if p.command != Command.GET_REQUEST and p.data and reply:
                     GXDLMS.multipleBlocks(p, reply, ciphering)
                 if p.command == Command.SET_REQUEST:
@@ -529,7 +529,7 @@ class GXDLMS:
         reply = GXByteBuffer()
         messages = list()
         frame_ = 0
-        if p.command == Command.DATA_NOTIFICATION or p.command == Command.EVENT_NOTIFICATION:
+        if p.command in (Command.DATA_NOTIFICATION, Command.EVENT_NOTIFICATION):
             frame_ = 0x13
         while True:
             GXDLMS.getLNPdu(p, reply)
@@ -541,7 +541,7 @@ class GXDLMS:
             while reply.position != len(reply):
                 if p.settings.interfaceType == InterfaceType.WRAPPER:
                     messages.append(GXDLMS.getWrapperFrame(p.settings, p.command, reply))
-                elif p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+                elif p.settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E):
                     messages.append(GXDLMS.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
                         frame_ = p.settings.getNextSend(False)
@@ -561,16 +561,16 @@ class GXDLMS:
         reply = GXByteBuffer()
         messages = list()
         frame_ = 0x0
-        if p.command == Command.INFORMATION_REPORT or p.command == Command.DATA_NOTIFICATION:
+        if p.command in (Command.INFORMATION_REPORT, Command.DATA_NOTIFICATION):
             frame_ = 0x13
         while True:
             GXDLMS.getSNPdu(p, reply)
-            if p.command != Command.AARQ and p.command != Command.AARE:
+            if p.command not in (Command.AARQ, Command.AARE):
                 assert not p.settings.maxPduSize < len(reply)
             while reply.position != len(reply):
                 if p.settings.interfaceType == InterfaceType.WRAPPER:
                     messages.append(GXDLMS.getWrapperFrame(p.settings, p.command, reply))
-                elif p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+                elif p.settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E):
                     messages.append(GXDLMS.getHdlcFrame(p.settings, frame_, reply))
                     if reply.position != len(reply):
                         frame_ = p.settings.getNextSend(False)
@@ -589,12 +589,12 @@ class GXDLMS:
     def appendMultipleSNBlocks(cls, p, reply):
         ciphering = p.settings.cipher and p.settings.cipher.security != Security.NONE
         hSize = len(reply) + 3
-        if p.command == Command.WRITE_REQUEST or p.command == Command.READ_REQUEST:
+        if p.command in (Command.WRITE_REQUEST, Command.READ_REQUEST):
             hSize += 1 + _GXCommon.getObjectCountSizeInBytes(p.count)
         maxSize = p.settings.maxPduSize - hSize
         if ciphering:
             maxSize -= GXDLMS.__CIPHERING_HEADER_SIZE
-            if p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+            if p.settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E):
                 maxSize -= 3
         maxSize -= _GXCommon.getObjectCountSizeInBytes(maxSize)
         if reply.available() > maxSize:
@@ -615,7 +615,7 @@ class GXDLMS:
     @classmethod
     def getSNPdu(cls, p, reply):
         ciphering = p.settings.cipher and p.settings.cipher.security != Security.NONE and p.command != Command.AARQ and p.command != Command.AARE
-        if not ciphering and (p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E):
+        if not ciphering and (p.settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E)):
             if p.settings.isServer:
                 reply.set(_GXCommon.LLC_REPLY_BYTES)
             elif not reply:
@@ -636,7 +636,7 @@ class GXDLMS:
                 reply.move(pos + 1, pos, len(reply) - pos - 1)
             _GXCommon.setObjectCount(p.count, reply)
             reply.set(p.attributeDescriptor)
-        elif p.command != Command.AARQ and p.command != Command.AARE:
+        elif p.command not in (Command.AARQ, Command.AARE):
             reply.setUInt8(p.command)
             if p.count != 0xFF:
                 _GXCommon.setObjectCount(p.count, reply)
@@ -647,7 +647,7 @@ class GXDLMS:
                 p.multipleBlocks = len(reply) + cipherSize + cnt > p.settings.maxPduSize
                 if p.multipleBlocks:
                     reply.size = 0
-                    if not ciphering and (p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E):
+                    if not ciphering and (p.settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E)):
                         if p.settings.isServer:
                             reply.set(_GXCommon.LLC_REPLY_BYTES)
                         elif not reply:
@@ -680,7 +680,7 @@ class GXDLMS:
             tmp = GXCiphering.encrypt(s, reply.array())
             assert not tmp
             reply.size = 0
-            if p.settings.interfaceType == InterfaceType.HDLC or p.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+            if p.settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E):
                 if p.settings.isServer:
                     reply.set(_GXCommon.LLC_REPLY_BYTES)
                 elif not reply:
@@ -984,7 +984,7 @@ class GXDLMS:
     def __getTcpData(cls, settings, buff, data, notify):
         target = data
         if len(buff) - buff.position < 8:
-            target.complete = (False)
+            target.complete = False
             return True
         isData = True
         pos = buff.position
@@ -1000,11 +1000,11 @@ class GXDLMS:
                 compleate = not (len(buff) - buff.position) < value
                 if compleate and (len(buff) - buff.position) != value:
                     print("Data length is " + str(value) + "and there are " + str(len(buff) - buff.position) + " bytes.")
-                target.complete = (compleate)
+                target.complete = compleate
                 if not compleate:
                     buff.position = pos
                 else:
-                    target.packetLength = (buff.position + value)
+                    target.packetLength = buff.position + value
                 break
             else:
                 buff.position = buff.position - 1
@@ -1091,7 +1091,7 @@ class GXDLMS:
         len_ = buff.getUInt8()
         #Some meters are counting length to frame size.
         if len(buff) < len_ - 1:
-            data.complete = (False)
+            data.complete = False
             buff.position = buff.position - 1
         else:
             #Some meters are counting length to frame size.
@@ -1224,9 +1224,9 @@ class GXDLMS:
             #MAC Addresses.
             mac = buff.getUInt24()
             #SA.
-            sa = (mac >> 12)
+            sa = mac >> 12
             #DA.
-            da = (mac & 0xFFF)
+            da = mac & 0xFFF
             if settings.isServer:
                 data.complete = data.xml or\
                     (da in (PlcDestinationAddress.ALL_PHYSICAL, settings.plc.macSourceAddress) and\
@@ -1407,7 +1407,7 @@ class GXDLMS:
                         reply.xml.appendStartTag(TranslatorTags.CHOICE)
                     reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     di = _GXDataInfo()
-                    di.xml = (reply.xml)
+                    di.xml = reply.xml
                     _GXCommon.getData(settings, reply.data, di)
                     reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     if standardXml:
@@ -1634,7 +1634,7 @@ class GXDLMS:
                 if reply.xml.outputType == TranslatorOutputType.STANDARD_XML:
                     reply.xml.appendStartTag(Command.WRITE_REQUEST, SingleReadResponse.DATA)
                 di = _GXDataInfo()
-                di.xml = (reply.xml)
+                di.xml = reply.xml
                 _GXCommon.getData(settings, reply.data, di)
                 if reply.xml.outputType == TranslatorOutputType.STANDARD_XML:
                     reply.xml.appendEndTag(Command.WRITE_REQUEST, SingleReadResponse.DATA)
@@ -1689,7 +1689,7 @@ class GXDLMS:
             reply.xml.appendStartTag(TranslatorTags.NOTIFICATION_BODY)
             reply.xml.appendStartTag(TranslatorTags.DATA_VALUE)
             di = _GXDataInfo()
-            di.xml = (reply.xml)
+            di.xml = reply.xml
             _GXCommon.getData(settings, reply.data, di)
             reply.xml.appendEndTag(TranslatorTags.DATA_VALUE)
             reply.xml.appendEndTag(TranslatorTags.NOTIFICATION_BODY)
@@ -1777,7 +1777,7 @@ class GXDLMS:
             else:
                 if reply.xml:
                     di = _GXDataInfo()
-                    di.xml = (reply.xml)
+                    di.xml = reply.xml
                     reply.xml.appendStartTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
                     _GXCommon.getData(settings, reply.data, di)
                     reply.xml.appendEndTag(Command.READ_RESPONSE, SingleReadResponse.DATA)
@@ -1974,7 +1974,7 @@ class GXDLMS:
             if data.data.size != 0:
                 data.data.position = 0
                 GXDLMS.getPdu(settings, data)
-            if data.data.position != data.data.size and (data.command == Command.READ_RESPONSE or data.command == Command.GET_RESPONSE) and (data.moreData == RequestTypes.NONE or data.peek):
+            if data.data.position != data.data.size and (data.command in (Command.READ_RESPONSE, Command.GET_RESPONSE)) and (data.moreData == RequestTypes.NONE or data.peek):
                 data.data.position = 0
                 GXDLMS.getValueFromData(settings, data)
 
@@ -2044,7 +2044,7 @@ class GXDLMS:
                 raise ValueError("Invalid Command.")
         elif (data.moreData & RequestTypes.FRAME) == 0:
             if not data.peek and data.moreData == RequestTypes.NONE:
-                if data.command == Command.AARE or data.command == Command.AARQ:
+                if data.command in (Command.AARE, Command.AARQ):
                     data.data.position = 0
                 else:
                     data.data.position = 1
@@ -2139,7 +2139,7 @@ class GXDLMS:
             data.data.clear()
             data.data.set(tmp)
             data.command = Command(data.data.getUInt8())
-            if data.command == Command.DATA_NOTIFICATION or data.command == Command.INFORMATION_REPORT:
+            if data.command in (Command.DATA_NOTIFICATION, Command.INFORMATION_REPORT):
                 data.command = Command.NONE
                 data.data.position = data.data.position - 1
                 GXDLMS.getPdu(cls, settings, data)
@@ -2247,7 +2247,7 @@ class GXDLMS:
         isNotify = False
         target = data
         index = reply.position
-        if settings.interfaceType == InterfaceType.HDLC or settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+        if settings.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E):
             frame_ = GXDLMS.getHdlcData(settings.isServer, settings, reply, target, notify)
             isLast = (frame_ & 0x10) != 0
             if notify and frame_ in (0x13, 0x3):

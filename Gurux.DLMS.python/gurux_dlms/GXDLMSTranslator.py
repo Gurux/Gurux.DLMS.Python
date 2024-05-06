@@ -625,18 +625,13 @@ class GXDLMSTranslator:
                                 )
                                 self.pduFrames.clear()
                             else:
-                                if (
-                                    data.command == Command.SNRM
-                                    or data.command == Command.UA
-                                ):
+                                if data.command in (Command.SNRM, Command.UA):
                                     xml.appendStartTag(data.command)
                                     self._pduToXml2(xml, data.data, True, True, True)
                                     xml.appendEndTag(data.command)
                                     xml.setXmlLength(xml.getXmlLength() + 2)
                                 else:
-                                    xml.appendLine(
-                                        self.__pduToXml(data.data, True, True)
-                                    )
+                                    xml.appendLine(self.__pduToXml(data.data, True, True))
                             #  Remove \r\n.
                             xml.trim()
                             if not self.pduOnly:
@@ -1787,17 +1782,10 @@ class GXDLMSTranslator:
                 Command.READ_RESPONSE << 8 | SingleReadResponse.DATA,
                 TranslatorTags.DATA,
             ):
-                if (
-                    s.command == Command.READ_REQUEST
-                    or s.command == Command.READ_RESPONSE
-                    or s.command == Command.GET_REQUEST
-                ):
+                if s.command in (Command.READ_REQUEST, Command.READ_RESPONSE, Command.GET_REQUEST):
                     s.count = s.count + 1
                     s.requestType = 0
-                elif (
-                    s.command == Command.GET_RESPONSE
-                    or s.command == Command.METHOD_RESPONSE
-                ):
+                elif s.command in (Command.GET_RESPONSE, Command.METHOD_RESPONSE):
                     s.data.setUInt8(0)
             elif tag == TranslatorTags.SUCCESS:
                 s.count = s.count + 1
@@ -1916,10 +1904,7 @@ class GXDLMSTranslator:
                     _GXCommon.setObjectCount(
                         node.getChildNodes().getLength(), s.attributeDescriptor
                     )
-                elif (
-                    s.command == Command.METHOD_RESPONSE
-                    or s.command == Command.SET_RESPONSE
-                ):
+                elif s.command in (Command.METHOD_RESPONSE, Command.SET_RESPONSE):
                     str_ = cls.getValue(node, s)
                     if str_:
                         s.attributeDescriptor.setUInt8(

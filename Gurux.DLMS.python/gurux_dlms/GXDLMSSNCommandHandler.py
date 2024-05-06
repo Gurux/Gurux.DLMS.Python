@@ -462,7 +462,7 @@ class GXDLMSSNCommandHandler:
             reply.xml.appendStartTag(TranslatorTags.LIST_OF_DATA, "Qty", reply.xml.integerToHex(count, 2))
         count = _GXCommon.getObjectCount(reply.data)
         di = _GXDataInfo()
-        di.xml = (reply.xml)
+        di.xml = reply.xml
         pos = 0
         while pos != count:
             di.clear()

@@ -210,7 +210,7 @@ class GXDLMSSettings:
                 return True
             # If Final bit is not set for the previous message.
             if (self.receiverFrame & 0x10) == 0 and self.hdlc.windowSizeRX != 1:
-                expected = (0x10 | self.increaseSendSequence(self.receiverFrame))
+                expected = 0x10 | self.increaseSendSequence(self.receiverFrame)
                 if frame_ == expected:
                     self.receiverFrame = frame_
                     return True
@@ -288,7 +288,7 @@ class GXDLMSSettings:
     # Generates Keep Alive S-frame.
     #
     def getKeepAlive(self):
-        self.senderFrame = (self.senderFrame | 1)
+        self.senderFrame = self.senderFrame | 1
         return self.senderFrame & 0xF1
 
     #

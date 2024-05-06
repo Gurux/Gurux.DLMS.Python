@@ -904,7 +904,7 @@ class GXDLMSClient(object):
             if index > count[0]:
                 raise ValueError("methodIndex")
             sn = name
-            index = (ind[0] + (index - 1) * 0x8)
+            index = ind[0] + (index - 1) * 0x8
             sn += index
             attributeDescriptor.setUInt16(sn)
             if type_ != DataType.NONE:
@@ -1191,7 +1191,7 @@ class GXDLMSClient(object):
             ret = True
         if ret and self.translator and data.moreData == RequestTypes.NONE:
             if data.xml is None:
-                data.xml = (GXDLMSTranslatorStructure(self.translator.outputType, self.translator.omitXmlNameSpace, self.translator.hex, self.translator.showStringAsHex, self.translator.comments, self.translator.tags))
+                data.xml = GXDLMSTranslatorStructure(self.translator.outputType, self.translator.omitXmlNameSpace, self.translator.hex, self.translator.showStringAsHex, self.translator.comments, self.translator.tags)
             pos = data.data.position
             try:
                 data2 = data.data

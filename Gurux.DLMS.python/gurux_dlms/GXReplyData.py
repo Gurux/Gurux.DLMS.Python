@@ -35,6 +35,7 @@ from .GXByteBuffer import GXByteBuffer
 from .enums import DataType, RequestTypes, Command
 from .GXDLMSException import GXDLMSException
 
+
 # pylint: disable=bad-option-value,old-style-class,too-few-public-methods,too-many-instance-attributes
 class GXReplyData:
     #
@@ -51,7 +52,14 @@ class GXReplyData:
     #      @param err
     #                 Received error ID.
     # pylint: disable=too-many-arguments
-    def __init__(self, more=RequestTypes.NONE, cmd=Command.NONE, buff=None, forComplete=False, err=0):
+    def __init__(
+        self,
+        more=RequestTypes.NONE,
+        cmd=Command.NONE,
+        buff=None,
+        forComplete=False,
+        err=0,
+    ):
         # Is more data available.
         self.moreData = more
         # Received command.
@@ -145,7 +153,11 @@ class GXReplyData:
     # Is notify message.
     #
     def isNotify(self):
-        return self.command == Command.EVENT_NOTIFICATION or self.command == Command.DATA_NOTIFICATION or self.command == Command.INFORMATION_REPORT
+        return self.command in (
+            Command.EVENT_NOTIFICATION,
+            Command.DATA_NOTIFICATION,
+            Command.INFORMATION_REPORT,
+        )
 
     #
     #      Is frame complete.
@@ -196,7 +208,11 @@ class GXReplyData:
     # Is GBT streaming.
     #
     def isStreaming(self):
-        return (self.moreData & RequestTypes.FRAME) == 0 and self.streaming and (self.blockNumberAck * self.gbtWindowSize) + 1 > self.blockNumber
+        return (
+            (self.moreData & RequestTypes.FRAME) == 0
+            and self.streaming
+            and (self.blockNumberAck * self.gbtWindowSize) + 1 > self.blockNumber
+        )
 
     def __str__(self):
         if self.xml:

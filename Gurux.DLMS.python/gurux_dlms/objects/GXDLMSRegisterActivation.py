@@ -79,7 +79,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(DataType.ARRAY)
         bb.setUInt8(len(indexes))
         for it in indexes:
-            _GXCommon.setData(None, bb, DataType.UINT8, it)       
+            _GXCommon.setData(None, bb, DataType.UINT8, it)
         return client.method(self, 2, bb.array(), DataType.ARRAY)
 
     def removeMask(self, client, name):

@@ -95,7 +95,7 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 2, bb.array(), DataType.ARRAY)
 
     def invoke(self, settings, e):
-        if e.index != 1 and e.index != 2:
+        if e.index not in (1, 2):
             e.error = ErrorCode.READ_WRITE_DENIED
         else:
             if e.index == 1:

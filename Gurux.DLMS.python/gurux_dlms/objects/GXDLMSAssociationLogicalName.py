@@ -168,7 +168,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             clientChallenge = int(e.parameters)
             accept = serverChallenge == clientChallenge
             if accept:
-                if settings.authentication == Authentication.HIGH_GMAC or settings.authentication == Authentication.HIGH_ECDSA:
+                if settings.authentication in (Authentication.HIGH_GMAC, Authentication.HIGH_ECDSA):
                     readSecret = settings.cipher.getSystemTitle()
                     ic = settings.cipher.invocationCounter
                 else:

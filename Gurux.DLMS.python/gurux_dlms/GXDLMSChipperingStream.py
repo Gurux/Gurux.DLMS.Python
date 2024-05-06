@@ -487,7 +487,7 @@ class GXDLMSChipperingStream:
 
     @classmethod
     def bEToUInt32(cls, buff, offset):
-        value = (buff[offset] << 24)
+        value = buff[offset] << 24
         value |= (buff[offset + 1] << 16) & 0xFF0000
         value |= (buff[offset + 2] << 8) & 0xFF00
         value |= buff[offset + 3] & 0xFF
@@ -808,7 +808,7 @@ class GXDLMSChipperingStream:
             round_ += 1
         i = 0
         while i < 16:
-            data[i + offset] = (data[i + offset] ^ key[i])
+            data[i + offset] = data[i + offset] ^ key[i]
             i += 1
 
     def encryptAes(self, data):

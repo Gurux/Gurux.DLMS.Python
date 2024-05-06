@@ -193,7 +193,7 @@ class GXDLMSLNCommandHandler:
         if xml:
             cls.appendAttributeDescriptor(xml, ci, ln, attributeIndex)
             if selection != 0:
-                info.xml = (xml)
+                info.xml = xml
                 xml.appendStartTag(TranslatorTags.ACCESS_SELECTION)
                 xml.appendLine(TranslatorTags.ACCESS_SELECTOR, "Value", xml.integerToHex(selector, 2))
                 xml.appendStartTag(TranslatorTags.ACCESS_PARAMETERS)
@@ -212,7 +212,7 @@ class GXDLMSLNCommandHandler:
             #  "Access Error : Device reports a undefined object."
             status = ErrorCode.UNDEFINED_OBJECT
         else:
-            e.invokeId = (invokeID)
+            e.invokeId = invokeID
             if server.onGetAttributeAccess(e) == AccessMode.NO_ACCESS:
                 #  Read Write denied.
                 status = ErrorCode.READ_WRITE_DENIED
@@ -289,13 +289,13 @@ class GXDLMSLNCommandHandler:
                 if len(bb) < settings.getMaxPduSize():
                     value = None
                     for arg in server.transaction.targets:
-                        arg.invokeId = (p.invokeId)
+                        arg.invokeId = p.invokeId
                         server.onPreRead([arg])
                         if arg.handled:
                             value = arg.value
                         else:
                             value = arg.target.getValue(settings, arg)
-                        p.invokeId = (arg.invokeId)
+                        p.invokeId = arg.invokeId
                         #  Add data.
                         if arg.byteArray:
                             bb.set(int(value))
@@ -342,7 +342,7 @@ class GXDLMSLNCommandHandler:
                 xml.appendStartTag(TranslatorTags.ATTRIBUTE_DESCRIPTOR_WITH_SELECTION)
                 xml.appendStartTag(TranslatorTags.ATTRIBUTE_DESCRIPTOR)
                 if xml.comments:
-                    xml.appendComment(ci.__str__())
+                    xml.appendComment(str(ci))
                 xml.appendLine(TranslatorTags.CLASS_ID, "Value", xml.integerToHex(ci.value, 4))
                 xml.appendComment(_GXCommon.toLogicalName(ln))
                 xml.appendLine(TranslatorTags.INSTANCE_ID, "Value", GXByteBuffer.hex(ln, False))
@@ -354,7 +354,7 @@ class GXDLMSLNCommandHandler:
                 if obj is None:
                     obj = server.onFindObject(ci, 0, _GXCommon.toLogicalName(ln))
                 arg = ValueEventArgs(server, obj, attributeIndex, selector, parameters)
-                arg.invokeId = (invokeID)
+                arg.invokeId = invokeID
                 if obj is None:
                     arg.error = ErrorCode.UNDEFINED_OBJECT
                     list_.append(arg)
@@ -431,7 +431,7 @@ class GXDLMSLNCommandHandler:
             cls.appendAttributeDescriptor(xml, ci, ln, index)
             xml.appendStartTag(TranslatorTags.VALUE)
             di = _GXDataInfo()
-            di.xml = (xml)
+            di.xml = xml
             value = _GXCommon.getData(settings, data, di)
             if not di.complete:
                 value = GXByteBuffer.hex(data.data, False, data.position, len(data) - data.position)
@@ -451,7 +451,7 @@ class GXDLMSLNCommandHandler:
             p.setStatus(ErrorCode.UNDEFINED_OBJECT)
         else:
             e = ValueEventArgs(server, obj, index, 0, None)
-            e.invokeId = (p.invokeId)
+            e.invokeId = p.invokeId
             am = server.onGetAttributeAccess(e)
             #  If write is denied.
             if am not in (AccessMode.WRITE, AccessMode.READ_WRITE):
@@ -559,7 +559,7 @@ class GXDLMSLNCommandHandler:
                         list_.append(e)
                     else:
                         arg = ValueEventArgs(server, obj, attributeIndex, selector, parameters)
-                        arg.invokeId = (invokeID)
+                        arg.invokeId = invokeID
                         if server.onGetAttributeAccess(arg) == AccessMode.NO_ACCESS:
                             arg.error = ErrorCode.READ_WRITE_DENIED
                             list_.append(arg)
@@ -613,7 +613,7 @@ class GXDLMSLNCommandHandler:
                 if selection != 0:
                     xml.appendStartTag(TranslatorTags.METHOD_INVOCATION_PARAMETERS)
                     di = _GXDataInfo()
-                    di.xml = (xml)
+                    di.xml = xml
                     _GXCommon.getData(settings, data, di)
                     xml.appendEndTag(TranslatorTags.METHOD_INVOCATION_PARAMETERS)
                 xml.appendEndTag(Command.METHOD_REQUEST, ActionRequestType.NORMAL)
@@ -632,7 +632,7 @@ class GXDLMSLNCommandHandler:
             error = ErrorCode.UNDEFINED_OBJECT
         else:
             e = ValueEventArgs(server, obj, id_, 0, parameters)
-            e.invokeId = (invokeId)
+            e.invokeId = invokeId
             if server.onGetMethodAccess(e) == MethodAccessMode.NO_ACCESS:
                 error = ErrorCode.READ_WRITE_DENIED
             else:

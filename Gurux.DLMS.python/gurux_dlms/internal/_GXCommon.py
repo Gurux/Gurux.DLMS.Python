@@ -1219,7 +1219,7 @@ class _GXCommon:
             return None
         value = bool(buff.getUInt8() != 0)
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, value.__str__())
+            info.xml.appendLine(info.xml.getDataType(info.type_), None, str(value))
         return value
 
     #

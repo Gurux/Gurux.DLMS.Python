@@ -170,11 +170,11 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
             if self.monitoredValue is None:
-                _GXCommon.setData(settings, data, DataType.INT16, int(0))
+                _GXCommon.setData(settings, data, DataType.UINT16, int(0))
                 _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(None))
                 _GXCommon.setData(settings, data, DataType.INT8, 0)
             else:
-                _GXCommon.setData(settings, data, DataType.INT16, int(self.monitoredValue.objectType))
+                _GXCommon.setData(settings, data, DataType.UINT16, int(self.monitoredValue.objectType))
                 _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
                 _GXCommon.setData(settings, data, DataType.INT8, self.monitoredAttributeIndex)
             ret = data
