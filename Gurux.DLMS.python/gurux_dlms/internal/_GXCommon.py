@@ -31,7 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-#pylint: disable=broad-except,no-name-in-module
+# pylint: disable=broad-except,no-name-in-module
 from datetime import datetime
 from ..GXTimeZone import GXTimeZone
 from ._GXDataInfo import _GXDataInfo
@@ -59,6 +59,7 @@ from ..GXTime import GXTime
 from ..GXFloat32 import GXFloat32
 from ..GXFloat64 import GXFloat64
 
+
 # pylint: disable=too-many-public-methods
 class _GXCommon:
     """This class is for internal use only and is subject to changes or removal
@@ -70,7 +71,6 @@ class _GXCommon:
     LLC_REPLY_BYTES = bytearray([0xE6, 0xE7, 0x00])
     DATA_TYPE_OFFSET = 0xFF0000
     zeroes = "00000000000000000000000000000000"
-
 
     @classmethod
     def getBytes(cls, value):
@@ -98,8 +98,12 @@ class _GXCommon:
         pos = 0
         while pos != len(value):
             ch = value.charAt(pos)
-            if ch != ' ':
-                if not ((ch > 0x40 and ch < 'G') or (ch > 0x60 and ch < 'g') or (ch > '/' and ch < ':')):
+            if ch != " ":
+                if not (
+                    (ch > 0x40 and ch < "G")
+                    or (ch > 0x60 and ch < "g")
+                    or (ch > "/" and ch < ":")
+                ):
                     return False
             pos += 1
         return True
@@ -197,15 +201,15 @@ class _GXCommon:
             pos = 7
             while pos != 8 - count2 - 1:
                 if (value & (1 << pos)) != 0:
-                    sb += '1'
+                    sb += "1"
                 else:
-                    sb += '0'
+                    sb += "0"
                 pos -= 1
         return sb
 
     @classmethod
     def changeType(cls, settings, value, type_):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         if value is None:
             ret = None
         elif type_ == DataType.NONE:
@@ -323,7 +327,7 @@ class _GXCommon:
             str_ = hex(value)[2:].upper()
         if not desimals or desimals == len(str_):
             return str_
-        return _GXCommon.zeroes[0: desimals - len(str_)] + str_.upper()
+        return _GXCommon.zeroes[0 : desimals - len(str_)] + str_.upper()
 
     #
     # Convert value to hex string.
@@ -336,7 +340,7 @@ class _GXCommon:
         str_ = str(value)
         if desimals == 0 or len(_GXCommon.zeroes) == len(str_):
             return str_
-        return _GXCommon.zeroes[0: desimals - len(str_)] + str_
+        return _GXCommon.zeroes[0 : desimals - len(str_)] + str_
 
     #
     # Get array from DLMS data.
@@ -355,7 +359,11 @@ class _GXCommon:
         if info.count == 0:
             info.count = _GXCommon.getObjectCount(buff)
         if info.xml:
-            info.xml.appendStartTag(info.xml.getDataType(info.type_), "Qty", info.xml.integerToHex(info.count, 2))
+            info.xml.appendStartTag(
+                info.xml.getDataType(info.type_),
+                "Qty",
+                info.xml.integerToHex(info.count, 2),
+            )
         size = len(buff) - buff.position
         if info.count != 0 and size < 1:
             info.complete = False
@@ -586,7 +594,7 @@ class _GXCommon:
                 skip |= DateTimeSkips.SECOND
                 second = 0
             #  If ms is Zero it's skipped.
-            if ms < 0 or ms > 100:
+            if ms < 0 or ms > 1000:
                 skip |= DateTimeSkips.MILLISECOND
                 ms = 0
             tz = None
@@ -596,9 +604,18 @@ class _GXCommon:
                 else:
                     tz = -deviation
             if tz is None:
-                dt.value = datetime(year, month, day, hour, minute, second, ms)
+                dt.value = datetime(year, month, day, hour, minute, second, ms * 1000)
             else:
-                dt.value = datetime(year, month, day, hour, minute, second, ms, tzinfo=GXTimeZone(tz))
+                dt.value = datetime(
+                    year,
+                    month,
+                    day,
+                    hour,
+                    minute,
+                    second,
+                    ms * 1000,
+                    tzinfo=GXTimeZone(tz),
+                )
             dt.skip = skip
             value = dt
         except Exception as ex:
@@ -629,10 +646,14 @@ class _GXCommon:
         value = buff.getDouble()
         if info.xml:
             if info.xml.comments:
-                info.xml.appendComment(('%f' % value).rstrip('0').rstrip('.'))
+                info.xml.appendComment(("%f" % value).rstrip("0").rstrip("."))
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT64, value)
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_),
+                None,
+                tmp.toHex(False, 1, len(tmp) - 1),
+            )
         return GXFloat64(value)
 
     #
@@ -654,10 +675,14 @@ class _GXCommon:
         value = buff.getFloat()
         if info.xml:
             if info.xml.comments:
-                info.xml.appendComment(('%f' % value).rstrip('0').rstrip('.'))
+                info.xml.appendComment(("%f" % value).rstrip("0").rstrip("."))
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT32, value)
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, tmp.toHex(False, 1, len(tmp) - 1))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_),
+                None,
+                tmp.toHex(False, 1, len(tmp) - 1),
+            )
         return GXFloat32(value)
 
     #
@@ -678,7 +703,9 @@ class _GXCommon:
             return None
         value = buff.getUInt8()
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2)
+            )
         return GXEnum(value)
 
     #
@@ -699,7 +726,9 @@ class _GXCommon:
             return None
         value = buff.getUInt64()
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 16))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 16)
+            )
         return GXUInt64(value)
 
     #
@@ -720,7 +749,9 @@ class _GXCommon:
             return None
         value = buff.getInt64()
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 16))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 16)
+            )
         return value
 
     #
@@ -741,10 +772,12 @@ class _GXCommon:
             return None
         value = buff.getUInt16()
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 4))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 4)
+            )
         return GXUInt16(value)
 
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     @classmethod
     def getCompactArrayItem(cls, settings, buff, dt, list_, len_):
         if isinstance(dt, list):
@@ -812,11 +845,15 @@ class _GXCommon:
             if isinstance(it, (DataType,)):
                 info.xml.appendEmptyTag(info.xml.getDataType(it))
             elif isinstance(it, GXStructure):
-                info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE, None, None)
+                info.xml.appendStartTag(
+                    cls.DATA_TYPE_OFFSET + DataType.STRUCTURE, None, None
+                )
                 cls.appendDataTypeAsXml(it, info)
                 info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.STRUCTURE)
             elif isinstance(it, GXArray):
-                info.xml.appendStartTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY, None, None)
+                info.xml.appendStartTag(
+                    cls.DATA_TYPE_OFFSET + DataType.ARRAY, None, None
+                )
                 cls.appendDataTypeAsXml(it, info)
                 info.xml.appendEndTag(cls.DATA_TYPE_OFFSET + DataType.ARRAY)
 
@@ -848,12 +885,16 @@ class _GXCommon:
             cls.getDataTypes(buff, cols, len_)
             len_ = _GXCommon.getObjectCount(buff)
             if info.xml:
-                info.xml.appendStartTag(info.xml.getDataType(DataType.COMPACT_ARRAY), None, None)
+                info.xml.appendStartTag(
+                    info.xml.getDataType(DataType.COMPACT_ARRAY), None, None
+                )
                 info.xml.appendStartTag(TranslatorTags.CONTENTS_DESCRIPTION)
                 cls.appendDataTypeAsXml(cols, info)
                 info.xml.appendEndTag(TranslatorTags.CONTENTS_DESCRIPTION)
                 if info.xml.outputType == TranslatorOutputType.STANDARD_XML:
-                    info.xml.appendStartTag(TranslatorTags.ARRAY_CONTENTS, None, None, True)
+                    info.xml.appendStartTag(
+                        TranslatorTags.ARRAY_CONTENTS, None, None, True
+                    )
                     info.xml.append(buff.remainingHexString(True))
                     info.xml.appendEndTag(TranslatorTags.ARRAY_CONTENTS, True)
                     info.xml.appendEndTag(info.xml.getDataType(DataType.COMPACT_ARRAY))
@@ -895,12 +936,12 @@ class _GXCommon:
                                     sb += str(it2)
                                 sb += ";"
                             if start != len(sb):
-                                sb = sb[0:len(sb) - 1]
+                                sb = sb[0 : len(sb) - 1]
                         else:
                             sb += str(it)
                         sb += ";"
                     if sb:
-                        sb = sb[0:len(sb) - 1]
+                        sb = sb[0 : len(sb) - 1]
                     info.xml.appendLine(sb)
                     sb = ""
             if info.xml and info.xml.outputType == TranslatorOutputType.SIMPLE_XML:
@@ -908,7 +949,9 @@ class _GXCommon:
                 info.xml.appendEndTag(info.xml.getDataType(DataType.COMPACT_ARRAY))
         else:
             if info.xml:
-                info.xml.appendStartTag(info.xml.getDataType(DataType.COMPACT_ARRAY), None, None)
+                info.xml.appendStartTag(
+                    info.xml.getDataType(DataType.COMPACT_ARRAY), None, None
+                )
                 info.xml.appendStartTag(TranslatorTags.CONTENTS_DESCRIPTION)
                 info.xml.appendEmptyTag(info.xml.getDataType(dt))
                 info.xml.appendEndTag(TranslatorTags.CONTENTS_DESCRIPTION)
@@ -949,7 +992,9 @@ class _GXCommon:
             return None
         value = buff.getUInt8() & 0xFF
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2)
+            )
         return GXUInt8(value)
 
     #
@@ -970,7 +1015,9 @@ class _GXCommon:
             return None
         value = int(buff.getInt16())
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 4))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 4)
+            )
         return value
 
     #
@@ -991,7 +1038,9 @@ class _GXCommon:
             return None
         value = int(buff.getInt8())
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2)
+            )
         return GXInt8(value)
 
     #
@@ -1009,7 +1058,9 @@ class _GXCommon:
             return None
         value = buff.getUInt8()
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 2)
+            )
         return value
 
     #
@@ -1038,7 +1089,11 @@ class _GXCommon:
             value = ""
         if info.xml:
             if info.xml.getShowStringAsHex:
-                info.xml.appendLine(info.xml.getDataType(info.type_), None, buff.toHex(False, buff.position - len, len))
+                info.xml.appendLine(
+                    info.xml.getDataType(info.type_),
+                    None,
+                    buff.toHex(False, buff.position - len, len),
+                )
             else:
                 info.xml.appendLine(info.xml.getDataType(info.type_), None, value)
         return value
@@ -1098,7 +1153,9 @@ class _GXCommon:
                                 break
                         if isString:
                             info.xml.appendComment(str(tmp))
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, GXByteBuffer.hex(tmp, False))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, GXByteBuffer.hex(tmp, False)
+            )
         return value
 
     #
@@ -1128,7 +1185,11 @@ class _GXCommon:
             value = ""
         if info.xml:
             if info.xml.showStringAsHex:
-                info.xml.appendLine(info.xml.getDataType(info.type_), None, buff.toHex(False, buff.position - len_, len_))
+                info.xml.appendLine(
+                    info.xml.getDataType(info.type_),
+                    None,
+                    buff.toHex(False, buff.position - len_, len_),
+                )
             else:
                 info.xml.appendLine(info.xml.getDataType(info.type_), None, value)
         return value
@@ -1150,7 +1211,9 @@ class _GXCommon:
             return None
         value = buff.getUInt32()
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 8))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 8)
+            )
         return GXUInt32(value)
 
     #
@@ -1170,7 +1233,9 @@ class _GXCommon:
             return None
         value = int(buff.getInt32())
         if info.xml:
-            info.xml.appendLine(info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 8))
+            info.xml.appendLine(
+                info.xml.getDataType(info.type_), None, info.xml.integerToHex(value, 8)
+            )
         return value
 
     #
@@ -1245,7 +1310,12 @@ class _GXCommon:
             ret = ((ret & 0xFE) >> 1) | ((ret & 0xFE00) >> 2)
         elif size == 4:
             ret = buff.getUInt32()
-            ret = ((ret & 0xFE) >> 1) | ((ret & 0xFE00) >> 2) | ((ret & 0xFE0000) >> 3) | ((ret & 0xFE000000) >> 4)
+            ret = (
+                ((ret & 0xFE) >> 1)
+                | ((ret & 0xFE00) >> 2)
+                | ((ret & 0xFE0000) >> 3)
+                | ((ret & 0xFE000000) >> 4)
+            )
         else:
             raise ValueError("Wrong size.")
         return ret
@@ -1260,7 +1330,9 @@ class _GXCommon:
     #
     @classmethod
     def setData(cls, settings, buff, dataType, value):
-        if dataType in (DataType.ARRAY, DataType.STRUCTURE) and isinstance(value, (GXByteBuffer, bytearray, bytes)):
+        if dataType in (DataType.ARRAY, DataType.STRUCTURE) and isinstance(
+            value, (GXByteBuffer, bytearray, bytes)
+        ):
             #  If byte array is added do not add type.
             buff.set(value)
             return
@@ -1492,7 +1564,10 @@ class _GXCommon:
             buff.setUInt16(d)
         #  Add clock_status
         if skip & DateTimeSkips.STATUS == DateTimeSkips.NONE:
-            if dt.value.dst() or dt.status & ClockStatus.DAYLIGHT_SAVE_ACTIVE != ClockStatus.OK:
+            if (
+                dt.value.dst()
+                or dt.status & ClockStatus.DAYLIGHT_SAVE_ACTIVE != ClockStatus.OK
+            ):
                 buff.setUInt8(dt.status | ClockStatus.DAYLIGHT_SAVE_ACTIVE)
             else:
                 buff.setUInt8(dt.status)
@@ -1560,9 +1635,9 @@ class _GXCommon:
             pos = 0
             while pos != len(str_):
                 it = str_[pos]
-                if it == '1':
-                    val |= (1 << index)
-                elif it != '0':
+                if it == "1":
+                    val |= 1 << index
+                elif it != "0":
                     raise ValueError("Not a bit string.")
                 index -= 1
                 if index == -1:
@@ -1677,7 +1752,7 @@ class _GXCommon:
         else:
             ret = None
         if ret is None:
-            #Python 2.7 uses unicode.
+            # Python 2.7 uses unicode.
             try:
                 if isinstance(value, (unicode)):
                     ret = DataType.STRING
@@ -1732,7 +1807,19 @@ class _GXCommon:
             if not value:
                 value = bytearray(6)
             if len(value) == 6:
-                return str(value[0]) + "." + str(value[1]) + "." + str(value[2]) + "." + str(value[3]) + "." + str(value[4]) + "." + str(value[5])
+                return (
+                    str(value[0])
+                    + "."
+                    + str(value[1])
+                    + "."
+                    + str(value[2])
+                    + "."
+                    + str(value[3])
+                    + "."
+                    + str(value[4])
+                    + "."
+                    + str(value[5])
+                )
             raise ValueError("Invalid Logical name.")
         return str(value)
 
@@ -1740,7 +1827,7 @@ class _GXCommon:
     def logicalNameToBytes(cls, value):
         if not value:
             return bytearray(6)
-        items = value.split('.')
+        items = value.split(".")
         if len(items) != 6:
             raise ValueError("Invalid Logical name.")
         buff = bytearray(6)
@@ -1760,20 +1847,24 @@ class _GXCommon:
         day = int(dateString[6:8])
         hour = int(dateString[8:10])
         minute = int(dateString[10:12])
-        #If UTC time.
+        # If UTC time.
         if dateString.endsWith("Z"):
             if len(dateString) > 13:
                 second = int(dateString[12:14])
-            return datetime(year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(0))
+            return datetime(
+                year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(0)
+            )
 
         if len(dateString) > 17:
             second = int(dateString.substring(12, 14))
-        tz = dateString[dateString.length() - 4:]
-        return datetime(year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(tz))
+        tz = dateString[dateString.length() - 4 :]
+        return datetime(
+            year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(tz)
+        )
 
     @classmethod
     def generalizedTime(cls, value):
-        #Convert to UTC time.
+        # Convert to UTC time.
         if isinstance(value, (GXDateTime)):
             value = value.value
         value = value.utctimetuple()
@@ -1783,7 +1874,7 @@ class _GXCommon:
         sb += cls.integerString(value.tm_hour, 2)
         sb += cls.integerString(value.tm_min, 2)
         sb += cls.integerString(value.tm_sec, 2)
-        #UTC time.
+        # UTC time.
         sb += "Z"
         return sb
 
@@ -1791,29 +1882,33 @@ class _GXCommon:
     def encryptManufacturer(cls, flagName):
         if len(flagName) != 3:
             raise ValueError("Invalid Flag name.")
-        value = (flagName.charAt(0) - 0x40) & 0x1f
+        value = (flagName.charAt(0) - 0x40) & 0x1F
         value <<= 5
-        value += (flagName.charAt(0) - 0x40) & 0x1f
+        value += (flagName.charAt(0) - 0x40) & 0x1F
         value <<= 5
-        value += ((flagName.charAt(0) - 0x40) & 0x1f)
+        value += (flagName.charAt(0) - 0x40) & 0x1F
         return value
 
     @classmethod
     def decryptManufacturer(cls, value):
         tmp = value >> 8 | value << 8
-        c = chr(((tmp & 0x1f) + 0x40))
+        c = chr(((tmp & 0x1F) + 0x40))
         tmp = tmp >> 5
-        c1 = chr(((tmp & 0x1f) + 0x40))
+        c1 = chr(((tmp & 0x1F) + 0x40))
         tmp = tmp >> 5
-        c2 = chr(((tmp & 0x1f) + 0x40))
+        c2 = chr(((tmp & 0x1F) + 0x40))
         return "".join([c2, c1, c])
 
     @classmethod
     def idisSystemTitleToString(cls, st):
-        sb = '\n'
+        sb = "\n"
         sb += "IDIS system title:\n"
         sb += "Manufacturer Code: "
-        sb += _GXCommon.__getChar(st[0]) + _GXCommon.__getChar(st[1]) + _GXCommon.__getChar(st[2])
+        sb += (
+            _GXCommon.__getChar(st[0])
+            + _GXCommon.__getChar(st[1])
+            + _GXCommon.__getChar(st[2])
+        )
         sb += "\nFunction type: "
         ft = st[4] >> 4
         add = False
@@ -1830,29 +1925,39 @@ class _GXCommon:
             if add:
                 sb += ", "
             sb += "Multi Utility extension"
-        #Serial number
+        # Serial number
         sn = (st[4] & 0xF) << 24
         sn |= st[5] << 16
         sn |= st[6] << 8
         sn |= st[7]
-        sb += '\n'
+        sb += "\n"
         sb += "Serial number: "
-        sb += str(sn) + '\n'
+        sb += str(sn) + "\n"
         return sb
 
     @classmethod
     def dlmsSystemTitleToString(cls, st):
-        sb = '\n'
+        sb = "\n"
         sb += "IDIS system title:\n"
         sb += "Manufacturer Code: "
-        sb += _GXCommon.__getChar(st[0]) + _GXCommon.__getChar(st[1]) + _GXCommon.__getChar(st[2])
+        sb += (
+            _GXCommon.__getChar(st[0])
+            + _GXCommon.__getChar(st[1])
+            + _GXCommon.__getChar(st[2])
+        )
         sb += "Serial number: "
-        sb += cls.__getChar(st[3]) + cls.__getChar(st[4]) + cls.__getChar(st[5]) + cls.__getChar(st[6]) + cls.__getChar(st[7])
+        sb += (
+            cls.__getChar(st[3])
+            + cls.__getChar(st[4])
+            + cls.__getChar(st[5])
+            + cls.__getChar(st[6])
+            + cls.__getChar(st[7])
+        )
         return sb
 
     @classmethod
     def uniSystemTitleToString(cls, st):
-        sb = '\n'
+        sb = "\n"
         sb += "UNI/TS system title:\n"
         sb += "Manufacturer: "
         m = st[0] << 8 | st[1]
@@ -1866,24 +1971,33 @@ class _GXCommon:
         try:
             return str(chr(ch))
         except Exception:
-            #If python 2.7 is used.
-            #pylint: disable=undefined-variable
+            # If python 2.7 is used.
+            # pylint: disable=undefined-variable
             return str(unichr(ch))
 
     @classmethod
     def systemTitleToString(cls, standard, st):
         ###Conver system title to string.
-        #pylint: disable=too-many-boolean-expressions
-        if standard == Standard.ITALY or not _GXCommon.__getChar(st[0]).isalpha() or \
-            not cls.__getChar(st[1]).isalpha() or not cls.__getChar(st[2]).isalpha():
+        # pylint: disable=too-many-boolean-expressions
+        if (
+            standard == Standard.ITALY
+            or not _GXCommon.__getChar(st[0]).isalpha()
+            or not cls.__getChar(st[1]).isalpha()
+            or not cls.__getChar(st[2]).isalpha()
+        ):
             return cls.uniSystemTitleToString(st)
-        if standard == Standard.IDIS or not _GXCommon.__getChar(st[3]).isdigit() or \
-            not _GXCommon.__getChar(st[4]).isdigit() or not _GXCommon.__getChar(st[5]).isdigit() or \
-            not _GXCommon.__getChar(st[6]).isdigit() or not _GXCommon.__getChar(st[7]).isdigit():
+        if (
+            standard == Standard.IDIS
+            or not _GXCommon.__getChar(st[3]).isdigit()
+            or not _GXCommon.__getChar(st[4]).isdigit()
+            or not _GXCommon.__getChar(st[5]).isdigit()
+            or not _GXCommon.__getChar(st[6]).isdigit()
+            or not _GXCommon.__getChar(st[7]).isdigit()
+        ):
             return cls.idisSystemTitleToString(st)
         return cls.dlmsSystemTitleToString(st)
 
-    #Reserved for internal use.
+    # Reserved for internal use.
     @classmethod
     def swapBits(cls, value):
         ret = 0
