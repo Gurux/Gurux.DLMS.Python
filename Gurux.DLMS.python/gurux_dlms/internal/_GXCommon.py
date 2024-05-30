@@ -522,7 +522,6 @@ class _GXCommon:
         # pylint: disable=too-many-locals, broad-except
         value = None
         skip = DateTimeSkips.NONE
-        extra = DateTimeExtraInfo.NONE
         #  If there is not enough data available.
         if len(buff) - buff.position < 12:
             info.complete = False
@@ -563,10 +562,10 @@ class _GXCommon:
                 skip |= DateTimeSkips.YEAR
                 year = 2000
             if month == 0xFE:
-                extra |= DateTimeExtraInfo.DST_BEGIN
+                dt.extra |= DateTimeExtraInfo.DST_BEGIN
                 month = 1
             elif month == 0xFD:
-                extra |= DateTimeExtraInfo.DST_END
+                dt.extra |= DateTimeExtraInfo.DST_END
                 month = 1
             else:
                 if month < 1 or month > 12:
@@ -574,10 +573,10 @@ class _GXCommon:
                     month = 1
 
             if day == 0xFE:
-                extra |= DateTimeExtraInfo.LAST_DAY
+                dt.extra |= DateTimeExtraInfo.LAST_DAY
                 day = 1
             elif day == 0xFD:
-                extra |= DateTimeExtraInfo.LAST_DAY2
+                dt.extra |= DateTimeExtraInfo.LAST_DAY2
                 day = 1
             else:
                 if day == -1 or day == 0 or day > 31:
