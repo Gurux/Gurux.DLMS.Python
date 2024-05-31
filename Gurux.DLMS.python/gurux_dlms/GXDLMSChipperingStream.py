@@ -628,11 +628,13 @@ class GXDLMSChipperingStream:
                     self.mArray[pos1][pos] = tmp
                     pos >>= 1
 
-
     def gCTRBlock(self, buf, bufCount):
         i = 15
         while i >= 12:
-            self.counter[i] += 1
+            if self.counter[i] != 255:
+                self.counter[i] += 1
+            else:
+                self.counter[i] = 0
             if self.counter[i] != 0:
                 break
             i -= 1
