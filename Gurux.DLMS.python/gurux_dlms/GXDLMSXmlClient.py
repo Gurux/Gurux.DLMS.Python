@@ -91,7 +91,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
     def load(self, filename, loadSettings = None):
         tree = ET.parse(filename)
         root = tree.getroot()
-        actions = list()
+        actions = []
         description = None
         error = None
         errorUrl = None
@@ -155,7 +155,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
 
     def pduToMessages(self, pdu):
         self.settings.command = pdu.command
-        messages = list()
+        messages = []
         if pdu.command == Command.SNRM:
             messages.append(pdu.data)
         elif pdu.command == Command.UA:

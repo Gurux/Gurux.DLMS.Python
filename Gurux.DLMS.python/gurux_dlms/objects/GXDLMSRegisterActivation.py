@@ -57,8 +57,8 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
     def __init__(self, ln=None, sn=0):
         #pylint: disable=super-with-arguments
         super(GXDLMSRegisterActivation, self).__init__(ObjectType.REGISTER_ACTIVATION, ln, sn)
-        self.registerAssignment = list()
-        self.maskList = list()
+        self.registerAssignment = []
+        self.maskList = []
         self.activeMask = bytearray()
 
     def addRegister(self, client, target):
@@ -98,7 +98,7 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

@@ -111,7 +111,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 1, 0, DataType.INT8)
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -240,10 +240,11 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                     if self.service == ServiceType.HDLC:
                         self.destination = _GXCommon.toLogicalName(e.value[1])
                     else:
-                        self.destination = e.value[1].decode()
                         #If destination is not ASCII string.
-                        if self.destination and not GXByteBuffer.isAsciiString(self.destination):
+                        if e.value[1] and not GXByteBuffer.isAsciiString(e.value[1]):
                             self.destination = GXByteBuffer.toHex(self.destination)
+                        else:
+                            self.destination = e.value[1].decode()
                 except Exception:
                     self.destination = GXByteBuffer.hex(e.value[1])
                 self.message = e.value[2]

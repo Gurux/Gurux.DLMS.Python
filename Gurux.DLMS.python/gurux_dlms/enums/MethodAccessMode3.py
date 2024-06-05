@@ -31,14 +31,34 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-class GXXmlLoadSettings:
-    #pylint: disable=too-few-public-methods
+from ..GXIntEnum import GXIntEnum
 
-    #
-    # Constructor.
-    #
-    def __init__(self):
-        # Start date of profile Generic.
-        self.start = None
-        # End date of profile Generic.
-        self.end = None
+
+class MethodAccessMode3(GXIntEnum):
+    """Enumerated method access types for logical name association version 3."""
+
+    # pylint: disable=too-few-public-methods
+
+    # No access.
+    NO_ACCESS = 0
+
+    # Access.
+    ACCESS = 1
+
+    # Authenticated request.
+    AUTHENTICATED_REQUEST = 0x4
+
+    # Encrypted request.
+    ENCRYPTED_REQUEST = 0x8
+
+    # Digitally signed request.
+    DIGITALLY_SIGNED_REQUEST = 0x10
+
+    # Authenticated response.
+    Authenticated_Response = 0x20
+
+    # Encrypted response.
+    ENCRYPTED_RESPONSE = 0x40
+
+    # Digitally signed response.
+    DIGITALLY_SIGNED_RESPONSE = 0x80

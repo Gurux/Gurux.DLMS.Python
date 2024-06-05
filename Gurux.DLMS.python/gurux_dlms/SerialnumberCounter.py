@@ -32,17 +32,18 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 class SerialNumberCounter:
+    # pylint: disable=too-few-public-methods
     @classmethod
     def __getValues(cls, expressions):
         """
         Get values to count together.
         """
-        values = list()
+        values = []
         last = 0
         index = 0
         for ch in expressions:
-            if ch in ('%', '+', '-', '*', '/'):
-                values.append(expressions[last: index])
+            if ch in ("%", "+", "-", "*", "/"):
+                values.append(expressions[last:index])
                 values.append(str(ch))
                 last = index + 1
             index += 1
@@ -61,7 +62,9 @@ class SerialNumberCounter:
     # formula: Formula to used.
     @classmethod
     def count(cls, sn, formula):
-        values = SerialNumberCounter.__getValues(SerialNumberCounter.__formatString(formula))
+        values = SerialNumberCounter.__getValues(
+            SerialNumberCounter.__formatString(formula)
+        )
         if len(values) % 2 == 0:
             raise ValueError("Invalid serial number formula.")
         str_ = None
@@ -97,9 +100,9 @@ class SerialNumberCounter:
             raise ValueError("Expression is null or empty")
         sb = ""
         for ch in expression.lower():
-            if ch in ('(', ')'):
+            if ch in ("(", ")"):
                 raise ValueError("Invalid serial number formula.")
             #  Is not white space.
-            if ch != ' ':
+            if ch != " ":
                 sb += ch
         return sb

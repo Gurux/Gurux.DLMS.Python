@@ -123,8 +123,8 @@ class GXDLMSSNCommandHandler:
             settings.resetBlockIndex()
             return
         if settings.index != settings.count and server.transaction.data.size < settings.maxPduSize:
-            reads = list()
-            actions = list()
+            reads = []
+            actions = []
             for it in server.transaction.targets:
                 if it.action:
                     actions.append(it)
@@ -239,7 +239,7 @@ class GXDLMSSNCommandHandler:
     def handleReadRequest(cls, settings, server, data, replyData, xml):
         bb = GXByteBuffer()
         cnt = 0xFF
-        list_ = list()
+        list_ = []
         if xml is None and not data:
             if server.transaction:
                 return
@@ -249,8 +249,8 @@ class GXDLMSSNCommandHandler:
                 list_.append(it)
         else:
             cnt = _GXCommon.getObjectCount(data)
-            reads = list()
-            actions = list()
+            reads = []
+            actions = []
             if xml:
                 xml.appendStartTag(Command.READ_REQUEST, "Qty", xml.integerToHex(cnt, 2))
             pos = 0
@@ -283,7 +283,7 @@ class GXDLMSSNCommandHandler:
         p = GXDLMSSNParameters(settings, Command.READ_RESPONSE, cnt, requestType, None, bb)
         GXDLMS.getSNPdu(p, replyData)
         if server.transaction() is None and (len(bb) != bb.position or settings.count != settings.index):
-            reads = list()
+            reads = []
             for it in list_:
                 reads.append(it)
             if reads:
@@ -329,7 +329,7 @@ class GXDLMSSNCommandHandler:
             return
         type_ = int()
         value = None
-        targets = list()
+        targets = []
         cnt = _GXCommon.getObjectCount(data)
         if xml:
             xml.appendStartTag(Command.WRITE_REQUEST)

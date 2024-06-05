@@ -360,7 +360,7 @@ class GXStandardObisCodeCollection(list):
         if isinstance(obisCode, str):
             obisCode = self.getBytes(obisCode)
         tmp = None
-        list_ = list()
+        list_ = []
         for it in self:
             #  Interface is tested first because it's faster.
             if self.equalsInterface(it, ic) and self.equalsObisCode(it.obis, obisCode):

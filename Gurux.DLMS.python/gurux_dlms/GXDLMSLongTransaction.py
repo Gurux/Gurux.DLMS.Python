@@ -32,9 +32,12 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .GXByteBuffer import GXByteBuffer
+
+
 # Long get or set information is saved here.
 #
 class GXDLMSLongTransaction:
+    # pylint: disable=too-few-public-methods
     #
     # Constructor.
     #

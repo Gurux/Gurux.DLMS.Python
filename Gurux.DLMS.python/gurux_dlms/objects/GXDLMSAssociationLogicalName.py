@@ -45,7 +45,12 @@ from .GXAuthenticationMechanismName import GXAuthenticationMechanismName
 from ..ValueEventArgs import ValueEventArgs
 from ..GXSecure import GXSecure
 from ..enums.Conformance import Conformance
+from ..enums.AccessMode import AccessMode
+from ..enums.MethodAccessMode import MethodAccessMode
+from ..enums.AccessMode3 import AccessMode3
+from ..enums.MethodAccessMode3 import MethodAccessMode3
 from ..GXBitString import GXBitString
+
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
@@ -66,14 +71,14 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         self.applicationContextName = GXApplicationContextName()
         self.xDLMSContextInfo = GXxDLMSContextType()
         self.authenticationMechanismName = GXAuthenticationMechanismName()
-        self.userList = list()
+        self.userList = []
         self.version = 2
         self.associationStatus = AssociationStatus.NON_ASSOCIATED
         self.clientSAP = None
         self.serverSAP = None
         self.secret = None
         self.securitySetupReference = None
-        self.userList = list()
+        self.userList = []
         self.currentUser = None
 
     #
@@ -134,20 +139,22 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 6, data.array(), DataType.STRUCTURE)
 
     def getValues(self):
-        return [self.logicalName,
-                self.objectList,
-                [self.clientSAP, self.serverSAP],
-                self.applicationContextName,
-                self.xDLMSContextInfo,
-                self.authenticationMechanismName,
-                self.secret,
-                self.associationStatus,
-                self.securitySetupReference,
-                self.userList,
-                self.currentUser]
+        return [
+            self.logicalName,
+            self.objectList,
+            [self.clientSAP, self.serverSAP],
+            self.applicationContextName,
+            self.xDLMSContextInfo,
+            self.authenticationMechanismName,
+            self.secret,
+            self.associationStatus,
+            self.securitySetupReference,
+            self.userList,
+            self.currentUser,
+        ]
 
     def invoke(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         #  Check reply_to_HLS_authentication
         if e.index == 1:
             serverChallenge = None
@@ -164,16 +171,27 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 ic = bb.getUInt32()
             else:
                 readSecret = self.secret
-            serverChallenge = GXSecure.secure(settings, settings.cipher, ic, settings.stoCChallenge, readSecret)
+            serverChallenge = GXSecure.secure(
+                settings, settings.cipher, ic, settings.stoCChallenge, readSecret
+            )
             clientChallenge = int(e.parameters)
             accept = serverChallenge == clientChallenge
             if accept:
-                if settings.authentication in (Authentication.HIGH_GMAC, Authentication.HIGH_ECDSA):
+                if settings.authentication in (
+                    Authentication.HIGH_GMAC,
+                    Authentication.HIGH_ECDSA,
+                ):
                     readSecret = settings.cipher.getSystemTitle()
                     ic = settings.cipher.invocationCounter
                 else:
                     readSecret = self.secret
-                tmp = GXSecure.secure(settings, settings.cipher, ic, settings.getCtoSChallenge(), readSecret)
+                tmp = GXSecure.secure(
+                    settings,
+                    settings.cipher,
+                    ic,
+                    settings.getCtoSChallenge(),
+                    readSecret,
+                )
                 self.associationStatus = AssociationStatus.ASSOCIATED
                 return tmp
             self.associationStatus = AssociationStatus.NON_ASSOCIATED
@@ -203,7 +221,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         return None
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         if all_ or not self.logicalName:
             attributes.append(1)
         if all_ or not self.isRead(2):
@@ -255,7 +273,12 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 data.setUInt8(4)
                 _GXCommon.setData(settings, data, DataType.UINT16, it.objectType)
                 _GXCommon.setData(settings, data, DataType.UINT8, it.version)
-                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.logicalName))
+                _GXCommon.setData(
+                    settings,
+                    data,
+                    DataType.OCTET_STRING,
+                    _GXCommon.logicalNameToBytes(it.logicalName),
+                )
                 self.__getAccessRights(settings, it, e.server, data)
                 settings.index = settings.index + 1
                 if settings.isServer:
@@ -302,13 +325,16 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(settings, data, DataType.ENUM, m)
                 pos += 1
 
-    @classmethod
-    def updateAccessRights(cls, obj, buff):
+    def updateAccessRights(self, obj, buff):
         if buff:
             for attributeAccess in buff[0]:
                 id_ = attributeAccess[0]
                 tmp = attributeAccess[1]
-                obj.setAccess(id_, tmp)
+                if self.version < 3:
+                    obj.setAccess(id_, AccessMode(tmp))
+                else:
+                    obj.setAccess(id_, AccessMode3(tmp))
+
             for methodAccess in buff[1]:
                 id_ = methodAccess[0]
                 tmp = 0
@@ -319,7 +345,10 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                         tmp = 0
                 else:
                     tmp = methodAccess[1]
-                obj.setMethodAccess(id_, tmp)
+                if self.version < 3:
+                    obj.setMethodAccess(id_, MethodAccessMode(tmp))
+                else:
+                    obj.setMethodAccess3(id_, MethodAccessMode3(tmp))
 
     def getUserList(self, settings):
         data = GXByteBuffer()
@@ -367,7 +396,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -385,36 +414,103 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(0x7)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.jointIsoCtt)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.country)
-            _GXCommon.setData(settings, data, DataType.UINT16, self.applicationContextName.countryName)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.identifiedOrganization)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.dlmsUA)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.applicationContext)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.applicationContextName.contextId)
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.applicationContextName.jointIsoCtt
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.applicationContextName.country
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT16, self.applicationContextName.countryName
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.applicationContextName.identifiedOrganization,
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.applicationContextName.dlmsUA
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.applicationContextName.applicationContext,
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.applicationContextName.contextId
+            )
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(6)
-            _GXCommon.setData(settings, data, DataType.BITSTRING, GXBitString.toBitString(self.xDLMSContextInfo.conformance, 24))
-            _GXCommon.setData(settings, data, DataType.UINT16, self.xDLMSContextInfo.maxReceivePduSize)
-            _GXCommon.setData(settings, data, DataType.UINT16, self.xDLMSContextInfo.maxSendPduSize)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.xDLMSContextInfo.dlmsVersionNumber)
-            _GXCommon.setData(settings, data, DataType.INT8, self.xDLMSContextInfo.qualityOfService)
-            _GXCommon.setData(settings, data, DataType.OCTET_STRING, self.xDLMSContextInfo.cypheringInfo)
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.BITSTRING,
+                GXBitString.toBitString(self.xDLMSContextInfo.conformance, 24),
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT16, self.xDLMSContextInfo.maxReceivePduSize
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT16, self.xDLMSContextInfo.maxSendPduSize
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.xDLMSContextInfo.dlmsVersionNumber
+            )
+            _GXCommon.setData(
+                settings, data, DataType.INT8, self.xDLMSContextInfo.qualityOfService
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.OCTET_STRING,
+                self.xDLMSContextInfo.cypheringInfo,
+            )
             ret = data
         elif e.index == 6:
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(0x7)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.jointIsoCtt)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.country)
-            _GXCommon.setData(settings, data, DataType.UINT16, self.authenticationMechanismName.countryName)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.identifiedOrganization)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.dlmsUA)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.authenticationMechanismName)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.authenticationMechanismName.mechanismId)
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.authenticationMechanismName.jointIsoCtt,
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.authenticationMechanismName.country
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT16,
+                self.authenticationMechanismName.countryName,
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.authenticationMechanismName.identifiedOrganization,
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.authenticationMechanismName.dlmsUA
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.authenticationMechanismName.authenticationMechanismName,
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.authenticationMechanismName.mechanismId,
+            )
             ret = data
         elif e.index == 7:
             ret = self.secret
@@ -439,10 +535,10 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
-    @classmethod
-    def updateObjectList(cls, settings, target, value):
-        #pylint: disable=import-outside-toplevel,unidiomatic-typecheck
+    def updateObjectList(self, settings, target, value):
+        # pylint: disable=import-outside-toplevel,unidiomatic-typecheck
         from .._GXObjectFactory import _GXObjectFactory
+
         target.clear()
         if value:
             for item in value:
@@ -455,7 +551,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     obj.logicalName = ln
                     obj.version = version
                 if type(obj) != GXDLMSObject:
-                    cls.updateAccessRights(obj, item[3])
+                    self.updateAccessRights(obj, item[3])
                     target.append(obj)
 
     def updateApplicationContextName(self, value):
@@ -513,9 +609,13 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.country = 0
                     self.authenticationMechanismName.countryName = 0
                     buff.position = buff.position + 3
-                    self.authenticationMechanismName.identifiedOrganization = buff.getUInt8()
+                    self.authenticationMechanismName.identifiedOrganization = (
+                        buff.getUInt8()
+                    )
                     self.authenticationMechanismName.dlmsUA = buff.getUInt8()
-                    self.authenticationMechanismName.authenticationMechanismName = buff.getUInt8()
+                    self.authenticationMechanismName.authenticationMechanismName = (
+                        buff.getUInt8()
+                    )
                     self.authenticationMechanismName.mechanismId = buff.getUInt8()
                 else:
                     if buff.getUInt8() != 2 and buff.getUInt8() != 7:
@@ -531,13 +631,17 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.countryName = buff.getUInt16()
                     if buff.getUInt8() != 0x11:
                         raise ValueError()
-                    self.authenticationMechanismName.identifiedOrganization = buff.getUInt8()
+                    self.authenticationMechanismName.identifiedOrganization = (
+                        buff.getUInt8()
+                    )
                     if buff.getUInt8() != 0x11:
                         raise ValueError()
                     self.authenticationMechanismName.dlmsUA = buff.getUInt8()
                     if buff.getUInt8() != 0x11:
                         raise ValueError()
-                    self.authenticationMechanismName.authenticationMechanismName = buff.getUInt8()
+                    self.authenticationMechanismName.authenticationMechanismName = (
+                        buff.getUInt8()
+                    )
                     if buff.getUInt8() != 0x11:
                         raise ValueError()
                     self.authenticationMechanismName.mechanismId = buff.getUInt8()
@@ -548,7 +652,9 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                     self.authenticationMechanismName.countryName = value[2]
                     self.authenticationMechanismName.identifiedOrganization = value[3]
                     self.authenticationMechanismName.dlmsUA = value[4]
-                    self.authenticationMechanismName.authenticationMechanismName = value[5]
+                    self.authenticationMechanismName.authenticationMechanismName = (
+                        value[5]
+                    )
                     self.authenticationMechanismName.mechanismId = value[6]
 
     def setValue(self, settings, e):
@@ -575,7 +681,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         elif e.index == 7:
             self.secret = e.value
         elif e.index == 8:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             if e.value is None:
                 self.associationStatus = AssociationStatus.NON_ASSOCIATED
             else:
@@ -601,30 +707,70 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         self.clientSAP = reader.readElementContentAsInt("ClientSAP")
         self.serverSAP = reader.readElementContentAsInt("ServerSAP")
         if reader.isStartElement("ApplicationContextName", True):
-            self.applicationContextName.jointIsoCtt = reader.readElementContentAsInt("JointIsoCtt")
-            self.applicationContextName.country = reader.readElementContentAsInt("Country")
-            self.applicationContextName.countryName = reader.readElementContentAsInt("CountryName")
-            self.applicationContextName.identifiedOrganization = reader.readElementContentAsInt("IdentifiedOrganization")
-            self.applicationContextName.dlmsUA = reader.readElementContentAsInt("DlmsUA")
-            self.applicationContextName.applicationContext = reader.readElementContentAsInt("ApplicationContext")
-            self.applicationContextName.contextId = reader.readElementContentAsInt("ContextId")
+            self.applicationContextName.jointIsoCtt = reader.readElementContentAsInt(
+                "JointIsoCtt"
+            )
+            self.applicationContextName.country = reader.readElementContentAsInt(
+                "Country"
+            )
+            self.applicationContextName.countryName = reader.readElementContentAsInt(
+                "CountryName"
+            )
+            self.applicationContextName.identifiedOrganization = (
+                reader.readElementContentAsInt("IdentifiedOrganization")
+            )
+            self.applicationContextName.dlmsUA = reader.readElementContentAsInt(
+                "DlmsUA"
+            )
+            self.applicationContextName.applicationContext = (
+                reader.readElementContentAsInt("ApplicationContext")
+            )
+            self.applicationContextName.contextId = reader.readElementContentAsInt(
+                "ContextId"
+            )
             reader.readEndElement("ApplicationContextName")
         if reader.isStartElement("XDLMSContextInfo", True):
-            self.xDLMSContextInfo.conformance = Conformance(reader.readElementContentAsInt("Conformance"))
-            self.xDLMSContextInfo.maxReceivePduSize = reader.readElementContentAsInt("MaxReceivePduSize")
-            self.xDLMSContextInfo.maxSendPduSize = reader.readElementContentAsInt("MaxSendPduSize")
-            self.xDLMSContextInfo.dlmsVersionNumber = reader.readElementContentAsInt("DlmsVersionNumber")
-            self.xDLMSContextInfo.qualityOfService = reader.readElementContentAsInt("QualityOfService")
-            self.xDLMSContextInfo.cypheringInfo = GXByteBuffer.hexToBytes(reader.readElementContentAsString("CypheringInfo"))
+            self.xDLMSContextInfo.conformance = Conformance(
+                reader.readElementContentAsInt("Conformance")
+            )
+            self.xDLMSContextInfo.maxReceivePduSize = reader.readElementContentAsInt(
+                "MaxReceivePduSize"
+            )
+            self.xDLMSContextInfo.maxSendPduSize = reader.readElementContentAsInt(
+                "MaxSendPduSize"
+            )
+            self.xDLMSContextInfo.dlmsVersionNumber = reader.readElementContentAsInt(
+                "DlmsVersionNumber"
+            )
+            self.xDLMSContextInfo.qualityOfService = reader.readElementContentAsInt(
+                "QualityOfService"
+            )
+            self.xDLMSContextInfo.cypheringInfo = GXByteBuffer.hexToBytes(
+                reader.readElementContentAsString("CypheringInfo")
+            )
             reader.readEndElement("XDLMSContextInfo")
         if reader.isStartElement("AuthenticationMechanismName", True):
-            self.authenticationMechanismName.JointIsoCtt = reader.readElementContentAsInt("JointIsoCtt")
-            self.authenticationMechanismName.country = reader.readElementContentAsInt("Country")
-            self.authenticationMechanismName.countryName = reader.readElementContentAsInt("CountryName")
-            self.authenticationMechanismName.identifiedOrganization = reader.readElementContentAsInt("IdentifiedOrganization")
-            self.authenticationMechanismName.dlmsUA = reader.readElementContentAsInt("DlmsUA")
-            self.authenticationMechanismName.authenticationMechanismName = reader.readElementContentAsInt("AuthenticationMechanismName")
-            self.authenticationMechanismName.mechanismId = reader.readElementContentAsInt("MechanismId")
+            self.authenticationMechanismName.JointIsoCtt = (
+                reader.readElementContentAsInt("JointIsoCtt")
+            )
+            self.authenticationMechanismName.country = reader.readElementContentAsInt(
+                "Country"
+            )
+            self.authenticationMechanismName.countryName = (
+                reader.readElementContentAsInt("CountryName")
+            )
+            self.authenticationMechanismName.identifiedOrganization = (
+                reader.readElementContentAsInt("IdentifiedOrganization")
+            )
+            self.authenticationMechanismName.dlmsUA = reader.readElementContentAsInt(
+                "DlmsUA"
+            )
+            self.authenticationMechanismName.authenticationMechanismName = (
+                reader.readElementContentAsInt("AuthenticationMechanismName")
+            )
+            self.authenticationMechanismName.mechanismId = (
+                reader.readElementContentAsInt("MechanismId")
+            )
             reader.readEndElement("AuthenticationMechanismName")
         str_ = reader.readElementContentAsString("Secret")
         if str_ is None:
@@ -632,39 +778,78 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         else:
             self.secret = GXByteBuffer.hexToBytes(str_)
         self.associationStatus = reader.readElementContentAsInt("AssociationStatus")
-        self.securitySetupReference = reader.readElementContentAsString("SecuritySetupReference")
+        self.securitySetupReference = reader.readElementContentAsString(
+            "SecuritySetupReference"
+        )
 
     def save(self, writer):
         writer.writeElementString("ClientSAP", self.clientSAP)
         writer.writeElementString("ServerSAP", self.serverSAP)
         if self.applicationContextName:
             writer.writeStartElement("ApplicationContextName")
-            writer.writeElementString("JointIsoCtt", self.applicationContextName.jointIsoCtt)
+            writer.writeElementString(
+                "JointIsoCtt", self.applicationContextName.jointIsoCtt
+            )
             writer.writeElementString("Country", self.applicationContextName.country)
-            writer.writeElementString("CountryName", self.applicationContextName.countryName)
-            writer.writeElementString("IdentifiedOrganization", self.applicationContextName.identifiedOrganization)
+            writer.writeElementString(
+                "CountryName", self.applicationContextName.countryName
+            )
+            writer.writeElementString(
+                "IdentifiedOrganization",
+                self.applicationContextName.identifiedOrganization,
+            )
             writer.writeElementString("DlmsUA", self.applicationContextName.dlmsUA)
-            writer.writeElementString("ApplicationContext", self.applicationContextName.applicationContext)
-            writer.writeElementString("ContextId", int(self.applicationContextName.contextId))
+            writer.writeElementString(
+                "ApplicationContext", self.applicationContextName.applicationContext
+            )
+            writer.writeElementString(
+                "ContextId", int(self.applicationContextName.contextId)
+            )
             writer.writeEndElement()
         if self.xDLMSContextInfo:
             writer.writeStartElement("XDLMSContextInfo")
-            writer.writeElementString("Conformance", int(self.xDLMSContextInfo.conformance))
-            writer.writeElementString("MaxReceivePduSize", self.xDLMSContextInfo.maxReceivePduSize)
-            writer.writeElementString("MaxSendPduSize", self.xDLMSContextInfo.maxSendPduSize)
-            writer.writeElementString("DlmsVersionNumber", self.xDLMSContextInfo.dlmsVersionNumber)
-            writer.writeElementString("QualityOfService", self.xDLMSContextInfo.qualityOfService)
-            writer.writeElementString("CypheringInfo", GXByteBuffer.hex(self.xDLMSContextInfo.cypheringInfo))
+            writer.writeElementString(
+                "Conformance", int(self.xDLMSContextInfo.conformance)
+            )
+            writer.writeElementString(
+                "MaxReceivePduSize", self.xDLMSContextInfo.maxReceivePduSize
+            )
+            writer.writeElementString(
+                "MaxSendPduSize", self.xDLMSContextInfo.maxSendPduSize
+            )
+            writer.writeElementString(
+                "DlmsVersionNumber", self.xDLMSContextInfo.dlmsVersionNumber
+            )
+            writer.writeElementString(
+                "QualityOfService", self.xDLMSContextInfo.qualityOfService
+            )
+            writer.writeElementString(
+                "CypheringInfo", GXByteBuffer.hex(self.xDLMSContextInfo.cypheringInfo)
+            )
             writer.writeEndElement()
         if self.authenticationMechanismName:
             writer.writeStartElement("AuthenticationMechanismName")
-            writer.writeElementString("JointIsoCtt", self.authenticationMechanismName.jointIsoCtt)
-            writer.writeElementString("Country", self.authenticationMechanismName.country)
-            writer.writeElementString("CountryName", self.authenticationMechanismName.countryName)
-            writer.writeElementString("IdentifiedOrganization", self.authenticationMechanismName.identifiedOrganization)
+            writer.writeElementString(
+                "JointIsoCtt", self.authenticationMechanismName.jointIsoCtt
+            )
+            writer.writeElementString(
+                "Country", self.authenticationMechanismName.country
+            )
+            writer.writeElementString(
+                "CountryName", self.authenticationMechanismName.countryName
+            )
+            writer.writeElementString(
+                "IdentifiedOrganization",
+                self.authenticationMechanismName.identifiedOrganization,
+            )
             writer.writeElementString("DlmsUA", self.authenticationMechanismName.dlmsUA)
-            writer.writeElementString("AuthenticationMechanismName", self.authenticationMechanismName.authenticationMechanismName)
-            writer.writeElementString("MechanismId", int(self.authenticationMechanismName.mechanismId))
+            writer.writeElementString(
+                "AuthenticationMechanismName",
+                self.authenticationMechanismName.authenticationMechanismName,
+            )
+            writer.writeElementString(
+                "MechanismId", int(self.authenticationMechanismName.mechanismId)
+            )
             writer.writeEndElement()
         writer.writeElementString("Secret", GXByteBuffer.hex(self.secret))
         writer.writeElementString("AssociationStatus", int(self.associationStatus))

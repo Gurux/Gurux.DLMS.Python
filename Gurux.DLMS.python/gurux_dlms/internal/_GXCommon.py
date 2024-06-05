@@ -780,7 +780,7 @@ class _GXCommon:
     @classmethod
     def getCompactArrayItem(cls, settings, buff, dt, list_, len_):
         if isinstance(dt, list):
-            tmp2 = list()
+            tmp2 = []
             for it in dt:
                 if isinstance(it, DataType):
                     cls.getCompactArrayItem(settings, buff, it, tmp2, 1)
@@ -822,8 +822,8 @@ class _GXCommon:
             dt = buff.getUInt8()
             if dt == DataType.ARRAY:
                 cnt = buff.getUInt16()
-                tmp = list()
-                tmp2 = list()
+                tmp = []
+                tmp2 = []
                 cls.getDataTypes(buff, tmp, 1)
                 i = 0
                 while i != cnt:
@@ -831,7 +831,7 @@ class _GXCommon:
                     i += 1
                 cols.append(tmp2)
             elif dt == DataType.STRUCTURE:
-                tmp = list()
+                tmp = []
                 cls.getDataTypes(buff, tmp, buff.getUInt8())
                 cols.append(tmp)
             else:
@@ -877,10 +877,10 @@ class _GXCommon:
         if dt == DataType.ARRAY:
             raise ValueError("Invalid compact array data.")
         len_ = _GXCommon.getObjectCount(buff)
-        list_ = list()
+        list_ = []
         if dt == DataType.STRUCTURE:
             #  Get data types.
-            cols = list()
+            cols = []
             cls.getDataTypes(buff, cols, len_)
             len_ = _GXCommon.getObjectCount(buff)
             if info.xml:
@@ -901,13 +901,13 @@ class _GXCommon:
                     info.xml.appendStartTag(TranslatorTags.ARRAY_CONTENTS)
             start = buff.position
             while buff.position - start < len_:
-                row = list()
+                row = []
                 pos = 0
                 while pos != len(cols):
                     if isinstance(cols[pos], GXArray):
                         cls.getCompactArrayItem(settings, buff, cols[pos], row, 1)
                     elif isinstance(cols[pos], GXStructure):
-                        tmp2 = list()
+                        tmp2 = []
                         cls.getCompactArrayItem(settings, buff, cols[pos], tmp2, 1)
                         row.append(tmp2[0])
                     else:
@@ -1855,7 +1855,7 @@ class _GXCommon:
             )
 
         if len(dateString) > 17:
-            second = int(dateString.substring(12, 14))
+            second = int(dateString[12:14])
         tz = dateString[dateString.length() - 4 :]
         return datetime(
             year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(tz)

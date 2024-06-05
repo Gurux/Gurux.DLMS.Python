@@ -59,7 +59,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         self.imageTransferredBlocksStatus = ""
         self.imageFirstNotTransferredBlockNumber = 0
         self.imageTransferEnabled = True
-        self.imageActivateInfo = list()
+        self.imageActivateInfo = []
         self.imageTransferStatus = ImageTransferStatus.IMAGE_TRANSFER_NOT_INITIATED
         self.imageSize = 0
         self.imageData = None
@@ -74,7 +74,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
                 self.imageActivateInfo]
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -113,7 +113,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             imageIdentifier = value[0]
             self.imageSize = value[1]
             self.imageTransferStatus = ImageTransferStatus.IMAGE_TRANSFER_INITIATED
-            list_ = list()
+            list_ = []
             list_.append(self.imageActivateInfo)
             item = None
             for it in self.imageActivateInfo:
@@ -266,7 +266,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             cnt += 1
         if imageBlockCount:
             imageBlockCount[0] = cnt
-        packets = list()
+        packets = []
         pos = 0
         while pos != cnt:
             data = GXByteBuffer()

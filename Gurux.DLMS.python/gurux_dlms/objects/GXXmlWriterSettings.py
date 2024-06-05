@@ -32,9 +32,11 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
-# pylint: disable=bad-option-value,old-style-class
+
+# pylint: disable=bad-option-value,old-style-class, too-few-public-methods
 class GXXmlWriterSettings:
     """XML write settings."""
+
     def __init__(self):
         # Are attribute values also serialized.
         self.values = True

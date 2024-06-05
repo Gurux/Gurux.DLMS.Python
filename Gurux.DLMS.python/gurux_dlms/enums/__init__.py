@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 from .Access import Access
 from .AccessMode import AccessMode
+from .AccessMode3 import AccessMode3
 from .AccessServiceCommandType import AccessServiceCommandType
 from .ApplicationReference import ApplicationReference
 from .AssociationResult import AssociationResult
@@ -53,6 +54,7 @@ from .InterfaceType import InterfaceType
 from .KeyAgreement import KeyAgreement
 from .LoadDataSet import LoadDataSet
 from .MethodAccessMode import MethodAccessMode
+from .MethodAccessMode3 import MethodAccessMode3
 from .ObjectType import ObjectType
 from .Priority import Priority
 from .RequestTypes import RequestTypes

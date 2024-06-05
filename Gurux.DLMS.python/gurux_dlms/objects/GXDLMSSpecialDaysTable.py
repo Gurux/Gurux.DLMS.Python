@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSSpecialDay import GXDLMSSpecialDay
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
     """
@@ -53,9 +54,11 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        super(GXDLMSSpecialDaysTable, self).__init__(ObjectType.SPECIAL_DAYS_TABLE, ln, sn)
+        super(GXDLMSSpecialDaysTable, self).__init__(
+            ObjectType.SPECIAL_DAYS_TABLE, ln, sn
+        )
         # Special day entries.
-        self.entries = list()
+        self.entries = []
 
     #
     # Inserts a new entry in the table
@@ -89,11 +92,10 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 2, entry.index, DataType.UINT16)
 
     def getValues(self):
-        return [self.logicalName,
-                self.entries]
+        return [self.logicalName, self.entries]
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -169,7 +171,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
         if e.index not in (1, 2):
             e.error = ErrorCode.READ_WRITE_DENIED
         else:
-            items = list()
+            items = []
             if self.entries:
                 items.append(self.entries)
             if e.index == 1:

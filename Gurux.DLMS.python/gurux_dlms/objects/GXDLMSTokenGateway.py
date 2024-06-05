@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import TokenDelivery, TokenStatusCode
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
     """
@@ -55,25 +56,27 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
         """
         super(GXDLMSTokenGateway, self).__init__(ObjectType.TOKEN_GATEWAY, ln, sn)
         # Descriptions.
-        self.descriptions = list()
+        self.descriptions = []
         # Token Delivery method.
         self.deliveryMethod = TokenDelivery.LOCAL
         # Token status code.
         self.statusCode = TokenStatusCode.FORMAT_OK
         # Token.
-        self.token = list()
+        self.token = []
         # Time.
         self.time = None
         # Token data value.
         self.dataValue = None
 
     def getValues(self):
-        return [self.logicalName,
-                self.token,
-                self.time,
-                self.descriptions,
-                self.deliveryMethod,
-                [self.statusCode, self.dataValue]]
+        return [
+            self.logicalName,
+            self.token,
+            self.time,
+            self.descriptions,
+            self.deliveryMethod,
+            [self.statusCode, self.dataValue],
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -81,7 +84,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -106,14 +109,12 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
-
         return 6
 
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
-
         return 1
 
     def getDataType(self, index):
@@ -132,11 +133,12 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         bb = None
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)

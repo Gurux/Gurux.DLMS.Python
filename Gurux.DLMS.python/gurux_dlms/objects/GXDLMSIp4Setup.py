@@ -58,8 +58,8 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         super(GXDLMSIp4Setup, self).__init__(ObjectType.IP4_SETUP, ln, sn)
         self.dataLinkLayerReference = None
         self.ipAddress = None
-        self.multicastIPAddress = list()
-        self.ipOptions = list()
+        self.multicastIPAddress = []
+        self.ipOptions = []
         self.subnetMask = ""
         self.gatewayIPAddress = ""
         self.useDHCP = False
@@ -84,7 +84,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

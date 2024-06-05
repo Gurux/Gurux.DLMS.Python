@@ -61,10 +61,10 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         GXDLMSObject.__init__(self, ObjectType.ACCOUNT, ln, sn)
         self.paymentMode = PaymentMode.CREDIT
         self.accountStatus = AccountStatus.NEW_INACTIVE_ACCOUNT
-        self.creditReferences = list()
-        self.chargeReferences = list()
-        self.creditChargeConfigurations = list()
-        self.tokenGatewayConfigurations = list()
+        self.creditReferences = []
+        self.chargeReferences = []
+        self.creditChargeConfigurations = []
+        self.tokenGatewayConfigurations = []
         self.currency = GXCurrency()
         self.currentCreditInUse = 0
         self.currentCreditStatus = AccountCreditStatus.IN_CREDIT
@@ -118,7 +118,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

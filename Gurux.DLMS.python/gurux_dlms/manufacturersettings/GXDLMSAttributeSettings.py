@@ -32,22 +32,28 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from ..enums import DataType
+from ..enums import AccessMode
+from ..enums import MethodAccessMode
+from ..enums import AccessMode3
+from ..enums import MethodAccessMode3
+
 
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
+# pylint: disable=bad-option-value,old-style-class,too-few-public-methods, too-many-instance-attributes
 class GXDLMSAttributeSettings:
-    # pylint: disable=too-many-instance-attributes
-
     def __init__(self, index=0):
         #
-        #Constructor.
-        #index: Attribute index.
+        # Constructor.
+        # index: Attribute index.
         #
         self.name = ""
         self.index = index
         self.type_ = DataType.NONE
         self.uiType = DataType.NONE
-        self.access = None
+        self.access = AccessMode.READ_WRITE
+        self.access3 = AccessMode3.READ_WRITE
+        self.methodAccess = MethodAccessMode.ACCESS
+        self.methodAccess3 = MethodAccessMode3.ACCESS
         self.static = False
         self.values = None
         self.order = 0
@@ -60,6 +66,9 @@ class GXDLMSAttributeSettings:
         target.type_ = self.type_
         target.uiType = self.uiType
         target.access = self.access
+        target.access3 = self.access3
+        target.methodAccess = self.methodAccess
+        target.methodAccess3 = self.methodAccess3
         target.static = self.static
         target.values = self.values
         target.order = self.order

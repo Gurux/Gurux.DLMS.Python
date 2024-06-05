@@ -35,9 +35,12 @@ from .enums.Security import Security
 from .objects.enums.SecuritySuite import SecuritySuite
 from .CountType import CountType
 
- # pylint: disable=too-many-instance-attributes
+
+# pylint: disable=too-many-instance-attributes,too-few-public-methods
 class AesGcmParameter:
-    def __init__(self, tag=0, systemTitle=None, blockCipherKey=None, authenticationKey=None):
+    def __init__(
+        self, tag=0, systemTitle=None, blockCipherKey=None, authenticationKey=None
+    ):
         """
         Constructor.
 

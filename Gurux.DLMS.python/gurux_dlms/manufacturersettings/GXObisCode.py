@@ -34,7 +34,9 @@
 from ..enums import ObjectType
 from .GXAttributeCollection import GXAttributeCollection
 
+
 class GXObisCode:
+    # pylint: disable=too-few-public-methods
 
     #
     # Constructor.
@@ -51,7 +53,7 @@ class GXObisCode:
         self.objectType = ot
         self.attributes = GXAttributeCollection(self)
         self.attributes.parent = self
-         #UI data types.
+        # UI data types.
         self.uiDataType = None
 
     def __str__(self):

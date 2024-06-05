@@ -79,7 +79,7 @@ class GXDLMSConverter:
     def getDescription(self, logicalName, type_=ObjectType.NONE, description=None):
         if not self.codes:
             self.__readStandardObisInfo(self.standard, self.codes)
-        list_ = list()
+        list_ = []
         all_ = not logicalName
         for it in self.codes.find(logicalName, type_):
             if description and not it.description.lower().contains(description.lower()):
@@ -146,7 +146,7 @@ class GXDLMSConverter:
 
     @classmethod
     def __getObjects(cls, standard):
-        codes = list()
+        codes = []
         if standard == Standard.ITALY:
             str_ = pkg_resources.resource_string(__name__, "Italy.txt").decode("utf-8")
         elif standard == Standard.INDIA:

@@ -32,7 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 import xml.etree.cElementTree as ET
-#pylint: disable=broad-except,no-name-in-module
+
+# pylint: disable=broad-except,no-name-in-module
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..GXDLMSConverter import GXDLMSConverter
@@ -45,7 +46,7 @@ from ..GXIntFlag import GXIntFlag
 
 
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
+# pylint: disable=bad-option-value,old-style-class
 class GXXmlWriter:
     """
     Save COSEM object to the file.
@@ -55,14 +56,16 @@ class GXXmlWriter:
         """
         Constructor.
         """
-        self.objects = list()
+        self.objects = []
         self.skipDefaults = False
 
     def getTarget(self):
         return self.objects[len(self.objects) - 1]
 
     # pylint: disable=unused-argument
-    def writeStartElement(self, elementName, attributeName=None, value=None, newLine=True):
+    def writeStartElement(
+        self, elementName, attributeName=None, value=None, newLine=True
+    ):
         target = None
         if value:
             target = ET.SubElement(self.getTarget(), elementName)
@@ -77,18 +80,19 @@ class GXXmlWriter:
     def writeEndElement(self):
         self.objects.pop()
 
-
     def writeElementString(self, name, value, defaultValue=None):
         if isinstance(value, (GXIntEnum, GXIntFlag)):
             value = int(value)
 
-        if not(value and self.skipDefaults) or value != defaultValue:
+        if not (value and self.skipDefaults) or value != defaultValue:
             if value is None:
                 ET.SubElement(self.getTarget(), name)
             elif isinstance(value, str):
                 ET.SubElement(self.getTarget(), name).text = value
             elif isinstance(value, GXDateTime):
-                ET.SubElement(self.getTarget(), name).text = value.toFormatMeterString("%m/%d/%Y %H:%M:%S")
+                ET.SubElement(self.getTarget(), name).text = value.toFormatMeterString(
+                    "%m/%d/%Y %H:%M:%S"
+                )
             elif isinstance(value, bool):
                 if value:
                     ET.SubElement(self.getTarget(), name).text = "1"
@@ -99,7 +103,9 @@ class GXXmlWriter:
             elif isinstance(value, (bytearray, bytes)):
                 ET.SubElement(self.getTarget(), name).text = GXByteBuffer.hex(value)
             elif isinstance(value, (float)):
-                ET.SubElement(self.getTarget(), name).text = str(value).replace(",", ".")
+                ET.SubElement(self.getTarget(), name).text = str(value).replace(
+                    ",", "."
+                )
 
     def writeArray(self, data):
         if isinstance(data, (list)):
@@ -108,11 +114,15 @@ class GXXmlWriter:
                 if isinstance(tmp, bytearray):
                     self.writeElementObject("Item", tmp)
                 elif isinstance(tmp, (GXArray,)):
-                    self.writeStartElement("Item", "Type", str(int(DataType.ARRAY)), True)
+                    self.writeStartElement(
+                        "Item", "Type", str(int(DataType.ARRAY)), True
+                    )
                     self.writeArray(tmp)
                     self.writeEndElement()
                 elif isinstance(tmp, (GXStructure,)):
-                    self.writeStartElement("Item", "Type", str(int(DataType.STRUCTURE)), True)
+                    self.writeStartElement(
+                        "Item", "Type", str(int(DataType.STRUCTURE)), True
+                    )
                     self.writeArray(tmp)
                     self.writeEndElement()
                 else:
@@ -148,7 +158,11 @@ class GXXmlWriter:
                 dt = _GXCommon.getDLMSDataType(value)
 
             target = self.writeStartElement(name, "Type", str(int(dt)), False)
-            if uiType != DataType.NONE and uiType != dt and (uiType != DataType.STRING or dt == DataType.OCTET_STRING):
+            if (
+                uiType != DataType.NONE
+                and uiType != dt
+                and (uiType != DataType.STRING or dt == DataType.OCTET_STRING)
+            ):
                 target.set("UIType", str(int(uiType)))
             if dt in (DataType.ARRAY, DataType.STRUCTURE):
                 self.writeArray(value)

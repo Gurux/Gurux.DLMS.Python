@@ -55,7 +55,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         """
         #pylint: disable=super-with-arguments
         super(GXDLMSMBusClient, self).__init__(ObjectType.MBUS_CLIENT, ln, sn)
-        self.captureDefinition = list()
+        self.captureDefinition = []
         self.mBusPortReference = None
         self.capturePeriod = None
         self.primaryAddress = None
@@ -163,7 +163,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
     #      and
     # already read or device is returned HW error it is not returned.
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

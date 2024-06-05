@@ -37,10 +37,17 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ErrorCode, ObjectType, DataType
-from .enums import SecuritySuite, CertificateEntity, CertificateType, SecurityPolicy0, SecurityPolicy
+from .enums import (
+    SecuritySuite,
+    CertificateEntity,
+    CertificateType,
+    SecurityPolicy0,
+    SecurityPolicy,
+)
 from .GXDLMSCertificateInfo import GXDLMSCertificateInfo
 from ..enums.Security import Security
 from .enums.GlobalKeyType import GlobalKeyType
+
 
 # pylint: disable=too-many-public-methods,too-many-instance-attributes
 class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
@@ -48,6 +55,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSecuritySetup
     """
+
     def __init__(self, ln="0.0.43.0.0.255", sn=0):
         """
         Constructor.
@@ -60,21 +68,23 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         self.securityPolicy = SecurityPolicy0.NOTHING
         # Security policy for version 1.
         self.securitySuite = SecuritySuite.AES_GCM_128
-        self.certificates = list()
+        self.certificates = []
         # Client system title.
         self.clientSystemTitle = None
         # Server system title.
         self.serverSystemTitle = None
         # Available certificates.
-        self.certificates = list()
+        self.certificates = []
 
     def getValues(self):
-        return [self.logicalName,
-                self.securityPolicy,
-                self.securitySuite,
-                self.clientSystemTitle,
-                self.serverSystemTitle,
-                self.certificates]
+        return [
+            self.logicalName,
+            self.securityPolicy,
+            self.securitySuite,
+            self.clientSystemTitle,
+            self.serverSystemTitle,
+            self.certificates,
+        ]
 
     #
     # Activates and strengthens the security policy.
@@ -96,6 +106,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     def globalKeyTransfer(self, client, kek, list_):
         # pylint: disable=import-outside-toplevel
         from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
+
         if not list_:
             raise ValueError("Invalid list. It is empty.")
         bb = GXByteBuffer()
@@ -143,7 +154,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     # Generated action.
     def keyAgreement(self, client, type_):
         bb = GXByteBuffer()
-        data = self.getEphemeralPublicKeyData(type_, client.ciphering.ephemeralKeyPair.public)
+        data = self.getEphemeralPublicKeyData(
+            type_, client.ciphering.ephemeralKeyPair.public
+        )
         bb.set(data, 1, 64)
         print("Signin public key: " + str(client.ciphering.signingKeyPair.public))
         # sign = GXASymmetric.getEphemeralPublicKeySignature(type_ ,
@@ -151,8 +164,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         # client.ciphering.signingKeyPair.private)
         #  bb.set(sign)
         # print("Data: " + GXByteBuffer.hex(data))
-        #print("Sign: " + GXByteBuffer.hex(sign))
-        list_ = list()
+        # print("Sign: " + GXByteBuffer.hex(sign))
+        list_ = []
         list_.append((type_, bb.array()))
         return self.__keyAgreement(client, list_)
 
@@ -162,9 +175,8 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     def generateCertificate(self, client, type_):
         return client.method(self, 5, type_, DataType.ENUM)
 
-
     def importCertificate(self, client, certificate):
-        #If certificate is a string.
+        # If certificate is a string.
         if isinstance(certificate, (str)):
             certificate = certificate.getEncoded()
         return client.method(self, 6, certificate, DataType.OCTET_STRING)
@@ -236,7 +248,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return subject
 
     def invoke(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             if self.version == 0:
                 self.securityPolicy = SecurityPolicy0(e.parameters)
@@ -249,12 +261,17 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
             elif self.version == 1:
                 self.securityPolicy = SecurityPolicy(e.parameters)
                 if self.securityPolicy & SecurityPolicy.AUTHENTICATED_RESPONSE != 0:
-                    settings.cipher.security = Security(settings.cipher.security | Security.AUTHENTICATION)
+                    settings.cipher.security = Security(
+                        settings.cipher.security | Security.AUTHENTICATION
+                    )
                 if self.securityPolicy & SecurityPolicy.ENCRYPTED_RESPONSE != 0:
-                    settings.cipher.security = Security(settings.cipher.security | Security.ENCRYPTION)
+                    settings.cipher.security = Security(
+                        settings.cipher.security | Security.ENCRYPTION
+                    )
         elif e.index == 2:
             # pylint: disable=import-outside-toplevel
             from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
+
             # if settings.Cipher is null non secure server is used.
             # Keys are take in action after reply is generated.
             for tmp in e.parameters:
@@ -285,8 +302,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def applyKeys(cls, settings, e):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         from ..secure.GXDLMSSecureClient import GXDLMSSecureClient
+
         for tmp in e.parameters:
             item = tmp
             type_ = GlobalKeyType(item[0])
@@ -303,7 +321,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                 e.error = ErrorCode.READ_WRITE_DENIED
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         if all_ or not self.logicalName:
             attributes.append(1)
         if all_ or self.canRead(2):
@@ -371,7 +389,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return bb.array()
 
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -402,7 +420,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
                 self.certificates.append(info)
 
     def setValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
@@ -427,16 +445,20 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     @classmethod
     def getEphemeralPublicKeyData(cls, keyId, ephemeralKey):
         # pylint: disable=unused-argument
-        #tmp =
-        #(GXAsn1Converter.fromByteArray(ephemeralKey.getEncoded())).get(1)
-        #epk = GXByteBuffer(tmp.value)
-        #epk.setUInt8(int(keyId), 0)
-        #return epk
+        # tmp =
+        # (GXAsn1Converter.fromByteArray(ephemeralKey.getEncoded())).get(1)
+        # epk = GXByteBuffer(tmp.value)
+        # epk.setUInt8(int(keyId), 0)
+        # return epk
         return None
 
     def load(self, reader):
-        self.securityPolicy = SecurityPolicy(reader.readElementContentAsInt("SecurityPolicy"))
-        self.securitySuite = SecuritySuite(reader.readElementContentAsInt("SecuritySuite"))
+        self.securityPolicy = SecurityPolicy(
+            reader.readElementContentAsInt("SecurityPolicy")
+        )
+        self.securitySuite = SecuritySuite(
+            reader.readElementContentAsInt("SecuritySuite")
+        )
         str_ = reader.readElementContentAsString("ClientSystemTitle")
         if str_ is None:
             self.clientSystemTitle = None
@@ -463,8 +485,12 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("SecurityPolicy", int(self.securityPolicy))
         writer.writeElementString("SecuritySuite", int(self.securitySuite))
-        writer.writeElementString("ClientSystemTitle", GXByteBuffer.hex(self.clientSystemTitle))
-        writer.writeElementString("ServerSystemTitle", GXByteBuffer.hex(self.serverSystemTitle))
+        writer.writeElementString(
+            "ClientSystemTitle", GXByteBuffer.hex(self.clientSystemTitle)
+        )
+        writer.writeElementString(
+            "ServerSystemTitle", GXByteBuffer.hex(self.serverSystemTitle)
+        )
         writer.writeStartElement("Certificates")
         if self.certificates:
             for it in self.certificates:

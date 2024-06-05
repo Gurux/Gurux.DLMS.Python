@@ -63,7 +63,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         self.thresholdEmergency = None
         self.minOverThresholdDuration = None
         self.minUnderThresholdDuration = None
-        self.emergencyProfileGroupIDs = list()
+        self.emergencyProfileGroupIDs = []
         self.emergencyProfileActive = None
         self.emergencyProfile = GXDLMSEmergencyProfile()
         self.actionOverThreshold = GXDLMSActionItem()
@@ -83,7 +83,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
                 [self.actionOverThreshold, self.actionUnderThreshold]]
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

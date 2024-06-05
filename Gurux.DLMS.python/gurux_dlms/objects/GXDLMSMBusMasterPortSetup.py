@@ -62,7 +62,7 @@ class GXDLMSMBusMasterPortSetup(GXDLMSObject, IGXDLMSBase):
                 self.commSpeed]
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

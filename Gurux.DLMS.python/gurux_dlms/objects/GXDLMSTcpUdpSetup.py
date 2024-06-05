@@ -37,12 +37,14 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTcpUdpSetup
     """
+
     def __init__(self, ln="0.0.25.0.0.255", sn=0):
         """
         Constructor.
@@ -58,12 +60,14 @@ class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
         self.maximumSimultaneousConnections = 0
 
     def getValues(self):
-        return [self.logicalName,
-                self.port,
-                self.ipReference,
-                self.maximumSegmentSize,
-                self.maximumSimultaneousConnections,
-                self.inactivityTimeout]
+        return [
+            self.logicalName,
+            self.port,
+            self.ipReference,
+            self.maximumSegmentSize,
+            self.maximumSimultaneousConnections,
+            self.inactivityTimeout,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -71,7 +75,7 @@ class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -179,12 +183,16 @@ class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
         self.port = reader.readElementContentAsInt("Port")
         self.ipReference = reader.readElementContentAsString("IPReference")
         self.maximumSegmentSize = reader.readElementContentAsInt("MaximumSegmentSize")
-        self.maximumSimultaneousConnections = reader.readElementContentAsInt("MaximumSimultaneousConnections")
+        self.maximumSimultaneousConnections = reader.readElementContentAsInt(
+            "MaximumSimultaneousConnections"
+        )
         self.inactivityTimeout = reader.readElementContentAsInt("InactivityTimeout")
 
     def save(self, writer):
         writer.writeElementString("Port", self.port)
         writer.writeElementString("IPReference", self.ipReference)
         writer.writeElementString("MaximumSegmentSize", self.maximumSegmentSize)
-        writer.writeElementString("MaximumSimultaneousConnections", self.maximumSimultaneousConnections)
+        writer.writeElementString(
+            "MaximumSimultaneousConnections", self.maximumSimultaneousConnections
+        )
         writer.writeElementString("InactivityTimeout", self.inactivityTimeout)

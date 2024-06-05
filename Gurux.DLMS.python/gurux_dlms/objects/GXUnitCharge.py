@@ -34,8 +34,9 @@
 from .GXChargePerUnitScaling import GXChargePerUnitScaling
 from .GXCommodity import GXCommodity
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
+# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXUnitCharge:
     """
     Online help:
@@ -51,7 +52,11 @@ class GXUnitCharge:
         # Commodity.
         self.commodity = GXCommodity()
         # Charge tables.
-        self.chargeTables = list()
+        self.chargeTables = []
 
     def __str__(self):
-        return str(self.chargePerUnitScaling) + str(self.commodity) + str(self.chargeTables)
+        return (
+            str(self.chargePerUnitScaling)
+            + str(self.commodity)
+            + str(self.chargeTables)
+        )

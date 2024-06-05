@@ -81,7 +81,7 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
         #Number of frames between transmissions of two successive beacons.
         self.beaconTxFrequency = 0
         #This attribute defines the capabilities of the node.
-        self.capabilities = list()
+        self.capabilities = []
 
     def getValues(self):
         return [self.logicalName,
@@ -104,7 +104,7 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

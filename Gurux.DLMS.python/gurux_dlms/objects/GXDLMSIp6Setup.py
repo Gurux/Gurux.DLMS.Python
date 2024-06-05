@@ -41,12 +41,14 @@ from ..enums import ObjectType, DataType
 from .enums import AddressConfigMode
 from .GXNeighborDiscoverySetup import GXNeighborDiscoverySetup
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp6Setup
     """
+
     def __init__(self, ln="0.0.25.7.0.255", sn=0):
         """
         Constructor.
@@ -54,29 +56,31 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSIp6Setup, self).__init__(ObjectType.IP6_SETUP, ln, sn)
         self.addressConfigMode = AddressConfigMode.AUTO
         self.dataLinkLayerReference = None
-        self.unicastIPAddress = list()
-        self.multicastIPAddress = list()
-        self.gatewayIPAddress = list()
+        self.unicastIPAddress = []
+        self.multicastIPAddress = []
+        self.gatewayIPAddress = []
         self.primaryDNSAddress = ""
         self.secondaryDNSAddress = ""
         self.trafficClass = 0
-        self.neighborDiscoverySetup = list()
+        self.neighborDiscoverySetup = []
 
     def getValues(self):
-        return [self.logicalName,
-                self.dataLinkLayerReference,
-                self.addressConfigMode,
-                self.unicastIPAddress,
-                self.multicastIPAddress,
-                self.gatewayIPAddress,
-                self.primaryDNSAddress,
-                self.secondaryDNSAddress,
-                self.trafficClass,
-                self.neighborDiscoverySetup]
+        return [
+            self.logicalName,
+            self.dataLinkLayerReference,
+            self.addressConfigMode,
+            self.unicastIPAddress,
+            self.multicastIPAddress,
+            self.gatewayIPAddress,
+            self.primaryDNSAddress,
+            self.secondaryDNSAddress,
+            self.trafficClass,
+            self.neighborDiscoverySetup,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -84,7 +88,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -158,7 +162,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -173,7 +177,12 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.unicastIPAddress), data)
                 for it in self.unicastIPAddress:
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.OCTET_STRING,
+                        socket.inet_pton(socket.AF_INET6, it),
+                    )
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -183,7 +192,12 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.OCTET_STRING,
+                        socket.inet_pton(socket.AF_INET6, it),
+                    )
             ret = data
         elif e.index == 6:
             data = GXByteBuffer()
@@ -193,7 +207,12 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.gatewayIPAddress), data)
                 for it in self.gatewayIPAddress:
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, socket.inet_pton(socket.AF_INET6, it))
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.OCTET_STRING,
+                        socket.inet_pton(socket.AF_INET6, it),
+                    )
             ret = data
         elif e.index == 7:
             if not self.primaryDNSAddress:
@@ -234,7 +253,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             if isinstance(e.value, str):
-                self.dataLinkLayerReference = e.value.__str__()
+                self.dataLinkLayerReference = str(e.value)
             else:
                 self.dataLinkLayerReference = _GXCommon.toLogicalName(e.value)
         elif e.index == 3:
@@ -252,7 +271,9 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
                 # This fails in Python 2.7.4. Update to 2.7.6
                 # https://bugs.python.org/issue10212
                 for it in e.value:
-                    self.multicastIPAddress.append(socket.inet_ntop(socket.AF_INET6, it))
+                    self.multicastIPAddress.append(
+                        socket.inet_ntop(socket.AF_INET6, it)
+                    )
         elif e.index == 6:
             self.gatewayIPAddress = []
             if e.value:
@@ -288,7 +309,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadIPAddress(cls, reader, name):
-        list_ = list()
+        list_ = []
         if reader.isStartElement(name, True):
             while reader.isStartElement("Value", False):
                 list_.append(reader.readElementContentAsString("Value"))
@@ -297,7 +318,7 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadNeighborDiscoverySetup(cls, reader, name):
-        list_ = list()
+        list_ = []
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 it = GXNeighborDiscoverySetup()
@@ -309,15 +330,21 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         return list_
 
     def load(self, reader):
-        self.dataLinkLayerReference = reader.readElementContentAsString("DataLinkLayerReference")
+        self.dataLinkLayerReference = reader.readElementContentAsString(
+            "DataLinkLayerReference"
+        )
         self.addressConfigMode = reader.readElementContentAsInt("AddressConfigMode")
         self.unicastIPAddress = self.loadIPAddress(reader, "UnicastIPAddress")
         self.multicastIPAddress = self.loadIPAddress(reader, "MulticastIPAddress")
         self.gatewayIPAddress = self.loadIPAddress(reader, "GatewayIPAddress")
         self.primaryDNSAddress = reader.readElementContentAsString("PrimaryDNSAddress")
-        self.secondaryDNSAddress = reader.readElementContentAsString("SecondaryDNSAddress")
+        self.secondaryDNSAddress = reader.readElementContentAsString(
+            "SecondaryDNSAddress"
+        )
         self.trafficClass = reader.readElementContentAsInt("TrafficClass")
-        self.neighborDiscoverySetup = self.loadNeighborDiscoverySetup(reader, "NeighborDiscoverySetup")
+        self.neighborDiscoverySetup = self.loadNeighborDiscoverySetup(
+            reader, "NeighborDiscoverySetup"
+        )
 
     @classmethod
     def saveIPAddress(cls, writer, list_, name):
@@ -348,4 +375,6 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("PrimaryDNSAddress", self.primaryDNSAddress)
         writer.writeElementString("SecondaryDNSAddress", self.secondaryDNSAddress)
         writer.writeElementString("TrafficClass", self.trafficClass)
-        self.saveNeighborDiscoverySetup(writer, self.neighborDiscoverySetup, "NeighborDiscoverySetup")
+        self.saveNeighborDiscoverySetup(
+            writer, self.neighborDiscoverySetup, "NeighborDiscoverySetup"
+        )

@@ -40,12 +40,14 @@ from ..enums import ObjectType, DataType
 from .GXDLMSMonitoredValue import GXDLMSMonitoredValue
 from .GXDLMSActionSet import GXDLMSActionSet
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegisterMonitor
     """
+
     def __init__(self, ln=None, sn=0):
         """
         Constructor.
@@ -53,17 +55,14 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSRegisterMonitor, self).__init__(ObjectType.REGISTER_MONITOR, ln, sn)
-        self.thresholds = list()
+        self.thresholds = []
         self.monitoredValue = GXDLMSMonitoredValue()
-        self.actions = list()
+        self.actions = []
 
     def getValues(self):
-        return [self.logicalName,
-                self.thresholds,
-                self.monitoredValue,
-                self.actions]
+        return [self.logicalName, self.thresholds, self.monitoredValue, self.actions]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -71,7 +70,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -122,11 +121,20 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
             bb.setUInt8(DataType.STRUCTURE)
             bb.setUInt8(3)
             #  ClassID
-            _GXCommon.setData(settings, bb, DataType.UINT16, self.monitoredValue.objectType)
+            _GXCommon.setData(
+                settings, bb, DataType.UINT16, self.monitoredValue.objectType
+            )
             #  LN.
-            _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
+            _GXCommon.setData(
+                settings,
+                bb,
+                DataType.OCTET_STRING,
+                _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName),
+            )
             #  Attribute index.
-            _GXCommon.setData(settings, bb, DataType.INT8, self.monitoredValue.attributeIndex)
+            _GXCommon.setData(
+                settings, bb, DataType.INT8, self.monitoredValue.attributeIndex
+            )
             return bb
         if e.index == 4:
             bb = GXByteBuffer()
@@ -141,15 +149,29 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
                     #  LN
-                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionUp.logicalName))
+                    _GXCommon.setData(
+                        settings,
+                        bb,
+                        DataType.OCTET_STRING,
+                        _GXCommon.logicalNameToBytes(it.actionUp.logicalName),
+                    )
                     #  ScriptSelector
-                    _GXCommon.setData(settings, bb, DataType.UINT16, it.actionUp.scriptSelector)
+                    _GXCommon.setData(
+                        settings, bb, DataType.UINT16, it.actionUp.scriptSelector
+                    )
                     bb.setUInt8(DataType.STRUCTURE)
                     bb.setUInt8(2)
                     #  LN
-                    _GXCommon.setData(settings, bb, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(it.actionDown.logicalName))
+                    _GXCommon.setData(
+                        settings,
+                        bb,
+                        DataType.OCTET_STRING,
+                        _GXCommon.logicalNameToBytes(it.actionDown.logicalName),
+                    )
                     #  ScriptSelector
-                    _GXCommon.setData(settings, bb, DataType.UINT16, it.actionDown.scriptSelector)
+                    _GXCommon.setData(
+                        settings, bb, DataType.UINT16, it.actionDown.scriptSelector
+                    )
             return bb
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
@@ -191,7 +213,9 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
                 self.thresholds.append(it)
             reader.readEndElement("Thresholds")
         if reader.isStartElement("MonitoredValue", True):
-            self.monitoredValue.objectType = ObjectType(reader.readElementContentAsInt("ObjectType"))
+            self.monitoredValue.objectType = ObjectType(
+                reader.readElementContentAsInt("ObjectType")
+            )
             self.monitoredValue.logicalName = reader.readElementContentAsString("LN")
             self.monitoredValue.attributeIndex = reader.readElementContentAsInt("Index")
             reader.readEndElement("MonitoredValue")
@@ -201,12 +225,20 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
                 it = GXDLMSActionSet()
                 self.actions.append(it)
                 if reader.isStartElement("Up", True):
-                    it.actionUp.logicalName = reader.readElementContentAsString("LN", None)
-                    it.actionUp.scriptSelector = reader.readElementContentAsInt("Selector")
+                    it.actionUp.logicalName = reader.readElementContentAsString(
+                        "LN", None
+                    )
+                    it.actionUp.scriptSelector = reader.readElementContentAsInt(
+                        "Selector"
+                    )
                     reader.readEndElement("Up")
                 if reader.isStartElement("Down", True):
-                    it.actionDown.logicalName = reader.readElementContentAsString("LN", None)
-                    it.actionDown.scriptSelector = reader.readElementContentAsInt("Selector")
+                    it.actionDown.logicalName = reader.readElementContentAsString(
+                        "LN", None
+                    )
+                    it.actionDown.scriptSelector = reader.readElementContentAsInt(
+                        "Selector"
+                    )
                     reader.readEndElement("Down")
             reader.readEndElement("Actions")
 

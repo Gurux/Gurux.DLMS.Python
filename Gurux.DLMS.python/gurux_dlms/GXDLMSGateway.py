@@ -32,11 +32,13 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
+
 #
 #  GXDLMSGateway contains information that is needed if gateway is used
 #  between the client and the meter.
 #
 class GXDLMSGateway:
+    # pylint: disable=too-few-public-methods
     #
     # Constructor.
     #

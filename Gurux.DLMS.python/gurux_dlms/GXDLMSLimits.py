@@ -37,7 +37,9 @@
 #
 from .GXHdlcSettings import GXHdlcSettings
 
+
 class GXDLMSLimits(GXHdlcSettings):
+    # pylint: disable=too-few-public-methods
     #
     # Constructor.
     #

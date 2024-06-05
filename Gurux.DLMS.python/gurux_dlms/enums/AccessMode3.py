@@ -31,14 +31,42 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-class GXXmlLoadSettings:
-    #pylint: disable=too-few-public-methods
+from ..GXIntEnum import GXIntEnum
 
-    #
-    # Constructor.
-    #
-    def __init__(self):
-        # Start date of profile Generic.
-        self.start = None
-        # End date of profile Generic.
-        self.end = None
+
+class AccessMode3(GXIntEnum):
+    """
+    Enumerates access modes for Logical Name Association version 3.
+    """
+
+    # pylint: disable=too-few-public-methods
+
+    # No access.
+    NO_ACCESS = 0
+
+    # The client is allowed only reading from the server.
+    READ = 1
+
+    # The client is allowed only writing to the server.
+    WRITE = 2
+
+    # The client is allowed both reading from the server and writing to it.
+    READ_WRITE = 3
+
+    # Request messages are authenticated.
+    AUTHENTICATED_REQUEST = 4
+
+    # Request messages are encrypted.
+    ENCRYPTED_REQUEST = 8
+
+    # Request messages are digitally signed.
+    DIGITALLY_SIGNED_REQUEST = 16
+
+    # Response messages are authenticated.
+    AUTHENTICATED_RESPONSE = 32
+
+    # Response messages are encrypted.
+    ENCRYPTED_RESPONSE = 64
+
+    # Response messages are digitally signed.
+    DIGITALLY_SIGNED_RESPONSE = 128

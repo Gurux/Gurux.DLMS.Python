@@ -41,6 +41,7 @@ from .GXDLMSPppSetupLcpOption import GXDLMSPppSetupLcpOption
 from .GXDLMSPppSetupIPCPOption import GXDLMSPppSetupIPCPOption
 from .enums import PppSetupIPCPOptionType
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -57,11 +58,11 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
     # Short Name of the object.
     #
     def __init__(self, ln=None, sn=0):
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSPppSetup, self).__init__(ObjectType.PPP_SETUP, ln, sn)
-        self.ipcpOptions = list()
+        self.ipcpOptions = []
         self.phyReference = None
-        self.lcpOptions = list()
+        self.lcpOptions = []
         # PPP authentication procedure user name.
         self.userName = None
         # PPP authentication procedure password.
@@ -69,11 +70,13 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         self.authentication = None
 
     def getValues(self):
-        return [self.logicalName,
-                self.phyReference,
-                self.lcpOptions,
-                self.ipcpOptions,
-                [self.userName, self.password]]
+        return [
+            self.logicalName,
+            self.phyReference,
+            self.lcpOptions,
+            self.ipcpOptions,
+            [self.userName, self.password],
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -81,7 +84,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -146,7 +149,9 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(3)
                     _GXCommon.setData(settings, data, DataType.UINT8, it.type_.value)
                     _GXCommon.setData(settings, data, DataType.UINT8, it.length)
-                    _GXCommon.setData(settings, data, _GXCommon.getDLMSDataType(it.data), it.data)
+                    _GXCommon.setData(
+                        settings, data, _GXCommon.getDLMSDataType(it.data), it.data
+                    )
             ret = data.array()
         elif e.index == 4:
             data = GXByteBuffer()
@@ -160,7 +165,9 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(3)
                     _GXCommon.setData(settings, data, DataType.UINT8, it.type_.value)
                     _GXCommon.setData(settings, data, DataType.UINT8, it.length)
-                    _GXCommon.setData(settings, data, _GXCommon.getDLMSDataType(it.data), it.data)
+                    _GXCommon.setData(
+                        settings, data, _GXCommon.getDLMSDataType(it.data), it.data
+                    )
             ret = data.array()
         elif e.index == 5:
             if self.userName:
@@ -218,7 +225,9 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         if reader.isStartElement("LCPOptions", True):
             while reader.isStartElement("Item", True):
                 it1 = GXDLMSPppSetupLcpOption()
-                it1.type_ = PppSetupLcpOptionType(reader.readElementContentAsInt("Type"))
+                it1.type_ = PppSetupLcpOptionType(
+                    reader.readElementContentAsInt("Type")
+                )
                 it1.length = reader.readElementContentAsInt("Length")
                 it1.data = reader.readElementContentAsObject("Data", None)
                 self.lcpOptions.append(it1)
@@ -228,13 +237,19 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         if reader.isStartElement("IPCPOptions", True):
             while reader.isStartElement("Item", True):
                 it2 = GXDLMSPppSetupIPCPOption()
-                it2.type_ = PppSetupIPCPOptionType(reader.readElementContentAsInt("Type"))
+                it2.type_ = PppSetupIPCPOptionType(
+                    reader.readElementContentAsInt("Type")
+                )
                 it2.length = reader.readElementContentAsInt("Length")
                 it2.data = reader.readElementContentAsObject("Data", None)
                 self.ipcpOptions.append(it2)
             reader.readEndElement("IPCPOptions")
-        self.userName = GXByteBuffer.hexToBytes(reader.readElementContentAsString("UserName"))
-        self.password = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Password"))
+        self.userName = GXByteBuffer.hexToBytes(
+            reader.readElementContentAsString("UserName")
+        )
+        self.password = GXByteBuffer.hexToBytes(
+            reader.readElementContentAsString("Password")
+        )
 
     def save(self, writer):
         writer.writeElementString("PHYReference", self.phyReference)

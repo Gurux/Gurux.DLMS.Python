@@ -48,8 +48,8 @@ class GXManufacturer:
         self.identification = None
         self.obisCodes = GXObisCodeCollection()
         self.name = None
-        self.settings = list()
-        self.serverSettings = list()
+        self.settings = []
+        self.serverSettings = []
         self.keepAliveInterval = 40000
         self.startProtocol = StartProtocolType.IEC
         self.webAddress = None

@@ -31,29 +31,29 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-class GXDLMSTranslatorMessage():
-    ##pylint: disable=too-many-instance-attributes
+class GXDLMSTranslatorMessage:
+    ##pylint: disable=too-many-instance-attributes,too-few-public-methods
     def __init__(self):
         """
         Constructor.
         """
         self.message = None
         """Message to convert to XML."""
-        #Converted XML.
+        # Converted XML.
         self.xml = None
-        #Executed Command.
+        # Executed Command.
         self.command = None
-        #System title from AARQ or AARE messages.
+        # System title from AARQ or AARE messages.
         self.systemTitle = None
         # Dedicated key from AARQ messages.
         self.dedicatedKey = None
         # Interface type.
         self.interfaceType = None
-        #Client address.
+        # Client address.
         self.sourceAddress = 0
         # Server address.
         self.targetAddress = 0
-        #Is more data available. Return None if more data is not available or Frame or Block type.
+        # Is more data available. Return None if more data is not available or Frame or Block type.
         self.moreData = 0
-        #Occurred exception.
+        # Occurred exception.
         self.exception = None

@@ -47,6 +47,7 @@ from .GXDLMSRegister import GXDLMSRegister
 from ..ValueEventArgs import ValueEventArgs
 from ..internal._GXDataInfo import _GXDataInfo
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     """
@@ -62,11 +63,11 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     # @param sn
     # Short Name of the object.
     def __init__(self, ln=None, sn=0):
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSProfileGeneric, self).__init__(ObjectType.PROFILE_GENERIC, ln, sn)
         self.version = 1
-        self.buffer = list()
-        self.captureObjects = list()
+        self.buffer = []
+        self.captureObjects = []
         self.capturePeriod = 0
         self.sortMethod = SortMethod.FIFO
         self.sortObject = None
@@ -100,21 +101,23 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     def addCaptureObject(self, item, attributeIndex, dataIndex):
         if item is None:
             raise ValueError("Invalid Object")
-        #Don't check attributeIndex. Some meters are using -1.
+        # Don't check attributeIndex. Some meters are using -1.
         if dataIndex < 0:
             raise ValueError("Invalid data index")
         co = GXDLMSCaptureObject(attributeIndex, dataIndex)
         self.captureObjects.append((item, co))
 
     def getValues(self):
-        return [self.logicalName,
-                self.buffer,
-                self.captureObjects,
-                self.capturePeriod,
-                self.sortMethod,
-                self.sortObject,
-                self.entriesInUse,
-                self.profileEntries]
+        return [
+            self.logicalName,
+            self.buffer,
+            self.captureObjects,
+            self.capturePeriod,
+            self.sortMethod,
+            self.sortObject,
+            self.entriesInUse,
+            self.profileEntries,
+        ]
 
     def invoke(self, settings, e):
         if e.index == 1:
@@ -132,7 +135,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -186,7 +189,12 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(4)
             #  ClassID
             _GXCommon.setData(settings, data, DataType.UINT16, k.objectType)
-            _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(k.logicalName))
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.OCTET_STRING,
+                _GXCommon.logicalNameToBytes(k.logicalName),
+            )
             _GXCommon.setData(settings, data, DataType.INT8, v.attributeIndex)
             _GXCommon.setData(settings, data, DataType.UINT16, v.dataIndex)
         return data
@@ -229,25 +237,30 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     def getColumns(self, cols):
         columns = None
         if cols:
-            columns = list()
+            columns = []
             for it in cols:
                 ot = ObjectType(it[0])
                 ln = _GXCommon.toLogicalName(it[1])
                 attributeIndex = it[2]
                 dataIndex = it[3]
                 for k, v in self.captureObjects:
-                    if k.objectType == ot and v.attributeIndex == attributeIndex and v.dataIndex == dataIndex and k.logicalName == ln:
+                    if (
+                        k.objectType == ot
+                        and v.attributeIndex == attributeIndex
+                        and v.dataIndex == dataIndex
+                        and k.logicalName == ln
+                    ):
                         columns.append((k, v))
                         break
         else:
-            colums = list()
+            colums = []
             colums.append(self.captureObjects)
             return colums
         return columns
 
     def getSelectedColumns(self, selector, parameters):
         if selector == 0:
-            colums = list()
+            colums = []
             colums.append(self.captureObjects)
             ret = colums
         elif selector == 1:
@@ -263,8 +276,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             elif colStart != 1:
                 colCount = len(self.captureObjects)
             if colStart != 1 or colCount != 0:
-                return self.captureObjects[colStart - 1: colStart + colCount - 1]
-            colums = list()
+                return self.captureObjects[colStart - 1 : colStart + colCount - 1]
+            colums = []
             colums.append(self.captureObjects)
             ret = colums
         else:
@@ -272,13 +285,13 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def __getProfileGenericData(self, settings, e):
-        #pylint: disable=bad-option-value,chained-comparison
+        # pylint: disable=bad-option-value,chained-comparison
         columns = None
         if e.selector == 0 or e.parameters is None or e.getRowEndIndex() != 0:
             return self.getData(settings, e, self.buffer, columns)
         arr = e.parameters
         columns = self.getSelectedColumns(e.selector, arr)
-        table = list()
+        table = []
         if e.selector == 1:
             info = _GXDataInfo()
             info.type_ = DataType.DATETIME
@@ -336,7 +349,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -357,10 +370,21 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(settings, data, DataType.INT8, 0)
                 _GXCommon.setData(settings, data, DataType.UINT16, 0)
             else:
-                _GXCommon.setData(settings, data, DataType.UINT16, self.sortObject.objectType)
-                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.sortObject.logicalName))
-                _GXCommon.setData(settings, data, DataType.INT8, self.sortObjectAttributeIndex)
-                _GXCommon.setData(settings, data, DataType.UINT16, self.sortObjectDataIndex)
+                _GXCommon.setData(
+                    settings, data, DataType.UINT16, self.sortObject.objectType
+                )
+                _GXCommon.setData(
+                    settings,
+                    data,
+                    DataType.OCTET_STRING,
+                    _GXCommon.logicalNameToBytes(self.sortObject.logicalName),
+                )
+                _GXCommon.setData(
+                    settings, data, DataType.INT8, self.sortObjectAttributeIndex
+                )
+                _GXCommon.setData(
+                    settings, data, DataType.UINT16, self.sortObjectDataIndex
+                )
             ret = data.array()
         elif e.index == 7:
             ret = self.entriesInUse
@@ -371,8 +395,9 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         return ret
 
     def setValue(self, settings, e):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
+
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
@@ -404,7 +429,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             else:
                 self.capturePeriod = e.value
         elif e.index == 5:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             if settings and settings.isServer:
                 self.__reset()
             if e.value is None:
@@ -446,7 +471,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def __setBuffer(self, settings, e):
-        #pylint: disable=broad-except,too-many-nested-blocks,consider-using-enumerate
+        # pylint: disable=broad-except,too-many-nested-blocks,consider-using-enumerate
         cols = e.parameters
         colIndex = 0
         if cols is None:
@@ -456,7 +481,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         if e.value:
             colIndex += 1
             lastDate = None
-            types = list()
+            types = []
             colIndex = 0
             for k, v in cols:
                 types.append(k.getUIDataType(v.attributeIndex))
@@ -476,28 +501,42 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                         if not lastDate and self.buffer:
                             lastDate = self.buffer[len(self.buffer) - 1][colIndex].value
                         if lastDate:
-                            if self.sortMethod in(SortMethod.FIFO, SortMethod.SMALLEST):
+                            if self.sortMethod in (
+                                SortMethod.FIFO,
+                                SortMethod.SMALLEST,
+                            ):
                                 lastDate += timedelta(seconds=self.capturePeriod)
                             else:
                                 lastDate -= timedelta(seconds=self.capturePeriod)
                             row[colIndex] = GXDateTime(lastDate)
-                    elif type_ == DataType.DATETIME and not isinstance(row[colIndex], GXDateTime):
+                    elif type_ == DataType.DATETIME and not isinstance(
+                        row[colIndex], GXDateTime
+                    ):
                         row[colIndex] = GXDateTime.fromUnixTime(row[colIndex])
                     item = cols[colIndex]
-                    if isinstance(item[0], GXDLMSRegister) and item[1].attributeIndex == 2:
+                    if (
+                        isinstance(item[0], GXDLMSRegister)
+                        and item[1].attributeIndex == 2
+                    ):
                         scaler_ = item[0].scaler
                         if scaler_ != 1 and data:
                             try:
                                 row[colIndex] = data * scaler_
                             except Exception:
-                                print("Scalar failed for: {}".format(item[0].logicalName))
-                    elif isinstance(item[0], GXDLMSDemandRegister) and (item[1].attributeIndex == 2 or item[1].attributeIndex == 3):
+                                print(
+                                    "Scalar failed for: {}".format(item[0].logicalName)
+                                )
+                    elif isinstance(item[0], GXDLMSDemandRegister) and (
+                        item[1].attributeIndex == 2 or item[1].attributeIndex == 3
+                    ):
                         scaler_ = item[0].scaler
                         if scaler_ != 1 and data:
                             try:
                                 row[colIndex] = data * scaler_
                             except Exception:
-                                print("Scalar failed for: {}".format(item[0].logicalName))
+                                print(
+                                    "Scalar failed for: {}".format(item[0].logicalName)
+                                )
                     colIndex += 1
                 self.buffer.append(row)
             if e.settings.isServer:
@@ -527,12 +566,13 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         srv.onPostAction(args)
 
     def load(self, reader):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
+
         self.buffer = []
         if reader.isStartElement("Buffer", True):
             while reader.isStartElement("Row", True):
-                row = list()
+                row = []
                 while reader.isStartElement("Cell", False):
                     row.append(reader.readElementContentAsObject("Cell", None))
                 self.buffer.append(row)

@@ -106,7 +106,7 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
         return None
 
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         if all_ or not self.logicalName:
             attributes.append(1)
         if all_ or not self.isRead(2):

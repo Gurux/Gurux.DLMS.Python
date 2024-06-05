@@ -57,8 +57,8 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
         self.mode = AutoConnectMode.NO_AUTO_DIALLING
         self.repetitions = 0
         self.repetitionDelay = 0
-        self.callingWindow = list()
-        self.destinations = list()
+        self.callingWindow = []
+        self.destinations = []
         self.version = 2
 
     #
@@ -88,7 +88,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

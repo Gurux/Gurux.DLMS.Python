@@ -32,8 +32,9 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums import ObjectType
-#pylint: disable=bad-option-value,too-many-locals,
-#cyclic-import,old-style-class,too-few-public-methods
+
+# pylint: disable=bad-option-value,too-many-locals,
+# cyclic-import,old-style-class,too-few-public-methods
 from .objects.GXDLMSAssociationLogicalName import GXDLMSAssociationLogicalName
 from .objects.GXDLMSObject import GXDLMSObject
 from .objects.GXDLMSActionSchedule import GXDLMSActionSchedule
@@ -69,7 +70,7 @@ from .objects.GXDLMSSapAssignment import GXDLMSSapAssignment
 from .objects.GXDLMSSchedule import GXDLMSSchedule
 from .objects.GXDLMSScriptTable import GXDLMSScriptTable
 from .objects.GXDLMSSpecialDaysTable import GXDLMSSpecialDaysTable
-from .objects.GXDLMSTcpUdpSetup  import GXDLMSTcpUdpSetup
+from .objects.GXDLMSTcpUdpSetup import GXDLMSTcpUdpSetup
 from .objects.GXDLMSPushSetup import GXDLMSPushSetup
 from .objects.GXDLMSMBusMasterPortSetup import GXDLMSMBusMasterPortSetup
 from .objects.GXDLMSGSMDiagnostic import GXDLMSGSMDiagnostic
@@ -80,16 +81,26 @@ from .objects.GXDLMSTokenGateway import GXDLMSTokenGateway
 from .objects.GXDLMSParameterMonitor import GXDLMSParameterMonitor
 from .objects.GXDLMSUtilityTables import GXDLMSUtilityTables
 from .objects.GXDLMSLlcSscsSetup import GXDLMSLlcSscsSetup
-from .objects.GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters import GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters
+from .objects.GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters import (
+    GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters,
+)
 from .objects.GXDLMSPrimeNbOfdmPlcMacSetup import GXDLMSPrimeNbOfdmPlcMacSetup
-from .objects.GXDLMSPrimeNbOfdmPlcMacFunctionalParameters import GXDLMSPrimeNbOfdmPlcMacFunctionalParameters
+from .objects.GXDLMSPrimeNbOfdmPlcMacFunctionalParameters import (
+    GXDLMSPrimeNbOfdmPlcMacFunctionalParameters,
+)
 from .objects.GXDLMSPrimeNbOfdmPlcMacCounters import GXDLMSPrimeNbOfdmPlcMacCounters
-from .objects.GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData import GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData
-from .objects.GXDLMSPrimeNbOfdmPlcApplicationsIdentification import GXDLMSPrimeNbOfdmPlcApplicationsIdentification
+from .objects.GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData import (
+    GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData,
+)
+from .objects.GXDLMSPrimeNbOfdmPlcApplicationsIdentification import (
+    GXDLMSPrimeNbOfdmPlcApplicationsIdentification,
+)
 from .objects.GXDLMSNtpSetup import GXDLMSNtpSetup
 
+
 class _GXObjectFactory:
-    #Reserved for internal use.
+    # pylint: disable=too-few-public-methods
+    # Reserved for internal use.
 
     #
     # Constructor.
@@ -98,7 +109,7 @@ class _GXObjectFactory:
 
     @classmethod
     def createObject(cls, ot):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         #  If IC is manufacturer specific or unknown.
         if ot is None:
             raise ValueError("Invalid object type.")

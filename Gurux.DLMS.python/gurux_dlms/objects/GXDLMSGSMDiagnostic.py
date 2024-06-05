@@ -58,7 +58,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         GXDLMSObject.__init__(self, ObjectType.GSM_DIAGNOSTIC, ln, sn)
         self.version = 1
         self.cellInfo = GXDLMSGSMCellInfo()
-        self.adjacentCells = list()
+        self.adjacentCells = []
         self.operator = ""
         self.status = GsmStatus.NONE
         self.circuitSwitchStatus = GsmCircuitSwitchStatus.INACTIVE
@@ -70,7 +70,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

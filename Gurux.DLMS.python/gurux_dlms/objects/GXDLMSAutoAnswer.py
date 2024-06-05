@@ -54,7 +54,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         sn : Short Name of the object.
         """
         GXDLMSObject.__init__(self, ObjectType.AUTO_ANSWER, ln, sn)
-        self.listeningWindow = list()
+        self.listeningWindow = []
         self.mode = AutoAnswerMode.NONE
         self.status = AutoAnswerStatus.INACTIVE
         self.numberOfCalls = 0
@@ -75,7 +75,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

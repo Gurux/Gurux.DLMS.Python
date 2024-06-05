@@ -40,8 +40,9 @@ from ..GXDate import GXDate
 from ..GXTime import GXTime
 from ..GXDLMSConverter import GXDLMSConverter
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
+# pylint: disable=bad-option-value,old-style-class
 class GXXmlReader:
     """Read serialized COSEM object from the file."""
 
@@ -82,7 +83,10 @@ class GXXmlReader:
         if name is None:
             ret = isinstance(self.currentElement, (ET.Element,))
         else:
-            ret = isinstance(self.currentElement, (ET.Element,)) and self.currentElement.tag == name
+            ret = (
+                isinstance(self.currentElement, (ET.Element,))
+                and self.currentElement.tag == name
+            )
         if ret and getNext:
             self.getNext()
         return ret
@@ -120,13 +124,13 @@ class GXXmlReader:
         return defaultValue
 
     def readArray(self):
-        list_ = list()
+        list_ = []
         while self.isStartElement("Item", False):
             list_.append(self.readElementContentAsObject("Item", None))
         return list_
 
     def readElementContentAsObject(self, name, defaultValue, obj=None, index=0):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if name == self.name():
             ret = None
             str_ = self.getAttribute(0)

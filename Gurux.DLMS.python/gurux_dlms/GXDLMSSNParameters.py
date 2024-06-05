@@ -32,9 +32,10 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
+
 # SN Parameters
 #
-# pylint: disable=too-many-instance-attributes,too-many-arguments
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-few-public-methods
 class GXDLMSSNParameters:
     #
     # Constructor.
@@ -50,7 +51,15 @@ class GXDLMSSNParameters:
     #            Attribute descriptor
     # Generated messages.
     #
-    def __init__(self, forSettings, forCommand, forCount, forCommandType, forAttributeDescriptor, forData):
+    def __init__(
+        self,
+        forSettings,
+        forCommand,
+        forCount,
+        forCommandType,
+        forAttributeDescriptor,
+        forData,
+    ):
         # DLMS settings.
         self.settings = forSettings
         # Block index.

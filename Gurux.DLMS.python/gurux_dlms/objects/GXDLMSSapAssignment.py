@@ -38,12 +38,14 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSSapAssignment
     """
+
     def __init__(self, ln=None, sn=0):
         """
         Constructor.
@@ -52,17 +54,16 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
         sn : Short Name of the object.
         """
         super(GXDLMSSapAssignment, self).__init__(ObjectType.SAP_ASSIGNMENT, ln, sn)
-        self.sapAssignmentList = list()
+        self.sapAssignmentList = []
 
     def getValues(self):
-        return [self.logicalName,
-                self.sapAssignmentList]
+        return [self.logicalName, self.sapAssignmentList]
 
     def addSap(self, client, id_, name):
         """Add new SAP item."""
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
-        #Add structure size.
+        # Add structure size.
         data.setUInt8(2)
         _GXCommon.setData(client.settings, data, DataType.UINT16, id_)
         _GXCommon.setData(client.settings, data, DataType.OCTET_STRING, name.encode())
@@ -72,7 +73,7 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
         """Remove SAP item."""
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
-        #Add structure size.
+        # Add structure size.
         data.setUInt8(2)
         _GXCommon.setData(client.settings, data, DataType.UINT16, 0)
         _GXCommon.setData(client.settings, data, DataType.OCTET_STRING, name.encode())
@@ -83,7 +84,7 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -129,7 +130,9 @@ class GXDLMSSapAssignment(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(2)
                     #  Count
                     _GXCommon.setData(settings, data, DataType.UINT16, k)
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(v))
+                    _GXCommon.setData(
+                        settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(v)
+                    )
             return data
         e.error = ErrorCode.READ_WRITE_DENIED
         return None

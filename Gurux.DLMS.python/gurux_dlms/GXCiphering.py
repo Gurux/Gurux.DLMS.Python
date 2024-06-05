@@ -38,24 +38,64 @@ from .GXDLMSChippering import GXDLMSChippering
 from .AesGcmParameter import AesGcmParameter
 from .GXByteBuffer import GXByteBuffer
 
+
 # pylint: disable=too-many-instance-attributes, too-many-function-args, too-many-public-methods
 class GXCiphering(GXICipher):
     """
     Gurux DLMS/COSEM Transport security (Ciphering) settings.
     """
+
     def __init__(self, title):
         """
         # Constructor. Default values are from the Green Book.
         title: Used system title.
         """
-        self.publicKeys = list()
-        self.certificates = list()
+        self.publicKeys = []
+        self.certificates = []
         self.security = Security.NONE
         # System title.
         self.systemTitle = title
         # Block cipher key.
-        self.blockCipherKey = bytearray((0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F))
-        self.authenticationKey = bytearray((0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF))
+        self.blockCipherKey = bytearray(
+            (
+                0x00,
+                0x01,
+                0x02,
+                0x03,
+                0x04,
+                0x05,
+                0x06,
+                0x07,
+                0x08,
+                0x09,
+                0x0A,
+                0x0B,
+                0x0C,
+                0x0D,
+                0x0E,
+                0x0F,
+            )
+        )
+        self.authenticationKey = bytearray(
+            (
+                0xD0,
+                0xD1,
+                0xD2,
+                0xD3,
+                0xD4,
+                0xD5,
+                0xD6,
+                0xD7,
+                0xD8,
+                0xD9,
+                0xDA,
+                0xDB,
+                0xDC,
+                0xDD,
+                0xDE,
+                0xDF,
+            )
+        )
         # Dedicated key.
         self.dedicatedKey = None
         # Certificates.
@@ -122,7 +162,9 @@ class GXCiphering(GXICipher):
     # @return Generated challenge.
     #
     def generateGmacPassword(self, challenge):
-        p = AesGcmParameter(0x10, self.systemTitle, self.blockCipherKey, self.authenticationKey)
+        p = AesGcmParameter(
+            0x10, self.systemTitle, self.blockCipherKey, self.authenticationKey
+        )
         p.security = Security.AUTHENTICATION
         p.invocationCounter = self.invocationCounter
         bb = GXByteBuffer()
@@ -160,11 +202,11 @@ class GXCiphering(GXICipher):
         return self.recipientSystemTitle
 
     def getBlockCipherKey(self):
-    # Block cipher key.
+        # Block cipher key.
         return self.blockCipherKey
 
     def getAuthenticationKey(self):
-    # Authentication key.
+        # Authentication key.
         return self.authenticationKey
 
     def setAuthenticationKey(self, value):

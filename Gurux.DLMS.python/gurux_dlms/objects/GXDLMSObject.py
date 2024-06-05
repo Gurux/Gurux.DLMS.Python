@@ -37,6 +37,10 @@ from ..manufacturersettings import GXAttributeCollection, GXDLMSAttributeSetting
 from ..enums.DataType import DataType
 from ..enums.AccessMode import AccessMode
 from ..enums.MethodAccessMode import MethodAccessMode
+from ..enums.AccessMode3 import AccessMode3
+from ..enums.MethodAccessMode3 import MethodAccessMode3
+
+
 #
 # pylint: disable=too-many-public-methods,too-many-instance-attributes,useless-object-inheritance
 class GXDLMSObject(object):
@@ -53,7 +57,7 @@ class GXDLMSObject(object):
         self.attributes = GXAttributeCollection()
         self.methodAttributes = GXAttributeCollection()
         if ln:
-            items = ln.split('.')
+            items = ln.split(".")
             if len(items) != 6:
                 raise Exception("Invalid Logical Name.")
         # Logical Name of COSEM object.
@@ -79,7 +83,7 @@ class GXDLMSObject(object):
         return not self.getLastReadTime(index)
 
     def canRead(self, index):
-        return self.getAccess(index) and AccessMode.READ != 0
+        return int(self.getAccess(index)) and int(AccessMode.READ) != 0
 
     #
     # Returns time when attribute was last time read.  -
@@ -188,6 +192,36 @@ class GXDLMSObject(object):
         att.access = access
 
     #
+    # Returns is attribute read only.  -
+    #
+    # @param index
+    # Attribute index.
+    # Is attribute read only.
+    #
+    def getAccess3(self, index):
+        if index == 1:
+            return AccessMode3.READ
+        att = self.attributes.find(index)
+        if att is None:
+            return AccessMode3.READ_WRITE
+        return att.access3
+
+    #
+    # Set attribute access.
+    #
+    # @param index
+    # Attribute index.
+    # @param access
+    # Attribute access.
+    #
+    def setAccess3(self, index, access):
+        att = self.attributes.find(index)
+        if att is None:
+            att = GXDLMSAttributeSettings(index)
+            self.attributes.append(att)
+        att.access3 = access
+
+    #
     # Returns amount of methods.
     #
     @abstractmethod
@@ -195,7 +229,7 @@ class GXDLMSObject(object):
         raise ValueError("getMethodCount")
 
     #
-    # Returns is Method attribute read only.  -
+    # Returns is Method attribute read only.
     #
     # @param index
     # Method Attribute index.
@@ -222,6 +256,34 @@ class GXDLMSObject(object):
             self.methodAttributes.append(att)
         att.methodAccess = access
 
+        #
+
+    # Returns is Method attribute read only.
+    #
+    # @param index
+    # Method Attribute index.
+    # Is attribute read only.
+    #
+    def getMethodAccess3(self, index):
+        att = self.getMethodAttributes().find(index)
+        if att:
+            return att.methodAccess3
+        return MethodAccessMode3.ACCESS
+
+    #
+    # Set Method attribute access.
+    #
+    # @param index
+    # Method index.
+    # @param access
+    # Method access mode.
+    #
+    def setMethodAccess3(self, index, access):
+        att = self.getMethodAttributes().find(index)
+        if att is None:
+            att = GXDLMSAttributeSettings(index)
+            self.methodAttributes.append(att)
+        att.methodAccess3 = access
 
     def getDataType(self, index):
         att = self.attributes.find(index)
@@ -229,14 +291,11 @@ class GXDLMSObject(object):
             return DataType.NONE
         return att.type_
 
-
-
     def getUIDataType(self, index):
         att = self.attributes.find(index)
         if not att:
             return DataType.NONE
         return att.uiType
-
 
     #
     # Amount of attributes.
@@ -276,7 +335,7 @@ class GXDLMSObject(object):
     # @param e Value event parameters.
     # pylint: disable=no-self-use
     def invoke(self, settings, e):
-        #pylint: disable=unused-argument
+        # pylint: disable=unused-argument
         raise ValueError("invoke")
 
     def setDataType(self, index, type_):

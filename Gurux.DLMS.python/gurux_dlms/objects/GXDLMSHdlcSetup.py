@@ -77,7 +77,7 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
     # Returns collection of attributes to read.  If attribute is static and
     # already read or device is returned HW error it is not returned.
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

@@ -59,7 +59,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         #pylint: disable=super-with-arguments
         super(GXDLMSSchedule, self).__init__(ObjectType.SCHEDULE, ln, sn)
         # Specifies the scripts to be executed at given times.
-        self.entries = list()
+        self.entries = []
 
     def getValues(self):
         return [self.logicalName,
@@ -137,7 +137,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

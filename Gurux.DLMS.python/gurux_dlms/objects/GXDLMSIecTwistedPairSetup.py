@@ -60,10 +60,10 @@ class GXDLMSIecTwistedPairSetup(GXDLMSObject, IGXDLMSBase):
         # Communication speed.
         self.speed = BaudRate.BAUDRATE_9600
         # List of Primary Station Addresses.
-        self.primaryAddresses = list()
+        self.primaryAddresses = []
         # List of the TAB(i) for which the real equipment has been programmed
         # in the case of forgotten station call.
-        self.tabis = list()
+        self.tabis = []
 
     def getValues(self):
         return [self.logicalName,
@@ -77,7 +77,7 @@ class GXDLMSIecTwistedPairSetup(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)

@@ -36,6 +36,7 @@
 #  field ength and window size, when communicating with the server.
 #
 class GXHdlcSettings:
+    # pylint: disable=too-few-public-methods
     DEFAULT_MAX_INFO_TX = 128
     DEFAULT_MAX_INFO_RX = 128
     DEFAULT_WINDOWS_SIZE_TX = 1

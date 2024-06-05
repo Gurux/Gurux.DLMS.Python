@@ -58,15 +58,15 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
         """
         GXDLMSObject.__init__(self, ObjectType.PRIME_NB_OFDM_PLC_MAC_NETWORK_ADMINISTRATION_DATA, ln, sn)
         # List of entries in multicast switching table.
-        self.multicastEntries = list()
+        self.multicastEntries = []
         # Switch table.
-        self.switchTable = list()
+        self.switchTable = []
         # List of entries in multicast switching table.
-        self.directTable = list()
+        self.directTable = []
         # List of available switches.
-        self.availableSwitches = list()
+        self.availableSwitches = []
         # List of PHY communication parameters.
-        self.communications = list()
+        self.communications = []
 
     def getValues(self):
         return [self.logicalName,
@@ -84,11 +84,11 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
         #  Resets the value to the default value.
         #  The default value is an instance specific constant.
         if e.index == 1:
-            self.multicastEntries = list()
-            self.switchTable = list()
-            self.directTable = list()
-            self.availableSwitches = list()
-            self.communications = list()
+            self.multicastEntries = []
+            self.switchTable = []
+            self.directTable = []
+            self.availableSwitches = []
+            self.communications = []
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
     #
@@ -96,7 +96,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -241,7 +241,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __setMulticastEntry(cls, value):
-        data = list()
+        data = []
         if value:
             for it in value:
                 v = GXMacMulticastEntry()
@@ -252,7 +252,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __setSwitchTable(cls, value):
-        data = list()
+        data = []
         if value:
             for it in value:
                 data.append(it)
@@ -260,7 +260,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __setDirectTable(cls, value):
-        data = list()
+        data = []
         if value:
             for it in value:
                 v = GXMacDirectTable()
@@ -276,7 +276,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __setAvailableSwitches(cls, value):
-        data = list()
+        data = []
         if value:
             for it in value:
                 v = GXMacAvailableSwitch()
@@ -290,7 +290,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __setCommunications(cls, value):
-        data = list()
+        data = []
         if value:
             for it in value:
                 v = GXMacPhyCommunication()
@@ -327,7 +327,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __loadMulticastEntries(cls, reader):
-        list_ = list()
+        list_ = []
         if reader.isStartElement("MulticastEntries", True):
             while reader.isStartElement("Item", True):
                 it = GXMacMulticastEntry()
@@ -339,7 +339,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __loadSwitchTable(cls, reader):
-        list_ = list()
+        list_ = []
         if reader.isStartElement("SwitchTable", True):
             while reader.isStartElement("Item", False):
                 list_.append(reader.readElementContentAsInt("Item"))
@@ -348,7 +348,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __loadDirectTable(cls, reader):
-        list_ = list()
+        list_ = []
         if reader.isStartElement("DirectTable", True):
             while reader.isStartElement("Item", True):
                 it = GXMacDirectTable()
@@ -365,7 +365,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __loadAvailableSwitches(cls, reader):
-        list_ = list()
+        list_ = []
         if reader.isStartElement("AvailableSwitches", True):
             while reader.isStartElement("Item", True):
                 it = GXMacAvailableSwitch()
@@ -380,7 +380,7 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
 
     @classmethod
     def __loadCommunications(cls, reader):
-        list_ = list()
+        list_ = []
         if reader.isStartElement("Communications", True):
             while reader.isStartElement("Item", True):
                 it = GXMacPhyCommunication()

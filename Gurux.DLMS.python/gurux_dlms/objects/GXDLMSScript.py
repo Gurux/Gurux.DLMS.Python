@@ -43,4 +43,4 @@ class GXDLMSScript:
         # Script identifier.
         self.id = 0
         # Script actions.
-        self.actions = list()
+        self.actions = []

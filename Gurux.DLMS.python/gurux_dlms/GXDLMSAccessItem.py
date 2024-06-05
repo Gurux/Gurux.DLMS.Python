@@ -32,10 +32,14 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums.AccessServiceCommandType import AccessServiceCommandType
+
+
 #
 # Access item is used to generate Access Service message.
 #
 class GXDLMSAccessItem:
+    # pylint: disable=too-few-public-methods
+
     #
     # Constructor.
     #

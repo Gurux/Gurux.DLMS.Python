@@ -32,15 +32,17 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
+
 # Information from the discovered PLC meter.
 class GXDLMSPlcMeterInfo:
+    # pylint: disable=too-few-public-methods
     # Constructor.
     def __init__(self):
-        #Source Address.
+        # Source Address.
         self.sourceAddress = 0
         # Destination Address.
         self.destinationAddress = 0
-        #System title
+        # System title
         self.systemTitle = None
-        #Alarm descriptor
+        # Alarm descriptor
         self.alarmDescriptor = None

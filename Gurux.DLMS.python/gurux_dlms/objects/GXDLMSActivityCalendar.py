@@ -87,7 +87,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     # already read or device is returned HW error it is not returned.
     #
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -273,7 +273,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def __setSeasonProfile(cls, settings, value):
-        items = list()
+        items = []
         if value:
             for item in value:
                 it = GXDLMSSeasonProfile()
@@ -285,7 +285,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def __setWeekProfileTable(cls, value):
-        items = list()
+        items = []
         if value:
             for item in value:
                 it = GXDLMSWeekProfile()
@@ -302,12 +302,12 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def __setDayProfileTable(cls, settings, value):
-        items = list()
+        items = []
         if value:
             for item in value:
                 it = GXDLMSDayProfile()
                 it.dayId = item[0]
-                it.daySchedules = list()
+                it.daySchedules = []
                 for it2 in item[1]:
                     ac = GXDLMSDayProfileAction()
                     ac.startTime = _GXCommon.changeType(settings, it2[0], DataType.TIME)
@@ -355,7 +355,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadSeasonProfile(cls, reader, name):
-        list_ = list()
+        list_ = []
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSSeasonProfile()
@@ -368,7 +368,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadWeekProfileTable(cls, reader, name):
-        list_ = list()
+        list_ = []
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSWeekProfile()
@@ -386,13 +386,13 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
 
     @classmethod
     def loadDayProfileTable(cls, reader, name):
-        list_ = list()
+        list_ = []
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSDayProfile()
                 it.dayId = reader.readElementContentAsInt("DayId")
                 list_.append(it)
-                it.daySchedules = list()
+                it.daySchedules = []
                 if reader.isStartElement("Actions", True):
                     while reader.isStartElement("Action", True):
                         d = GXDLMSDayProfileAction()

@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 class GXDLMSConnectionEventArgs:
+    # pylint: disable=too-few-public-methods
     #
     # Server ID that client try to use to make connection.
     #

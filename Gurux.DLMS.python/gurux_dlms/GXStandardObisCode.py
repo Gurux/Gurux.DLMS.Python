@@ -31,10 +31,13 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+
+
 #
 #  * OBIS Code class is used to find out default description to OBIS Code.
 #
 class GXStandardObisCode:
+    # pylint: disable=too-few-public-methods
     #
     # Constructor.
     #
@@ -50,7 +53,7 @@ class GXStandardObisCode:
         self.interfaces = forInterfaces
         # Standard data types.
         self.dataType = forDataType
-        #Standard UI data types.
+        # Standard UI data types.
         self.uiDataType = None
 
     #
@@ -62,6 +65,6 @@ class GXStandardObisCode:
         str_ = ""
         for s in self.obis:
             if str_:
-                str_ += '.'
+                str_ += "."
             str_ += s
         return str_ + " " + self.description

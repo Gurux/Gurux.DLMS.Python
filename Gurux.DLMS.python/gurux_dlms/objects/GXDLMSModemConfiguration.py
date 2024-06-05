@@ -40,6 +40,7 @@ from ..enums import ObjectType, DataType
 from .enums import BaudRate
 from .GXDLMSModemInitialisation import GXDLMSModemInitialisation
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
     """
@@ -56,31 +57,49 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
     # Short Name of the object.
     #
     def __init__(self, ln=None, sn=0):
-        #pylint: disable=super-with-arguments
-        super(GXDLMSModemConfiguration, self).__init__(ObjectType.MODEM_CONFIGURATION, ln, sn)
-        self.initialisationStrings = list()
+        # pylint: disable=super-with-arguments
+        super(GXDLMSModemConfiguration, self).__init__(
+            ObjectType.MODEM_CONFIGURATION, ln, sn
+        )
+        self.initialisationStrings = []
         self.communicationSpeed = BaudRate.BAUDRATE_300
         self.modemProfile = self.defultProfiles()
 
     @classmethod
     def defultProfiles(cls):
-        return ["OK", "CONNECT", "RING", "NO CARRIER", "ERROR",
-                "CONNECT 1200", "NO DIAL TONE", "BUSY", "NO ANSWER",
-                "CONNECT 600", "CONNECT 2400", "CONNECT 4800", "CONNECT 9600",
-                "CONNECT 14 400", "CONNECT 28 800", "CONNECT 33 600",
-                "CONNECT 56 000"]
+        return [
+            "OK",
+            "CONNECT",
+            "RING",
+            "NO CARRIER",
+            "ERROR",
+            "CONNECT 1200",
+            "NO DIAL TONE",
+            "BUSY",
+            "NO ANSWER",
+            "CONNECT 600",
+            "CONNECT 2400",
+            "CONNECT 4800",
+            "CONNECT 9600",
+            "CONNECT 14 400",
+            "CONNECT 28 800",
+            "CONNECT 33 600",
+            "CONNECT 56 000",
+        ]
 
     def getValues(self):
-        return [self.logicalName,
-                self.communicationSpeed,
-                self.initialisationStrings,
-                self.modemProfile]
+        return [
+            self.logicalName,
+            self.communicationSpeed,
+            self.initialisationStrings,
+            self.modemProfile,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
     # and already read or device is returned HW error it is not returned.
     def getAttributeIndexToRead(self, all_):
-        attributes = list()
+        attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
@@ -139,8 +158,18 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
                     #  Count
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(it.request))
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(it.response))
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.OCTET_STRING,
+                        _GXCommon.getBytes(it.request),
+                    )
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.OCTET_STRING,
+                        _GXCommon.getBytes(it.response),
+                    )
                     _GXCommon.setData(settings, data, DataType.UINT16, it.delay)
             return data
         if e.index == 4:
@@ -151,7 +180,9 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setObjectCount(cnt, data)
             if cnt != 0:
                 for it in self.modemProfile:
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(it))
+                    _GXCommon.setData(
+                        settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(it)
+                    )
             return data
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
@@ -183,7 +214,9 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.communicationSpeed = BaudRate(reader.readElementContentAsInt("CommunicationSpeed"))
+        self.communicationSpeed = BaudRate(
+            reader.readElementContentAsInt("CommunicationSpeed")
+        )
         if reader.isStartElement("InitialisationStrings", True):
             while reader.isStartElement("Initialisation", True):
                 it = GXDLMSModemInitialisation()
@@ -191,7 +224,9 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
                 it.response = reader.readElementContentAsString("Response")
                 it.delay = reader.readElementContentAsInt("Delay")
             reader.readEndElement("InitialisationStrings")
-        self.modemProfile = reader.readElementContentAsString("ModemProfile", "").split(';')
+        self.modemProfile = reader.readElementContentAsString("ModemProfile", "").split(
+            ";"
+        )
 
     def save(self, writer):
         writer.writeElementString("CommunicationSpeed", int(self.communicationSpeed))
@@ -205,4 +240,4 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
                 writer.writeEndElement()
         writer.writeEndElement()
         if self.modemProfile:
-            writer.writeElementString("ModemProfile", ';'.join(self.modemProfile))
+            writer.writeElementString("ModemProfile", ";".join(self.modemProfile))
