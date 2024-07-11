@@ -254,7 +254,7 @@ class GXDateTime:
                 else:
                     tmp = datetime.datetime(tmp.year, tmp.month, tmp.day, tmp.hour, tmp.minute, tmp.second, 0, tzinfo=GXTimeZone(tz))
                 return tmp
-            return datetime.datetime.strptime(v.strip(), pattern)
+            return datetime.datetime.strptime(v.strip(), pattern.strip())
         return None
 
      #pylint: disable=no-self-use
