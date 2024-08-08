@@ -32,11 +32,20 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
-from .enums import Priority, ServiceClass, InterfaceType, Authentication, Standard, HdlcFrameType, Conformance
+from .enums import (
+    Priority,
+    ServiceClass,
+    InterfaceType,
+    Authentication,
+    Standard,
+    HdlcFrameType,
+    Conformance,
+)
 from .enums.DateTimeSkips import DateTimeSkips
 from .ConnectionState import ConnectionState
 from .objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXHdlcSettings import GXHdlcSettings
+
 
 # This class includes DLMS communication settings.
 # pylint: disable=bad-option-value,too-many-public-methods,too-many-instance-attributes,old-style-class
@@ -70,8 +79,26 @@ class GXDLMSSettings:
     @classmethod
     def getInitialConformance(cls, useLN):
         if useLN:
-            return Conformance.BLOCK_TRANSFER_WITH_ACTION | Conformance.BLOCK_TRANSFER_WITH_SET_OR_WRITE | Conformance.BLOCK_TRANSFER_WITH_GET_OR_READ | Conformance.SET | Conformance.SELECTIVE_ACCESS | Conformance.ACTION | Conformance.MULTIPLE_REFERENCES | Conformance.GET | Conformance.ACCESS
-        return Conformance.INFORMATION_REPORT | Conformance.READ | Conformance.UN_CONFIRMED_WRITE | Conformance.WRITE | Conformance.PARAMETERIZED_ACCESS | Conformance.MULTIPLE_REFERENCES
+            return (
+                Conformance.GENERAL_PROTECTION
+                | Conformance.BLOCK_TRANSFER_WITH_ACTION
+                | Conformance.BLOCK_TRANSFER_WITH_SET_OR_WRITE
+                | Conformance.BLOCK_TRANSFER_WITH_GET_OR_READ
+                | Conformance.SET
+                | Conformance.SELECTIVE_ACCESS
+                | Conformance.ACTION
+                | Conformance.MULTIPLE_REFERENCES
+                | Conformance.GET
+                | Conformance.ACCESS
+            )
+        return (
+            Conformance.INFORMATION_REPORT
+            | Conformance.READ
+            | Conformance.UN_CONFIRMED_WRITE
+            | Conformance.WRITE
+            | Conformance.PARAMETERIZED_ACCESS
+            | Conformance.MULTIPLE_REFERENCES
+        )
 
     #
     # Constructor.
@@ -112,13 +139,15 @@ class GXDLMSSettings:
         self.objects = GXDLMSObjectCollection()
         self.hdlc = GXHdlcSettings()
         self.gateway = None
-        self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
+        self.proposedConformance = GXDLMSSettings.getInitialConformance(
+            self.__useLogicalNameReferencing
+        )
         self.receiverFrame = 0
         self.senderFrame = 0
         self.resetFrameSequence()
         self.gbtWindowSize = 1
         self.userId = -1
-        #Quality of service.
+        # Quality of service.
         self.qualityOfService = 0
         self.useUtc2NormalTime = False
         self.increaseInvocationCounterForGMacAuthentication = False
@@ -163,7 +192,11 @@ class GXDLMSSettings:
     # Is connection accepted.
     #
     def acceptConnection(self):
-        return self.connected != ConnectionState.NONE or self.allowAnonymousAccess or (self.cipher and self.cipher.sharedSecret)
+        return (
+            self.connected != ConnectionState.NONE
+            or self.allowAnonymousAccess
+            or (self.cipher and self.cipher.sharedSecret)
+        )
 
     #
     # Reset frame sequence.
@@ -176,7 +209,7 @@ class GXDLMSSettings:
             self.senderFrame = self.__CLIENT_START_SENDER_FRAME_SEQUENCE
             self.receiverFrame = self.__CLIENT_START_RCEIVER_FRAME_SEQUENCE
 
-    #pylint: disable=too-many-return-statements
+    # pylint: disable=too-many-return-statements
     def checkFrame(self, frame_, xml):
         #  If notify
         if frame_ == 0x13:
@@ -185,7 +218,12 @@ class GXDLMSSettings:
         #  If U frame.
         if (frame_ & HdlcFrameType.U_FRAME) == HdlcFrameType.U_FRAME:
             if frame_ == 0x93:
-                isEcho = not self.isServer and frame_ == 0x93 and (self.senderFrame == 0x10 or self.senderFrame == 0xfe) and self.receiverFrame == 0xE
+                isEcho = (
+                    not self.isServer
+                    and frame_ == 0x93
+                    and self.senderFrame in (0x10, 0xFE)
+                    and self.receiverFrame == 0xE
+                )
                 self.resetFrameSequence()
                 return not isEcho
             if frame_ == 0x73 and not self.isServer:
@@ -193,18 +231,20 @@ class GXDLMSSettings:
             return True
         #  If S -frame.
         if (frame_ & HdlcFrameType.S_FRAME) == HdlcFrameType.S_FRAME:
-            #If echo.
+            # If echo.
             if frame_ == (self.senderFrame & 0xF1):
                 return False
             self.receiverFrame = self.increaseReceiverSequence(self.receiverFrame)
             return True
         #  Handle I-frame.
         if (self.senderFrame & 0x1) == 0:
-            expected = GXDLMSSettings.increaseReceiverSequence(GXDLMSSettings.increaseSendSequence(self.receiverFrame))
+            expected = GXDLMSSettings.increaseReceiverSequence(
+                GXDLMSSettings.increaseSendSequence(self.receiverFrame)
+            )
             if frame_ == expected:
                 self.receiverFrame = frame_
                 return True
-            #If the final bit is not set.
+            # If the final bit is not set.
             if frame_ == (expected & ~0x10) and self.hdlc.windowSizeRX != 1:
                 self.receiverFrame = frame_
                 return True
@@ -228,15 +268,19 @@ class GXDLMSSettings:
                 self.receiverFrame = frame_
                 return True
             if self.hdlc.windowSizeRX != 1:
-                #If HDLC window size is bigger than one.
-                expected = self.increaseReceiverSequence(self.increaseSendSequence(ReceiverFrame))
+                # If HDLC window size is bigger than one.
+                expected = self.increaseReceiverSequence(
+                    self.increaseSendSequence(ReceiverFrame)
+                )
                 if frame_ == expected:
                     ReceiverFrame = frame_
                     return True
 
         # If try to find data from bytestream and not real communicating.
-        if xml and ((not self.isServer and self.receiverFrame == 0xE) or\
-            (self.isServer and self.receiverFrame == 0xEE)):
+        if xml and (
+            (not self.isServer and self.receiverFrame == 0xE)
+            or (self.isServer and self.receiverFrame == 0xEE)
+        ):
             ReceiverFrame = frame_
             return True
         print("Invalid HDLC Frame: " + hex(frame_) + " Expected: " + hex(expected))
@@ -272,7 +316,9 @@ class GXDLMSSettings:
     #
     def getNextSend(self, first):
         if first:
-            self.senderFrame = self.increaseReceiverSequence(self.increaseSendSequence(int(self.senderFrame)))
+            self.senderFrame = self.increaseReceiverSequence(
+                self.increaseSendSequence(int(self.senderFrame))
+            )
         else:
             self.senderFrame = self.increaseSendSequence(int(self.senderFrame))
         return self.senderFrame & 0xFF
@@ -358,7 +404,9 @@ class GXDLMSSettings:
     def setUseLogicalNameReferencing(self, value):
         if self.__useLogicalNameReferencing != value:
             self.__useLogicalNameReferencing = value
-            self.proposedConformance = GXDLMSSettings.getInitialConformance(self.__useLogicalNameReferencing)
+            self.proposedConformance = GXDLMSSettings.getInitialConformance(
+                self.__useLogicalNameReferencing
+            )
 
     #
     # Invoke ID.
@@ -371,7 +419,7 @@ class GXDLMSSettings:
     # update invoke ID.
     #
     def updateInvokeId(self, value):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if (value & 0x80) != 0:
             self.priority = Priority.HIGH
         else:

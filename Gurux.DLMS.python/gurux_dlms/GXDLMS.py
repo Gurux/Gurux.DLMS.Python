@@ -2303,15 +2303,14 @@ class GXDLMS:
             )
         else:
             # If meter's block index is zero based.
-            if number == 0 and settings.blockIndex == 1:
-                settings.setBlockIndex(0)
-            expectedIndex = settings.blockIndex
-            if number != expectedIndex:
+            if number != 1 and settings.blockIndex == 1:
+                settings.blockIndex = number
+            if number != settings.blockIndex:
                 raise ValueError(
                     "Invalid Block number. It is "
                     + str(number)
                     + " and it should be "
-                    + str(expectedIndex)
+                    + str(settings.blockIndex)
                     + "."
                 )
         # Get status.
