@@ -12,7 +12,7 @@
     <Name>Gurux.DLMS.Client.Example.python</Name>
     <RootNamespace>Gurux.DLMS.Client.Example.python</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-h localhost -p 4061 -o koe.xml</CommandLineArguments>
+    <CommandLineArguments>-h localhost -p 4061 -t Verbose</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -915,7 +915,8 @@ class GXDLMSClient(object):
         cnt = _GXCommon.getObjectCount(buff)
         lnVersion = 2
         objPos = 0
-        # Find LN Version because some meters don't add LN Association the fist object.
+        # Find LN Version because some meters don't add LN Association the first object.
+        pos = buff.position
         while objPos != cnt:
             if buff.position == len(buff):
                 break
@@ -935,6 +936,7 @@ class GXDLMSClient(object):
                 break
 
         objPos = 0
+        buff.position = pos
         while objPos != cnt:
             if buff.position == len(buff):
                 break
