@@ -225,7 +225,7 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
             self.authentication = NtpAuthenticationMethod(e.value)
         elif e.index == 6:
             self.keys.clear()
-            if e.getValue() :
+            if e.value:
                 for it in e.value:
                     self.keys[it[0]] = it[1]
         elif e.index == 7:

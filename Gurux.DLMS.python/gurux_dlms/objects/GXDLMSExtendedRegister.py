@@ -40,9 +40,10 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType, Unit
+from .GXDLMSRegister import GXDLMSRegister
 
 # pylint: disable=too-many-instance-attributes
-class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
+class GXDLMSExtendedRegister(GXDLMSRegister, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSExtendedRegister
@@ -130,7 +131,7 @@ class GXDLMSExtendedRegister(GXDLMSObject, IGXDLMSBase):
         elif index == 3:
             ret = DataType.ARRAY
         elif index == 4:
-            ret = super(GXDLMSExtendedRegister, self).getDataType(index)
+            ret = super(GXDLMSRegister, self).getDataType(index)
         elif index == 5:
             ret = DataType.OCTET_STRING
         else:
