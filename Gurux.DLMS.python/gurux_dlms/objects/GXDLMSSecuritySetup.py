@@ -67,7 +67,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         self.version = 1
         self.securityPolicy = SecurityPolicy0.NOTHING
         # Security policy for version 1.
-        self.securitySuite = SecuritySuite.AES_GCM_128
+        self.securitySuite = SecuritySuite.SUITE_0
         self.certificates = []
         # Client system title.
         self.clientSystemTitle = None

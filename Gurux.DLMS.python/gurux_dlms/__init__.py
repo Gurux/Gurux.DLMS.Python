@@ -119,4 +119,6 @@ from .GXFloat64 import GXFloat64
 from .GXIntEnum import GXIntEnum
 from .GXIntFlag import GXIntFlag
 from .GXDLMSTranslatorMessage import GXDLMSTranslatorMessage
+from .IGXCryptoNotifier import IGXCryptoNotifier
+from .GXCryptoKeyParameter import GXCryptoKeyParameter
 name = "gurux_dlms"

@@ -43,4 +43,4 @@ class GXDLMSEmergencyProfile:
         self.duration = 0
 
     def __str__(self):
-        return str(self.id) + " " + self.activationTime.__str__() + " " + str(self.duration)
+        return str(self.id) + " " + str(self.activationTime) + " " + str(self.duration)

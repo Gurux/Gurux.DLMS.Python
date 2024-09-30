@@ -71,3 +71,4 @@ from .HdlcFrameType import HdlcFrameType
 from .PduType import PduType
 from .Service import Service
 from .AcseServiceProvider import AcseServiceProvider
+from .CryptoKeyType import CryptoKeyType

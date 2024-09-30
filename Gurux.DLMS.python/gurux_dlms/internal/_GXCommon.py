@@ -1087,7 +1087,7 @@ class _GXCommon:
         else:
             value = ""
         if info.xml:
-            if info.xml.getShowStringAsHex:
+            if info.xml.showStringAsHex:
                 info.xml.appendLine(
                     info.xml.getDataType(info.type_),
                     None,

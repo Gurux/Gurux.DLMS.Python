@@ -62,7 +62,7 @@ class GXDLMSNotify(object):
     #
     def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
         # DLMS settings.
-        self.settings = GXDLMSSettings(True)
+        self.settings = GXDLMSSettings(True, None)
         self.useLogicalNameReferencing = useLogicalNameReferencing
         self.settings.clientAddress = clientAddress
         self.settings.serverAddress = serverAddress

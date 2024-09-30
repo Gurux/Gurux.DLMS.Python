@@ -24,6 +24,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GXDLMSSecureClient2.py" />
     <Compile Include="main.py" />
     <Compile Include="GXCmdParameter.py">
       <SubType>Code</SubType>

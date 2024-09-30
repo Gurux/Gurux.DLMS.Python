@@ -521,9 +521,12 @@ class GXDLMS:
                             reply.set(p.data)
                             tmp = []
                             if (
-                                p.settings.cipher.securitySuite
-                                == SecuritySuite.AES_GCM_128
+                                reply.size != 0
+                                and p.command != Command.GENERAL_BLOCK_TRANSFER
                             ):
+                                # pylint: disable=W0212
+                                p.settings._onPduEventHandler(True, reply.array())
+                            if p.settings.cipher.securitySuite == SecuritySuite.SUITE_0:
                                 tmp = GXDLMS.cipher0(p, reply)
                             p.data.size = 0
                             p.data.set(tmp)
@@ -572,7 +575,9 @@ class GXDLMS:
                 and p.command != Command.RELEASE_REQUEST
             ):
                 tmp = []
-                if p.settings.cipher.securitySuite == SecuritySuite.AES_GCM_128:
+                # pylint: disable=W0212
+                p.settings._onPduEventHandler(True, reply.array())
+                if p.settings.cipher.securitySuite == SecuritySuite.SUITE_0:
                     tmp = GXDLMS.cipher0(p, reply.array())
                 reply.size = 0
                 reply.set(tmp)
@@ -2389,6 +2394,7 @@ class GXDLMS:
                 None,
                 reply.xml.integerToHex(reply.invokeId, 2),
             )
+        empty = False
         if type_ == GetCommandType.NORMAL:
             empty = GXDLMS.handleGetResponseNormal(settings, reply)
         elif type_ == GetCommandType.NEXT_DATA_BLOCK:
@@ -2757,6 +2763,9 @@ class GXDLMS:
                     settings.cipher.authenticationKey,
                 )
             tmp = GXCiphering.decrypt(settings.cipher, p, data.data)
+            if data.isComplete and (data.moreData & RequestTypes.FRAME) == 0:
+                # pylint: disable=W0212
+                settings._onPduEventHandler(data.moreData == 0, tmp)
             data.data.clear()
             data.data.set(tmp)
             data.command = Command(data.data.getUInt8())
@@ -2797,6 +2806,8 @@ class GXDLMS:
                         settings.cipher.authenticationKey,
                     )
                 data.data.set(GXCiphering.decrypt(settings.cipher, p, bb))
+                # pylint: disable=W0212
+                settings._onPduEventHandler(data.moreData == 0, data.data.array())
                 data.cipheredCommand = data.command
                 data.command = Command.NONE
                 GXDLMS.getPdu(settings, data)
@@ -2816,6 +2827,8 @@ class GXDLMS:
                 settings.cipher.authenticationKey,
             )
             tmp = GXCiphering.decrypt(settings.cipher, p, data.data)
+            # pylint: disable=W0212
+            settings._onPduEventHandler(data.moreData == 0, tmp)
             data.data.clear()
             data.data.set(tmp)
             data.command = Command.NONE

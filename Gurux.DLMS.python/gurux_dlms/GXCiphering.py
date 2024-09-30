@@ -107,7 +107,7 @@ class GXCiphering(GXICipher):
         # Invocation Counter.
         self.invocationCounter = 1
         # Used security suite.
-        self.securitySuite = SecuritySuite.AES_GCM_128
+        self.securitySuite = SecuritySuite.SUITE_0
         # Signing key pair.
         self.signingKeyPair = None
         # Client key agreement key pair.

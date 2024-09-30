@@ -608,7 +608,7 @@ class GXDateTime:
         from .internal._GXCommon import _GXCommon
         from .GXDLMSSettings import GXDLMSSettings
         buff = GXByteBuffer()
-        settings = GXDLMSSettings(False)
+        settings = GXDLMSSettings(False, None)
         settings.UseUtc2NormalTime = useMeterTimeZone
         _GXCommon.setData(settings, buff, DataType.OCTET_STRING, self)
         #Dont add data type or length.

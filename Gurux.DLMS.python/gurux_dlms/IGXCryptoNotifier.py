@@ -7,8 +7,8 @@
 #  Filename: $HeadURL$
 #
 #  Version: $Revision$,
-#                   $Date$
-#                   $Author$
+#                $Date$
+#                $Author$
 #
 #  Copyright (c) Gurux Ltd
 #
@@ -31,7 +31,41 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXCmdParameter import GXCmdParameter
-from .GXSettings import GXSettings
-from .GXDLMSReader import GXDLMSReader
-from .GXDLMSSecureClient2 import GXDLMSSecureClient2
+import abc
+
+ABC = abc.ABCMeta("ABC", (object,), {"__slots__": ()})
+
+class IGXCryptoNotifier(ABC):
+    """
+    The server uses this interface to notify client connections.
+    """
+
+    __metaclass__ = abc.ABCMeta
+    """Network Server component will notify events throught this interface."""
+
+    @abc.abstractmethod
+    def onPduEventHandler(self, sender, complete, data):
+        """Notifies un-ciphered PDU..
+
+        sender : The source of the event.
+        complete : Is all data received.
+        data : Un-ciphered PDU.
+        """
+
+    @abc.abstractmethod
+    def onKey(self, sender, args):
+        """Called when the public or private key is needed 
+        and it's unknown.
+
+        sender : The source of the event.
+        args : Event arguments.
+        """
+
+    @abc.abstractmethod
+    def onCrypto(self, sender, args):
+        """Called to encrypt or decrypt the data using 
+        external Hardware Security Module.
+
+        sender : The source of the event.
+        args : Event arguments.
+        """

@@ -40,20 +40,22 @@ class SecuritySuite(GXIntEnum):
     #pylint: disable=too-few-public-methods
 
     #
-    # AES-GCM-128 for authenticated encryption and AES-128 for key wrapping.
+    # GMAC ciphering is used.
+	# AES-GCM-128 for authenticated encryption and AES-128 for key wrapping.
+	# A.K.A Security Suite 0.
     #
-    # A.K.A Security Suite 0.
-    #
-    AES_GCM_128 = 0
+    SUITE_0 = 0
 
     #
-    # ECDH-ECDSAAES-GCM-128SHA-256.
-    # A.K.A Security Suite 1.
+    # ECDSA P-256 ciphering is used.
+	# ECDH-ECDSAAES-GCM-128SHA-256.
+	# A.K.A Security Suite 1.
     #
-    ECDH_ECDSA_AES_GCM_128_SHA_256 = 1
+    SUITE_1 = 1
 
     #
-    # ECDH-ECDSAAES-GCM-256SHA-384.
-    # A.K.A Security Suite 2.
+    # ECDSA P-384 ciphering is used.
+	# ECDH-ECDSAAES-GCM-256SHA-384.
+	# A.K.A Security Suite 2.
     #
-    ECDHE_CDSA_AES_GCM_256_SHA_384 = 2
+    SUITE_2 = 2

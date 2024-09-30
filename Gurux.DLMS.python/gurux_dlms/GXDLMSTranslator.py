@@ -194,7 +194,7 @@ class GXDLMSTranslator:
         original = msg.message.position
         msg.exception = None
         data = msg.message
-        settings = GXDLMSSettings(True)
+        settings = GXDLMSSettings(True, None)
         reply = GXReplyData()
         reply.moreData = msg.moreData
         reply.xml = GXDLMSTranslatorStructure(
@@ -284,7 +284,7 @@ class GXDLMSTranslator:
     # Is new frame found.
     #
     def findNextFrame_0(self, data, pdu, type_):
-        settings = GXDLMSSettings(True)
+        settings = GXDLMSSettings(True, None)
         settings.iInterfaceType = type_
         reply = GXReplyData()
         reply.xml = GXDLMSTranslatorStructure(
@@ -404,7 +404,7 @@ class GXDLMSTranslator:
             self.comments,
             self.tags,
         )
-        settings = GXDLMSSettings(True)
+        settings = GXDLMSSettings(True, None)
         settings.interfaceType = framing
         GXDLMS.getData(settings, value, data, None)
         return data.data
@@ -533,7 +533,7 @@ class GXDLMSTranslator:
             self.tags,
         )
         data = GXReplyData()
-        settings = GXDLMSSettings(True)
+        settings = GXDLMSSettings(True, None)
         self.getCiphering(settings, True)
         data.xml = xml
         try:
@@ -984,7 +984,7 @@ class GXDLMSTranslator:
         # too-many-nested-blocks,redefined-variable-type
         if not value:
             raise ValueError("value")
-        settings = GXDLMSSettings(True)
+        settings = GXDLMSSettings(True, None)
         settings.standard = self.standard
         cmd = value.getUInt8()
         self.getCiphering(settings, self.isCiphered(cmd))
@@ -995,11 +995,11 @@ class GXDLMSTranslator:
             _GXAPDU.parsePDU(settings, settings.cipher, value, xml)
         elif cmd == Command.INITIATE_REQUEST:
             value.position = 0
-            settings = GXDLMSSettings(True)
+            settings = GXDLMSSettings(True, None)
             _GXAPDU.parseInitiate(True, settings, settings.cipher, value, xml)
         elif cmd == Command.INITIATE_RESPONSE:
             value.position = 0
-            settings = GXDLMSSettings(False)
+            settings = GXDLMSSettings(False, None)
             self.getCiphering(settings, True)
             _GXAPDU.parseInitiate(True, settings, settings.cipher, value, xml)
         elif cmd == 0x81:
@@ -1008,7 +1008,7 @@ class GXDLMSTranslator:
             self.getUa(value, xml)
         elif cmd == Command.AARE:
             value.position = 0
-            settings = GXDLMSSettings(False)
+            settings = GXDLMSSettings(False, None)
             self.getCiphering(settings, True)
             _GXAPDU.parsePDU(settings, settings.cipher, value, xml)
         elif cmd == Command.GET_REQUEST:

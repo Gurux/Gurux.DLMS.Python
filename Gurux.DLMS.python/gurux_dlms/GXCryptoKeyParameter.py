@@ -31,55 +31,46 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+from .enums.CryptoKeyType import CryptoKeyType
 from .enums.Security import Security
 from .objects.enums.SecuritySuite import SecuritySuite
-from .CountType import CountType
+from .objects.enums.SecurityPolicy import SecurityPolicy
+from .objects.enums.CertificateType import CertificateType
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
-class AesGcmParameter:
-    def __init__(
-        self, tag=0, systemTitle=None, blockCipherKey=None, authenticationKey=None
-    ):
-        """
-        Constructor.
-
-        tag : Tag.
-        systemTitle : System title.
-        blockCipherKey : Block cipher key.
-        authenticationKey : Authentication key.
-        """
-        self.tag = tag
+class GXCryptoKeyParameter:
+    def __init__(self):
+        self.command = 0
+        # Crypto key type.
+        self.keyType = CryptoKeyType.BLOCK_CIPHER
+        # Is data encrypted or decrypted.
+        self.encrypt = False
+        # Encrypted data.
+        self.encrypted = None
+        # Decrypted data.
+        self.plainText = None
+        # Used security.
         self.security = Security.NONE
-        # Invocation counter.
-        self.invocationCounter = 0
         # Used security suite.
         self.securitySuite = SecuritySuite.SUITE_0
-        # Block cipher key.
-        self.blockCipherKey = blockCipherKey
-        # Authentication key.
-        self.authenticationKey = authenticationKey
-        # System title.
-        self.systemTitle = systemTitle
+        # Used security policy.
+        self.securityPolicy = SecurityPolicy.NOTHING
+        # Used certificate type.
+        self.certificateType = CertificateType.DIGITAL_SIGNATURE
+        # System title
+        self.systemTitle = None
         # Recipient system title.
         self.recipientSystemTitle = None
-        # Count type.
-        self.type_ = CountType.PACKET
-        # Date time.
-        self.dateTime = None
-        # Other information.
-        self.otherInformation = None
-        # Counted tag.
-        self.countTag = None
-        # Key parameters.
-        self.keyParameters = None
-        # Key ciphered data.
-        self.keyCipheredData = None
-        # Ciphered content.
-        self.cipheredContent = None
-        # Shared secret is generated when connection is made.
-        self.sharedSecret = None
-        # xml settings. This is used only on xml parser.
-        self.xml = None
-        # System title is not send on pre-established connecions.
-        self.ignoreSystemTitle = False
+        # Block cipher key.
+        self.blockCipherKey = None
+        # Authentication key.
+        self.authenticationKey = None
+        # Frame counter. Invocation counter.
+        self.invocationCounter = 0
+        # Transaction Id.
+        self.transactionId = None
+        # key to used to encrypt the data.
+        self.privateKey = None
+        # Public key to used to decrypt the data.
+        self.publicKey = None

@@ -182,6 +182,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
                 it.dayId = item[2]
                 for item2 in items:
                     if item2.index == it.index:
+                        #pylint: disable=modified-iterating-list
                         items.remove(item2)
                         break
                 items.append(it)
@@ -189,6 +190,7 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
                 index = e.parameters
                 for item in items:
                     if item.index == index:
+                        #pylint: disable=modified-iterating-list
                         items.remove(item)
                         break
             self.entries = items

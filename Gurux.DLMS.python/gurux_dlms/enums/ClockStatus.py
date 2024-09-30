@@ -65,4 +65,5 @@ class ClockStatus(GXIntFlag):
     DAYLIGHT_SAVE_ACTIVE = 0x80
 
     # Clock status is skipped.
+    #pylint: disable=W0213
     SKIPPED = 0xFF

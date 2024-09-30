@@ -34,6 +34,7 @@
     <Compile Include="gurux_dlms\enums\ClockStatus.py" />
     <Compile Include="gurux_dlms\enums\Command.py" />
     <Compile Include="gurux_dlms\enums\Conformance.py" />
+    <Compile Include="gurux_dlms\enums\CryptoKeyType.py" />
     <Compile Include="gurux_dlms\enums\DataType.py" />
     <Compile Include="gurux_dlms\enums\DateTimeExtraInfo.py" />
     <Compile Include="gurux_dlms\enums\DateTimeSkips.py" />
@@ -64,6 +65,7 @@
     <Compile Include="gurux_dlms\enums\VdeStateError.py" />
     <Compile Include="gurux_dlms\enums\__init__.py" />
     <Compile Include="gurux_dlms\GetCommandType.py" />
+    <Compile Include="gurux_dlms\GXCryptoKeyParameter.py" />
     <Compile Include="gurux_dlms\GXDLMSTranslatorMessage.py" />
     <Compile Include="gurux_dlms\GXDLMSExceptionResponse.py" />
     <Compile Include="gurux_dlms\GXHdlcSettings.py" />
@@ -87,6 +89,7 @@
     <Compile Include="gurux_dlms\GXDLMSChipperingStream.py" />
     <Compile Include="gurux_dlms\GXSecure.py" />
     <Compile Include="gurux_dlms\GXStandardObisCodeCollection.py" />
+    <Compile Include="gurux_dlms\IGXCryptoNotifier.py" />
     <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttributeSettings.py" />
     <Compile Include="gurux_dlms\objects\enums\NtpAuthenticationMethod.py" />
     <Compile Include="gurux_dlms\objects\enums\ChargeConfiguration.py" />

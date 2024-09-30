@@ -90,7 +90,7 @@ class GXDLMSServer(object):
         # Long get or read transaction information.
         self.transaction = None
         # Server settings.
-        self.settings = GXDLMSSettings(True)
+        self.settings = GXDLMSSettings(True, None)
         # Is server initialized.
         self.initialized = False
         # When data was received last time.

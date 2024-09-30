@@ -33,7 +33,6 @@
 # ---------------------------------------------------------------------------
 from gurux_dlms.enums import InterfaceType, Authentication, Security, Standard
 from gurux_dlms import GXDLMSClient
-from gurux_dlms.secure import GXDLMSSecureClient
 from gurux_dlms.GXByteBuffer import GXByteBuffer
 from gurux_dlms.objects import GXDLMSObject
 from gurux_common.enums import TraceLevel
@@ -42,6 +41,7 @@ from gurux_net.enums import NetworkType
 from gurux_net import GXNet
 from gurux_serial.GXSerial import GXSerial
 from GXCmdParameter import GXCmdParameter
+from GXDLMSSecureClient2 import GXDLMSSecureClient2
 
 class GXSettings:
     #
@@ -51,7 +51,7 @@ class GXSettings:
         self.media = None
         self.trace = TraceLevel.INFO
         self.invocationCounter = None
-        self.client = GXDLMSSecureClient(True)
+        self.client = GXDLMSSecureClient2(True)
         #  Objects to read.
         self.readObjects = []
         self.outputFile = None

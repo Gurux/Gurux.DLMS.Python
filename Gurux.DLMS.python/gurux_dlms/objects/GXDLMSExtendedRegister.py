@@ -56,6 +56,7 @@ class GXDLMSExtendedRegister(GXDLMSRegister, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
+        # pylint: disable=non-parent-init-called
         GXDLMSObject.__init__(self, ObjectType.EXTENDED_REGISTER, ln, sn)
         self.value = None
         self.scaler = 1

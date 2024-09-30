@@ -4,9 +4,9 @@
 #
 #
 #
-#  Filename: $HeadURL$
+#  Filename:        $HeadURL$
 #
-#  Version: $Revision$,
+#  Version:         $Revision$,
 #                   $Date$
 #                   $Author$
 #
@@ -31,7 +31,20 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXCmdParameter import GXCmdParameter
-from .GXSettings import GXSettings
-from .GXDLMSReader import GXDLMSReader
-from .GXDLMSSecureClient2 import GXDLMSSecureClient2
+
+from ..GXIntEnum import GXIntEnum
+
+class CryptoKeyType(GXIntEnum):
+    """
+    Access describes access errors.
+    """
+    #pylint: disable=too-few-public-methods
+
+    #ECDSA public or private key is asked.
+    ECDSA = 0
+
+    #Block cipher key is asked.
+    BLOCK_CIPHER = 1
+
+    #Authentication key is asked.
+    AUTHENTICATION = 2

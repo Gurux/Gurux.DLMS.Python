@@ -46,7 +46,7 @@ class GXDLMSXmlSettings:
     # pylint: disable=too-many-instance-attributes
     #
     def __init__(self, type_, numericsAsHex, isHex, list_):
-        self.settings = GXDLMSSettings(True)
+        self.settings = GXDLMSSettings(True, None)
         self.outputType = type_
         # Are numeric values shows as hex.
         self.showNumericsAsHex = self.outputType != TranslatorOutputType.STANDARD_XML and numericsAsHex

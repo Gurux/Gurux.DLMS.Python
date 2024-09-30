@@ -45,6 +45,7 @@ from .enums.DateTimeSkips import DateTimeSkips
 from .ConnectionState import ConnectionState
 from .objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXHdlcSettings import GXHdlcSettings
+from .IGXCryptoNotifier import IGXCryptoNotifier
 
 
 # This class includes DLMS communication settings.
@@ -103,7 +104,7 @@ class GXDLMSSettings:
     #
     # Constructor.
     #
-    def __init__(self, isServer):
+    def __init__(self, isServer, parent):
         self.customChallenges = False
         self.ctoSChallenge = None
         self.stoCChallenge = None
@@ -159,12 +160,23 @@ class GXDLMSSettings:
         self.commandType = 0
         self.useCustomChallenge = False
         self.preEstablishedSystemTitle = None
+        ###Event listeners.
+        self.__listeners = []
+        if isinstance(parent, IGXCryptoNotifier):
+            self.__listeners.append(parent)
 
     #
     # Client to Server challenge.
     #
     def getCtoSChallenge(self):
         return self.ctoSChallenge
+
+    #
+    # Notify client from decrypted PDU.
+    #
+    def _onPduEventHandler(self, complete, data):
+        for it in self.__listeners:
+            it.onPduEventHandler(it, complete, data)
 
     #
     # @param value
