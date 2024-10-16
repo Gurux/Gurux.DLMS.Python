@@ -476,7 +476,7 @@ class GXDateTime:
     @classmethod
     def getDifference(cls, start, to):
         diff = 0
-        cal = to.getLocalCalendar()
+        cal = to.value
         #  Compare seconds.
         if not to.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
             if start.second < cal.second:
