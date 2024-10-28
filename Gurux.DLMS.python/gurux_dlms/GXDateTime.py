@@ -37,8 +37,9 @@ import time
 from .enums import DateTimeSkips, ClockStatus, DateTimeExtraInfo
 from .GXTimeZone import GXTimeZone
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
+# pylint: disable=bad-option-value,old-style-class
 class GXDateTime:
     def __init__(self, value=None, pattern=None):
         """
@@ -54,11 +55,20 @@ class GXDateTime:
         if isinstance(value, datetime.datetime):
             if value.tzinfo is None:
                 if time.localtime().tm_isdst:
-                    #If DST is used.
+                    # If DST is used.
                     tz = GXTimeZone(int(-time.altzone / 60))
                 else:
                     tz = GXTimeZone(int(-time.timezone / 60))
-                self.value = datetime.datetime(value.year, value.month, value.day, value.hour, value.minute, value.second, 0, tzinfo=tz)
+                self.value = datetime.datetime(
+                    value.year,
+                    value.month,
+                    value.day,
+                    value.hour,
+                    value.minute,
+                    value.second,
+                    0,
+                    tzinfo=tz,
+                )
             else:
                 self.value = value
         elif isinstance(value, str):
@@ -74,15 +84,15 @@ class GXDateTime:
 
     @classmethod
     def __isNumeric(cls, value):
-        return '0' <= value <= '9'
+        return "0" <= value <= "9"
 
     @classmethod
     def __get_pattern(cls, loading):
         tm = datetime.datetime(1901, 2, 3, 13, 14, 15)
-        pm = tm.strftime('%p')
-        date = tm.strftime('%x')
+        pm = tm.strftime("%p")
+        date = tm.strftime("%x")
         for s in date:
-            if s < '0' or s > '9':
+            if s < "0" or s > "9":
                 sep = s
                 break
         dp = ""
@@ -91,8 +101,8 @@ class GXDateTime:
         date = date.replace(" ", sep).replace(" ", "")
         for d in date.split(sep):
             if not cls.__isNumeric(d):
-                if d == '' and sep != '.':
-                    d = '.'
+                if d == "" and sep != ".":
+                    d = "."
                 appendPM += d
                 continue
             dp += sep
@@ -117,9 +127,9 @@ class GXDateTime:
                 else:
                     dp += "%-d"
 
-        date = tm.strftime('%X').replace(pm, "").replace(" ", "")
+        date = tm.strftime("%X").replace(pm, "").replace(" ", "")
         for s in date:
-            if s < '0' or s > '9':
+            if s < "0" or s > "9":
                 sep = s
                 break
         for t in date.split(sep):
@@ -140,22 +150,22 @@ class GXDateTime:
                     tp += "%S"
                 else:
                     tp += "%-S"
-        if not pm or tm.strftime('%c').find(pm) == -1:
+        if not pm or tm.strftime("%c").find(pm) == -1:
             return dp[1:] + appendPM + " " + tp[1:]
         tp = tp.replace("H", "I")
         if not appendPM:
             return dp[1:] + " " + tp[1:] + " " + pm
         return dp[1:] + " " + appendPM + " " + tp[1:]
 
-    #Check is time zone included and return index of time zone.
+    # Check is time zone included and return index of time zone.
     @classmethod
     def __timeZonePosition(cls, value):
         if len(value) > 5:
             pos = len(value) - 6
             sep = value[pos]
-            if sep in('-', '+'):
+            if sep in ("-", "+"):
                 return pos
-            if value[len(value) - 1] == 'Z':
+            if value[len(value) - 1] == "Z":
                 return len(value) - 1
         return -1
 
@@ -164,7 +174,7 @@ class GXDateTime:
     #
     # @param value
     #            Date time value as a string.
-    #pylint: disable=too-many-nested-blocks
+    # pylint: disable=too-many-nested-blocks
     def fromString(self, value, pattern=None):
         if self.skip is None:
             self.skip = DateTimeSkips.NONE
@@ -176,7 +186,7 @@ class GXDateTime:
             if not pattern:
                 pattern = self.__get_pattern(True)
             pattern = self._remove(pattern)
-            if value.find('BEGIN') != -1:
+            if value.find("BEGIN") != -1:
                 self.extra |= DateTimeExtraInfo.DST_BEGIN
                 value = value.replace("BEGIN", "01")
             if value.find("END") != -1:
@@ -189,28 +199,28 @@ class GXDateTime:
                 self.extra |= DateTimeExtraInfo.LAST_DAY
                 value = value.replace("LASTDAY", "01")
             v = value
-            #Time zone is not added to time or date objects.
+            # Time zone is not added to time or date objects.
             addTimeZone = type(self).__name__ == GXDateTime.__name__
-            if value.find('*') != -1:
+            if value.find("*") != -1:
                 lastFormatIndex = -1
                 pos = 0
                 while pos < len(value):
                     c = value[pos]
                     if not self.__isNumeric(c):
-                        if c == '*':
+                        if c == "*":
                             end = lastFormatIndex + 1
                             c = pattern[end]
                             while end + 1 < len(pattern) and pattern[end] == c:
                                 end += 1
-                            if pattern[end] == 'Y':
-                                v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
-                            elif pattern[end] == '%-Y':
-                                v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
-                            elif pattern[end] == '%Y':
-                                v = str(v[0:pos]) + "Y" + str(v[pos + 1:])
+                            if pattern[end] == "Y":
+                                v = str(v[0:pos]) + "Y" + str(v[pos + 1 :])
+                            elif pattern[end] == "%-Y":
+                                v = str(v[0:pos]) + "Y" + str(v[pos + 1 :])
+                            elif pattern[end] == "%Y":
+                                v = str(v[0:pos]) + "Y" + str(v[pos + 1 :])
                             else:
-                                v = str(v[0:pos]) + "1" + str(v[pos + 1:])
-                            tmp = pattern[lastFormatIndex + 1: end + 1].strip()
+                                v = str(v[0:pos]) + "1" + str(v[pos + 1 :])
+                            tmp = pattern[lastFormatIndex + 1 : end + 1].strip()
                             if tmp in ("%y", "%-y", "%Y", "%-Y"):
                                 addTimeZone = False
                                 self.skip |= DateTimeSkips.YEAR
@@ -238,28 +248,45 @@ class GXDateTime:
                     pos += 1
                 v = v.replace("Y", "2000")
             self.skip |= DateTimeSkips.DAY_OF_WEEK | DateTimeSkips.MILLISECOND
-            #If time zone is used.
+            # If time zone is used.
             if addTimeZone:
                 pos = self.__timeZonePosition(v)
                 tz = None
                 if pos != -1:
-                    if v[pos] != 'Z':
-                        tz = 60 * int(v[pos + 1:pos + 3]) + int(v[pos + 4:])
+                    if v[pos] != "Z":
+                        tz = 60 * int(v[pos + 1 : pos + 3]) + int(v[pos + 4 :])
                     else:
                         tz = 0
                     v = v[0:pos]
                 tmp = datetime.datetime.strptime(v, pattern)
                 if tz is None:
-                    tmp = datetime.datetime(tmp.year, tmp.month, tmp.day, tmp.hour, tmp.minute, tmp.second, 0)
+                    tmp = datetime.datetime(
+                        tmp.year,
+                        tmp.month,
+                        tmp.day,
+                        tmp.hour,
+                        tmp.minute,
+                        tmp.second,
+                        0,
+                    )
                 else:
-                    tmp = datetime.datetime(tmp.year, tmp.month, tmp.day, tmp.hour, tmp.minute, tmp.second, 0, tzinfo=GXTimeZone(tz))
+                    tmp = datetime.datetime(
+                        tmp.year,
+                        tmp.month,
+                        tmp.day,
+                        tmp.hour,
+                        tmp.minute,
+                        tmp.second,
+                        0,
+                        tzinfo=GXTimeZone(tz),
+                    )
                 return tmp
             return datetime.datetime.strptime(v.strip(), pattern.strip())
         return None
 
-     #pylint: disable=no-self-use
+    # pylint: disable=no-self-use
     def _remove(self, format_):
-        #Do nothing.
+        # Do nothing.
         return format_
 
     def toFormatString(self, pattern=None):
@@ -270,9 +297,9 @@ class GXDateTime:
 
     @classmethod
     def __toLocal(cls, value):
-        #Convert current time to local.
+        # Convert current time to local.
         if value.tzinfo is None:
-            #If meter is not use time zone.
+            # If meter is not use time zone.
             return value
         timestamp = calendar.timegm(value.utctimetuple())
         local_dt = datetime.datetime.fromtimestamp(timestamp)
@@ -283,22 +310,6 @@ class GXDateTime:
         if self.value.tzinfo:
             return self.value.tzname()
         return ""
-#        if self.value.utcoffset() is None:
-#            str_ = ""
-#        else:
-#
-#            offset = int(self.value.utcoffset().seconds / 60)
-#            if offset == 0:
-#                str_ = "Z"
-#            else:
-#                if offset > 0:
-#                    str_ = "+"
-#                else:
-#                    str_ = "-"
-#                str_ += str(int(offset / 60)).zfill(2)
-#                str_ += ":"
-#                str_ += str(offset % 60).zfill(2)#
-#        return str_
 
     def __toFormatString(self, useLocalTime, pattern=None):
         if not self.value:
@@ -392,14 +403,14 @@ class GXDateTime:
         return value
 
     def __str__(self):
-        #Returns date-time of the meter using local time zone.
+        # Returns date-time of the meter using local time zone.
         return self.__toString(True)
 
     def toString(self, pattern=None):
         return self.__toString(True, pattern)
 
     def toMeterString(self, pattern=None):
-        #Returns date-time of the meter using meter time zone.
+        # Returns date-time of the meter using meter time zone.
         return self.__toString(False, pattern)
 
     def __toString(self, useLocalTime, pattern=None):
@@ -504,24 +515,44 @@ class GXDateTime:
         #  Compare days.
         if not to.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
             if start.day < cal.day:
-                diff += (cal.month - start.month) * 24 * 60 * 60000
-            elif start.month != cal.month:
+                diff += (cal.day - start.day) * 24 * 60 * 60000
+            elif start.day != cal.day:
                 if not to.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
-                    diff += (cal.month - start.month) * 24 * 60 * 60000
+                    if to.extra & DateTimeExtraInfo.LAST_DAY:
+                        diff += (
+                            (cls.daysInMonth(start.year, start.month) - start.day)
+                            * 24
+                            * 60
+                            * 60000
+                        )
+                    elif to.extra & DateTimeExtraInfo.LAST_DAY2:
+                        diff += (
+                            (cls.daysInMonth(start.year, start.month) - 1 - start.day)
+                            * 24
+                            * 60
+                            * 60000
+                        )
+                    else:
+                        diff += (cal.day - start.day) * 24 * 60 * 60000
                 else:
-                    diff = ((cls.daysInMonth(start.year, start.month) - start.day + cal.day) * 24 * 60 * 60000) + diff
+                    diff = (
+                        (cls.daysInMonth(start.year, start.month) - start.day + cal.day)
+                        * 24
+                        * 60
+                        * 60000
+                    ) + diff
         elif diff < 0:
             diff = 24 * 60 * 60000 + diff
         #  Compare months.
         if not to.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
             if start.month < cal.month:
-                m = start.day
-                while m != cal.day:
+                m = start.month
+                while m != cal.month:
                     diff += cls.daysInMonth(start.year, m) * 24 * 60 * 60000
                     m += 1
             else:
-                m = cal.day
-                while m != start.day:
+                m = cal.month
+                while m != start.month:
                     diff -= cls.daysInMonth(start.year, m) * 24 * 60 * 60000
                     m += 1
         elif diff < 0:
@@ -539,7 +570,7 @@ class GXDateTime:
     #
     @classmethod
     def daysInMonth(cls, year, month):
-        return calendar.monthrange(year, month)
+        return calendar.monthrange(year, month)[1]
 
     #
     # Get date time from Epoch time.
@@ -602,14 +633,15 @@ class GXDateTime:
     # Returns date time as a hex string.
     #
     def toHex(self, addSpace, useMeterTimeZone):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         from .GXByteBuffer import GXByteBuffer
         from .enums import DataType
         from .internal._GXCommon import _GXCommon
         from .GXDLMSSettings import GXDLMSSettings
+
         buff = GXByteBuffer()
         settings = GXDLMSSettings(False, None)
         settings.UseUtc2NormalTime = useMeterTimeZone
         _GXCommon.setData(settings, buff, DataType.OCTET_STRING, self)
-        #Dont add data type or length.
+        # Dont add data type or length.
         return buff.toHex(addSpace, 2)
