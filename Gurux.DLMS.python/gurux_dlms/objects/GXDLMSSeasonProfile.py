@@ -34,8 +34,9 @@
 
 from ..GXByteBuffer import GXByteBuffer
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class,too-few-public-methods
+# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
 class GXDLMSSeasonProfile:
     # Constructor.
     #
@@ -55,4 +56,9 @@ class GXDLMSSeasonProfile:
             tmp = self.name.decode("utf-8")
         else:
             tmp = GXByteBuffer.hex(self.name)
-        return tmp + " " + str(self.start)
+        tmp = tmp + " " + str(self.start) + " "
+        if GXByteBuffer.isAsciiString(self.weekName):
+            tmp = self.weekName.decode("utf-8")
+        else:
+            tmp = GXByteBuffer.hex(self.weekName)
+        return tmp

@@ -33,10 +33,11 @@
 # ---------------------------------------------------------------------------
 from ..GXByteBuffer import GXByteBuffer
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
+# pylint: disable=bad-option-value,old-style-class
 class GXDLMSWeekProfile:
-    #pylint: disable=too-many-instance-attributes,too-few-public-methods
+    # pylint: disable=too-many-instance-attributes,too-few-public-methods
     def __init__(self):
         """Constructor."""
         self.name = None
@@ -49,4 +50,20 @@ class GXDLMSWeekProfile:
         self.sunday = 0
 
     def __str__(self):
-        return GXByteBuffer.hex(self.name)
+        return (
+            GXByteBuffer.hex(self.name)
+            + " "
+            + str(self.monday)
+            + " "
+            + str(self.tuesday)
+            + " "
+            + str(self.wednesday)
+            + " "
+            + str(self.thursday)
+            + " "
+            + str(self.friday)
+            + " "
+            + str(self.saturday)
+            + " "
+            + str(self.sunday)
+        )
