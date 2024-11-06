@@ -50,8 +50,12 @@ class GXDLMSWeekProfile:
         self.sunday = 0
 
     def __str__(self):
+        if GXByteBuffer.isAsciiString(self.name):
+            tmp = self.name.decode("utf-8")
+        else:
+            tmp = GXByteBuffer.hex(self.name)
         return (
-            GXByteBuffer.hex(self.name)
+            tmp
             + " "
             + str(self.monday)
             + " "

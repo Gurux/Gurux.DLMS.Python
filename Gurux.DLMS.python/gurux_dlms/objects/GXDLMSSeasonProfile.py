@@ -58,7 +58,7 @@ class GXDLMSSeasonProfile:
             tmp = GXByteBuffer.hex(self.name)
         tmp = tmp + " " + str(self.start) + " "
         if GXByteBuffer.isAsciiString(self.weekName):
-            tmp = self.weekName.decode("utf-8")
+            tmp += self.weekName.decode("utf-8")
         else:
-            tmp = GXByteBuffer.hex(self.weekName)
+            tmp += GXByteBuffer.hex(self.weekName)
         return tmp
