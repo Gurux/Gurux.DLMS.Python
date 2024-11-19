@@ -1161,7 +1161,7 @@ class GXDLMS:
         addresses[0] = source
         addresses[1] = target
         if server:
-            if settings.serverAddress != 0 and settings.serverAddress != target:
+            if settings.serverAddress not in (0, target):
                 if reply.getUInt8(reply.position) == Command.SNRM:
                     settings.serverAddress = target
                 else:
@@ -1174,7 +1174,7 @@ class GXDLMS:
                     )
             else:
                 settings.serverAddress = target
-            if settings.clientAddress != 0 and settings.clientAddress != source:
+            if settings.clientAddress not in (0, source):
                 if reply.getUInt8(reply.position) == Command.SNRM:
                     settings.clientAddress = source
                 else:

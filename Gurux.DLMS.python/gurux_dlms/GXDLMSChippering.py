@@ -104,7 +104,7 @@ class GXDLMSChippering:
         if p.type_ == CountType.PACKET:
             tmp2 = GXByteBuffer(10 + len(data))
             tmp2.setUInt8(p.tag)
-            if p.tag == Command.GENERAL_GLO_CIPHERING or p.tag == Command.GENERAL_DED_CIPHERING or p.tag == Command.DATA_NOTIFICATION:
+            if p.tag in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING, Command.DATA_NOTIFICATION):
                 if not p.ignoreSystemTitle:
                     _GXCommon.setObjectCount(len(p.systemTitle), tmp2)
                     tmp2.set(p.systemTitle)

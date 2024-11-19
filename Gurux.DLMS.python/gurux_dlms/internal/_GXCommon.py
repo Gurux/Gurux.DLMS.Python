@@ -264,7 +264,7 @@ class _GXCommon:
         if data.position == len(data):
             info.complete = False
             return None
-        if info.type_ == DataType.ARRAY or info.type_ == DataType.STRUCTURE:
+        if info.type_ in (DataType.ARRAY, DataType.STRUCTURE):
             value = cls.getArray(settings, data, info, startIndex)
         elif info.type_ == DataType.BOOLEAN:
             value = cls.getBoolean(data, info)

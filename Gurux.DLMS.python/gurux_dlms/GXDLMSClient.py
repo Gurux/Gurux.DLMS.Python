@@ -1514,6 +1514,8 @@ class GXDLMSClient(object):
                 # Convert to upper case letter.
                 if crypted[pos] > "9" and crypted[pos] < "A":
                     crypted[pos] += 7
+                if crypted[pos] > 'F':
+                    crypted[pos] = int('0') + int(crypted[pos]) - int('G')
         return crypted
 
     @classmethod

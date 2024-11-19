@@ -489,31 +489,31 @@ class GXDateTime:
         diff = 0
         cal = to.value
         #  Compare seconds.
-        if not to.skip & DateTimeSkips.SECOND != DateTimeSkips.NONE:
+        if to.skip & DateTimeSkips.SECOND == DateTimeSkips.NONE:
             if start.second < cal.second:
                 diff += (cal.second - start.second) * 1000
             else:
                 diff -= (start.second - cal.second) * 1000
         elif diff < 0:
-            diff = 60000 + diff
+            diff += 60000
         #  Compare minutes.
-        if not to.skip & DateTimeSkips.MINUTE != DateTimeSkips.NONE:
+        if to.skip & DateTimeSkips.MINUTE == DateTimeSkips.NONE:
             if start.minute < cal.minute:
                 diff += (cal.minute - start.minute) * 60000
             else:
                 diff -= (start.minute - cal.minute) * 60000
         elif diff < 0:
-            diff = 60 * 60000 + diff
+            diff += 60 * 60000
         #  Compare hours.
-        if not to.skip & DateTimeSkips.HOUR != DateTimeSkips.NONE:
+        if to.skip & DateTimeSkips.HOUR == DateTimeSkips.NONE:
             if start.hour < cal.hour:
                 diff += (cal.hour - start.hour) * 60 * 60000
             else:
                 diff -= (start.hour - cal.hour) * 60 * 60000
         elif diff < 0:
-            diff = 60 * 60000 + diff
+            diff += 60 * 60000
         #  Compare days.
-        if not to.skip & DateTimeSkips.DAY != DateTimeSkips.NONE:
+        if to.skip & DateTimeSkips.DAY == DateTimeSkips.NONE:
             if start.day < cal.day:
                 diff += (cal.day - start.day) * 24 * 60 * 60000
             elif start.day != cal.day:
@@ -535,16 +535,16 @@ class GXDateTime:
                     else:
                         diff += (cal.day - start.day) * 24 * 60 * 60000
                 else:
-                    diff = (
+                    diff += (
                         (cls.daysInMonth(start.year, start.month) - start.day + cal.day)
                         * 24
                         * 60
                         * 60000
-                    ) + diff
+                    )
         elif diff < 0:
-            diff = 24 * 60 * 60000 + diff
+            diff += 24 * 60 * 60000
         #  Compare months.
-        if not to.skip & DateTimeSkips.MONTH != DateTimeSkips.NONE:
+        if to.skip & DateTimeSkips.MONTH == DateTimeSkips.NONE:
             if start.month < cal.month:
                 m = start.month
                 while m != cal.month:
@@ -557,6 +557,27 @@ class GXDateTime:
                     m += 1
         elif diff < 0:
             diff = cls.daysInMonth(start.year, start.month) * 24 * 60 * 60000 + diff
+        #  Compare years.
+        if to.skip & DateTimeSkips.YEAR == DateTimeSkips.NONE:
+            if start.year < cal.year:
+                y = start.year
+                while y != cal.year:
+                    for m in range(1, 12):
+                        diff += cls.daysInMonth(y, m) * 24 * 60 * 60000
+                    y += 1
+            else:
+                y = cal.year
+                while y != start.year:
+                    for m in range(1, 12):
+                        diff -= cls.daysInMonth(y, m) * 24 * 60 * 60000
+                    y += 1
+        elif diff < 0:
+            if diff < 0:
+                for m in range(1, 12):
+                    diff += cls.daysInMonth(start.year, m) * 24 * 60 * 60000
+            else:
+                for m in range(1, 12):
+                    diff -= cls.daysInMonth(start.year, m) * 24 * 60 * 60000
         return diff
 
     #
