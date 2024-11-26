@@ -562,22 +562,18 @@ class GXDateTime:
             if start.year < cal.year:
                 y = start.year
                 while y != cal.year:
-                    for m in range(1, 12):
+                    for m in range(1, 13):
                         diff += cls.daysInMonth(y, m) * 24 * 60 * 60000
                     y += 1
             else:
                 y = cal.year
                 while y != start.year:
-                    for m in range(1, 12):
+                    for m in range(1, 13):
                         diff -= cls.daysInMonth(y, m) * 24 * 60 * 60000
                     y += 1
         elif diff < 0:
-            if diff < 0:
-                for m in range(1, 12):
-                    diff += cls.daysInMonth(start.year, m) * 24 * 60 * 60000
-            else:
-                for m in range(1, 12):
-                    diff -= cls.daysInMonth(start.year, m) * 24 * 60 * 60000
+            for m in range(1, 13):
+                diff += cls.daysInMonth(start.year, m) * 24 * 60 * 60000
         return diff
 
     #
