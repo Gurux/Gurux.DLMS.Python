@@ -1402,7 +1402,7 @@ class GXDLMS:
             return
         len_ = buff.getUInt8()
         index = buff.position
-        if buff.available < len_:
+        if buff.available() < len_:
             data.complete = False
             buff.position = buff.position - 2
         else:
