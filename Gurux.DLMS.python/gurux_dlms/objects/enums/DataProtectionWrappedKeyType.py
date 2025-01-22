@@ -26,25 +26,35 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXDLMSRestriction import GXDLMSRestriction
+from gurux_dlms.GXIntEnum import GXIntEnum
 
 
-###Python 2 requires this
-# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
-class GXDLMSCaptureObject:
-    #
-    # Constructor.
-    #
-    # aindex: Attribute index.
-    # dIndex: Data index.
-    #
-    def __init__(self, aIndex=0, dIndex=0):
-        self.attributeIndex = aIndex
-        self.dataIndex = dIndex
-        self.restriction = GXDLMSRestriction()
-        self.columns = []
+class DataProtectionWrappedKeyType(GXIntEnum):
+    """
+    Data protection wrapped key types.
+    """
+
+    MASTER_KEY = 0
+    """
+    Master key.
+    """
+
+    @classmethod
+    def valueofString(cls, value):
+        if value == "MasterKey":
+            ret = DataProtectionWrappedKeyType.MASTER_KEY
+        else:
+            raise ValueError("Unknown enum value: " + str(value))
+        return ret
+
+    def __str__(self):
+        if self.value == DataProtectionWrappedKeyType.MASTER_KEY:
+            ret = "MasterKey"
+        else:
+            raise ValueError("Unknown enum value: " + str(self.value))
+        return ret

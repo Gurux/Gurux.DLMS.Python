@@ -26,31 +26,50 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..enums import Authentication
+class GXDLMSMacPosTable:
+    __shortAddress = None
+    "The 16-bit address the device is using to communicate through the PAN."
 
-# pylint: disable=too-few-public-methods
-class GXAuthentication:
-    """
-    Authentication class is used to give authentication information to the server.
-    """
+    __lQI = 0
+    "Link Quality Indicator."
 
-    def __init__(self, forType=Authentication.NONE, pw=None, forClientAddress=0):
+    __validTime = None
+    "Valid time."
+
+    @property
+    def shortAddress(self):
         """
-        Constructor.
-        forType: Authentication type
-        pw: Used password.
-        forClientAddress: Client Id.
+        The 16-bit address the device is using to communicate through the PAN.
         """
+        return self.__shortAddress
 
-        self.type_ = forType
-        if pw:
-            self.password = pw[0:]
-        self.clientAddress = forClientAddress
+    @shortAddress.setter
+    def shortAddress(self, value):
+        self.__shortAddress = value
 
-    def __str__(self):
-        return str(self.type_)
+    @property
+    def lQI(self):
+        """
+        Link Quality Indicator.
+        """
+        return self.__lQI
+
+    @lQI.setter
+    def lQI(self, value):
+        self.__lQI = value
+
+    @property
+    def validTime(self):
+        """
+        Valid time,
+        """
+        return self.__validTime
+
+    @validTime.setter
+    def validTime(self, value):
+        self.__validTime = value

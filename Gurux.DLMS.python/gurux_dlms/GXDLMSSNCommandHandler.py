@@ -32,7 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 from .TranslatorTags import TranslatorTags
 from .ConfirmedServiceError import ConfirmedServiceError
 from .ServiceError import ServiceError

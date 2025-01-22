@@ -42,7 +42,7 @@ from .GXDLMSXmlSettings import GXDLMSXmlSettings
 from .GXDLMSTranslator import GXDLMSTranslator
 from .enums.Security import Security
 from .GXDLMSXmlPdu import GXDLMSXmlPdu
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 
 class GXDLMSXmlClient(GXDLMSSecureClient):
     """

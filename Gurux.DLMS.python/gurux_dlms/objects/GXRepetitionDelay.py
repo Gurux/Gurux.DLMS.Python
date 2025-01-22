@@ -26,31 +26,50 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..enums import Authentication
-
-# pylint: disable=too-few-public-methods
-class GXAuthentication:
+class GXRepetitionDelay:
     """
-    Authentication class is used to give authentication information to the server.
+    This class is used to count repetition delay for the next push message.
     """
 
-    def __init__(self, forType=Authentication.NONE, pw=None, forClientAddress=0):
-        """
-        Constructor.
-        forType: Authentication type
-        pw: Used password.
-        forClientAddress: Client Id.
-        """
+    def __init__(self):
+        self.__min = 0
+        self.__exponent = 0
+        self.__max = 0
 
-        self.type_ = forType
-        if pw:
-            self.password = pw[0:]
-        self.clientAddress = forClientAddress
+    @property
+    def min(self):
+        """
+        The minimum delay until a next push attempt is started in seconds.
+        """
+        return self.__min
 
-    def __str__(self):
-        return str(self.type_)
+    @min.setter
+    def min(self, value):
+        self.__min = value
+
+    @property
+    def exponent(self):
+        """
+        Calculating the next delay.
+        """
+        return self.__exponent
+
+    @exponent.setter
+    def exponent(self, value):
+        self.__exponent = value
+
+    @property
+    def max(self):
+        """
+        The maximum delay until a next push attempt is started in seconds.
+        """
+        return self.__max
+
+    @max.setter
+    def max(self, value):
+        self.__max = value

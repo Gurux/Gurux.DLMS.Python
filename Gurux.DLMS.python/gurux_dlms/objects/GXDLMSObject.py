@@ -333,7 +333,6 @@ class GXDLMSObject(object):
     # Server calls this invokes method.
     # @param settings DLMS settings.
     # @param e Value event parameters.
-    # pylint: disable=no-self-use
     def invoke(self, settings, e):
         # pylint: disable=unused-argument
         raise ValueError("invoke")

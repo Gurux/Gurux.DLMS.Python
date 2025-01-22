@@ -57,7 +57,7 @@ from .GXReplyData import GXReplyData
 from .ConfirmedServiceError import ConfirmedServiceError
 from .SetResponseType import SetResponseType
 from .HdlcControlFrame import HdlcControlFrame
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 from .TranslatorTags import TranslatorTags
 from .TranslatorStandardTags import TranslatorStandardTags
 from .SingleReadResponse import SingleReadResponse
@@ -433,7 +433,7 @@ class GXDLMS:
                             p.requestType = ActionResponseType.WITH_BLOCK
                         elif (
                             p.requestType == ActionResponseType.WITH_BLOCK
-                            and p.data.available == 0
+                            and p.data.available() == 0
                         ):
                             # If server asks next part of PDU.
                             p.requestType = ActionResponseType.NEXT_BLOCK
@@ -990,6 +990,108 @@ class GXDLMS:
         return bb.array()
 
     @classmethod
+    def getMacFrame(cls, settings, frame_, creditFields, data):
+        if settings.interfaceType == InterfaceType.PLC:
+            return cls.getPlcFrame(settings, creditFields, data)
+        return cls.getMacHdlcFrame(settings, frame_, creditFields, data)
+
+    @classmethod
+    def getPlcFrame(cls, settings, creditFields, data):
+        frameSize = data.available()
+        # Max frame size is 124 bytes.
+        if frameSize > 134:
+            frameSize = 134
+        # PAD Length.
+        padLen = (36 - ((11 + frameSize) % 36)) % 36
+        bb = GXByteBuffer()
+        bb.capacity = 15 + frameSize + padLen
+        # Add STX
+        bb.setUInt8(2)
+        # Length.
+        bb.setUInt8((11 + frameSize))
+        # Length.
+        bb.setUInt8(0x50)
+        # Add Credit fields.
+        bb.setUInt8(creditFields)
+        # Add source and target MAC addresses.
+        bb.setUInt8(settings.plc.MacSourceAddress >> 4)
+        val = settings.plc.MacSourceAddress << 12
+        val |= settings.plc.MacDestinationAddress & 0xFFF
+        bb.setUInt16(val)
+        bb.setUInt8(padLen)
+        # Control byte.
+        bb.setUInt8(PlcDataLinkData.Request)
+        bb.setUInt8(settings.serverAddress)
+        bb.setUInt8(settings.clientAddress)
+        bb.Set(data, frameSize)
+        # Add padding.
+        while padLen != 0:
+            bb.setUInt8(0)
+            --padLen
+        # Checksum.
+        crc = GXFCS16.countFCS16(bb.Data, 0, bb.Size)
+        bb.setUInt16(crc)
+        # Remove sent data in server side.
+        if settings.isServer:
+            if data.size == data.position:
+                data.clear()
+            else:
+                data.move(data.position, 0, data.size - data.position)
+                data.position = 0
+        return bb.array()
+
+
+    @classmethod
+    def getMacHdlcFrame(cls, settings, frame_, creditFields, data):
+        if settings.Hdlc.MaxInfoTX > 126:
+            settings.Hdlc.MaxInfoTX = 86
+        bb = GXByteBuffer()
+        # Lenght is updated last.
+        bb.setUInt16(0)
+        # Add  Credit fields.
+        bb.setUInt8(creditFields)
+        # Add source and target MAC addresses.
+        bb.setUInt8(settings.plc.macSourceAddress >> 4)
+        val = settings.plc.macSourceAddress << 12
+        val |= settings.plc.macDestinationAddress & 0xFFF
+        bb.setUInt16(val)
+        tmp = cls.getHdlcFrame(settings, frame_, data, True)
+        padLen = (36 - ((10 + tmp.Length) % 36)) % 36
+        bb.setUInt8(padLen)
+        bb.Set(tmp)
+        # Add padding.
+        while padLen != 0:
+            bb.setUInt8(0)
+            --padLen
+        
+        # Checksum.
+        crc = _GXFCS16.countFCS24(bb.Data, 2, bb.Size - 2 - padLen)
+        bb.setUInt8(crc >> 16)
+        bb.setUInt16(crc)
+        # Add NC
+        val = bb.Size / 36
+        if bb.Size % 36 != 0:
+            ++val
+        if val == 1:
+            val = PlcMacSubframes.ONE
+        elif val == 2:
+            val = PlcMacSubframes.TWO
+        elif val == 3:
+            val = PlcMacSubframes.THREE
+        elif val == 4:
+            val = PlcMacSubframes.FOUR
+        elif val == 5:
+            val = PlcMacSubframes.FIVE
+        elif val == 6:
+            val = PlcMacSubframes.SIX
+        elif val == 7:
+            val = PlcMacSubframes.SEVEN
+        else:
+            raise Exception("Data length is too high.")
+        bb.setUInt16(0, val)
+        return bb.array()
+
+    @classmethod
     def getLLCBytes(cls, server, data):
         if server:
             return data.compare(_GXCommon.LLC_SEND_BYTES)
@@ -1396,17 +1498,17 @@ class GXDLMS:
             pos = pos + 1
         # Not a PLC frame.
         if buff.position == buff.size:
-            # Not enough data to parse;
+            # Not enough data to parse
             data.complete = False
             buff.position = packetStartID
             return
         len_ = buff.getUInt8()
         index = buff.position
-        if buff.available < len_:
+        if buff.available() < len_:
             data.complete = False
             buff.position = buff.position - 2
         else:
-            buff.GetUInt8()
+            buff.getUInt8()
             # Credit fields.  IC, CC, DC
             # credit =
             buff.getUInt8()
@@ -1919,11 +2021,11 @@ class GXDLMS:
                         reply.data.data,
                         False,
                         reply.data.position,
-                        reply.data.available,
+                        reply.data.available(),
                     ),
                 )
             reply.xml.AppendEndTag(TranslatorTags.P_BLOCK)
-        elif reply.data.available != 0:
+        elif reply.data.available() != 0:
             # Get data size.
             blockLength = _GXCommon.getObjectCount(reply.data)
             # if whole block is read.
@@ -2349,7 +2451,7 @@ class GXDLMS:
                     ),
                 )
             reply.xml.appendEndTag(TranslatorTags.RESULT)
-        elif reply.data.available != 0:
+        elif reply.data.available() != 0:
             # Get data size.
             blockLength = _GXCommon.getObjectCount(reply.data)
             # if whole block is read.

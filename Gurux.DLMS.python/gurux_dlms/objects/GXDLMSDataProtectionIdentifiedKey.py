@@ -26,25 +26,32 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXDLMSRestriction import GXDLMSRestriction
+from .enums.DataProtectionIdentifiedKeyType import DataProtectionIdentifiedKeyType
 
 
-###Python 2 requires this
-# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
-class GXDLMSCaptureObject:
-    #
-    # Constructor.
-    #
-    # aindex: Attribute index.
-    # dIndex: Data index.
-    #
-    def __init__(self, aIndex=0, dIndex=0):
-        self.attributeIndex = aIndex
-        self.dataIndex = dIndex
-        self.restriction = GXDLMSRestriction()
-        self.columns = []
+class GXDLMSDataProtectionIdentifiedKey:
+    """
+    Data protection identified key.
+    """
+
+    def __init__(self):
+        """
+        Constructor.
+        """
+        self.__keyType = DataProtectionIdentifiedKeyType.UNICAST_ENCRYPTION
+
+    @property
+    def keyType(self):
+        """
+        Data protectionKey type.
+        """
+        return self.__keyType
+
+    @keyType.setter
+    def keyType(self, value):
+        self.__keyType = value

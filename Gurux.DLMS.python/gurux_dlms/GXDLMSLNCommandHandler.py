@@ -42,7 +42,7 @@ from .TranslatorTags import TranslatorTags
 from .GXByteBuffer import GXByteBuffer
 from .enums.AccessServiceCommandType import AccessServiceCommandType
 from .internal._GXDataInfo import _GXDataInfo
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 from .SingleReadResponse import SingleReadResponse
 from .GetCommandType import GetCommandType
 from .GXDLMSLNParameters import GXDLMSLNParameters

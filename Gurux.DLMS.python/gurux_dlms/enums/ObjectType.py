@@ -33,9 +33,11 @@
 # ---------------------------------------------------------------------------
 from ..GXIntEnum import GXIntEnum
 
+
 class ObjectType(GXIntEnum):
     """ObjectType enumerates the usable types of DLMS objects in GuruxDLMS."""
-    #pylint: disable=too-few-public-methods
+
+    # pylint: disable=too-few-public-methods
 
     # When communicating with a meter, the application may demand periodical
     # actions.  If these actions are not linked to tariffication =
@@ -102,7 +104,6 @@ class ObjectType(GXIntEnum):
     # interface class has been changed from Ethernet setup to MAC address setup
     # to allow a more general use.
     MAC_ADDRESS_SETUP = 43
-
 
     # ExtendedRegister stores a value, and understands the type of the value.
     # Refer to an object of this type by its logical name, using the OBIS
@@ -269,6 +270,11 @@ class ObjectType(GXIntEnum):
 
     TOKEN_GATEWAY = 115
 
+    IEC_6205541_Attributes = 116
+
+    # Allow managing attributes of type array of other interface objects.
+    ARRAY_MANAGER = 123
+
     # SapAssigment stores information of assignment of the logical devices to
     # their SAP = Service Access Points.
     SAP_ASSIGNMENT = 17
@@ -315,7 +321,6 @@ class ObjectType(GXIntEnum):
     # S-FSK Phy MAC Setup
     SFSK_PHY_MAC_SETUP = 50
 
-
     # S-FSK Active initiator.
     SFSK_ACTIVE_INITIATOR = 51
 
@@ -325,9 +330,17 @@ class ObjectType(GXIntEnum):
     # S-FSK MAC Counters.
     SFSK_MAC_COUNTERS = 53
 
+    # IEC 61334-4-32 LLC setup
+    IEC_61334_4_32_LLC_SETUP = 55
+
+    # S-FSK Reporting system list.
+    S_FSK_REPORTING_SYSTEM_LIST = 56
+
+    # Arbitrator.
+    ARBITRATOR = 68
+
     # G3-PLC MAC layer counters
     G3_PLC_MAC_LAYER_COUNTERS = 90
-
 
     # G3-PLC MAC setup.
     G3_PLC_MAC_SETUP = 91
@@ -335,6 +348,29 @@ class ObjectType(GXIntEnum):
     # G3-PLC 6LoWPAN.
     G3_PLC6_LO_WPAN = 92
 
+    # Function control.
+    FUNCTION_CONTROL = 122
+
+    # Communication port protection.
+    COMMUNICATION_PORT_PROTECTION = 124
+
+    # LTE monitoring.
+    LTE_MONITORING = 151
+
+    # CoAP setup.
+    CoAPSetup = 152
+
+    # CoAP diagnostic.
+    COAP_DIAGNOSTIC = 153
+
+    # G3-PLC Hybrid RF MAC layer counters.
+    G3_PLC_HYBRID_RF_MAC_LAYER_COUNTERS = 160
+
+    # G3-PLC Hybrid RF MAC setup.
+    G3_PLC_HYBRID_RF_MAC_SETUP = 161
+
+    # G3-PLC Hybrid 6LoWPAN adaptation layer setup.
+    G3_PLC_HYBRID_6LOWPAN_ADAPTATION_LAYER_SETUP = 162
     #
     # Tariff Plan =Piano Tariffario) is used in Italian standard UNI/TS
     # 11291-11.

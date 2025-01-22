@@ -32,7 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 #
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 from .internal._GXCommon import _GXCommon
 # pylint: disable=too-many-arguments, too-many-instance-attributes
 class GXDLMSTranslatorStructure:

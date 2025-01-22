@@ -26,25 +26,42 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXDLMSRestriction import GXDLMSRestriction
+from gurux_dlms.GXIntEnum import GXIntEnum
 
+class GainResolution(GXIntEnum):
+    '''
+    Enumerates gain resolution steps.
+    '''
 
-###Python 2 requires this
-# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
-class GXDLMSCaptureObject:
-    #
-    # Constructor.
-    #
-    # aindex: Attribute index.
-    # dIndex: Data index.
-    #
-    def __init__(self, aIndex=0, dIndex=0):
-        self.attributeIndex = aIndex
-        self.dataIndex = dIndex
-        self.restriction = GXDLMSRestriction()
-        self.columns = []
+    D_B6 = 0
+    '''
+    Step is 6 dB.
+    '''
+    D_B3 = 1
+    '''
+    Step is 3 dB.
+    '''
+
+    @classmethod
+    def valueofString(cls, value):
+        if value == "dB6":
+            ret = GainResolution.D_B6
+        elif value == "dB3":
+            ret = GainResolution.D_B3
+        else:
+            raise ValueError("Unknown enum value: " + str(value))
+        return ret
+
+    def __str__(self):
+        if self.value == GainResolution.D_B6:
+            ret = "dB6"
+        elif self.value == GainResolution.D_B3:
+            ret = "dB3"
+        else:
+            raise ValueError("Unknown enum value: " + str(self.value))
+        return ret

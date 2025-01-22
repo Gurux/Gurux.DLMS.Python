@@ -31,20 +31,24 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+
 from .enums import Currency
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class, too-few-public-methods
+# pylint: disable=bad-option-value,old-style-class, too-few-public-methods
 class GXCurrency:
     """
     Used currency.
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
     """
+
     def __init__(self):
         """
         Constructor.
         """
+
         # Currency unit.
         self.unit = Currency.TIME
         # Currency name.

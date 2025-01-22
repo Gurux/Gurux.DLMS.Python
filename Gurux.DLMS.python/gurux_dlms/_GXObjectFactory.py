@@ -96,6 +96,10 @@ from .objects.GXDLMSPrimeNbOfdmPlcApplicationsIdentification import (
     GXDLMSPrimeNbOfdmPlcApplicationsIdentification,
 )
 from .objects.GXDLMSNtpSetup import GXDLMSNtpSetup
+from .objects.GXDLMSG3PlcMacLayerCounters import GXDLMSG3PlcMacLayerCounters
+from .objects.GXDLMSG3PlcMacSetup import GXDLMSG3PlcMacSetup
+from .objects.GXDLMSFunctionControl import GXDLMSFunctionControl
+from .objects.GXDLMSG3Plc6LoWPan import GXDLMSG3Plc6LoWPan
 
 
 class _GXObjectFactory:
@@ -226,6 +230,14 @@ class _GXObjectFactory:
             ret = GXDLMSPrimeNbOfdmPlcApplicationsIdentification()
         elif ot == ObjectType.NTP_SETUP:
             ret = GXDLMSNtpSetup()
+        elif ot == ObjectType.G3_PLC_MAC_LAYER_COUNTERS:
+            ret = GXDLMSG3PlcMacLayerCounters()
+        elif ot == ObjectType.G3_PLC_MAC_SETUP:
+            ret = GXDLMSG3PlcMacSetup()
+        elif ot == ObjectType.G3_PLC6_LO_WPAN:
+            ret = GXDLMSG3Plc6LoWPan()
+        elif ot == ObjectType.FUNCTION_CONTROL:
+            ret = GXDLMSFunctionControl()
         else:
             ret = GXDLMSObject(ot)
         return ret

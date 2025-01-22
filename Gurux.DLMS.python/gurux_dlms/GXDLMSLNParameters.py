@@ -34,9 +34,11 @@
 
 from .enums.Command import Command
 from .GetCommandType import GetCommandType
+
+
 #
 #  LN Parameters
-#pylint: disable=too-many-instance-attributes, too-many-arguments
+# pylint: disable=too-many-instance-attributes, too-many-arguments, too-few-public-methods
 class GXDLMSLNParameters:
     #
     # Constructor.
@@ -47,7 +49,16 @@ class GXDLMSLNParameters:
     # forCommandType: Command type.
     # forAttributeDescriptor: Attribute descriptor.
     # forData: Data.
-    def __init__(self, forSettings, forInvokeId, forCommand, forCommandType, forAttributeDescriptor, forData, forStatus):
+    def __init__(
+        self,
+        forSettings,
+        forInvokeId,
+        forCommand,
+        forCommandType,
+        forAttributeDescriptor,
+        forData,
+        forStatus,
+    ):
         # DLMS settings.
         self.settings = forSettings
         self.invokeId = forInvokeId
@@ -74,5 +85,8 @@ class GXDLMSLNParameters:
         self.streaming = False
         if self.settings:
             self.settings.command = forCommand
-            if forCommand == Command.GET_REQUEST and forCommandType != GetCommandType.NEXT_DATA_BLOCK:
+            if (
+                forCommand == Command.GET_REQUEST
+                and forCommandType != GetCommandType.NEXT_DATA_BLOCK
+            ):
                 self.settings.commandType = forCommandType

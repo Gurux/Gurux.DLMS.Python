@@ -33,10 +33,10 @@
 # ---------------------------------------------------------------------------
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
-from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
-from ..enums import ObjectType, DataType
+from ..enums import ObjectType, DataType, ErrorCode
 from ..GXByteBuffer import GXByteBuffer
+
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
@@ -62,10 +62,7 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         tmp = 0
         if self.buffer:
             tmp = len(self.buffer)
-        return [self.logicalName,
-                self.tableId,
-                tmp,
-                self.buffer]
+        return [self.logicalName, self.tableId, tmp, self.buffer]
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -79,10 +76,10 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
         #  Table Id.
         if all_ or self.canRead(2):
             attributes.append(2)
-        #Length
+        # Length
         if all_ or self.canRead(3):
             attributes.append(3)
-        #Buffer
+        # Buffer
         if all_ or self.canRead(4):
             attributes.append(4)
         return attributes
@@ -144,8 +141,10 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.tableId = reader.readElementContentAsInt("Id", None)
-        self.buffer = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Buffer"))
+        self.buffer = GXByteBuffer.hexToBytes(
+            reader.readElementContentAsString("Buffer")
+        )
 
     def save(self, writer):
-        writer.writeElementString("Id", self.tableId, False)
+        writer.writeElementString("Id", self.tableId)
         writer.writeElementString("Buffer", GXByteBuffer.hex(self.buffer))

@@ -26,25 +26,41 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXDLMSRestriction import GXDLMSRestriction
+class GXDLMSDataProtectionAgreedKey:
+    """
+    Data protection agreed key.
+    """
 
+    def __init__(self):
+        """
+        Constructor.
+        """
+        self.__parameters = bytearray()
+        self.__data = bytearray()
 
-###Python 2 requires this
-# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
-class GXDLMSCaptureObject:
-    #
-    # Constructor.
-    #
-    # aindex: Attribute index.
-    # dIndex: Data index.
-    #
-    def __init__(self, aIndex=0, dIndex=0):
-        self.attributeIndex = aIndex
-        self.dataIndex = dIndex
-        self.restriction = GXDLMSRestriction()
-        self.columns = []
+    @property
+    def parameters(self):
+        """
+        Key parameters.
+        """
+        return self.__parameters
+
+    @parameters.setter
+    def parameters(self, value):
+        self.__parameters = value
+
+    @property
+    def data(self):
+        """
+        Key ciphered data.
+        """
+        return self.__data
+
+    @data.setter
+    def data(self, value):
+        self.__data = value

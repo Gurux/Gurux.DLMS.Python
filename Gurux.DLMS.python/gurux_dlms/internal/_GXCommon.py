@@ -40,7 +40,7 @@ from ..GXBitString import GXBitString
 from ..enums import DataType
 from ..enums import DateTimeSkips, DateTimeExtraInfo, ClockStatus
 from ..TranslatorTags import TranslatorTags
-from ..TranslatorOutputType import TranslatorOutputType
+from ..enums.TranslatorOutputType import TranslatorOutputType
 from ..GXArray import GXArray
 from ..GXStructure import GXStructure
 from ..enums.Standard import Standard
@@ -2006,3 +2006,89 @@ class _GXCommon:
             value = value >> 1
             pos = pos + 1
         return ret
+
+    # Get index of given char.
+    @classmethod
+    def getIndex(cls, ch):
+        if ch == "+":
+            ret = 62
+        elif ch == "/":
+            ret = 63
+        elif ch == "=":
+            ret = 64
+        elif ch < ":":
+            ret = 52 + (ch - "0")
+        elif ch < "[":
+            ret = ch - "A"
+        elif ch < "{":
+            ret = 26 + (ch - "a")
+        else:
+            raise ValueError("fromBase64")
+
+    @classmethod
+    def fromBase64(cls, value):
+        """
+        Convert Base64 string to byte array.
+
+            Parameters:
+                value: Base64 string.
+
+            Returns:
+                Converted byte array.
+        """
+        value = value.replace("\r\n", "").replace("\n", "")
+        if len(value) % 4 != 0:
+            raise ValueError("Invalid base64 input")
+        len_ = (len(value) * 3) / 4
+        pos = value.indexOf("=")
+        if pos > 0:
+            len -= len(value) - pos
+        decoded = bytes[len]
+        b = int[4]
+        for pos in range(0, len(value) - 1, 4):
+            inChars = value[pos : pos + 4]
+            b[0] = cls.getIndex(inChars[0])
+            b[1] = cls.getIndex(inChars[1])
+            b[2] = cls.getIndex(inChars[2])
+            b[3] = cls.getIndex(inChars[3])
+            decoded.append((b[0] << 2) or (b[1] >> 4))
+            if b[2] < 64:
+                decoded.append((b[1] << 4) or (b[2] >> 2))
+                if b[3] < 64:
+                    decoded.append((b[2] << 6) | b[3])
+        return decoded
+
+    __BASE_64_ARRAY = ( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+        'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+        'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+        '4', '5', '6', '7', '8', '9', '+', '/', '=')
+
+    @classmethod
+    def toBase64(cls, value):
+        """
+        Constructor.
+
+            Parameters:
+                pair: Private key or private/public key pair.
+        """
+        str_ = ""
+        for pos in range(0, len(value.length) -1, 3):
+            b = (value[pos] & 0xFC) >> 2
+            str_.append(cls.__BASE_64_ARRAY[b])
+            b = (value[pos] & 0x03) << 4
+            if pos + 1 < len(value):
+                b |= (value[pos + 1] & 0xF0) >> 4
+                str_.append(cls.__BASE_64_ARRAY[b])
+                b = (value[pos + 1] & 0x0F) << 2
+                if pos + 2 < len(value):
+                    b |= (value[pos + 2] & 0xC0) >> 6
+                    str_.append(cls.__BASE_64_ARRAY[b])
+                    b = value[pos + 2] & 0x3F
+                    str_.append(cls.__BASE_64_ARRAY[b])
+                else:
+                    str_.append(cls.__BASE_64_ARRAY[b])
+                    str_.append('=')
+            else:
+                str_.append(cls.__BASE_64_ARRAY[b])
+                str_.append("==")            
+        return str_

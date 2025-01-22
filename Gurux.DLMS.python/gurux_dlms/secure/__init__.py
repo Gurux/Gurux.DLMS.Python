@@ -33,3 +33,4 @@
 # ---------------------------------------------------------------------------
 from .GXDLMSSecureClient import GXDLMSSecureClient
 from .GXDLMSSecureServer import GXDLMSSecureServer
+from .GXDLMSSecureNotify import GXDLMSSecureNotify

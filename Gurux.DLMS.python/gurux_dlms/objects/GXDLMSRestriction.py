@@ -26,25 +26,53 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #  See the GNU General Public License for more details.
 #
-#  More information of Gurux products: http://www.gurux.org
+#  More information of Gurux products: http:#www.gurux.org
 #
 #  This code is licensed under the GNU General Public License v2.
-#  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from .GXDLMSRestriction import GXDLMSRestriction
+from gurux_dlms.objects.enums.RestrictionType import RestrictionType
 
 
-###Python 2 requires this
-# pylint: disable=bad-option-value,old-style-class,too-few-public-methods
-class GXDLMSCaptureObject:
-    #
-    # Constructor.
-    #
-    # aindex: Attribute index.
-    # dIndex: Data index.
-    #
-    def __init__(self, aIndex=0, dIndex=0):
-        self.attributeIndex = aIndex
-        self.dataIndex = dIndex
-        self.restriction = GXDLMSRestriction()
-        self.columns = []
+class GXDLMSRestriction:
+    """
+    Compact data and push object restriction values.
+    """
+
+    def __init__(self):
+        self.__type = RestrictionType.NONE
+        self.__from = None
+        self.__to = None
+
+    @property
+    def type(self):
+        """
+        Restriction type.
+        """
+        return self.__type
+
+    @type.setter
+    def type(self, value):
+        self.__type = value
+
+    @property
+    def from_(self):
+        """
+        From date or entry.
+        """
+        return self.__from
+
+    @from_.setter
+    def from_(self, value):
+        self.__from = value
+
+    @property
+    def to(self):
+        """
+        To date or entry.
+        """
+        return self.__to
+
+    @to.setter
+    def to(self, value):
+        self.__to = value

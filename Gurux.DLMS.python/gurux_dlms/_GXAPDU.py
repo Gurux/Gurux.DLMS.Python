@@ -39,7 +39,7 @@ from .internal._GXCommon import _GXCommon
 from .GXByteBuffer import GXByteBuffer
 from .GXDLMSException import GXDLMSException
 from .TranslatorTags import TranslatorTags
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 from .TranslatorSimpleTags import TranslatorSimpleTags
 from .TranslatorGeneralTags import TranslatorGeneralTags
 from .ServiceError import ServiceError

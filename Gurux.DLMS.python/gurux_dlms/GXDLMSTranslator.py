@@ -36,7 +36,7 @@ import xml.etree.cElementTree as ET
 from .internal._GXCommon import _GXCommon
 from .GXByteBuffer import GXByteBuffer
 from .ActionRequestType import ActionRequestType
-from .TranslatorOutputType import TranslatorOutputType
+from .enums.TranslatorOutputType import TranslatorOutputType
 from .TranslatorSimpleTags import TranslatorSimpleTags
 from .TranslatorStandardTags import TranslatorStandardTags
 from .GXDLMSTranslatorStructure import GXDLMSTranslatorStructure

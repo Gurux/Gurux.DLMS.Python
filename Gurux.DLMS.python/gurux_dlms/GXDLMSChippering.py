@@ -60,6 +60,8 @@ class GXDLMSChippering:
 
     @classmethod
     def encryptAesGcm(cls, p, plainText):
+        if isinstance(plainText, GXByteBuffer):
+            plainText = plainText.array()
         p.countTag = None
         data = GXByteBuffer()
         if p.type_ == CountType.PACKET:

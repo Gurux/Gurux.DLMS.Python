@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSData(GXDLMSObject, IGXDLMSBase):
     """
@@ -55,8 +56,7 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
         self.value = None
 
     def getValues(self):
-        return [self.logicalName,
-                self.value]
+        return [self.logicalName, self.value]
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -64,10 +64,10 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
     #
     def getAttributeIndexToRead(self, all_):
         attributes = []
-        #  LN is static and read only once.
+        # LN is static and read only once.
         if all_ or not self.logicalName:
             attributes.append(1)
-        #  Value
+        # Value
         if all_ or self.canRead(2):
             attributes.append(2)
         return attributes
@@ -88,7 +88,7 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
         if index == 1:
             return DataType.OCTET_STRING
         if index == 2:
-            #pylint: disable=super-with-arguments
+            # pylint: disable=super-with-arguments
             return super(GXDLMSData, self).getDataType(index)
         raise ValueError("getDataType failed. Invalid attribute index.")
 
@@ -118,4 +118,6 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
         self.value = reader.readElementContentAsObject("Value", None, self, 2)
 
     def save(self, writer):
-        writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))
+        writer.writeElementObject(
+            "Value", self.value, self.getDataType(2), self.getUIDataType(2)
+        )
