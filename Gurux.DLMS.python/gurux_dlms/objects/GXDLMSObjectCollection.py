@@ -219,13 +219,13 @@ class GXDLMSObjectCollection(list):
                 sb = ""
                 pos = 1
                 while pos <= it.getAttributeCount():
-                    sb += str(it.getAccess(pos))
+                    sb += str(int(it.getAccess(pos)))
                     pos += 1
                 ET.SubElement(node, "Access").text = sb
                 sb = ""
                 pos = 1
                 while pos <= it.getMethodCount():
-                    sb += str(it.getMethodAccess(pos))
+                    sb += str(int(it.getMethodAccess(pos)))
                     pos += 1
                 ET.SubElement(node, "MethodAccess").text = sb
             else:
