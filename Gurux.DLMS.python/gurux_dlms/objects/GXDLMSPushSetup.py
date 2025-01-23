@@ -742,13 +742,13 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         )
         writer.writeElementString("NumberOfRetries", self.numberOfRetries)
         if self.version < 2:
-            writer.WriteElementString("RepetitionDelay", self.repetitionDelay)
+            writer.writeElementString("RepetitionDelay", self.repetitionDelay)
         else:
-            writer.WriteStartElement("RepetitionDelay")
-            writer.WriteElementString("Min", self.repetitionDelay2.min)
-            writer.WriteElementString("Exponent", self.repetitionDelay2.exponent)
-            writer.WriteElementString("Max", self.repetitionDelay2.max)
-            writer.WriteEndElement()
+            writer.writeStartElement("RepetitionDelay")
+            writer.writeElementString("Min", self.repetitionDelay2.min)
+            writer.writeElementString("Exponent", self.repetitionDelay2.exponent)
+            writer.writeElementString("Max", self.repetitionDelay2.max)
+            writer.writeEndElement()
         if self.version > 0:
             if self.portReference:
                 writer.writeElementString(
