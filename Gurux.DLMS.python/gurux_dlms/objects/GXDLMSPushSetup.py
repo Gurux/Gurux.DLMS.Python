@@ -818,12 +818,13 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 )
 
     def postLoad(self, reader):
+        target = None
         # Update port reference.
         if self.portReference:
             target = reader.objects.findByLN(
                 ObjectType.NONE, self.portReference.logicalName
             )
-        if target is not None and target != self.portReference:
+        if target and target != self.portReference:
             self.portReference = target
         # Upload object list after load.
         if self.pushObjectList and len(self.pushObjectList) != 0:
