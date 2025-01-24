@@ -843,7 +843,7 @@ class GXDLMSChipperingStream:
         return block
 
     def decryptAes(self, input_):
-        n = len(input_) / 8
+        n = int(len(input_) / 8)
         if (n * 8) != len(input_):
             raise ValueError("Invalid data.")
         iv = bytearray([0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6, 0xA6])
@@ -872,11 +872,11 @@ class GXDLMSChipperingStream:
                     t = int((int(t) >> 8))
                     k += 1
                 self.processBlock(buf, 0, buf, 0)
-                a[0:] = buf[0:8]
-                block[8:16] = buf[8 * (i - 1):8*i]
+                a[0:] = buf[0:len(iv)]
+                block[8 * int(i - 1):8 * int(i)] = buf[len(iv):8 + len(iv)]
                 i -= 1
             j -= 1
-        if a != self.IV:
+        if a[0:8] != bytearray(self.IV):
             raise ValueError("Invalid data")
         return block
 
