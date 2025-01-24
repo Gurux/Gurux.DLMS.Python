@@ -382,7 +382,7 @@ class GXDLMS:
                         reply.move(pos + 1, pos, len(reply) - pos - 1)
                 GXDLMS.multipleBlocks(p, reply, ciphering)
             elif p.command not in (Command.RELEASE_REQUEST, Command.EXCEPTION_RESPONSE):
-                if p.command != Command.GET_REQUEST and p.data and reply:
+                if p.command != Command.GET_REQUEST and p.data:
                     GXDLMS.multipleBlocks(p, reply, ciphering)
                 if p.command == Command.SET_REQUEST:
                     if (
@@ -568,11 +568,14 @@ class GXDLMS:
                     reply.set(tmp)
             if (
                 ciphering
-                and reply
-                and p.settings.negotiatedConformance
-                & Conformance.GENERAL_BLOCK_TRANSFER
-                == Conformance.NONE
+                and len(reply) != 0
                 and p.command != Command.RELEASE_REQUEST
+                and (
+                    not p.multipleBlocks
+                    or p.settings.negotiatedConformance
+                    & Conformance.GENERAL_BLOCK_TRANSFER
+                    == Conformance.NONE
+                )
             ):
                 tmp = []
                 # pylint: disable=W0212
@@ -1040,7 +1043,6 @@ class GXDLMS:
                 data.position = 0
         return bb.array()
 
-
     @classmethod
     def getMacHdlcFrame(cls, settings, frame_, creditFields, data):
         if settings.Hdlc.MaxInfoTX > 126:
@@ -1063,7 +1065,7 @@ class GXDLMS:
         while padLen != 0:
             bb.setUInt8(0)
             --padLen
-        
+
         # Checksum.
         crc = _GXFCS16.countFCS24(bb.Data, 2, bb.Size - 2 - padLen)
         bb.setUInt8(crc >> 16)
