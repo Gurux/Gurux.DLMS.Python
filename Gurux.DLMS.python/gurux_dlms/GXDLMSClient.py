@@ -758,14 +758,14 @@ class GXDLMSClient(object):
         if (self.settings.connected & ConnectionState.DLMS) == 0:
             return None
         buff = GXByteBuffer()
-        buff.setUInt8(3)
-        buff.setUInt8(0x80)
-        buff.setUInt8(1)
-        buff.setUInt8(00)
         # Restore default values.
         self.maxReceivePDUSize = self.initializePduSize
         self.settings.setCtoSChallenge(self.initializeChallenge)
         if self.useProtectedRelease:
+            buff.setUInt8(0)
+            buff.setUInt8(0x80)
+            buff.setUInt8(1)
+            buff.setUInt8(0)
             # Increase IC.
             if self.settings.cipher and self.settings.cipher.isCiphered:
                 self.settings.cipher.invocationCounter = (
@@ -1514,8 +1514,8 @@ class GXDLMSClient(object):
                 # Convert to upper case letter.
                 if crypted[pos] > "9" and crypted[pos] < "A":
                     crypted[pos] += 7
-                if crypted[pos] > 'F':
-                    crypted[pos] = int('0') + int(crypted[pos]) - int('G')
+                if crypted[pos] > "F":
+                    crypted[pos] = int("0") + int(crypted[pos]) - int("G")
         return crypted
 
     @classmethod
