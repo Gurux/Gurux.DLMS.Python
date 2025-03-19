@@ -377,8 +377,8 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
             writer.writeStartElement("Item")
             writer.writeElementString("Name", k)
             writer.writeElementString("Status", v)
-            writer.WriteEndElement()
-        writer.WriteEndElement()  # Activations
+            writer.writeEndElement()
+        writer.writeEndElement()  # Activations
 
         writer.writeStartElement("Functions")
         for k, v in self.__functionList:
@@ -389,7 +389,7 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
                 writer.writeStartElement("Object")
                 writer.writeElementString("ObjectType", obj.objectType)
                 writer.writeElementString("LN", obj.logicalName)
-                writer.WriteEndElement()  # Object
-            writer.WriteEndElement()  # Objects
-            writer.WriteEndElement()  # Item
-        writer.WriteEndElement()  # Functions
+                writer.writeEndElement()  # Object
+            writer.writeEndElement()  # Objects
+            writer.writeEndElement()  # Item
+        writer.writeEndElement()  # Functions
