@@ -52,8 +52,9 @@ from .GXTime import GXTime
 from .GXByteBuffer import GXByteBuffer
 from .manufacturersettings.GXObisCode import GXObisCode
 
+
 ###Python 2 requires this
-#pylint: disable=bad-option-value,old-style-class
+# pylint: disable=bad-option-value,old-style-class
 class GXDLMSConverter:
     #
     # Constructor.
@@ -85,12 +86,27 @@ class GXDLMSConverter:
             if description and not it.description.lower().contains(description.lower()):
                 continue
             if all_:
-                list_.append("A=" + it.getOBIS()[0] + ", B=" + it.getOBIS()[1] + ", C=" + it.getOBIS()[2] + ", D=" + it.getOBIS()[3] + ", E=" + it.getOBIS()[4] + ", F=" + it.getOBIS()[5] + "\r\n" + it.description)
+                list_.append(
+                    "A="
+                    + it.getOBIS()[0]
+                    + ", B="
+                    + it.getOBIS()[1]
+                    + ", C="
+                    + it.getOBIS()[2]
+                    + ", D="
+                    + it.getOBIS()[3]
+                    + ", E="
+                    + it.getOBIS()[4]
+                    + ", F="
+                    + it.getOBIS()[5]
+                    + "\r\n"
+                    + it.description
+                )
             else:
                 list_.append(it.description)
         return list_
 
-    #pylint: disable=too-many-boolean-expressions
+    # pylint: disable=too-many-boolean-expressions
     @classmethod
     def __updateOBISCodeInfo(cls, codes, it, standard):
         ln = it.logicalName
@@ -99,7 +115,7 @@ class GXDLMSConverter:
         if code_:
             if not it.description:
                 it.description = code_.description
-            #Update data type from DLMS standard.
+            # Update data type from DLMS standard.
             if standard != Standard.DLMS:
                 d = list_[len(list_) - 1]
                 code_.dataType = d.dataType
@@ -109,28 +125,85 @@ class GXDLMSConverter:
                 elif "25" in code_.dataType or "26" in code_.dataType:
                     code_.uiDataType = "25"
                 elif "9" in code_.dataType:
-                    if (GXStandardObisCodeCollection.equalsMask2("0.0-64.96.7.10-14.255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("0.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.2.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.1.5.0-99,255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.0.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.6.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.7.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.13.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.14.255", ln) or GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.15.255", ln)):
+                    if (
+                        GXStandardObisCodeCollection.equalsMask2(
+                            "0.0-64.96.7.10-14.255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "0.0-64.0.1.5.0-99,255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "0.0-64.0.1.2.0-99,255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.1.2.0-99,255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.1.5.0-99,255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.9.0.255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.9.6.255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.9.7.255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.9.13.255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.9.14.255", ln
+                        )
+                        or GXStandardObisCodeCollection.equalsMask2(
+                            "1.0-64.0.9.15.255", ln
+                        )
+                    ):
                         code_.uiDataType = "25"
-                    #Local time
-                    elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.1.255", ln):
+                    # Local time
+                    elif GXStandardObisCodeCollection.equalsMask2(
+                        "1.0-64.0.9.1.255", ln
+                    ):
                         code_.uiDataType = "27"
-                    #Local date
-                    elif GXStandardObisCodeCollection.equalsMask2("1.0-64.0.9.2.255", ln):
+                    # Local date
+                    elif GXStandardObisCodeCollection.equalsMask2(
+                        "1.0-64.0.9.2.255", ln
+                    ):
                         code_.uiDataType = "26"
-                    #Active firmware identifier
+                    # Active firmware identifier
                     elif GXStandardObisCodeCollection.equalsMask2("1.0.0.2.0.255", ln):
                         code_.uiDataType = "10"
-                #Unix time
-                elif it.objectType == ObjectType.DATA and GXStandardObisCodeCollection.equalsMask2("0.0.1.1.0.255", it.logicalName):
+                # Unix time
+                elif (
+                    it.objectType == ObjectType.DATA
+                    and GXStandardObisCodeCollection.equalsMask2(
+                        "0.0.1.1.0.255", it.logicalName
+                    )
+                ):
                     code_.uiDataType = "25"
 
-            if not code_.dataType == "*" and not code_.dataType == "" and "," not in code_.dataType:
+            if (
+                not code_.dataType == "*"
+                and not code_.dataType == ""
+                and "," not in code_.dataType
+            ):
                 tp = int(code_.dataType)
-                if it.objectType in (ObjectType.DATA, ObjectType.REGISTER, ObjectType.REGISTER_ACTIVATION, ObjectType.EXTENDED_REGISTER):
+                if it.objectType in (
+                    ObjectType.DATA,
+                    ObjectType.REGISTER,
+                    ObjectType.REGISTER_ACTIVATION,
+                    ObjectType.EXTENDED_REGISTER,
+                ):
                     it.setDataType(2, tp)
             if code_.uiDataType:
                 tp = int(code_.uiDataType)
-                if it.objectType in (ObjectType.DATA, ObjectType.REGISTER, ObjectType.REGISTER_ACTIVATION, ObjectType.EXTENDED_REGISTER):
+                if it.objectType in (
+                    ObjectType.DATA,
+                    ObjectType.REGISTER,
+                    ObjectType.REGISTER_ACTIVATION,
+                    ObjectType.EXTENDED_REGISTER,
+                ):
                     it.setUIDataType(2, tp)
         else:
             print("Unknown OBIS Code: " + it.logicalName + " Type: " + it.objectType)
@@ -152,16 +225,18 @@ class GXDLMSConverter:
         elif standard == Standard.INDIA:
             str_ = pkg_resources.resource_string(__name__, "India.txt").decode("utf-8")
         elif standard == Standard.SAUDI_ARABIA:
-            str_ = pkg_resources.resource_string(__name__, "SaudiArabia.txt").decode("utf-8")
+            str_ = pkg_resources.resource_string(__name__, "SaudiArabia.txt").decode(
+                "utf-8"
+            )
         elif standard == Standard.SPAIN:
             str_ = pkg_resources.resource_string(__name__, "Spain.txt").decode("utf-8")
         if not str_:
             return None
         str_ = str_.replace("\n", "\r")
-        rows = str_.split('\r')
+        rows = str_.split("\r")
         for it in rows:
             if it and not it.startswith("#"):
-                items = it.split(';')
+                items = it.split(";")
                 if len(items) > 1:
                     ot = int(items[0])
                     ln = _GXCommon.toLogicalName(_GXCommon.logicalNameToBytes(items[1]))
@@ -178,7 +253,7 @@ class GXDLMSConverter:
     def __readStandardObisInfo(cls, standard, codes):
         if standard != Standard.DLMS:
             for it in GXDLMSConverter.__getObjects(standard):
-                tmp = GXStandardObisCode(it.logicalName.split('.'))
+                tmp = GXStandardObisCode(it.logicalName.split("."))
                 tmp.interfaces = str(it.objectType)
                 tmp.description = it.description
                 tmp.uiDataType = it.uiDataType
@@ -186,13 +261,26 @@ class GXDLMSConverter:
 
         str_ = pkg_resources.resource_string(__name__, "OBISCodes.txt").decode("utf-8")
         str_ = str_.replace("\n", "\r")
-        rows = str_.split('\r')
+        rows = str_.split("\r")
         for it in rows:
             if it and not it.startswith("#"):
-                items = it.split(';')
-                obis = items[0].split('.')
+                items = it.split(";")
+                obis = items[0].split(".")
                 try:
-                    code_ = GXStandardObisCode(obis, str(items[3]) + "; " + str(items[4]) + "; " + str(items[5]) + "; " + str(items[6]) + "; " + str(items[7]), str(items[1]), str(items[2]))
+                    code_ = GXStandardObisCode(
+                        obis,
+                        str(items[3])
+                        + "; "
+                        + str(items[4])
+                        + "; "
+                        + str(items[5])
+                        + "; "
+                        + str(items[6])
+                        + "; "
+                        + str(items[7]),
+                        str(items[1]),
+                        str(items[2]),
+                    )
                     codes.append(code_)
                 except UnicodeEncodeError:
                     pass
@@ -253,7 +341,7 @@ class GXDLMSConverter:
         elif type_ == DataType.UINT8:
             ret = GXUInt8(value)
         else:
-            raise ValueError('Invalid data type.')
+            raise ValueError("Invalid data type.")
         return ret
 
     @classmethod
@@ -376,6 +464,8 @@ class GXDLMSConverter:
             ret = "PrimeNbOfdmPlcApplicationsIdentification"
         elif ot == ObjectType.NTP_SETUP:
             ret = "NtpSetup"
+        elif ot == ObjectType.FUNCTION_CONTROL:
+            ret = "FunctionControl"
         else:
             ret = "Manufacture spesific."
         return ret
@@ -500,6 +590,8 @@ class GXDLMSConverter:
             ot = ObjectType.PRIME_NB_OFDM_PLC_APPLICATIONS_IDENTIFICATION
         elif value == "NtpSetup":
             ot = ObjectType.NTP_SETUP
+        elif value == "FunctionControl":
+            ot = ObjectType.FUNCTION_CONTROL
         else:
             ot = ObjectType.NONE
         return ot
