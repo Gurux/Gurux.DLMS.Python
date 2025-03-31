@@ -1628,5 +1628,5 @@ class GXDLMSClient(object):
         if self.interfaceType == InterfaceType.WRAPPER:
             if data.available() < 8 or data.getUInt16(data.position) != 1:
                 return 8 - data.available()
-            return data.getUInt16(data.position + 6)
+            return 8 + data.getUInt16(data.position + 6) - data.available()
         return 1
