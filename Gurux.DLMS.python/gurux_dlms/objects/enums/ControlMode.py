@@ -33,12 +33,14 @@
 # ---------------------------------------------------------------------------
 from gurux_dlms.GXIntEnum import GXIntEnum
 
+
 class ControlMode(GXIntEnum):
     """
     Configures the behaviour of the disconnect control object for all
     triggers, i.e.  the possible state transitions.
     """
-    #pylint: disable=too-few-public-methods
+
+    # pylint: disable=too-few-public-methods
 
     #
     # The disconnect control object is always in 'connected' state,
@@ -74,3 +76,8 @@ class ControlMode(GXIntEnum):
     #  =d manual =e local =h)
     #
     MODE_6 = 6
+    #
+    # Disconnection: Remote(b, c), manual(-), local(g)
+    # Reconnection: Remote (a, i), manual (e), local (h)
+    #
+    DLMS_CONTROL_MODE_MODE_7 = 7

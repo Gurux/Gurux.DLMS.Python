@@ -56,6 +56,7 @@ class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
         self.controlState = ControlState.DISCONNECTED
         self.controlMode = ControlMode.NONE
         self.outputState = False
+        self.version = 1
 
     #
     # Forces the disconnect control object into 'disconnected' state if
