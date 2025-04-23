@@ -51,7 +51,7 @@ class GXDateTime:
         self.extra = DateTimeExtraInfo.NONE
         self.skip = DateTimeSkips.NONE
         self.status = ClockStatus.OK
-        self.dayOfWeek = 0
+        self.dayOfWeek = 0xFF
         if isinstance(value, datetime.datetime):
             if value.tzinfo is None:
                 if time.localtime().tm_isdst:

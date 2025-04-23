@@ -86,11 +86,15 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
 
     def getDataType(self, index):
         if index == 1:
-            return DataType.OCTET_STRING
-        if index == 2:
+            dt = DataType.OCTET_STRING
+        elif index == 2:
             # pylint: disable=super-with-arguments
-            return super(GXDLMSData, self).getDataType(index)
-        raise ValueError("getDataType failed. Invalid attribute index.")
+            dt = super(GXDLMSData, self).getDataType(index)
+            if dt == DataType.NONE and self.value != None:
+                dt = _GXCommon.getDLMSDataType(self.value)
+        else:
+            raise ValueError("getDataType failed. Invalid attribute index.")
+        return dt
 
     #
     # Returns value of given attribute.
