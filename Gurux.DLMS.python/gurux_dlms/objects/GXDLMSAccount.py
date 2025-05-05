@@ -43,6 +43,7 @@ from .GXCurrency import GXCurrency
 from .GXTokenGatewayConfiguration import GXTokenGatewayConfiguration
 from .GXCreditChargeConfiguration import GXCreditChargeConfiguration
 from ..GXBitString import GXBitString
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
@@ -189,6 +190,38 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 3
+
+    #
+    # Returns names of attribute indexes.
+    #
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical Name"),
+                _GXLocalizer.gettext("Payment mode"),
+                _GXLocalizer.gettext("Current credit in use"),
+                _GXLocalizer.gettext("Current credit status"),
+                _GXLocalizer.gettext("Available credit"),
+                _GXLocalizer.gettext("Amount to clear"),
+                _GXLocalizer.gettext("Clearance threshold"),
+                _GXLocalizer.gettext("Aggregated debt"),
+                _GXLocalizer.gettext("Credit references"),
+                _GXLocalizer.gettext("Charge references"),
+                _GXLocalizer.gettext("Credit charge configurations"),
+                _GXLocalizer.gettext("Tokengateway configurations"),
+                _GXLocalizer.gettext("Account activation time"),
+                _GXLocalizer.gettext("Account closure time"),
+                _GXLocalizer.gettext("Currency"),
+                _GXLocalizer.gettext("Low credit threshold"),
+                _GXLocalizer.gettext("Next credit available threshold"),
+                _GXLocalizer.gettext("Max provision"),
+                _GXLocalizer.gettext("Max provisionPeriod"))
+
+    #
+    # Returns method names.
+    #
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Activate account"),
+                _GXLocalizer.gettext("Close account"),
+                _GXLocalizer.gettext("Reset account"))
 
     def getDataType(self, index):
         if index == 1:

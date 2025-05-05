@@ -38,6 +38,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, Unit
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
@@ -113,6 +114,14 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def getMethodCount(self):
         return 1
 
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Value"),\
+            _GXLocalizer.gettext("Scaler and unit"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
         #pylint: disable=super-with-arguments

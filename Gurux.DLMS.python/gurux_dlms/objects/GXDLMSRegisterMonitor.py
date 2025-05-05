@@ -39,7 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSMonitoredValue import GXDLMSMonitoredValue
 from .GXDLMSActionSet import GXDLMSActionSet
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
@@ -62,7 +62,7 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
         self.actions = []
 
     def getValues(self):
-        return [self.logicalName, self.thresholds, self.monitoredValue, self.actions]
+        return (self.logicalName, self.thresholds, self.monitoredValue, self.actions)
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -96,6 +96,12 @@ class GXDLMSRegisterMonitor(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Thresholds"),\
+            _GXLocalizer.gettext("Monitored value"),\
+            _GXLocalizer.gettext("Actions"))
 
     def getDataType(self, index):
         if index == 1:

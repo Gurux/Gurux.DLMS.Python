@@ -40,6 +40,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSIp4SetupIpOption import GXDLMSIp4SetupIpOption
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
@@ -128,6 +129,23 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 3
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Data link layer reference"),\
+            _GXLocalizer.gettext("IP address"),\
+            _GXLocalizer.gettext("Multicast ip address"),\
+            _GXLocalizer.gettext("IP options"),\
+            _GXLocalizer.gettext("Subnet mask"),\
+            _GXLocalizer.gettext("Gateway ip address"),\
+            _GXLocalizer.gettext("Use dhcp"),\
+            _GXLocalizer.gettext("Primary dns address"),\
+            _GXLocalizer.gettext("Secondary dns address"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Add mc ip address"),\
+            _GXLocalizer.gettext("Delete mc ip address"),\
+            _GXLocalizer.gettext("Get nbof mc ip addresses"))
 
     def getDataType(self, index):
         if index == 1:

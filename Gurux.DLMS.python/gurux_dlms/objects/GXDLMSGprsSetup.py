@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSQualityOfService import GXDLMSQualityOfService
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
@@ -98,6 +99,12 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("APN"),\
+            _GXLocalizer.gettext("PIN code"),\
+            _GXLocalizer.gettext("Default quality of service and requested quality of service"))
 
     def getDataType(self, index):
         if index == 1:

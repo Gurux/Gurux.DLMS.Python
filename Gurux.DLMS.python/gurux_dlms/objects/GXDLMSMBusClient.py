@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import MBusEncryptionKeyStatus
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
@@ -222,6 +223,30 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 8
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("MBus port reference"),\
+            _GXLocalizer.gettext("Capture definition"),\
+            _GXLocalizer.gettext("Capture period"),\
+            _GXLocalizer.gettext("Primary address"),\
+            _GXLocalizer.gettext("Identification number"),\
+            _GXLocalizer.gettext("Manufacturer id"),\
+            _GXLocalizer.gettext("Version"),\
+            _GXLocalizer.gettext("Device type"),\
+            _GXLocalizer.gettext("Access number"),\
+            _GXLocalizer.gettext("Status"),\
+            _GXLocalizer.gettext("Alarm"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Slave install"),\
+            _GXLocalizer.gettext("Slave deinstall"),\
+            _GXLocalizer.gettext("Capture"),\
+            _GXLocalizer.gettext("Reset alarm"),\
+            _GXLocalizer.gettext("Synchronize clock"),\
+            _GXLocalizer.gettext("Data send"),\
+            _GXLocalizer.gettext("Set encryption key"),\
+            _GXLocalizer.gettext("Transfer key"))
 
     def getDataType(self, index):
         if index == 1:

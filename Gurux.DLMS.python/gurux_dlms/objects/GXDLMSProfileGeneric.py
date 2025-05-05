@@ -46,7 +46,7 @@ from .GXDLMSDemandRegister import GXDLMSDemandRegister
 from .GXDLMSRegister import GXDLMSRegister
 from ..ValueEventArgs import ValueEventArgs
 from ..internal._GXDataInfo import _GXDataInfo
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
@@ -327,6 +327,20 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
             raise ValueError("Invalid selector.")
         return self.getData(settings, e, table, columns)
 
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Buffer"),\
+            _GXLocalizer.gettext("Capture objects"),\
+            _GXLocalizer.gettext("Capture period"),\
+            _GXLocalizer.gettext("Sort method"),\
+            _GXLocalizer.gettext("Sort object"),\
+            _GXLocalizer.gettext("Entries in use"),\
+            _GXLocalizer.gettext("Profile entries"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),\
+            _GXLocalizer.gettext("Capture"))
+
     def getDataType(self, index):
         if index == 1:
             ret = DataType.OCTET_STRING
@@ -526,9 +540,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                                 print(
                                     "Scalar failed for: {}".format(item[0].logicalName)
                                 )
-                    elif isinstance(item[0], GXDLMSDemandRegister) and (
-                        item[1].attributeIndex == 2 or item[1].attributeIndex == 3
-                    ):
+                    elif isinstance(item[0], GXDLMSDemandRegister) and item[1].attributeIndex in (2, 3):
                         scaler_ = item[0].scaler
                         if scaler_ != 1 and data:
                             try:

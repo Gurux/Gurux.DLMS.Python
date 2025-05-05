@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSG3PlcMacLayerCounters(GXDLMSObject, IGXDLMSBase):
@@ -120,10 +120,25 @@ class GXDLMSG3PlcMacLayerCounters(GXDLMSObject, IGXDLMSBase):
     def getMethodCount(self):
         return 1
 
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Tx data packet count"),\
+            _GXLocalizer.gettext("Rx data packet count"),\
+            _GXLocalizer.gettext("Tx cmd packet count"),\
+            _GXLocalizer.gettext("Rx cmd packet count"),\
+            _GXLocalizer.gettext("CSMAFail count"),\
+            _GXLocalizer.gettext("CSMANo ack count"),\
+            _GXLocalizer.gettext("Bad crc count"),\
+            _GXLocalizer.gettext("Tx data broadcast count"),\
+            _GXLocalizer.gettext("Rx data broadcast count"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),)
+
     def getDataType(self, index):
         if index == 1:
             return DataType.OCTET_STRING
-        elif index in range(2, 11):
+        if index in range(2, 11):
             # pylint: disable=super-with-arguments
             return DataType.UINT32
         raise ValueError("getDataType failed. Invalid attribute index.")

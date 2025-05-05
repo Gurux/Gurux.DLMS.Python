@@ -36,6 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPrimeNbOfdmPlcApplicationsIdentification(GXDLMSObject, IGXDLMSBase):
@@ -96,6 +97,12 @@ class GXDLMSPrimeNbOfdmPlcApplicationsIdentification(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Firmware version"),\
+            _GXLocalizer.gettext("Vendor id"),\
+            _GXLocalizer.gettext("Product id"))
 
     def getDataType(self, index):
         if index in (1, 2):

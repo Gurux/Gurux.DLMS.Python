@@ -364,3 +364,7 @@ class GXDLMSObject(object):
             att = GXDLMSAttributeSettings(index)
             self.attributes.append(att)
         return att.static
+
+    def getMethodNames(self):
+        #The object doesn't have any methods.
+        pass

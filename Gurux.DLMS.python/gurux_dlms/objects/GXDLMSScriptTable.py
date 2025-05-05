@@ -40,6 +40,7 @@ from ..enums import ObjectType, DataType
 from .GXDLMSScript import GXDLMSScript
 from .GXDLMSScriptAction import GXDLMSScriptAction
 from .enums import ScriptActionType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
@@ -87,6 +88,13 @@ class GXDLMSScriptTable(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Scripts"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Execute"),)
 
     def getDataType(self, index):
         if index == 1:

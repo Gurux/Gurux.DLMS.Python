@@ -42,6 +42,7 @@ from ..GXDate import GXDate
 from ..enums import ObjectType, DataType
 from .enums import SingleActionScheduleType
 from .GXDLMSScriptTable import GXDLMSScriptTable
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
@@ -106,6 +107,21 @@ class GXDLMSActionSchedule(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    #
+    # Returns attribute names.
+    #
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),
+                _GXLocalizer.gettext("Executed script logical name"),
+                _GXLocalizer.gettext("Type"),
+                _GXLocalizer.gettext("Execution time"))
+
+    #
+    # Returns method names.
+    #
+    def getMethodNames(self):
+        return None
 
     def getDataType(self, index):
         if index == 1:

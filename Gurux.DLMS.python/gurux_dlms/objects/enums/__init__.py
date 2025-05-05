@@ -84,8 +84,6 @@ from .ChargeConfiguration import ChargeConfiguration
 from .NtpAuthenticationMethod import NtpAuthenticationMethod
 from .Modulation import Modulation
 from .GainResolution import GainResolution
-from .Modulation import Modulation
-from .GainResolution import GainResolution
 from .DeviceType import DeviceType
 from .PushOperationMethod import PushOperationMethod
 from .ProtectionType import ProtectionType

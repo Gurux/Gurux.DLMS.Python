@@ -36,6 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode, ObjectType, DataType
 from ..internal._GXCommon import _GXCommon
 from .enums import BaudRate
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
@@ -118,6 +119,17 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Communication speed"),\
+            _GXLocalizer.gettext("Window size transmit"),\
+            _GXLocalizer.gettext("Window size receive"),\
+            _GXLocalizer.gettext("Maximum info length transmit"),\
+            _GXLocalizer.gettext("Maximum info length receive"),\
+            _GXLocalizer.gettext("Inter charachter timeout"),\
+            _GXLocalizer.gettext("Inactivity timeout"),\
+            _GXLocalizer.gettext("Device address"))
 
     def getDataType(self, index):
         if index == 1:

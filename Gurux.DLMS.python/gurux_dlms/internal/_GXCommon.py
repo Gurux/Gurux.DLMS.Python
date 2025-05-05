@@ -2024,6 +2024,7 @@ class _GXCommon:
             ret = 26 + (ch - "a")
         else:
             raise ValueError("fromBase64")
+        return ret
 
     @classmethod
     def fromBase64(cls, value):
@@ -2042,9 +2043,9 @@ class _GXCommon:
         len_ = (len(value) * 3) / 4
         pos = value.indexOf("=")
         if pos > 0:
-            len -= len(value) - pos
-        decoded = bytes[len]
-        b = int[4]
+            len_ -= len(value) - pos
+        decoded = bytearray()
+        b = [0] * 4
         for pos in range(0, len(value) - 1, 4):
             inChars = value[pos : pos + 4]
             b[0] = cls.getIndex(inChars[0])
@@ -2056,7 +2057,7 @@ class _GXCommon:
                 decoded.append((b[1] << 4) or (b[2] >> 2))
                 if b[3] < 64:
                     decoded.append((b[2] << 6) | b[3])
-        return decoded
+        return bytes(decoded)
 
     __BASE_64_ARRAY = ( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
         'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
@@ -2074,21 +2075,21 @@ class _GXCommon:
         str_ = ""
         for pos in range(0, len(value.length) -1, 3):
             b = (value[pos] & 0xFC) >> 2
-            str_.append(cls.__BASE_64_ARRAY[b])
+            str_ += cls.__BASE_64_ARRAY[b]
             b = (value[pos] & 0x03) << 4
             if pos + 1 < len(value):
                 b |= (value[pos + 1] & 0xF0) >> 4
-                str_.append(cls.__BASE_64_ARRAY[b])
+                str_ += cls.__BASE_64_ARRAY[b]
                 b = (value[pos + 1] & 0x0F) << 2
                 if pos + 2 < len(value):
                     b |= (value[pos + 2] & 0xC0) >> 6
-                    str_.append(cls.__BASE_64_ARRAY[b])
+                    str_ += cls.__BASE_64_ARRAY[b]
                     b = value[pos + 2] & 0x3F
-                    str_.append(cls.__BASE_64_ARRAY[b])
+                    str_ += cls.__BASE_64_ARRAY[b]
                 else:
-                    str_.append(cls.__BASE_64_ARRAY[b])
-                    str_.append('=')
+                    str_ += cls.__BASE_64_ARRAY[b]
+                    str_ += '='
             else:
-                str_.append(cls.__BASE_64_ARRAY[b])
-                str_.append("==")            
+                str_ += cls.__BASE_64_ARRAY[b]
+                str_ += "=="
         return str_

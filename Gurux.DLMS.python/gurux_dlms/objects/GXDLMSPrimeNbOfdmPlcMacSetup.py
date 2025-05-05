@@ -36,6 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPrimeNbOfdmPlcMacSetup(GXDLMSObject, IGXDLMSBase):
@@ -120,6 +121,16 @@ class GXDLMSPrimeNbOfdmPlcMacSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("MAC min switch search time"),\
+            _GXLocalizer.gettext("MAC max promotion pdu"),\
+            _GXLocalizer.gettext("MAC promotion pdu tx period"),\
+            _GXLocalizer.gettext("MAC beacons per frame"),\
+            _GXLocalizer.gettext("MAC scp max tx attempts"),\
+            _GXLocalizer.gettext("MAC ctl re tx timer"),\
+            _GXLocalizer.gettext("MAC max ctl re tx"))
 
     def getDataType(self, index):
         if index == 1:

@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, ErrorCode
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
     """
@@ -195,8 +195,8 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
             fn = e.parameters[0].decode()
             objects = []
             for it2 in it[1]:
-                obj = _GXObjectFactory.CreateObject(it2[0])
-                obj.LogicalName = _GXCommon.toLogicalName(it2[1])
+                obj = _GXObjectFactory.createObject(it2[0])
+                obj.logicalName = _GXCommon.toLogicalName(it2[1])
                 objects.append(obj)
             for it in self.__functionList:
                 if it[0] == fn:
@@ -213,7 +213,6 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
                     self.__activationStatus.remove(it)
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
-        return None
 
     def getAttributeIndexToRead(self, all_):
         attributes = []
@@ -228,12 +227,6 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
             attributes.append(3)
         return attributes
 
-    def getNames(self):
-        return ("Logical Name", "ActivationStatus", "FunctionList")
-
-    def getMethodNames(self):
-        return ("SetFunctionStatus", "AddFunction", "RemoveFunction")
-
     def getAttributeCount(self):
         return 3
 
@@ -241,15 +234,16 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
         return 3
 
     def getValue(self, settings, e):
+        ret = None
         if e.index == 1:
-            return _GXCommon.logicalNameToBytes(self.logicalName)
+            ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            return self.__functionStatusToByteArray(self.__activationStatus)
+            ret = self.__functionStatusToByteArray(self.__activationStatus)
         elif e.index == 3:
-            return self.__functionListToByteArray(self.__functionList)
+            ret = self.__functionListToByteArray(self.__functionList)
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
-        return None
+        return ret
 
     def setValue(self, settings, e):
         if e.index == 1:
@@ -327,6 +321,16 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
         bb.set(name.encode())
         return client.method(self, 3, bb.array(), DataType.ARRAY)
 
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Activation status"),\
+            _GXLocalizer.gettext("Function list"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Set function status"),\
+            _GXLocalizer.gettext("Add function"),\
+            _GXLocalizer.gettext("Remove function"))
+
     def getDataType(self, index):
         """
         Returns device data type of selected attribute index.
@@ -339,7 +343,7 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
         """
         if index == 1:
             return DataType.OCTET_STRING
-        elif index in (2, 3):
+        if index in (2, 3):
             return DataType.ARRAY
         else:
             raise ValueError("GetDataType failed. Invalid attribute index.")
@@ -365,9 +369,9 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
                     while reader.isStartElement("Object", True):
                         ot = ObjectType(reader.readElementContentAsInt("ObjectType"))
                         ln = reader.readElementContentAsString("LN")
-                        obj = _GXObjectFactory.CreateObject(ot)
-                        obj.LogicalName = ln
-                        objects.Add(obj)
+                        obj = _GXObjectFactory.createObject(ot)
+                        obj.logicalName = ln
+                        objects.append(obj)
                     reader.readEndElement("Objects")
             reader.readEndElement("Functions")
 

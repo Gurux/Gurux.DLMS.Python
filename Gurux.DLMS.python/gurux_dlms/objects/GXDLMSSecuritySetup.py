@@ -47,7 +47,7 @@ from .enums import (
 from .GXDLMSCertificateInfo import GXDLMSCertificateInfo
 from ..enums.Security import Security
 from .enums.GlobalKeyType import GlobalKeyType
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-public-methods,too-many-instance-attributes
 class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
@@ -346,6 +346,22 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         if self.version == 0:
             return 2
         return 8
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Security policy"),\
+            _GXLocalizer.gettext("Security suite"),\
+            _GXLocalizer.gettext("Client system title"),\
+            _GXLocalizer.gettext("Server system title"),\
+            _GXLocalizer.gettext("Certificates"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Adjust to quarter"),\
+            _GXLocalizer.gettext("Adjust to measuring period"),\
+            _GXLocalizer.gettext("Adjust to minute"),\
+            _GXLocalizer.gettext("Adjust to preset time"),\
+            _GXLocalizer.gettext("Preset adjusting time"),\
+            _GXLocalizer.gettext("Shift time"))
 
     def getDataType(self, index):
         if index == 1:

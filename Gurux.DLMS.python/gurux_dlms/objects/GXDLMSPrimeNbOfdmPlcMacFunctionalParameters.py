@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums.MacState import MacState
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
@@ -160,6 +161,22 @@ class GXDLMSPrimeNbOfdmPlcMacFunctionalParameters(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Ln id"),\
+            _GXLocalizer.gettext("Ls id"),\
+            _GXLocalizer.gettext("SId"),\
+            _GXLocalizer.gettext("SNa"),\
+            _GXLocalizer.gettext("State"),\
+            _GXLocalizer.gettext("Scp length"),\
+            _GXLocalizer.gettext("Node hierarchy level"),\
+            _GXLocalizer.gettext("Beacon slot count"),\
+            _GXLocalizer.gettext("Beacon rx slot"),\
+            _GXLocalizer.gettext("Beacon tx slot"),\
+            _GXLocalizer.gettext("Beacon rx frequency"),\
+            _GXLocalizer.gettext("Beacon tx frequency"),\
+            _GXLocalizer.gettext("Capabilities"))
 
     def getDataType(self, index):
         if index == 1:

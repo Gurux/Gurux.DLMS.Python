@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSEmergencyProfile import GXDLMSEmergencyProfile
 from .GXDLMSActionItem import GXDLMSActionItem
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
@@ -130,6 +131,19 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Monitored value"),\
+            _GXLocalizer.gettext("Active threshold"),\
+            _GXLocalizer.gettext("Normal threshold"),\
+            _GXLocalizer.gettext("Emergency threshold"),\
+            _GXLocalizer.gettext("Threshold duration min over"),\
+            _GXLocalizer.gettext("Threshold duration min under"),\
+            _GXLocalizer.gettext("Emergency profile"),\
+            _GXLocalizer.gettext("Emergency profile group"),\
+            _GXLocalizer.gettext("Emergency profile active"),\
+            _GXLocalizer.gettext("Actions"))
 
     def getDataType(self, index):
         #pylint: disable=super-with-arguments

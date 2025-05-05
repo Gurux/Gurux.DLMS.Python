@@ -38,7 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSTarget import GXDLMSTarget
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
@@ -168,6 +168,16 @@ class GXDLMSParameterMonitor(GXDLMSObject, IGXDLMSBase):
 
     def getMethodCount(self):
         return 2
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Changed parameter"),\
+            _GXLocalizer.gettext("Capture time"),\
+            _GXLocalizer.gettext("Parameters"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Add parameter"),\
+            _GXLocalizer.gettext("Delete parameter"))
 
     def getDataType(self, index):
         if index == 1:

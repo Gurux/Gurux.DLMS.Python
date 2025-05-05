@@ -36,6 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSLlcSscsSetup(GXDLMSObject, IGXDLMSBase):
@@ -100,6 +101,14 @@ class GXDLMSLlcSscsSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Service node address"),\
+            _GXLocalizer.gettext("Base node address"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
         if index == 1:

@@ -40,6 +40,7 @@ from ..enums import ObjectType, DataType, AccessMode, MethodAccessMode, Authenti
 from .GXDLMSObjectCollection import GXDLMSObjectCollection
 from ..GXSecure import GXSecure
 from ..ConnectionState import ConnectionState
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
@@ -146,6 +147,22 @@ class GXDLMSAssociationShortName(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(2)
             _GXCommon.setData(settings, data, DataType.INT8, it.index)
             _GXCommon.setData(settings, data, DataType.ENUM, it.getMethodAccess().value)
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Object list"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Getlist by classid"),\
+            _GXLocalizer.gettext("Getobj by logicalname"),\
+            _GXLocalizer.gettext("Read by logicalname"),\
+            _GXLocalizer.gettext("Get attributes&services"),\
+            _GXLocalizer.gettext("Change lls secret"),\
+            _GXLocalizer.gettext("Change hls secret"),\
+            _GXLocalizer.gettext("Get hls challenge"),\
+            _GXLocalizer.gettext("Reply to hls challenge"),\
+            _GXLocalizer.gettext("Add user"),\
+            _GXLocalizer.gettext("Remove user"))
 
     def getDataType(self, index):
         if index == 1:

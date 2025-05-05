@@ -36,6 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters(GXDLMSObject, IGXDLMSBase):
@@ -118,6 +119,16 @@ class GXDLMSPrimeNbOfdmPlcPhysicalLayerCounters(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Crc incorrect count"),\
+            _GXLocalizer.gettext("Crc failed count"),\
+            _GXLocalizer.gettext("Tx drop count"),\
+            _GXLocalizer.gettext("Rx drop count"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
         if index == 1:

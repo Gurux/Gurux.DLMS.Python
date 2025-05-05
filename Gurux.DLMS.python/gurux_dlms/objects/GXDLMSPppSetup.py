@@ -40,7 +40,7 @@ from ..enums import ErrorCode, ObjectType, DataType
 from .GXDLMSPppSetupLcpOption import GXDLMSPppSetupLcpOption
 from .GXDLMSPppSetupIPCPOption import GXDLMSPppSetupIPCPOption
 from .enums import PppSetupIPCPOptionType
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
@@ -113,6 +113,13 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("PHY reference"),\
+            _GXLocalizer.gettext("LCP options"),\
+            _GXLocalizer.gettext("IPCP options"),\
+            _GXLocalizer.gettext("PPP authentication"))
 
     def getDataType(self, index):
         if index == 1:

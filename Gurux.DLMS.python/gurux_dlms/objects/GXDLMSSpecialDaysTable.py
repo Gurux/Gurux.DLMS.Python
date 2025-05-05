@@ -38,7 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSSpecialDay import GXDLMSSpecialDay
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
@@ -115,6 +115,14 @@ class GXDLMSSpecialDaysTable(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 2
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Entries"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Insert"),\
+            _GXLocalizer.gettext("Delete"))
 
     def getDataType(self, index):
         if index == 1:

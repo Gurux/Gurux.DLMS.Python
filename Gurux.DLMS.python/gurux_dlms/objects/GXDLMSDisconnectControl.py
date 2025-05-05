@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import ControlState, ControlMode
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
@@ -101,6 +102,16 @@ class GXDLMSDisconnectControl(GXDLMSObject, IGXDLMSBase):
 
     def getMethodCount(self):
         return 2
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Output state"),\
+            _GXLocalizer.gettext("Control state"),\
+            _GXLocalizer.gettext("Control mode"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Remote disconnect"),\
+            _GXLocalizer.gettext("Remote reconnect"))
 
     def getDataType(self, index):
         if index == 1:

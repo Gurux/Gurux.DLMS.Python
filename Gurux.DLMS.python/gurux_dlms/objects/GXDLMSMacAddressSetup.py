@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMacAddressSetup(GXDLMSObject, IGXDLMSBase):
@@ -85,6 +86,10 @@ class GXDLMSMacAddressSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("MAC address"))
 
     def getDataType(self, index):
         if index == 1:

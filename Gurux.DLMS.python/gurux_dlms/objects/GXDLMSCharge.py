@@ -41,6 +41,7 @@ from .enums import ChargeType, ChargeConfiguration
 from .GXUnitCharge import GXUnitCharge
 from .GXChargeTable import GXChargeTable
 from ..GXBitString import GXBitString
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
 class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
@@ -144,6 +145,28 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 5
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Total amount paid"),\
+            _GXLocalizer.gettext("Charge type"),\
+            _GXLocalizer.gettext("Priority"),\
+            _GXLocalizer.gettext("Unit charge active"),\
+            _GXLocalizer.gettext("Unit charge passive"),\
+            _GXLocalizer.gettext("Unit charge activation time"),\
+            _GXLocalizer.gettext("Period"),\
+            _GXLocalizer.gettext("Charge configuration"),\
+            _GXLocalizer.gettext("Last collection time"),\
+            _GXLocalizer.gettext("Last collection amount"),\
+            _GXLocalizer.gettext("Total amount remaining"),\
+            _GXLocalizer.gettext("Proportion"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Update unit charge"),\
+            _GXLocalizer.gettext("Activate passive unit charge"),\
+            _GXLocalizer.gettext("Collect"),\
+            _GXLocalizer.gettext("Update total amount remaining"),\
+            _GXLocalizer.gettext("Set total amount remaining"))
 
     def getDataType(self, index):
         if index == 1:

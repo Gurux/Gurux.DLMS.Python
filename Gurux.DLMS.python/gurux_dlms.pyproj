@@ -90,6 +90,7 @@
     <Compile Include="gurux_dlms\GXSecure.py" />
     <Compile Include="gurux_dlms\GXStandardObisCodeCollection.py" />
     <Compile Include="gurux_dlms\IGXCryptoNotifier.py" />
+    <Compile Include="gurux_dlms\internal\_GXLocalizer.py" />
     <Compile Include="gurux_dlms\manufacturersettings\GXDLMSAttributeSettings.py" />
     <Compile Include="gurux_dlms\objects\enums\DataProtectionIdentifiedKeyType.py" />
     <Compile Include="gurux_dlms\objects\enums\DataProtectionWrappedKeyType.py" />
@@ -346,7 +347,6 @@
     <Compile Include="gurux_dlms\SingleReadResponse.py" />
     <Compile Include="gurux_dlms\SingleWriteResponse.py" />
     <Compile Include="gurux_dlms\TranslatorGeneralTags.py" />
-    <Compile Include="gurux_dlms\TranslatorOutputType.py" />
     <Compile Include="gurux_dlms\TranslatorSimpleTags.py" />
     <Compile Include="gurux_dlms\TranslatorStandardTags.py" />
     <Compile Include="gurux_dlms\TranslatorTags.py" />

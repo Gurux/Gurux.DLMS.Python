@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
@@ -104,6 +104,14 @@ class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Port"),\
+            _GXLocalizer.gettext("IP reference"),\
+            _GXLocalizer.gettext("Maximum segment size"),\
+            _GXLocalizer.gettext("Maximum simultaneous connections"),\
+            _GXLocalizer.gettext("Inactivity timeout"))
 
     def getDataType(self, index):
         if index == 1:

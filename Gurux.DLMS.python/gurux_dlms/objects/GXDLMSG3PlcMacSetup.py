@@ -36,14 +36,13 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
-from ..GXDateTime import GXDateTime
-from ..enums import ObjectType, DataType, ClockStatus
+from ..enums import ObjectType, DataType
 from .enums.GainResolution import GainResolution
 from .enums.Modulation import Modulation
 from ..internal._GXDataInfo import _GXDataInfo
 from .GXDLMSMacPosTable import GXDLMSMacPosTable
 from .GXDLMSNeighbourTable import GXDLMSNeighbourTable
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -128,12 +127,12 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
                 if it.shortAddress == index:
                     list_.append(it)
             return self.__getNeighbourTables(list_)
-        elif e.index == 2:
+        if e.index == 2:
             index = e.value
             for it in self.__macPosTable:
                 if it.shortAddress == index:
                     list_.append(it)
-            return self.__getPosTables(list_.ToArray())
+            return self.__getPosTables(list_)
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
 
@@ -251,47 +250,6 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
                 it.validTime = arr[2]
                 list_.append(it)
         return list_
-
-    def getNames(self):
-        """
-        Returns names of attribute indexes.
-
-            Returns:
-        """
-        return (
-            "Logical name",
-            "MacShortAddress",
-            "MacRcCoord",
-            "MacPANId",
-            "MackeyTable ",
-            "MacFrameCounter",
-            "MacToneMask",
-            "MacTmrTtl",
-            "MacMaxFrameRetries",
-            "MacneighbourTableEntryTtl",
-            "MacNeighbourTable",
-            "MachighPriorityWindowSize",
-            "MacCscmFairnessLimit",
-            "MacBeaconRandomizationWindowLength",
-            "MacA",
-            "MacK",
-            "MacMinCwAttempts",
-            "MacCenelecLegacyMode",
-            "MacFCCLegacyMode",
-            "MacMaxBe",
-            "MacMaxCsmaBackoffs",
-            "MacMinBe",
-            "MacBroadcastMaxCwEnabled",
-            "MacTransmitAtten",
-            "MacPosTable",
-            "MacDuplicateDetectionTtl",
-        )
-
-    def getMethodNames(self):
-        """
-        Returns names of method indexes.
-        """
-        return ("MAC get neighbour table entry", "MAC get POS tableentry")
 
     def getAttributeCount(self):
         if self.__version == 3:
@@ -431,7 +389,7 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 26:
             self.macDuplicateDetectionTtl = e.value
         else:
-            e.error = ErrorCode.ReadWriteDenied
+            e.error = ErrorCode.READ_WRITE_DENIED
 
     @property
     def shortAddress(self):
@@ -798,6 +756,38 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
         value = _GXCommon.getData(None, reply, info)
         return self.__parsePosTableEntry(value)
 
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("MAC short address"),\
+            _GXLocalizer.gettext("MAC rc coord"),\
+            _GXLocalizer.gettext("MAC panid"),\
+            _GXLocalizer.gettext("MAC key table"),\
+            _GXLocalizer.gettext("MAC frame counter"),\
+            _GXLocalizer.gettext("MAC tone mask"),\
+            _GXLocalizer.gettext("MAC tmr ttl"),\
+            _GXLocalizer.gettext("MAC max frame retries"),\
+            _GXLocalizer.gettext("MAC neighbour table entry ttl"),\
+            _GXLocalizer.gettext("MAC neighbour table"),\
+            _GXLocalizer.gettext("MAC high priority window size"),\
+            _GXLocalizer.gettext("MAC CSCM fairness limit"),\
+            _GXLocalizer.gettext("MAC beacon randomization window length"),\
+            _GXLocalizer.gettext("MAC a"),\
+            _GXLocalizer.gettext("MAC k"),\
+            _GXLocalizer.gettext("MAC min cw attempts"),\
+            _GXLocalizer.gettext("MAC cenelec legacy mode"),\
+            _GXLocalizer.gettext("MAC fcclegacy mode"),\
+            _GXLocalizer.gettext("MAC max be"),\
+            _GXLocalizer.gettext("MAC max csma backoffs"),\
+            _GXLocalizer.gettext("MAC min be"),\
+            _GXLocalizer.gettext("MAC broadcast max cw enabled"),\
+            _GXLocalizer.gettext("MAC transmit atten"),\
+            _GXLocalizer.gettext("MAC pos table"),\
+            _GXLocalizer.gettext("MAC duplicate detection ttl"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("MAC get neighbour table entry"),\
+            _GXLocalizer.gettext("MAC get pos tableentry"))
+
     def getDataType(self, index):
         if index == 1:
             ret = DataType.OCTET_STRING
@@ -860,7 +850,7 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
         if reader.isStartElement("KeyTable", True):
             while reader.isStartElement("Item", True):
                 k = reader.readElementContentAsInt("Key")
-                d = _GXCommon.hexToBytes(reader.readElementContentAsString("Data"))
+                d = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Data"))
                 self.__keyTable.append((k, d))
             reader.readEndElement("KeyTable")
 
@@ -935,13 +925,13 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
             "MacDuplicateDetectionTtl"
         )
 
-    def __saveKeyTable(self, writer, index):
-        writer.writeStartElement("KeyTable", index)
+    def __saveKeyTable(self, writer):
+        writer.writeStartElement("KeyTable")
         if self.__keyTable:
             for k, v in self.__keyTable:
-                writer.writeStartElement("Item", index)
-                writer.writeElementString("Key", k, index)
-                writer.writeElementString("Data", _GXCommon.toHex(v), index)
+                writer.writeStartElement("Item")
+                writer.writeElementString("Key", k)
+                writer.writeElementString("Data", GXByteBuffer.hex(v))
                 writer.writeEndElement()
         writer.writeEndElement()  # KeyTable
 

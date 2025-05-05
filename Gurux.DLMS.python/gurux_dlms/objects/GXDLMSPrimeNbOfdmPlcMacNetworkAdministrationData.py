@@ -41,6 +41,7 @@ from .GXMacMulticastEntry import GXMacMulticastEntry
 from .GXMacDirectTable import GXMacDirectTable
 from .GXMacAvailableSwitch import GXMacAvailableSwitch
 from .GXMacPhyCommunication import GXMacPhyCommunication
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase):
@@ -128,6 +129,17 @@ class GXDLMSPrimeNbOfdmPlcMacNetworkAdministrationData(GXDLMSObject, IGXDLMSBase
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Multicast entries"),\
+            _GXLocalizer.gettext("Switch table"),\
+            _GXLocalizer.gettext("Direct table"),\
+            _GXLocalizer.gettext("Available switches"),\
+            _GXLocalizer.gettext("Communications"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
         if index == 1:

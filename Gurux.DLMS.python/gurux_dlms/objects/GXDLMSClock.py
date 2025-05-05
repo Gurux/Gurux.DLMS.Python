@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType, ClockStatus
 from .enums import ClockBase
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
@@ -165,6 +166,25 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 6
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Time"),\
+            _GXLocalizer.gettext("Time zone"),\
+            _GXLocalizer.gettext("Status"),\
+            _GXLocalizer.gettext("Begin"),\
+            _GXLocalizer.gettext("End"),\
+            _GXLocalizer.gettext("Deviation"),\
+            _GXLocalizer.gettext("Enabled"),\
+            _GXLocalizer.gettext("Clock base"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Adjust to quarter"),\
+            _GXLocalizer.gettext("Adjust to measuring period"),\
+            _GXLocalizer.gettext("Adjust to minute"),\
+            _GXLocalizer.gettext("Adjust to preset time"),\
+            _GXLocalizer.gettext("Preset adjusting time"),\
+            _GXLocalizer.gettext("Shift time"))
 
     def getDataType(self, index):
         if index == 1:

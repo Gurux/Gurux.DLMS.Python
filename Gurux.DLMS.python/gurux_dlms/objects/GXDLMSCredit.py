@@ -39,6 +39,7 @@ from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType
 from .enums import CreditConfiguration, CreditType, CreditStatus
 from ..GXBitString import GXBitString
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
@@ -143,6 +144,24 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 3
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Current credit amount"),\
+            _GXLocalizer.gettext("Type"),\
+            _GXLocalizer.gettext("Priority"),\
+            _GXLocalizer.gettext("Warning threshold"),\
+            _GXLocalizer.gettext("Limit"),\
+            _GXLocalizer.gettext("Credit configuration"),\
+            _GXLocalizer.gettext("Status"),\
+            _GXLocalizer.gettext("Preset credit amount"),\
+            _GXLocalizer.gettext("Credit available threshold"),\
+            _GXLocalizer.gettext("Period"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Update amount"),\
+            _GXLocalizer.gettext("Set amount to value"),\
+            _GXLocalizer.gettext("Invoke credit"))
 
     def getDataType(self, index):
         if index == 1:

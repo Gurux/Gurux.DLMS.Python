@@ -38,7 +38,6 @@ from .GXDLMSChippering import GXDLMSChippering
 from .AesGcmParameter import AesGcmParameter
 from .GXByteBuffer import GXByteBuffer
 
-
 # pylint: disable=too-many-instance-attributes, too-many-function-args, too-many-public-methods
 class GXCiphering(GXICipher):
     """

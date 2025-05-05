@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType, ErrorCode
 from ..GXByteBuffer import GXByteBuffer
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
@@ -95,6 +95,12 @@ class GXDLMSUtilityTables(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Table id"),\
+            _GXLocalizer.gettext("Length"),\
+            _GXLocalizer.gettext("Buffer"))
 
     def getDataType(self, index):
         if index == 1:

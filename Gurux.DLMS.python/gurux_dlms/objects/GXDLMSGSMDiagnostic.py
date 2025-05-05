@@ -40,6 +40,7 @@ from ..enums import ObjectType, DataType
 from .enums import GsmStatus, GsmCircuitSwitchStatus, GsmPacketSwitchStatus
 from .GXDLMSGSMCellInfo import GXDLMSGSMCellInfo
 from .GXAdjacentCell import GXAdjacentCell
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
@@ -118,6 +119,16 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Operator"),\
+            _GXLocalizer.gettext("Status"),\
+            _GXLocalizer.gettext("Circuit switch status"),\
+            _GXLocalizer.gettext("Packet switch status"),\
+            _GXLocalizer.gettext("Cell info"),\
+            _GXLocalizer.gettext("Adjacent cells"),\
+            _GXLocalizer.gettext("Capture time"))
 
     def getDataType(self, index):
         if index == 1:

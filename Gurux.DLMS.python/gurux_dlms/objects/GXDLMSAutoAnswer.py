@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import AutoAnswerMode, AutoAnswerStatus
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
@@ -100,6 +101,8 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
     # Returns amount of attributes.
     #
     def getAttributeCount(self):
+        if self.version > 1:
+            return 7
         return 6
 
     #
@@ -107,6 +110,15 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Mode"),\
+            _GXLocalizer.gettext("Listening window"),\
+            _GXLocalizer.gettext("Status"),\
+            _GXLocalizer.gettext("Number of calls"),\
+            _GXLocalizer.gettext("Number of rings in listening window"),\
+            _GXLocalizer.gettext("Allowed callers"))
 
     def getDataType(self, index):
         if index == 1:
@@ -120,6 +132,8 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
         elif index == 5:
             ret = DataType.UINT8
         elif index == 6:
+            ret = DataType.ARRAY
+        elif self.version > 1 and index == 7:
             ret = DataType.ARRAY
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")

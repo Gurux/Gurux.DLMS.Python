@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import OpticalProtocolMode, BaudRate, LocalPortResponseTime
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
@@ -119,6 +120,17 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Default mode"),\
+            _GXLocalizer.gettext("Default baud rate"),\
+            _GXLocalizer.gettext("Proposed baud rate"),\
+            _GXLocalizer.gettext("Response time"),\
+            _GXLocalizer.gettext("Device address"),\
+            _GXLocalizer.gettext("Password 1"),\
+            _GXLocalizer.gettext("Password 2"),\
+            _GXLocalizer.gettext("Password 5"))
 
     def getDataType(self, index):
         if index == 1:

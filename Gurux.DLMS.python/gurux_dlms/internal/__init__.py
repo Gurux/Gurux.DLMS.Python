@@ -33,3 +33,4 @@
 # ---------------------------------------------------------------------------
 from ._GXCommon import *
 from ._GXDataInfo import *
+from ._GXLocalizer import _GXLocalizer

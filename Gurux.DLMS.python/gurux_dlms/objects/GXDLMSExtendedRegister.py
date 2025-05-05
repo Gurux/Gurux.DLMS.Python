@@ -41,6 +41,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
 from ..enums import ObjectType, DataType, Unit
 from .GXDLMSRegister import GXDLMSRegister
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSExtendedRegister(GXDLMSRegister, IGXDLMSBase):
@@ -122,6 +123,13 @@ class GXDLMSExtendedRegister(GXDLMSRegister, IGXDLMSBase):
 
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Value"),\
+            _GXLocalizer.gettext("Scaler and unit"),\
+            _GXLocalizer.gettext("Status"),\
+            _GXLocalizer.gettext("Capture time"))
 
     def getDataType(self, index):
         #pylint: disable=super-with-arguments

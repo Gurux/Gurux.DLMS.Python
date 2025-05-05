@@ -55,7 +55,17 @@ class IGXDLMSBase(ABC):
     # @return Amount of methods.
     @abstractmethod
     def getMethodCount(self):
-        """ This is interface method """
+        """ Amount of methods. """
+
+    # @return Names of attribute indexes.
+    @abstractmethod
+    def getNames(self):
+        """ Names of attribute indexes. """
+
+    # @return Names of attribute indexes.
+    @abstractmethod
+    def getMethodNames(self):
+        """ Names of attribute indexes """
 
     # Returns value of given attribute.
     #

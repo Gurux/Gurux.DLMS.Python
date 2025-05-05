@@ -50,7 +50,7 @@ from ..enums.MethodAccessMode import MethodAccessMode
 from ..enums.AccessMode3 import AccessMode3
 from ..enums.MethodAccessMode3 import MethodAccessMode3
 from ..GXBitString import GXBitString
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
@@ -366,6 +366,24 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(settings, data, DataType.UINT8, k)
                 _GXCommon.setData(settings, data, DataType.STRING, v)
         return data
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Object list"),\
+            _GXLocalizer.gettext("Associated partners id"),\
+            _GXLocalizer.gettext("Application context name"),\
+            _GXLocalizer.gettext("x dlms context info"),\
+            _GXLocalizer.gettext("Authentication mechanism name"),\
+            _GXLocalizer.gettext("Secret"),\
+            _GXLocalizer.gettext("Association status"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reply to hls authentication"),\
+            _GXLocalizer.gettext("Change hls secret"),\
+            _GXLocalizer.gettext("Add object"),\
+            _GXLocalizer.gettext("Remove object"),\
+            _GXLocalizer.gettext("Add user"),\
+            _GXLocalizer.gettext("Remove user"))
 
     def getDataType(self, index):
         if index == 1:

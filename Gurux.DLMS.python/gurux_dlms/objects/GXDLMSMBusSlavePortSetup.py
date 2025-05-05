@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import BaudRate, AddressState
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
@@ -104,6 +105,13 @@ class GXDLMSMBusSlavePortSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Default baud rate"),\
+            _GXLocalizer.gettext("Available baud rate"),\
+            _GXLocalizer.gettext("Address state"),\
+            _GXLocalizer.gettext("Bus address"))
 
     def getDataType(self, index):
         if index == 1:

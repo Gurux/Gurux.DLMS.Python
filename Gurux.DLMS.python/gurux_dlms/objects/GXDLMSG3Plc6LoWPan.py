@@ -41,7 +41,7 @@ from .GXDLMSRoutingConfiguration import GXDLMSRoutingConfiguration
 from .GXDLMSRoutingTable import GXDLMSRoutingTable
 from .GXDLMSContextInformationTable import GXDLMSContextInformationTable
 from .GXDLMSBroadcastLogTable import GXDLMSBroadcastLogTable
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
     """
@@ -406,33 +406,6 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                         attributes.append(23)
         return attributes
 
-    def getNames(self):
-        return (
-            "Logical Name",
-            "MaxHops",
-            "WeakLqiValue",
-            "SecurityLevel",
-            "PrefixTable",
-            "RoutingConfiguration",
-            "BroadcastLogTableEntryTtl",
-            "RoutingTable",
-            "ContextInformationTable",
-            "BlacklistTable",
-            "BroadcastLogTable",
-            "GroupTable",
-            "MaxJoinWaitTime",
-            " PathDiscoveryTime",
-            "ActiveKeyIndex",
-            "MetricType",
-            "CoordShortAddress",
-            "DisableDefaultRouting",
-            "DeviceType",
-            "Default coord route enabled",
-            "Destination address",
-            "Low LQI",
-            "High LQI",
-        )
-
     def getAttributeCount(self):
         if self.__version == 0:
             return 16
@@ -458,13 +431,13 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
         """
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
-        if e.index == 2:
-            return self.__maxHops
-        if e.index == 3:
-            return self.__weakLqiValue
-        if e.index == 4:
-            return self.__securityLevel
-        if e.index == 5:
+        elif e.index == 2:
+            ret = self.__maxHops
+        elif e.index == 3:
+            ret = self.__weakLqiValue
+        elif e.index == 4:
+            ret = self.__securityLevel
+        elif e.index == 5:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__prefixTable is None:
@@ -473,8 +446,8 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setObjectCount(len(self.__prefixTable), bb)
                 for it in self.__prefixTable:
                     _GXCommon.setData(settings, bb, DataType.UINT8, it)
-            return bb.array()
-        if e.index == 6:
+            ret = bb.array()
+        elif e.index == 6:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__routingConfiguration is None:
@@ -504,10 +477,10 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                     )
                     _GXCommon.setData(settings, bb, DataType.BOOLEAN, it.rlcEnabled)
                     _GXCommon.setData(settings, bb, DataType.UINT8, it.addRevLinkCost)
-            return bb.array()
-        if e.index == 7:
-            return self.__broadcastLogTableEntryTtl
-        if e.index == 8:
+            ret = bb.array()
+        elif e.index == 7:
+            ret = self.__broadcastLogTableEntryTtl
+        elif e.index == 8:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__routingTable is None:
@@ -525,8 +498,8 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(settings, bb, DataType.UINT8, it.hopCount)
                     _GXCommon.setData(settings, bb, DataType.UINT8, it.weakLinkCount)
                     _GXCommon.setData(settings, bb, DataType.UINT16, it.validTime)
-            return bb.array()
-        if e.index == 9:
+            ret = bb.array()
+        elif e.index == 9:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__contextInformationTable is None:
@@ -544,8 +517,8 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(settings, bb, DataType.OCTET_STRING, it.context)
                     _GXCommon.setData(settings, bb, DataType.BOOLEAN, it.compression)
                     _GXCommon.setData(settings, bb, DataType.UINT16, it.validLifetime)
-            return bb.array()
-        if e.index == 10:
+            ret = bb.array()
+        elif e.index == 10:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__blacklistTable is None:
@@ -557,8 +530,8 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(2)
                     _GXCommon.setData(settings, bb, DataType.UINT16, k)
                     _GXCommon.setData(settings, bb, DataType.UINT16, v)
-            return bb.array()
-        if e.index == 11:
+            ret = bb.array()
+        elif e.index == 11:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__broadcastLogTable is None:
@@ -571,8 +544,8 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(settings, bb, DataType.UINT16, it.sourceAddress)
                     _GXCommon.setData(settings, bb, DataType.UINT8, it.sequenceNumber)
                     _GXCommon.setData(settings, bb, DataType.UINT16, it.validTime)
-            return bb.array()
-        if e.index == 12:
+            ret = bb.array()
+        elif e.index == 12:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__groupTable is None:
@@ -581,24 +554,24 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setObjectCount(len(self.__groupTable), bb)
                 for it in self.__groupTable:
                     _GXCommon.setData(settings, bb, DataType.UINT16, it)
-            return bb.array()
-        if e.index == 13:
-            return self.__maxJoinWaitTime
-        if e.index == 14:
-            return self.__pathDiscoveryTime
-        if e.index == 15:
-            return self.__activeKeyIndex
-        if e.index == 16:
-            return self.__metricType
-        if e.index == 17:
-            return self.__coordShortAddress
-        if e.index == 18:
-            return self.__disableDefaultRouting
-        if e.index == 19:
-            return self.__deviceType
-        if e.index == 20:
-            return self.__defaultCoordRouteEnabled
-        if e.index == 21:
+            ret = bb.array()
+        elif e.index == 13:
+            ret = self.__maxJoinWaitTime
+        elif e.index == 14:
+            ret = self.__pathDiscoveryTime
+        elif e.index == 15:
+            ret = self.__activeKeyIndex
+        elif e.index == 16:
+            ret = self.__metricType
+        elif e.index == 17:
+            ret = self.__coordShortAddress
+        elif e.index == 18:
+            ret = self.__disableDefaultRouting
+        elif e.index == 19:
+            ret = self.__deviceType
+        elif e.index == 20:
+            ret = self.__defaultCoordRouteEnabled
+        elif e.index == 21:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
             if self.__destinationAddress is None:
@@ -608,12 +581,13 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                 for it in self.__destinationAddress:
                     _GXCommon.setData(settings, bb, DataType.UINT16, it)
             return bb.array()
-        if e.index == 22:
-            return self.__lowLQI
-        if e.index == 23:
-            return self.__highLQI
-        e.error = ErrorCode.READ_WRITE_DENIED
-        return None
+        elif e.index == 22:
+            ret = self.__lowLQI
+        elif e.index == 23:
+            ret = self.__highLQI
+        else:
+            e.error = ErrorCode.READ_WRITE_DENIED
+        return ret
 
     def setValue(self, settings, e):
         if e.index == 1:
@@ -752,6 +726,31 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
             self.__lowLQI,
             self.__highLQI,
         )
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Max hops"),\
+            _GXLocalizer.gettext("Weak lqi value"),\
+            _GXLocalizer.gettext("Security level"),\
+            _GXLocalizer.gettext("Prefix table"),\
+            _GXLocalizer.gettext("Routing configuration"),\
+            _GXLocalizer.gettext("Broadcast log table entry ttl"),\
+            _GXLocalizer.gettext("Routing table"),\
+            _GXLocalizer.gettext("Context information table"),\
+            _GXLocalizer.gettext("Blacklist table"),\
+            _GXLocalizer.gettext("Broadcast log table"),\
+            _GXLocalizer.gettext("Group table"),\
+            _GXLocalizer.gettext("Max join wait time"),\
+            _GXLocalizer.gettext("Path discovery time"),\
+            _GXLocalizer.gettext("Active key index"),\
+            _GXLocalizer.gettext("Metric type"),\
+            _GXLocalizer.gettext("Coord short address"),\
+            _GXLocalizer.gettext("Disable default routing"),\
+            _GXLocalizer.gettext("Device type"),\
+            _GXLocalizer.gettext("Default coord route enabled"),\
+            _GXLocalizer.gettext("Destination address"),\
+            _GXLocalizer.gettext("Low lqi"),\
+            _GXLocalizer.gettext("High lqi"))
 
     def getDataType(self, index):
         """
@@ -894,9 +893,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                 it = GXDLMSContextInformationTable()
                 self.__contextInformationTable.Add(it)
                 it.cid = reader.readElementContentAsString("CID")
-                it.context = _GXCommon.hexToBytes(
-                    reader.readElementContentAsString("Context")
-                )
+                it.context = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Context"))
                 it.compression = reader.readElementContentAsInt("Compression") != 0
                 it.validLifetime = reader.readElementContentAsInt("ValidLifetime")
             reader.readEndElement("ContextInformationTable")
@@ -1022,7 +1019,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
             for it in self.__contextInformationTable:
                 writer.writeStartElement("Item")
                 writer.writeElementString("CID", it.CID)
-                writer.writeElementString("Context", _GXCommon.toHex(it.context))
+                writer.writeElementString("Context", GXByteBuffer.hex(it.context))
                 writer.writeElementString("Compression", it.compression)
                 writer.writeElementString("ValidLifetime", it.validLifetime)
                 writer.writeEndElement()

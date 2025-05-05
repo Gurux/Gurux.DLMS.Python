@@ -38,7 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import TokenDelivery, TokenStatusCode
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
@@ -116,6 +116,17 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Token"),\
+            _GXLocalizer.gettext("Time"),\
+            _GXLocalizer.gettext("Description"),\
+            _GXLocalizer.gettext("Delivery method"),\
+            _GXLocalizer.gettext("Status"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Enter"),)
 
     def getDataType(self, index):
         if index == 1:

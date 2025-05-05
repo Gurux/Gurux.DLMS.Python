@@ -39,7 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import BaudRate
 from .GXDLMSModemInitialisation import GXDLMSModemInitialisation
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
@@ -125,6 +125,12 @@ class GXDLMSModemConfiguration(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Communication speed"),\
+            _GXLocalizer.gettext("Initialisation strings"),\
+            _GXLocalizer.gettext("Modem profile"))
 
     def getDataType(self, index):
         if index == 1:

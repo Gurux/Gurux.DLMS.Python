@@ -72,7 +72,7 @@ from .enums.AccessMode import AccessMode
 from .enums.MethodAccessMode import MethodAccessMode
 from .enums.AccessMode3 import AccessMode3
 from .enums.MethodAccessMode3 import MethodAccessMode3
-
+from .internal._GXLocalizer import _GXLocalizer
 
 # pylint:disable=bad-option-value,too-many-instance-attributes,too-many-arguments,too-many-public-methods,useless-object-inheritance
 class GXDLMSClient(object):
@@ -1630,3 +1630,8 @@ class GXDLMSClient(object):
                 return 8 - data.available()
             return 8 + data.getUInt16(data.position + 6) - data.available()
         return 1
+
+    @staticmethod
+    def localize(lang_code):
+        """Localize error messages."""
+        _GXLocalizer.init(lang_code)

@@ -39,6 +39,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import ImageTransferStatus
 from .GXDLMSImageActivateInfo import GXDLMSImageActivateInfo
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
@@ -154,6 +155,21 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             return None
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Image block size"),\
+            _GXLocalizer.gettext("Image transferred blocks status"),\
+            _GXLocalizer.gettext("Image first not transferred block number"),\
+            _GXLocalizer.gettext("Image transfer enabled"),\
+            _GXLocalizer.gettext("Image transfer status"),\
+            _GXLocalizer.gettext("Image activate info"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Image transfer initiate"),\
+            _GXLocalizer.gettext("Image block transfer"),\
+            _GXLocalizer.gettext("Image verify"),\
+            _GXLocalizer.gettext("Image activate"))
 
     def getDataType(self, index):
         if index == 1:

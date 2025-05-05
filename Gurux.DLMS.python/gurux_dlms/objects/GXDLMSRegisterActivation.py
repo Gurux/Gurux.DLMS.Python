@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .GXDLMSObjectDefinition import GXDLMSObjectDefinition
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
@@ -123,6 +124,17 @@ class GXDLMSRegisterActivation(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 3
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Register assignment"),\
+            _GXLocalizer.gettext("Mask list"),\
+            _GXLocalizer.gettext("Active mask"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Add register"),\
+            _GXLocalizer.gettext("Add mask"),\
+            _GXLocalizer.gettext("Delete mask"))
 
     def getDataType(self, index):
         if index == 1:

@@ -1002,8 +1002,7 @@ class GXDLMS:
     def getPlcFrame(cls, settings, creditFields, data):
         frameSize = data.available()
         # Max frame size is 124 bytes.
-        if frameSize > 134:
-            frameSize = 134
+        frameSize = min(frameSize, 134)
         # PAD Length.
         padLen = (36 - ((11 + frameSize) % 36)) % 36
         bb = GXByteBuffer()
@@ -1023,16 +1022,16 @@ class GXDLMS:
         bb.setUInt16(val)
         bb.setUInt8(padLen)
         # Control byte.
-        bb.setUInt8(PlcDataLinkData.Request)
+        bb.setUInt8(PlcDataLinkData.REQUEST)
         bb.setUInt8(settings.serverAddress)
         bb.setUInt8(settings.clientAddress)
-        bb.Set(data, frameSize)
+        bb.set(data, frameSize)
         # Add padding.
         while padLen != 0:
             bb.setUInt8(0)
-            --padLen
+            padLen = padLen - 1
         # Checksum.
-        crc = GXFCS16.countFCS16(bb.Data, 0, bb.Size)
+        crc = _GXFCS16.countFCS16(bb.array(), 0, bb.size)
         bb.setUInt16(crc)
         # Remove sent data in server side.
         if settings.isServer:
@@ -1058,22 +1057,22 @@ class GXDLMS:
         val |= settings.plc.macDestinationAddress & 0xFFF
         bb.setUInt16(val)
         tmp = cls.getHdlcFrame(settings, frame_, data, True)
-        padLen = (36 - ((10 + tmp.Length) % 36)) % 36
+        padLen = (36 - ((10 + len(tmp)) % 36)) % 36
         bb.setUInt8(padLen)
-        bb.Set(tmp)
+        bb.set(tmp)
         # Add padding.
         while padLen != 0:
             bb.setUInt8(0)
-            --padLen
+            padLen = padLen - 1
 
         # Checksum.
-        crc = _GXFCS16.countFCS24(bb.Data, 2, bb.Size - 2 - padLen)
+        crc = _GXFCS16.countFCS24(bb.array(), 2, bb.size - 2 - padLen)
         bb.setUInt8(crc >> 16)
         bb.setUInt16(crc)
         # Add NC
-        val = bb.Size / 36
-        if bb.Size % 36 != 0:
-            ++val
+        val = bb.size / 36
+        if bb.size % 36 != 0:
+            val = 1 + val
         if val == 1:
             val = PlcMacSubframes.ONE
         elif val == 2:

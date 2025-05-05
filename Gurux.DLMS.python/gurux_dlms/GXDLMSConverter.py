@@ -500,7 +500,7 @@ class GXDLMSConverter:
             ot = ObjectType.SECURITY_SETUP
         elif value in ("IecHdlcSetup", "HdlcSetup"):
             ot = ObjectType.IEC_HDLC_SETUP
-        elif value in ("IecLocalPortSetup", "IecOpticalPortSetup"):
+        elif value in ("IecLocalPortSetup", "IecOpticalPortSetup", "IECOpticalPortSetup"):
             ot = ObjectType.IEC_LOCAL_PORT_SETUP
         elif value == "IEC_TWISTED_PAIR_SETUP":
             ot = ObjectType.IEC_TWISTED_PAIR_SETUP
@@ -595,3 +595,32 @@ class GXDLMSConverter:
         else:
             ot = ObjectType.NONE
         return ot
+
+    @classmethod
+    def dataTypeToString(cls, ot):
+        match ot:
+            case DataType.ARRAY: return "Array"
+            case DataType.BCD: return "Bcd"
+            case DataType.BITSTRING: return "BitString"
+            case DataType.BOOLEAN: return "Boolean"
+            case DataType.COMPACT_ARRAY: return "CompactArray"
+            case DataType.DATE: return "Date"
+            case DataType.DATETIME: return "DateTime"
+            case DataType.ENUM: return "Enum"
+            case DataType.FLOAT32: return "Float32"
+            case DataType.FLOAT64: return "Float64"
+            case DataType.INT16: return "Int16"
+            case DataType.INT32: return "Int32"
+            case DataType.INT64: return "Int64"
+            case DataType.INT8: return "Int8"
+            case DataType.NONE: return "None"
+            case DataType.OCTET_STRING: return "Octet-string"
+            case DataType.STRING: return "String"
+            case DataType.STRING_UTF8: return "String UTF8"
+            case DataType.STRUCTURE: return "Structure"
+            case DataType.TIME: return "Time"
+            case DataType.UINT16: return "UInt16"
+            case DataType.UINT32: return "UInt32"
+            case DataType.UINT64: return "UInt64"
+            case DataType.UINT8: return "UInt8"
+            case _: raise ValueError("Unknown DataType")

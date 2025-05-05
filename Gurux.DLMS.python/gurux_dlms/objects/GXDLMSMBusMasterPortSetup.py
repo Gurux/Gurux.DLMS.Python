@@ -37,6 +37,7 @@ from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums import BaudRate
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusMasterPortSetup(GXDLMSObject, IGXDLMSBase):
@@ -82,6 +83,10 @@ class GXDLMSMBusMasterPortSetup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 0
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Comm speed"))
 
     def getDataType(self, index):
         if index == 1:

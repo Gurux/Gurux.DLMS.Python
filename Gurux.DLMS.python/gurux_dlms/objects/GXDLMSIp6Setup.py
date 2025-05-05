@@ -40,7 +40,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import AddressConfigMode
 from .GXNeighborDiscoverySetup import GXNeighborDiscoverySetup
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
@@ -132,6 +132,22 @@ class GXDLMSIp6Setup(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 2
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Data link layer reference"),\
+            _GXLocalizer.gettext("Address config mode"),\
+            _GXLocalizer.gettext("Unicast ip address"),\
+            _GXLocalizer.gettext("Multicast ip address"),\
+            _GXLocalizer.gettext("Gateway ip address"),\
+            _GXLocalizer.gettext("Primary dns address"),\
+            _GXLocalizer.gettext("Secondary dns address"),\
+            _GXLocalizer.gettext("Traffic class"),\
+            _GXLocalizer.gettext("Neighbor discovery setup"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Add ip v6 address"),\
+            _GXLocalizer.gettext("Remove ip v6 address"))
 
     def getDataType(self, index):
         if index == 1:

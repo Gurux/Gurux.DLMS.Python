@@ -42,6 +42,7 @@ from .GXDLMSSeasonProfile import GXDLMSSeasonProfile
 from .GXDLMSWeekProfile import GXDLMSWeekProfile
 from .GXDLMSDayProfile import GXDLMSDayProfile
 from .GXDLMSDayProfileAction import GXDLMSDayProfileAction
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-public-methods, too-many-instance-attributes
 class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
@@ -137,6 +138,21 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Active calendar name"),\
+            _GXLocalizer.gettext("Active season profile"),\
+            _GXLocalizer.gettext("Active week profile table"),\
+            _GXLocalizer.gettext("Active day profile table"),\
+            _GXLocalizer.gettext("Passive calendar name"),\
+            _GXLocalizer.gettext("Passive season profile"),\
+            _GXLocalizer.gettext("Passive week profile table"),\
+            _GXLocalizer.gettext("Passive day profile table"),\
+            _GXLocalizer.gettext("Time"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Activate passive calendar"),)
 
     def getDataType(self, index):
         if index == 1:

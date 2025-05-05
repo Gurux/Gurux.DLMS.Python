@@ -38,6 +38,8 @@ from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from .enums.NtpAuthenticationMethod import NtpAuthenticationMethod
 from ..GXByteBuffer import GXByteBuffer
+from ..internal._GXLocalizer import _GXLocalizer
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -147,6 +149,20 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
             return DataType.STRING
         #pylint:disable=super-with-arguments
         return super(GXDLMSNtpSetup, self).getUIDataType(index)
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Activated"),\
+            _GXLocalizer.gettext("Server address"),\
+            _GXLocalizer.gettext("Port"),\
+            _GXLocalizer.gettext("Authentication"),\
+            _GXLocalizer.gettext("Keys"),\
+            _GXLocalizer.gettext("Client key"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Synchronize"),\
+            _GXLocalizer.gettext("Add authentication key"),\
+            _GXLocalizer.gettext("Delete authentication key"))
 
     def getDataType(self, index):
         if index == 1:

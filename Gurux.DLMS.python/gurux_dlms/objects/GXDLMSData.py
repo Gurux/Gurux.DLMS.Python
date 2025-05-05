@@ -36,7 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
-
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSData(GXDLMSObject, IGXDLMSBase):
@@ -84,13 +84,17 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
     def getMethodCount(self):
         return 0
 
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Value"))
+
     def getDataType(self, index):
         if index == 1:
             dt = DataType.OCTET_STRING
         elif index == 2:
             # pylint: disable=super-with-arguments
             dt = super(GXDLMSData, self).getDataType(index)
-            if dt == DataType.NONE and self.value != None:
+            if dt == DataType.NONE and self.value:
                 dt = _GXCommon.getDLMSDataType(self.value)
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")

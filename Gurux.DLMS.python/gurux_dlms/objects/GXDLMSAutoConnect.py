@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType
 from .enums import AutoConnectMode
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
@@ -120,6 +121,17 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Mode"),\
+            _GXLocalizer.gettext("Repetitions"),\
+            _GXLocalizer.gettext("Repetition delay"),\
+            _GXLocalizer.gettext("Calling window"),\
+            _GXLocalizer.gettext("Destinations"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Connect"),)
 
     def getDataType(self, index):
         if index == 1:

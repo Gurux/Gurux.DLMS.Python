@@ -36,6 +36,7 @@ from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
 from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
+from ..internal._GXLocalizer import _GXLocalizer
 
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPrimeNbOfdmPlcMacCounters(GXDLMSObject, IGXDLMSBase):
@@ -129,6 +130,18 @@ class GXDLMSPrimeNbOfdmPlcMacCounters(GXDLMSObject, IGXDLMSBase):
     #
     def getMethodCount(self):
         return 1
+
+    def getNames(self):
+        return (_GXLocalizer.gettext("Logical name"),\
+            _GXLocalizer.gettext("Tx data pkt count"),\
+            _GXLocalizer.gettext("Rx data pkt count"),\
+            _GXLocalizer.gettext("Tx ctrl pkt count"),\
+            _GXLocalizer.gettext("Rx ctrl pkt count"),\
+            _GXLocalizer.gettext("Csma fail count"),\
+            _GXLocalizer.gettext("Csma ch busy count"))
+
+    def getMethodNames(self):
+        return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
         if index == 1:
