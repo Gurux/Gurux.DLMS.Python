@@ -429,7 +429,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 ret = buff.array()
         elif e.index == 8:
             if self.portReference:
-                ret = _GXCommon.logicalNameToBytes(self.portReference.LogicalName)
+                ret = _GXCommon.logicalNameToBytes(self.portReference.logicalName)
             else:
                 ret = None
         elif e.index == 9:
@@ -648,7 +648,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 obj = reader.objects.findByLN(ot, ln)
                 if not obj:
                     obj = _GXObjectFactory.createObject(ot)
-                    obj.LogicalName = ln
+                    obj.logicalName = ln
                 self.pushObjectList.append((obj, co))
             reader.readEndElement("ObjectList")
         self.service = ServiceType(reader.readElementContentAsInt("Service"))
