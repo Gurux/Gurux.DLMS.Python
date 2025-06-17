@@ -64,12 +64,15 @@ class GXDLMSChippering:
             plainText = plainText.array()
         p.countTag = None
         data = GXByteBuffer()
+        tag = p.security | p.securitySuite
+        if p.broacast:
+            tag |= 0x40
+        if p.compression:
+            tag |= 0x80
         if p.type_ == CountType.PACKET:
-            data.setUInt8(p.security)
+            data.setUInt8(tag)
         tmp = bytearray(4)
-        invocationCounter = 0
-        if p.securitySuite == SecuritySuite.SUITE_0:
-            invocationCounter = p.invocationCounter
+        invocationCounter = p.invocationCounter
         tmp[0] = (invocationCounter >> 24) & 0xFF
         tmp[1] = (invocationCounter >> 16) & 0xFF
         tmp[2] = (invocationCounter >> 8) & 0xFF
@@ -129,7 +132,7 @@ class GXDLMSChippering:
         elif p.security == Security.AUTHENTICATION_ENCRYPTION:
             data.setUInt8(sc)
             data.set(p.authenticationKey)
-            if p.securitySuite != SecuritySuite.SUITE_0:
+            if p.securitySuite != SecuritySuite.SUITE_0 and p.recipientSystemTitle:
                 #  transaction-id
                 transactionId = GXByteBuffer()
                 transactionId.setUInt64(p.invocationCounter)
@@ -236,10 +239,8 @@ class GXDLMSChippering:
         len_ = _GXCommon.getObjectCount(data)
         p.cipheredContent = data.remaining()
         sc = data.getUInt8()
-        security = sc & 0x30
-        ss = sc & 0x3
-        if ss != SecuritySuite.SUITE_0:
-            raise ValueError("Decrypt failed. Invalid security suite.")
+        security = (Security)(sc & 0x30)
+        p.securitySuite = (SecuritySuite)(sc & 0x3)
         p.security = security
         invocationCounter = data.getUInt32()
         p.invocationCounter = invocationCounter

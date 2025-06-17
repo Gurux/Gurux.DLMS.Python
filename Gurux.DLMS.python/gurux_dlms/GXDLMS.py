@@ -526,8 +526,7 @@ class GXDLMS:
                             ):
                                 # pylint: disable=W0212
                                 p.settings._onPduEventHandler(True, reply.array())
-                            if p.settings.cipher.securitySuite == SecuritySuite.SUITE_0:
-                                tmp = GXDLMS.cipher0(p, reply)
+                            tmp = GXDLMS.cipher0(p, reply)
                             p.data.size = 0
                             p.data.set(tmp)
                             reply.size = 0
@@ -580,8 +579,7 @@ class GXDLMS:
                 tmp = []
                 # pylint: disable=W0212
                 p.settings._onPduEventHandler(True, reply.array())
-                if p.settings.cipher.securitySuite == SecuritySuite.SUITE_0:
-                    tmp = GXDLMS.cipher0(p, reply.array())
+                tmp = GXDLMS.cipher0(p, reply.array())
                 reply.size = 0
                 reply.set(tmp)
         if p.command == Command.GENERAL_BLOCK_TRANSFER or (
@@ -661,6 +659,7 @@ class GXDLMS:
         s = AesGcmParameter(cmd, cipher.systemTitle, key, cipher.authenticationKey)
         s.ignoreSystemTitle = p.settings.standard == Standard.ITALY
         s.security = cipher.security
+        s.securitySuite = cipher.securitySuite
         s.invocationCounter = cipher.invocationCounter
         tmp = GXCiphering.encrypt(s, data)
         cipher.invocationCounter = cipher.invocationCounter + 1

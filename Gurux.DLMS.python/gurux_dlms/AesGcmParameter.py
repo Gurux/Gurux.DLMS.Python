@@ -35,6 +35,7 @@ from .enums.Security import Security
 from .objects.enums.SecuritySuite import SecuritySuite
 from .CountType import CountType
 
+
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
 class AesGcmParameter:
     def __init__(
@@ -82,3 +83,5 @@ class AesGcmParameter:
         self.xml = None
         # System title is not send on pre-established connecions.
         self.ignoreSystemTitle = False
+        self.broacast = False
+        self.compression = False

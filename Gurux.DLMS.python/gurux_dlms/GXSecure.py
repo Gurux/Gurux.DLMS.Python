@@ -108,10 +108,11 @@ class GXSecure:
             #  SC is always Security.Authentication.
             p = AesGcmParameter(0, secret, cipher.blockCipherKey, cipher.authenticationKey)
             p.security = Security.AUTHENTICATION
+            p.securitySuite = cipher.securitySuite
             p.invocationCounter = ic
             p.type_ = CountType.TAG
             challenge.clear()
-            challenge.setUInt8(Security.AUTHENTICATION)
+            challenge.setUInt8(Security.AUTHENTICATION | cipher.securitySuite)
             challenge.setUInt32(p.invocationCounter)
             challenge.set(GXDLMSChippering.encryptAesGcm(p, d))
             d = challenge.array()
