@@ -672,11 +672,7 @@ class GXDLMSClient(object):
             self.settings.getStoCChallenge(),
             pw,
         )
-        if (
-            self.settings.cipher
-            and self.settings.increaseInvocationCounterForGMacAuthentication
-        ):
-            self.settings.cipher.invocationCounter += 1
+        self.settings.cipher.invocationCounter += 1
         if self.useLogicalNameReferencing:
             return self.__method(
                 "0.0.40.0.0.255",
@@ -805,11 +801,14 @@ class GXDLMSClient(object):
             reply = self.releaseRequest()
             if reply:
                 reply = reply[0]
-        # Restore default HDLC values.
-        self.hdlcSettings.maxInfoTX = self.initializeMaxInfoTX
-        self.hdlcSettings.maxInfoRX = self.initializeMaxInfoRX
-        self.hdlcSettings.windowSizeTX = self.initializeWindowSizeTX
-        self.hdlcSettings.windowSizeRX = self.initializeWindowSizeRX
+        if GXDLMS.useHdlc(self.settings.interfaceType):
+            # Restore default HDLC values.
+            self.hdlcSettings.maxInfoTX = self.initializeMaxInfoTX
+            self.hdlcSettings.maxInfoRX = self.initializeMaxInfoRX
+            self.hdlcSettings.windowSizeTX = self.initializeWindowSizeTX
+            self.hdlcSettings.windowSizeRX = self.initializeWindowSizeRX
+        # Restore default values.
+        self.maxReceivePDUSize = self.initializePduSize
         self.settings.connected = ConnectionState.NONE
         self.settings.resetFrameSequence()
         return reply

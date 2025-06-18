@@ -262,6 +262,7 @@ class _GXAPDU:
                 cls.getInitiateRequest(settings, tmp)
                 p = AesGcmParameter(Command.GLO_INITIATE_REQUEST, cipher.systemTitle, cipher.blockCipherKey, cipher.authenticationKey)
                 p.security = cipher.security
+                p.securitySuite = cipher.securitySuite
                 p.invocationCounter = cipher.invocationCounter
                 crypted = GXCiphering.encrypt(p, tmp.array())
                 cipher.invocationCounter = 1 + cipher.invocationCounter
