@@ -145,7 +145,7 @@ class _GXAPDU:
                 data.setUInt8(2)
 
         #  Add system title.
-        if not settings.isServer and (ciphered or settings.authentication == Authentication.HIGH_GMAC) or settings.authentication == Authentication.HIGH_ECDSA:
+        if not settings.isServer and (ciphered or settings.authentication in (Authentication.HIGH_GMAC, Authentication.HIGH_SHA256, Authentication.HIGH_ECDSA)):
             if len(cipher.systemTitle) != 8:
                 raise ValueError("SystemTitle")
             #  Add calling-AP-title

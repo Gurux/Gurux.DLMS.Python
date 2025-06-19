@@ -38,6 +38,8 @@ from .GXDLMSChipperingStream import GXDLMSChipperingStream
 from .GXByteBuffer import GXByteBuffer
 from .CountType import CountType
 from .GXDLMSChippering import GXDLMSChippering
+
+
 #
 class GXSecure:
     #
@@ -54,11 +56,12 @@ class GXSecure:
     #      * @param secret
     #      * Secret.
     #      * @return Chiphered text.
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     @classmethod
     def secure(cls, settings, cipher, ic, data, secret):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         from .AesGcmParameter import AesGcmParameter
+
         if isinstance(secret, str):
             secret = secret.encode()
         d = []
@@ -66,7 +69,7 @@ class GXSecure:
         if settings.authentication == Authentication.HIGH:
             len_ = len(data)
             if (len_ % 16) != 0:
-                len_ += (16 - (len(data) % 16))
+                len_ += 16 - (len(data) % 16)
 
             if len(secret) > len(data):
                 len_ = len(secret)
@@ -74,8 +77,8 @@ class GXSecure:
                 len_ += 16 - (len(secret) % 16)
             s = bytearray(len_)
             d = bytearray(len_)
-            s[0:len(secret)] = secret[0:]
-            d[0:len(data)] = data[0:]
+            s[0 : len(secret)] = secret[0:]
+            d[0 : len(data)] = data[0:]
             pos = 0
             while pos < len(d) / 16:
                 GXDLMSChipperingStream.aes1Encrypt(d, pos * 16, s)
@@ -86,7 +89,10 @@ class GXSecure:
         #  Get shared secret
         if settings.authentication == Authentication.HIGH_GMAC:
             challenge.set(data)
-        elif settings.authentication == Authentication.HIGH_SHA256:
+        elif (
+            settings.authentication == Authentication.HIGH_SHA256
+            or settings.authentication == Authentication.HIGH_ECDSA
+        ):
             challenge.set(secret)
         else:
             challenge.set(data)
@@ -106,7 +112,9 @@ class GXSecure:
             d = md.digest()
         elif settings.authentication == Authentication.HIGH_GMAC:
             #  SC is always Security.Authentication.
-            p = AesGcmParameter(0, secret, cipher.blockCipherKey, cipher.authenticationKey)
+            p = AesGcmParameter(
+                0, secret, cipher.blockCipherKey, cipher.authenticationKey
+            )
             p.security = Security.AUTHENTICATION
             p.securitySuite = cipher.securitySuite
             p.invocationCounter = ic
