@@ -466,6 +466,12 @@ class GXDLMSConverter:
             ret = "NtpSetup"
         elif ot == ObjectType.FUNCTION_CONTROL:
             ret = "FunctionControl"
+        elif ot == ObjectType.G3_PLC_MAC_SETUP:
+            ret = "G3PlcMacSetup"
+        elif ot == ObjectType.G3_PLC_MAC_LAYER_COUNTERS:
+            ret = "G3PlcMacLayerCounters"
+        elif ot == ObjectType.G3_PLC6_LO_WPAN:
+            ret = "G3Plc6LoWPan"
         else:
             ret = "Manufacture spesific."
         return ret
@@ -592,6 +598,12 @@ class GXDLMSConverter:
             ot = ObjectType.NTP_SETUP
         elif value == "FunctionControl":
             ot = ObjectType.FUNCTION_CONTROL
+        elif value == "G3PlcMacSetup":
+            ot = ObjectType.G3_PLC_MAC_SETUP
+        elif value == "G3PlcMacLayerCounters":
+            ot = ObjectType.G3_PLC_MAC_LAYER_COUNTERS
+        elif value == "G3Plc6LoWPan":
+            ot = ObjectType.G3_PLC6_LO_WPAN
         else:
             ot = ObjectType.NONE
         return ot
