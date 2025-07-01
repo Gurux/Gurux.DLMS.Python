@@ -52,7 +52,7 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
 
     def __init__(self, ln="0.0.29.1.0.255", sn=0):
         GXDLMSObject.__init__(self, ObjectType.G3_PLC_MAC_SETUP, ln, sn)
-        self.__version = 3
+        self.version = 3
         self.__keyTable = []
         self.__shortAddress = 0xFFFF
         self.__rcCoord = 0xFFFF
@@ -214,7 +214,7 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
         if all_ or self.canRead(25):
             attributes.append(25)
         # MacDuplicateDetectionTtl
-        if self.__version > 2:
+        if self.version > 2:
             if all_ or self.canRead(26):
                 attributes.append(26)
         return attributes
@@ -252,14 +252,14 @@ class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
         return list_
 
     def getAttributeCount(self):
-        if self.__version == 3:
+        if self.version == 3:
             return 26
-        if self.__version == 2:
+        if self.version == 2:
             return 25
         return 22
 
     def getMethodCount(self):
-        if self.__version == 3:
+        if self.version == 3:
             return 2
         return 1
 

@@ -60,7 +60,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                 sn: Short Name of the object.
         """
         GXDLMSObject.__init__(self, ObjectType.G3_PLC6_LO_WPAN, ln, sn)
-        self.__version = 3
+        self.version = 3
         self.__blacklistTable = []
         self.__contextInformationTable = []
         self.__prefixTable = bytearray()
@@ -380,7 +380,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
         # MetricType
         if all_ or self.canRead(16):
             attributes.append(16)
-        if self.__version > 0:
+        if self.version > 0:
             # CoordShortAddress
             if all_ or self.canRead(17):
                 attributes.append(17)
@@ -390,14 +390,14 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
             # DeviceType
             if all_ or self.canRead(19):
                 attributes.append(19)
-            if self.__version > 1:
+            if self.version > 1:
                 # DefaultCoordRouteEnabled
                 if all_ or self.canRead(20):
                     attributes.append(20)
                 # DestinationAddress
                 if all_ or self.canRead(21):
                     attributes.append(21)
-                if self.__version > 2:
+                if self.version > 2:
                     # LowLQI
                     if all_ or self.canRead(22):
                         attributes.append(22)
@@ -407,11 +407,11 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
         return attributes
 
     def getAttributeCount(self):
-        if self.__version == 0:
+        if self.version == 0:
             return 16
-        if self.__version == 1:
+        if self.version == 1:
             return 19
-        if self.__version == 2:
+        if self.version == 2:
             return 21
         return 23
 
@@ -810,7 +810,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
         # MetricType
         if index == 16:
             return DataType.UINT8
-        if self.__version > 0:
+        if self.version > 0:
             # CoordShortAddress
             if index == 17:
                 return DataType.UINT16
@@ -820,7 +820,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
             # DeviceType
             if index == 19:
                 return DataType.ENUM
-            if self.__version > 1:
+            if self.version > 1:
                 # DefaultCoordRouteEnabled
                 if index == 20:
                     return DataType.BOOLEAN
