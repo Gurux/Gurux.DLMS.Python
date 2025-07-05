@@ -51,6 +51,7 @@ from .enums.DataProtectionIdentifiedKeyType import DataProtectionIdentifiedKeyTy
 from .enums.DataProtectionWrappedKeyType import DataProtectionWrappedKeyType
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -232,19 +233,21 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         return 2
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Object list"),\
-            _GXLocalizer.gettext("Send destination and method"),\
-            _GXLocalizer.gettext("Communication window"),\
-            _GXLocalizer.gettext("Randomisation start interval"),\
-            _GXLocalizer.gettext("Number of retries"),\
-            _GXLocalizer.gettext("Repetition delay"),\
-            _GXLocalizer.gettext("Port reference"),\
-            _GXLocalizer.gettext("Push client sap"),\
-            _GXLocalizer.gettext("Push protection parameters"),\
-            _GXLocalizer.gettext("Push operation method"),\
-            _GXLocalizer.gettext("Confirmation parameters"),\
-            _GXLocalizer.gettext("Last confirmation date time"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Object list"),
+            _GXLocalizer.gettext("Send destination and method"),
+            _GXLocalizer.gettext("Communication window"),
+            _GXLocalizer.gettext("Randomisation start interval"),
+            _GXLocalizer.gettext("Number of retries"),
+            _GXLocalizer.gettext("Repetition delay"),
+            _GXLocalizer.gettext("Port reference"),
+            _GXLocalizer.gettext("Push client sap"),
+            _GXLocalizer.gettext("Push protection parameters"),
+            _GXLocalizer.gettext("Push operation method"),
+            _GXLocalizer.gettext("Confirmation parameters"),
+            _GXLocalizer.gettext("Last confirmation date time"),
+        )
 
     #
     # Returns method names.
@@ -252,8 +255,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
     def getMethodNames(self):
         if self.version < 2:
             return (_GXLocalizer.gettext("Push"),)
-        return (_GXLocalizer.gettext("Push"),\
-            _GXLocalizer.gettext("Reset"))
+        return (_GXLocalizer.gettext("Push"), _GXLocalizer.gettext("Reset"))
 
     def getDataType(self, index):
         ret = None
@@ -521,27 +523,27 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
                 co.attributeIndex = it[2]
                 co.dataIndex = it[3]
                 self.pushObjectList.append((obj, co))
-            if self.version > 1:
-                restriction = it[4]
-                co.restriction.type = RestrictionType(restriction[0])
-                if co.restriction.type == RestrictionType.NONE:
-                    pass
-                elif (
-                    co.restriction.type == RestrictionType.DATE
-                    or co.restriction.type == RestrictionType.ENTRY
-                ):
-                    co.restriction.from_ = restriction[1]
-                    co.restriction.to = restriction[2]
-                else:
-                    raise ValueError("Invalid restriction type.")
-                for c in it[5]:
-                    tp = ObjectType(c[0])
-                    ln = _GXCommon.toLogicalName(c[1])
-                    obj = settings.objects.findByLN(tp, ln)
-                    if obj is None:
-                        obj = _GXObjectFactory.createObject(tp)
-                        obj.logicalName = ln
-                    co.columns.append((obj, co))
+                if self.version > 1:
+                    restriction = it[4]
+                    co.restriction.type = RestrictionType(restriction[0])
+                    if co.restriction.type == RestrictionType.NONE:
+                        pass
+                    elif co.restriction.type in (
+                        RestrictionType.DATE,
+                        RestrictionType.ENTRY,
+                    ):
+                        co.restriction.from_ = restriction[1]
+                        co.restriction.to = restriction[2]
+                    else:
+                        raise ValueError("Invalid restriction type.")
+                    for c in it[5]:
+                        tp = ObjectType(c[0])
+                        ln = _GXCommon.toLogicalName(c[1])
+                        obj = settings.objects.findByLN(tp, ln)
+                        if obj is None:
+                            obj = _GXObjectFactory.createObject(tp)
+                            obj.logicalName = ln
+                        co.columns.append((obj, co))
 
     def __getPushProtectionParameters(self, e):
         self.pushProtectionParameters.clear()
@@ -633,6 +635,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
+    # pylint: disable=import-outside-toplevel
     def load(self, reader):
         from .._GXObjectFactory import _GXObjectFactory
 

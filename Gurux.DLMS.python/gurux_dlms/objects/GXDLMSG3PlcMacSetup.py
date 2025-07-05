@@ -44,6 +44,7 @@ from .GXDLMSMacPosTable import GXDLMSMacPosTable
 from .GXDLMSNeighbourTable import GXDLMSNeighbourTable
 from ..internal._GXLocalizer import _GXLocalizer
 
+# pylint: disable=too-many-instance-attributes, too-many-public-methods
 class GXDLMSG3PlcMacSetup(GXDLMSObject, IGXDLMSBase):
     """
     Online help:

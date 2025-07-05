@@ -40,6 +40,7 @@ class _GXLocalizer:
     #Used language.
     __lang = None
 
+    # pylint: disable=bare-except, broad-exception-caught
     # Return localized value.
     @staticmethod
     def gettext(value):
@@ -51,6 +52,7 @@ class _GXLocalizer:
         #Return default value if language is not available.
         return value
 
+    # pylint: disable=bare-except
     @staticmethod
     def init(lang_code):
         try:

@@ -32,5 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 class GXArray(list):
-    def __init__(self):
+    def __init__(self, value=None):
         list.__init__(self)
+        if value:
+            self.extend(value)

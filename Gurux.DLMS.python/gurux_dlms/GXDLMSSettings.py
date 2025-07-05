@@ -46,6 +46,9 @@ from .ConnectionState import ConnectionState
 from .objects.GXDLMSObjectCollection import GXDLMSObjectCollection
 from .GXHdlcSettings import GXHdlcSettings
 from .IGXCryptoNotifier import IGXCryptoNotifier
+from .objects.enums.CertificateType import CertificateType
+from .GXCryptoKeyParameter import GXCryptoKeyParameter
+from .enums.ObjectType import ObjectType
 
 
 # This class includes DLMS communication settings.
@@ -160,6 +163,9 @@ class GXDLMSSettings:
         self.commandType = 0
         self.useCustomChallenge = False
         self.preEstablishedSystemTitle = None
+        # Assigned association for the server.
+        self.__assignedAssociation = None
+
         ###Event listeners.
         self.__listeners = []
         if isinstance(parent, IGXCryptoNotifier):
@@ -510,3 +516,102 @@ class GXDLMSSettings:
         if value < 0:
             raise ValueError("Invalid Index.")
         self.index = value
+
+    # Encrypt or decrypt the data using external Hardware Security Module.
+    def crypt(self, certificateType, Data, encrypt, keyType):
+        for it in self.__listeners:
+            if isinstance(it, IGXCryptoNotifier):
+                args = GXCryptoKeyParameter()
+                args.keyType = keyType
+                args.encrypt = encrypt
+                args.systemTitle = self.cipher.systemTitle
+                args.recipientSystemTitle = self.sourceSystemTitle
+                args.certificateType = certificateType
+                args.invocationCounter = self.cipher.invocationCounter
+                args.securitySuite = self.cipher.securitySuite
+                args.securityPolicy = self.cipher.securityPolicy
+                if encrypt:
+                    args.plainText = Data
+                else:
+                    args.encrypted = Data
+                args.authenticationKey = self.cipher.authenticationKey
+                if (
+                    len(self.cipher.dedicatedKey) == 16
+                    and (self.connected & ConnectionState.DLMS) != 0
+                ):
+                    args.blockCipherKey = self.cipher.dedicatedKey
+                else:
+                    args.blockCipherKey = self.cipher.blockCipherKey
+                it.crypto(it, args)
+                if encrypt:
+                    return args.encrypted
+                return args.plainText
+            return None
+
+    # pylint: disable=import-outside-toplevel, too-many-nested-blocks
+    def getKey(self, certificateType, systemTitle, encrypt):
+        from .asn.enums.KeyUsage import KeyUsage
+        from .objects.GXDLMSAssociationLogicalName import GXDLMSAssociationLogicalName
+
+        for it in self.__listeners:
+            if isinstance(it, IGXCryptoNotifier):
+                if certificateType == CertificateType.DIGITAL_SIGNATURE:
+                    if encrypt:
+                        if self.cipher.signingKeyPair and self.cipher.signingKeyPair[1]:
+                            return self.cipher.signingKeyPair[1]
+                    elif self.cipher.signingKeyPair and self.cipher.signingKeyPair[0]:
+                        return self.cipher.signingKeyPair[0]
+                elif certificateType == CertificateType.KEY_AGREEMENT:
+                    if encrypt:
+                        if (
+                            self.cipher.keyAgreementKeyPair
+                            and self.cipher.keyAgreementKeyPair[1]
+                        ):
+                            return self.cipher.KeyAgreementKeyPair[1]
+                    elif (
+                        self.cipher.keyAgreementKeyPair
+                        and self.cipher.keyAgreementKeyPair[0]
+                    ):
+                        return self.cipher.keyAgreementKeyPair[0]
+                # Find keys from security setup object.
+                if (
+                    isinstance(self.__assignedAssociation, GXDLMSAssociationLogicalName)
+                    and systemTitle
+                ):
+                    ss = self.__assignedAssociation.objectList.findByLN(
+                        ObjectType.SECURITY_SETUP,
+                        self.__assignedAssociation.securitySetupReference,
+                    )
+                    if ss:
+                        if certificateType == CertificateType.DIGITAL_SIGNATURE:
+                            cert = ss.ServerCertificates.FindBySystemTitle(
+                                systemTitle, KeyUsage.DIGITAL_SIGNATURE
+                            )
+                            if cert and ss.signingKey:
+                                if encrypt:
+                                    if ss.signingKey[1]:
+                                        return ss.signingKey[1]
+                                elif cert.publicKey:
+                                    return cert.publicKey
+                        elif certificateType == CertificateType.KEY_AGREEMENT:
+                            cert = ss.ServerCertificates.FindBySystemTitle(
+                                systemTitle, KeyUsage.KEY_AGREEMENT
+                            )
+                            if cert and ss.keyAgreementKey:
+                                if encrypt:
+                                    if ss.keyAgreementKey[1]:
+                                        return ss.KeyAgreementKey[1]
+                                elif cert.publicKey:
+                                    return cert.publicKey
+
+                args = GXCryptoKeyParameter()
+                args.encrypt = encrypt
+                args.securitySuite = self.cipher.securitySuite
+                args.certificateType = certificateType
+                args.systemTitle = systemTitle
+                if it.onKey:
+                    it.onKey(it, args)
+                if encrypt:
+                    return args.privateKey
+                return args.publicKey
+        return None

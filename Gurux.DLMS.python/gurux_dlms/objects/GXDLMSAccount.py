@@ -285,7 +285,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             ret = self.currentCreditInUse
         elif e.index == 4:
-            ret = GXBitString.toBitString(self.currentCreditStatus, 8)
+            ret = GXBitString(self.currentCreditStatus, 8)
         elif e.index == 5:
             ret = self.availableCredit
         elif e.index == 6:
@@ -334,7 +334,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.chargeReference))
-                    _GXCommon.setData(settings, bb, DataType.BITSTRING, GXBitString.toBitString(it.collectionConfiguration, 3))
+                    _GXCommon.setData(settings, bb, DataType.BITSTRING, GXBitString(it.collectionConfiguration, 3))
             ret = bb.array()
         elif e.index == 12:
             bb = GXByteBuffer()

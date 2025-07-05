@@ -31,6 +31,7 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
+# pylint: disable=too-many-instance-attributes
 class GXDLMSRoutingConfiguration:
     """
     The routing configuration element specifies all parameters linked to the routing mechanism described in ITU-T G.9903:2014.

@@ -34,68 +34,76 @@
 #
 #  --------------------------------------------------------------------------
 #
-from .GXUInt8 import GXUInt8
 
-# BitString class is used with Bit strings.
+
 class GXBitString:
+    # pylint: disable=import-outside-toplevel
+    def __init__(self, value=None, pad_count=None):
+        from .internal._GXCommon import _GXCommon
 
-    #
-    # Constructor.
-    #
-    # @param val
-    # Bit string value.
-    #
-    def __init__(self, val, count=None):
-        if isinstance(val, (GXUInt8)):
-            val = GXBitString.___toBitString(val, 8)
-            if count:
-                val = val[0:count]
-        self.value = val
+        self.__padBits = 0
+        self.value = bytearray()
 
-    @classmethod
-    def ___toBitString(cls, value, count):
-        count = min(count, 8)
-        pos = 0
-        sb = ""
-        while pos != count:
-            if (value & (1 << pos)) != 0:
-                sb += "1"
-            else:
-                sb += "0"
-            pos = 1 + pos
-        return sb
+        if isinstance(value, str):
+            self.pad_bits = 8 - (len(value) % 8)
+            if self.pad_bits == 8:
+                self.pad_bits = 0
+            bit_str = value + "0" * self.pad_bits
+            self.value = bytearray(
+                int(bit_str[i : i + 8], 2) for i in range(0, len(bit_str), 8)
+            )
 
-    # Convert integer value to BitString.
-    # value: Value to convert.
-    # count: Amount of bits.
-    # Returns: Bitstring.
-    @classmethod
-    def toBitString(cls, value, count):
-        sb = cls.___toBitString(value & 0xFF, count)
-        if count > 8:
-            sb += cls.___toBitString((value >> 8) & 0xFF, count - 8)
-            if count > 16:
-                sb += cls.___toBitString((value >> 16) & 0xFF, count - 16)
-                if count > 24:
-                    sb += cls.___toBitString((value >> 24) & 0xFF, count - 24)
-        if len(sb) > count:
-            return sb[0, count]
-        return sb
+        elif isinstance(value, (bytes, bytearray)) and pad_count is not None:
+            if pad_count < 0 or pad_count > 7:
+                raise ValueError("PadCount must be in the range 0 to 7")
+            self.value = bytearray(value)
+            self.pad_bits = pad_count
+
+        elif isinstance(value, (bytes, bytearray)):
+            if len(value) == 0:
+                raise ValueError("value cannot be empty")
+            self.pad_bits = value[0]
+            if self.pad_bits < 0 or self.pad_bits > 7:
+                raise ValueError("PadCount must be in the range 0 to 7")
+            self.value = bytearray(value[1:])
+
+        elif isinstance(value, int) and pad_count is not None:
+            self.pad_bits = pad_count % 8
+            length = (pad_count // 8) + (1 if self.pad_bits else 0)
+            self.value = bytearray()
+            for _ in range(length):
+                self.value.append(_GXCommon.swapBits(value & 0xFF))
+                value >>= 8
+
+    @property
+    def padBits(self):
+        """Number of extra bits at the end of the string."""
+        return self.__padBits
+
+    @property
+    def length(self):
+        return 0 if not self.value else (8 * len(self.value)) - self.pad_bits
 
     def __str__(self):
-        return self.value
+        return self.toString(False)
 
-    #
-    # Bit string value as byte.
-    #
+    # pylint: disable=import-outside-toplevel
+    def toString(self, show_bits=False):
+        from .internal._GXCommon import _GXCommon
+
+        if not self.value:
+            return ""
+        bits = "".join(_GXCommon.toBitString(byte, 8) for byte in self.value)
+        bits = bits[: len(bits) - self.pad_bits]
+
+        return f"{len(bits)} bit {bits}" if show_bits else bits
+
     def toInteger(self):
-        val = 0
-        if self.value:
-            pos = 0
-            for it in self.value:
-                if it == '1':
-                    val |= (1 << pos)
-                elif it != '0':
-                    raise ValueError("Invalid parameter.")
-                pos = 1 + pos
-        return val
+        from .internal._GXCommon import _GXCommon
+
+        result = 0
+        pos = 0
+        for byte in self.value:
+            result |= _GXCommon.swapBits(byte) << pos
+            pos += 8
+        return result

@@ -73,6 +73,8 @@ from .enums.MethodAccessMode import MethodAccessMode
 from .enums.AccessMode3 import AccessMode3
 from .enums.MethodAccessMode3 import MethodAccessMode3
 from .internal._GXLocalizer import _GXLocalizer
+from .ecdsa.GXEcdsa import GXEcdsa
+
 
 # pylint:disable=bad-option-value,too-many-instance-attributes,too-many-arguments,too-many-public-methods,useless-object-inheritance
 class GXDLMSClient(object):
@@ -663,6 +665,13 @@ class GXDLMSClient(object):
             tmp.set(self.settings.stoCChallenge)
             tmp.set(self.settings.ctoSChallenge)
             pw = tmp.array()
+        elif self.settings.authentication == Authentication.HIGH_ECDSA:
+            tmp = GXByteBuffer()
+            tmp.set(self.settings.cipher.systemTitle)
+            tmp.set(self.settings.sourceSystemTitle)
+            tmp.set(self.settings.stoCChallenge)
+            tmp.set(self.settings.ctoSChallenge)
+            pw = tmp.array()
         else:
             pw = self.settings.password
         challenge = GXSecure.secure(
@@ -709,31 +718,40 @@ class GXDLMSClient(object):
             value = _GXCommon.getData(self.settings, reply, info)
             if value:
                 if self.settings.authentication == Authentication.HIGH_ECDSA:
-                    raise ValueError("ECDSA is not supported.")
-                if self.settings.authentication == Authentication.HIGH_GMAC:
-                    secret = self.settings.sourceSystemTitle
-                    bb = GXByteBuffer(value)
-                    bb.getUInt8()
-                    ic = bb.getUInt32()
-                elif self.settings.authentication == Authentication.HIGH_SHA256:
+                    if not self.settings.cipher.signingKeyPair:
+                        raise ValueError("SigningKeyPair is empty.")
                     tmp2 = GXByteBuffer()
-                    tmp2.set(self.settings.password)
                     tmp2.set(self.settings.sourceSystemTitle)
                     tmp2.set(self.settings.cipher.systemTitle)
                     tmp2.set(self.settings.ctoSChallenge)
                     tmp2.set(self.settings.stoCChallenge)
-                    secret = tmp2.array()
+                    sig = GXEcdsa(self.settings.cipher.signingKeyPair[0])
+                    equals = sig.verify(value, tmp2.array())
                 else:
-                    secret = self.settings.password
-                tmp = GXSecure.secure(
-                    self.settings,
-                    self.settings.cipher,
-                    ic,
-                    self.settings.getCtoSChallenge(),
-                    secret,
-                )
-                challenge = GXByteBuffer(tmp)
-                equals = challenge.compare(value)
+                    if self.settings.authentication == Authentication.HIGH_GMAC:
+                        secret = self.settings.sourceSystemTitle
+                        bb = GXByteBuffer(value)
+                        bb.getUInt8()
+                        ic = bb.getUInt32()
+                    elif self.settings.authentication == Authentication.HIGH_SHA256:
+                        tmp2 = GXByteBuffer()
+                        tmp2.set(self.settings.password)
+                        tmp2.set(self.settings.sourceSystemTitle)
+                        tmp2.set(self.settings.cipher.systemTitle)
+                        tmp2.set(self.settings.ctoSChallenge)
+                        tmp2.set(self.settings.stoCChallenge)
+                        secret = tmp2.array()
+                    else:
+                        secret = self.settings.password
+                    tmp = GXSecure.secure(
+                        self.settings,
+                        self.settings.cipher,
+                        ic,
+                        self.settings.getCtoSChallenge(),
+                        secret,
+                    )
+                    challenge = GXByteBuffer(tmp)
+                    equals = challenge.compare(value)
                 if not equals:
                     print(
                         "Invalid StoC:"

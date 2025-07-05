@@ -35,6 +35,7 @@ from gurux_dlms.objects.enums.GainResolution import GainResolution
 from gurux_dlms.objects.enums.Modulation import Modulation
 
 
+# pylint: disable=too-many-instance-attributes
 class GXDLMSNeighbourTable:
     """
     The neighbour table contains information about all the devices within the POS of the device

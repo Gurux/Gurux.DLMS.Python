@@ -1,0 +1,152 @@
+#
+#  --------------------------------------------------------------------------
+#   Gurux Ltd
+#
+#
+#
+#  Filename: $HeadURL$
+#
+#  Version: $Revision$,
+#                   $Date$
+#                   $Author$
+#
+#  Copyright (c) Gurux Ltd
+#
+# ---------------------------------------------------------------------------
+#
+#   DESCRIPTION
+#
+#  This file is a part of Gurux Device Framework.
+#
+#  Gurux Device Framework is Open Source software; you can redistribute it
+#  and/or modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; version 2 of the License.
+#  Gurux Device Framework is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  More information of Gurux products: http:#www.gurux.org
+#
+#  This code is licensed under the GNU General Public License v2.
+#  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
+# ---------------------------------------------------------------------------
+from gurux_dlms.GXIntEnum import GXIntEnum
+
+
+class PkcsObjectIdentifier(GXIntEnum):
+    NONE = 0
+    RSA_ENCRYPTION = 1
+    MD2WITH_RSA_ENCRYPTION = 2
+    MD4WITH_RSA_ENCRYPTION = 3
+    MD5WITH_RSA_ENCRYPTION = 4
+    SHA1WITH_RSA_ENCRYPTION = 5
+    SRSA_OAEP_ENCRYPTION_SET = 6
+    ID_RSAES_OAEP = 7
+    ID_MGF1 = 8
+    ID_P_SPECIFIED = 9
+    ID_RSASSA_PSS = 10
+    SHA256WITH_RSA_ENCRYPTION = 11
+    SHA384WITH_RSA_ENCRYPTION = 12
+    SHA512WITH_RSA_ENCRYPTION = 13
+    SHA224WITH_RSA_ENCRYPTION = 14
+    DH_KEY_AGREE1MENT = 15
+    PBE_WITH_MD2AND_DES_CBC = 16
+    PBE_WITH_MD2AND_RC2CBC = 17
+    PBE_WITH_MD5AND_DES_CBC = 18
+    PBE_WITH_MD5AND_RC2CBC = 19
+    PBE_WITH_SHA1AND_DES_CBC = 20
+    PBE_WITH_SHA1AND_RC2CBC = 21
+    ID_PBE_S2 = 22
+    ID_PBKDF2 = 23
+    DES_EDE3CBC = 24
+    RC2CBC = 25
+    MD2 = 26
+    MD4 = 27
+    MD5 = 28
+    ID_HMAC_WITH_SHA1 = 29
+    ID_HMAC_WITH_SHA224 = 30
+    ID_HMAC_WITH_SHA256 = 31
+    ID_HMAC_WITH_SHA384 = 32
+    ID_HMAC_WITH_SHA512 = 33
+    DATA = 34
+    SIGNED_DATA = 35
+    ENVELOPED_DATA = 36
+    SIGNED_AND_ENVELOPED_DATA = 37
+    DIGESTED_DATA = 38
+    ENCRYPTED_DATA = 39
+    PKCS9AT_EMAIL_ADDRESS = 40
+    PKCS9AT_UNSTRUCTURED_NAME = 41
+    PKCS9AT_CONTENT_TYPE = 42
+    PKCS9AT_MESSAGE_DIGEST = 43
+    PKCS9AT_SIGNING_TIME = 44
+    PKCS9AT_COUNTER_SIGNATURE = 45
+    PKCS9AT_CHALLENGE_PASSWORD = 46
+    PKCS9AT_UNSTRUCTURED_ADDRESS = 47
+    PKCS9AT_EXTENDED_CERTIFICATE_ATTRIBUTES = 48
+    PKCS9AT_SIGNING_DESCRIPTION = 49
+    PKCS9AT_EXTENSION_REQUEST = 50
+    PKCS9AT_SMIME_CAPABILITIES = 51
+    ID_SMIME = 52
+    PKCS9AT_FRIENDLY_NAME = 53
+    PKCS9AT_LOCAL_KEY_ID = 54
+    X509CERTIFICATE = 55
+    SDSI_CERTIFICATE = 56
+    X509CRL = 57
+    ID_ALG = 58
+    ID_ALG_ESDH = 59
+    ID_ALG_CMS3DES_WRAP = 60
+    ID_ALG_CMS_RC2WRAP = 61
+    ID_ALG_PWRI_KEK = 62
+    ID_ALG_SSDH = 63
+    ID_RSA_KEM = 64
+    PREFER_SIGNED_DATA = 65
+    CANNOT_DECRYPT_ANY = 66
+    SMIME_CAPABILITIES_VERSIONS = 67
+    ID_AA_RECEIPT_REQUEST = 68
+    ID_CT_AUTH_DATA = 69
+    ID_CT_TST_INFO = 70
+    ID_CT_COMPRESSED_DATA = 71
+    ID_CT_AUTH_ENVELOPED_DATA = 72
+    ID_CT_TIMESTAMPED_DATA = 73
+    ID_CTI_ETS_PROOF_OF_ORIGIN = 74
+    ID_CTI_ETS_PROOF_OF_RECEIPT = 75
+    ID_CTI_ETS_PROOF_OF_DELIVERY = 76
+    ID_CTI_ETS_PROOF_OF_SENDER = 77
+    ID_CTI_ETS_PROOF_OF_APPROVAL = 78
+    ID_CTI_ETS_PROOF_OF_CREATION = 79
+    ID_AA_CONTENT_HINT = 80
+    ID_AA_MSG_SIG_DIGEST = 81
+    ID_AA_CONTENT_REFERENCE = 82
+    ID_AA_ENCRYP_KEY_PREF = 83
+    ID_AA_SIGNING_CERTIFICATE = 84
+    ID_AA_SIGNING_CERTIFICATE_V2 = 85
+    ID_AA_CONTENT_IDENTIFIER = 86
+    ID_AA_SIGNATURE_TIME_STAMP_TOKEN = 87
+    ID_AA_ETS_SIG_POLICY_ID = 88
+    ID_AA_ETS_COMMITMENT_TYPE = 89
+    ID_AA_ETS_SIGNER_LOCATION = 90
+    ID_AA_ETS_SIGNER_ATTR = 91
+    ID_AA_ETS_OTHER_SIG_CERT = 92
+    ID_AA_ETS_CONTENT_TIMESTAMP = 93
+    ID_AA_ETS_CERTIFICATE_REFS = 94
+    ID_AA_ETS_REVOCATION_REFS = 95
+    ID_AA_ETS_CERT_VALUES = 96
+    ID_AA_ETS_REVOCATION_VALUES = 97
+    ID_AA_ETS_ESC_TIME_STAMP = 98
+    ID_AA_ETS_CERT_CRL_TIMESTAMP = 99
+    ID_AA_ETS_ARCHIVE_TIMESTAMP = 100
+    ID_SPQ_ETS_URI = 101
+    ID_SPQ_ETS_U_NOTICE = 102
+    KEY_BAG = 103
+    PKCS8SHROUDED_KEY_BAG = 104
+    CERT_BAG = 105
+    CRL_BAG = 106
+    SECRET_BAG = 107
+    SAFE_CONTENTS_BAG = 108
+    PBE_WITH_SHA_AND128BIT_RC4 = 109
+    PBE_WITH_SHA_AND40BIT_RC4 = 110
+    PBE_WITH_SHA_AND3KEY_TRIPLE_DES_CBC = 111
+    PBE_WITH_SHA_AND2KEY_TRIPLE_DES_CBC = 112
+    PBE_WITH_SHA_AND128BIT_RC2CBC = 113
+    PBEWITH_SHA_AND40BIT_RC2CBC = 114

@@ -262,7 +262,7 @@ class GXDLMSCharge(GXDLMSObject, IGXDLMSBase):
         elif e.index == 8:
             ret = self.period
         elif e.index == 9:
-            ret = GXBitString.toBitString(self.chargeConfiguration, 2)
+            ret = GXBitString(self.chargeConfiguration, 2)
         elif e.index == 10:
             ret = self.lastCollectionTime
         elif e.index == 11:

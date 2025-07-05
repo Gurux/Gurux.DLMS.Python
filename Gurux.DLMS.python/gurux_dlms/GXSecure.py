@@ -38,9 +38,11 @@ from .GXDLMSChipperingStream import GXDLMSChipperingStream
 from .GXByteBuffer import GXByteBuffer
 from .CountType import CountType
 from .GXDLMSChippering import GXDLMSChippering
+from .objects.enums.CertificateType import CertificateType
+from .ecdsa.GXEcdsa import GXEcdsa
+from .AesGcmParameter import AesGcmParameter
 
 
-#
 class GXSecure:
     #
     #      * Chipher text.
@@ -56,12 +58,9 @@ class GXSecure:
     #      * @param secret
     #      * Secret.
     #      * @return Chiphered text.
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments, too-many-locals
     @classmethod
     def secure(cls, settings, cipher, ic, data, secret):
-        # pylint: disable=import-outside-toplevel
-        from .AesGcmParameter import AesGcmParameter
-
         if isinstance(secret, str):
             secret = secret.encode()
         d = []
@@ -89,9 +88,9 @@ class GXSecure:
         #  Get shared secret
         if settings.authentication == Authentication.HIGH_GMAC:
             challenge.set(data)
-        elif (
-            settings.authentication == Authentication.HIGH_SHA256
-            or settings.authentication == Authentication.HIGH_ECDSA
+        elif settings.authentication in (
+            Authentication.HIGH_SHA256,
+            Authentication.HIGH_ECDSA,
         ):
             challenge.set(secret)
         else:
@@ -125,7 +124,29 @@ class GXSecure:
             challenge.set(GXDLMSChippering.encryptAesGcm(p, d))
             d = challenge.array()
         elif settings.authentication == Authentication.HIGH_ECDSA:
-            raise Exception("ECDSA is not supported.")
+            key = settings.cipher.signingKeyPair
+            if key:
+                key = key[1]
+
+            pub = settings.cipher.signingKeyPair
+            if pub:
+                pub = pub[0]
+            if not key:
+                key = settings.getKey(
+                    CertificateType.DIGITAL_SIGNATURE, settings.cipher.systemTitle, True
+                )
+                settings.cipher.signingKeyPair = (pub, key)
+            if not pub:
+                pub = settings.getKey(
+                    CertificateType.DIGITAL_SIGNATURE, settings.sourceSystemTitle, False
+                )
+                settings.cipher.signingKeyPair = (pub, key)
+            if not key:
+                raise ValueError("Signing key is not set.")
+            print("Private signed key: " + key.toHex())
+            print("Public signed key: " + key.getPublicKey().toHex())
+            sig = GXEcdsa(key)
+            d = sig.sign(secret)
         return d
 
     #

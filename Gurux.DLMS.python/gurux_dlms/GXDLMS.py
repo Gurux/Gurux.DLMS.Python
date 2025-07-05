@@ -61,7 +61,6 @@ from .enums.TranslatorOutputType import TranslatorOutputType
 from .TranslatorTags import TranslatorTags
 from .TranslatorStandardTags import TranslatorStandardTags
 from .SingleReadResponse import SingleReadResponse
-from .objects.enums import SecuritySuite
 from .ConnectionState import ConnectionState
 from .GXCiphering import GXCiphering
 from .enums.DataType import DataType

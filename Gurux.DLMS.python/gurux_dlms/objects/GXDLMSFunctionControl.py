@@ -38,6 +38,7 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, ErrorCode
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
@@ -113,8 +114,9 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
                 Function statuses.
         """
         functions = []
-        for it in values:
-            functions.append((it[0].decode(), it[1]))
+        if values:
+            for it in values:
+                functions.append((it[0].decode(), it[1]))
         return functions
 
     @classmethod
@@ -169,15 +171,16 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
         from .._GXObjectFactory import _GXObjectFactory
 
         functions = []
-        for it in values:
-            fn = it[0].decode()
-            objects = []
-            for it2 in it[1]:
-                ot = ObjectType(it2[0])
-                obj = _GXObjectFactory.createObject(ot)
-                obj.logicalName = _GXCommon.toLogicalName(it2[1])
-                objects.append(obj)
-            functions.append((fn, objects))
+        if values:
+            for it in values:
+                fn = it[0].decode()
+                objects = []
+                for it2 in it[1]:
+                    ot = ObjectType(it2[0])
+                    obj = _GXObjectFactory.createObject(ot)
+                    obj.logicalName = _GXCommon.toLogicalName(it2[1])
+                    objects.append(obj)
+                functions.append((fn, objects))
         return functions
 
     def invoke(self, settings, e):
@@ -322,14 +325,18 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 3, bb.array(), DataType.ARRAY)
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Activation status"),\
-            _GXLocalizer.gettext("Function list"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Activation status"),
+            _GXLocalizer.gettext("Function list"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Set function status"),\
-            _GXLocalizer.gettext("Add function"),\
-            _GXLocalizer.gettext("Remove function"))
+        return (
+            _GXLocalizer.gettext("Set function status"),
+            _GXLocalizer.gettext("Add function"),
+            _GXLocalizer.gettext("Remove function"),
+        )
 
     def getDataType(self, index):
         """
@@ -345,8 +352,7 @@ class GXDLMSFunctionControl(GXDLMSObject, IGXDLMSBase):
             return DataType.OCTET_STRING
         if index in (2, 3):
             return DataType.ARRAY
-        else:
-            raise ValueError("GetDataType failed. Invalid attribute index.")
+        raise ValueError("GetDataType failed. Invalid attribute index.")
 
     def load(self, reader):
         # pylint: disable=import-outside-toplevel,unidiomatic-typecheck

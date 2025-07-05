@@ -198,7 +198,7 @@ class GXDLMSSchedule(GXDLMSObject, IGXDLMSBase):
         data.setUInt8(DataType.UINT16)
         data.setUInt16(it.validityWindow)
         #Add exec week days.
-        _GXCommon.setData(None, data, DataType.BITSTRING, GXBitString.toBitString(it.execWeekdays, 7))
+        _GXCommon.setData(None, data, DataType.BITSTRING, GXBitString(it.execWeekdays, 7))
         #Add exec spec days.
         _GXCommon.setData(None, data, DataType.BITSTRING, it.execSpecDays)
         #Add begin date.

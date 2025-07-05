@@ -43,6 +43,7 @@ from .GXDLMSContextInformationTable import GXDLMSContextInformationTable
 from .GXDLMSBroadcastLogTable import GXDLMSBroadcastLogTable
 from ..internal._GXLocalizer import _GXLocalizer
 
+# pylint: disable=too-many-instance-attributes, too-many-public-methods
 class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
     """
     G3-PLC 6LoWPAN adaptation layer setup.

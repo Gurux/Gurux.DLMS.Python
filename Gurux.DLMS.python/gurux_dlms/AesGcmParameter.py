@@ -32,7 +32,6 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from .enums.Security import Security
-from .objects.enums.SecuritySuite import SecuritySuite
 from .CountType import CountType
 
 
@@ -49,6 +48,9 @@ class AesGcmParameter:
         blockCipherKey : Block cipher key.
         authenticationKey : Authentication key.
         """
+        # pylint: disable=import-outside-toplevel
+        from .objects.enums.SecuritySuite import SecuritySuite
+
         self.tag = tag
         self.security = Security.NONE
         # Invocation counter.

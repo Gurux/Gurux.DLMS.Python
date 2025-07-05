@@ -645,7 +645,7 @@ class _GXCommon:
         value = buff.getDouble()
         if info.xml:
             if info.xml.comments:
-                info.xml.appendComment(("%f" % value).rstrip("0").rstrip("."))
+                info.xml.appendComment(f"{value}".rstrip("0").rstrip("."))
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT64, value)
             info.xml.appendLine(
@@ -674,7 +674,7 @@ class _GXCommon:
         value = buff.getFloat()
         if info.xml:
             if info.xml.comments:
-                info.xml.appendComment(("%f" % value).rstrip("0").rstrip("."))
+                info.xml.appendComment(f"{value}".rstrip("0").rstrip("."))
             tmp = GXByteBuffer()
             cls.setData(settings, tmp, DataType.FLOAT32, value)
             info.xml.appendLine(
@@ -1856,7 +1856,7 @@ class _GXCommon:
 
         if len(dateString) > 17:
             second = int(dateString[12:14])
-        tz = dateString[dateString.length() - 4 :]
+        tz = dateString[len(dateString) - 4 :]
         return datetime(
             year, month, day, hour, minute, second, 0, tzinfo=GXTimeZone(tz)
         )
@@ -2017,11 +2017,11 @@ class _GXCommon:
         elif ch == "=":
             ret = 64
         elif ch < ":":
-            ret = 52 + (ch - "0")
+            ret = 52 + ord(ch) - ord("0")
         elif ch < "[":
-            ret = ch - "A"
+            ret = ord(ch) - ord("A")
         elif ch < "{":
-            ret = 26 + (ch - "a")
+            ret = 26 + (ord(ch) - ord("a"))
         else:
             raise ValueError("fromBase64")
         return ret
@@ -2041,7 +2041,7 @@ class _GXCommon:
         if len(value) % 4 != 0:
             raise ValueError("Invalid base64 input")
         len_ = (len(value) * 3) / 4
-        pos = value.indexOf("=")
+        pos = value.find("=")
         if pos > 0:
             len_ -= len(value) - pos
         decoded = bytearray()
@@ -2052,17 +2052,80 @@ class _GXCommon:
             b[1] = cls.getIndex(inChars[1])
             b[2] = cls.getIndex(inChars[2])
             b[3] = cls.getIndex(inChars[3])
-            decoded.append((b[0] << 2) or (b[1] >> 4))
+            decoded.append(((b[0] << 2) | (b[1] >> 4)) & 0xFF)
             if b[2] < 64:
-                decoded.append((b[1] << 4) or (b[2] >> 2))
+                decoded.append(((b[1] << 4) | (b[2] >> 2)) & 0xFF)
                 if b[3] < 64:
-                    decoded.append((b[2] << 6) | b[3])
+                    decoded.append(((b[2] << 6) | b[3]) & 0xFF)
         return bytes(decoded)
 
-    __BASE_64_ARRAY = ( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-        'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-        'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-        '4', '5', '6', '7', '8', '9', '+', '/', '=')
+    __BASE_64_ARRAY = (
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "+",
+        "/",
+        "=",
+    )
 
     @classmethod
     def toBase64(cls, value):
@@ -2073,7 +2136,7 @@ class _GXCommon:
                 pair: Private key or private/public key pair.
         """
         str_ = ""
-        for pos in range(0, len(value.length) -1, 3):
+        for pos in range(0, len(value), 3):
             b = (value[pos] & 0xFC) >> 2
             str_ += cls.__BASE_64_ARRAY[b]
             b = (value[pos] & 0x03) << 4
@@ -2088,7 +2151,7 @@ class _GXCommon:
                     str_ += cls.__BASE_64_ARRAY[b]
                 else:
                     str_ += cls.__BASE_64_ARRAY[b]
-                    str_ += '='
+                    str_ += "="
             else:
                 str_ += cls.__BASE_64_ARRAY[b]
                 str_ += "=="

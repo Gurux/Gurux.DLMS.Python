@@ -456,7 +456,7 @@ class GXByteBuffer(__base):
                     return False
         return True
 
-    def getString(self, index, count):
+    def getString(self, index, count = None):
         if index is None and count is None:
             tmp = self._data[0 : self.size]
             if self.isAsciiString(tmp):

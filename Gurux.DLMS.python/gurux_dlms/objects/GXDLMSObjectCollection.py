@@ -107,9 +107,9 @@ class GXDLMSObjectCollection(list):
         str_ += "]"
         return str_
 
+    # pylint: disable=import-outside-toplevel, broad-exception-caught
     @classmethod
     def load(cls, file_):
-        # pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
 
         obj = None
@@ -235,7 +235,7 @@ class GXDLMSObjectCollection(list):
                     # Set highest bit to save integer with two chars.
                     value = int(it.getAccess3(pos))
                     value |= 0x8000
-                    sb += "%0.2X" % value
+                    sb += f"{value:02X}"
                     pos += 1
                 ET.SubElement(node, "Access3").text = sb
                 sb = ""
@@ -243,7 +243,7 @@ class GXDLMSObjectCollection(list):
                 while pos <= it.getMethodCount():
                     # Set highest bit to save integer with two chars.
                     value = 0x8000 | it.getMethodAccess3(pos)
-                    sb += "%0.2X" % value
+                    sb += f"{value:02X}"
                     pos += 1
                 ET.SubElement(node, "MethodAccess3").text = sb
 
@@ -254,5 +254,5 @@ class GXDLMSObjectCollection(list):
         str_ = minidom.parseString(
             ET.tostring(objects, encoding="utf-8", method="xml")
         ).toprettyxml(indent="  ")
-        with open(name, "w") as f:
+        with open(name, "w", encoding="utf-8") as f:
             f.write(str_)

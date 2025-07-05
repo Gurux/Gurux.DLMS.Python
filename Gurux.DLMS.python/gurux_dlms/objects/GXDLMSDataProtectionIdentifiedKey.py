@@ -33,7 +33,7 @@
 # ---------------------------------------------------------------------------
 from .enums.DataProtectionIdentifiedKeyType import DataProtectionIdentifiedKeyType
 
-
+# pylint: disable=too-few-public-methods
 class GXDLMSDataProtectionIdentifiedKey:
     """
     Data protection identified key.

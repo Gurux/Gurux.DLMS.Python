@@ -44,6 +44,7 @@ from .enums.Security import Security
 from .GXDLMSXmlPdu import GXDLMSXmlPdu
 from .enums.TranslatorOutputType import TranslatorOutputType
 
+
 class GXDLMSXmlClient(GXDLMSSecureClient):
     """
     GXDLMS Xml client implements methods to communicate with DLMS/COSEM metering
@@ -56,7 +57,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
     # @param type
     #            XML type.
     #
-    def __init__(self, type_ = TranslatorOutputType.SIMPLE_XML):
+    def __init__(self, type_=TranslatorOutputType.SIMPLE_XML):
         GXDLMSSecureClient.__init__(self)
         # XML client don't throw exceptions. It serializes them as a default. Set
         # value to true, if exceptions are thrown.
@@ -65,7 +66,6 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
         self.translator = GXDLMSTranslator(type_)
         self.translator.hex = False
         self.useLogicalNameReferencing = True
-
 
     @classmethod
     def removeRecursively(cls, node, nodeType, name):
@@ -88,7 +88,7 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
     #            Load settings.
     # Loaded XML objects.
     # pylint: disable=too-many-locals,too-many-nested-blocks
-    def load(self, filename, loadSettings = None):
+    def load(self, filename, loadSettings=None):
         tree = ET.parse(filename)
         root = tree.getroot()
         actions = []
@@ -110,21 +110,38 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
                 sleep = node.text
                 continue
             if loadSettings and node.tag == "GetRequest":
-                structure = node.find("./GetRequestNormal/AccessSelection/AccessSelector/AccessParameters/Structure")
+                structure = node.find(
+                    "./GetRequestNormal/AccessSelection/AccessSelector/AccessParameters/Structure"
+                )
                 if structure:
                     start = False
                     for node2 in structure:
                         if start:
                             bb = GXByteBuffer()
                             if start:
-                                _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.start)
+                                _GXCommon.setData(
+                                    self.settings,
+                                    bb,
+                                    DataType.OCTET_STRING,
+                                    loadSettings.start,
+                                )
                                 node2.attrib["Value"] = bb.toHex(False, 2)
                                 start = False
                             else:
-                                _GXCommon.setData(self.settings, bb, DataType.OCTET_STRING, loadSettings.end)
+                                _GXCommon.setData(
+                                    self.settings,
+                                    bb,
+                                    DataType.OCTET_STRING,
+                                    loadSettings.end,
+                                )
                                 node2.attrib["Value"] = bb.toHex(False, 2)
 
-            s = GXDLMSXmlSettings(self.translator.outputType, self.translator.hex, self.translator.showStringAsHex, self.translator.tagsByName)
+            s = GXDLMSXmlSettings(
+                self.translator.outputType,
+                self.translator.hex,
+                self.translator.showStringAsHex,
+                self.translator.tagsByName,
+            )
             s.settings.clientAddress = self.settings.clientAddress
             s.settings.serverAddress = self.settings.serverAddress
             reply = []
@@ -161,18 +178,28 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
         elif pdu.command == Command.UA:
             messages.append(pdu.data)
         elif pdu.command == Command.DISCONNECT_REQUEST:
-            messages.append(GXDLMS.getHdlcFrame(self.settings, int(Command.DISCONNECT_REQUEST), GXByteBuffer(pdu.data)))
+            messages.append(
+                GXDLMS.getHdlcFrame(
+                    self.settings,
+                    int(Command.DISCONNECT_REQUEST),
+                    GXByteBuffer(pdu.data),
+                )
+            )
         else:
             reply = None
             if self.settings.interfaceType == InterfaceType.WRAPPER:
                 if self.ciphering.security != Security.NONE:
-                    p = GXDLMSLNParameters(self.settings, 0, pdu.command, 0x0, None, None, 0xff)
+                    p = GXDLMSLNParameters(
+                        self.settings, 0, pdu.command, 0x0, None, None, 0xFF
+                    )
                     reply = GXByteBuffer(GXDLMS.cipher0(p, pdu.data))
                 else:
                     reply = GXByteBuffer(pdu.data)
             else:
                 if self.ciphering.security != Security.NONE:
-                    p = GXDLMSLNParameters(self.settings, 0, pdu.command, 0x0, None, None, 0xff)
+                    p = GXDLMSLNParameters(
+                        self.settings, 0, pdu.command, 0x0, None, None, 0xFF
+                    )
                     tmp = GXDLMS.cipher0(p, pdu.data)
                     reply = GXByteBuffer(len(tmp))
                     reply.set(_GXCommon.LLC_SEND_BYTES)
@@ -184,8 +211,13 @@ class GXDLMSXmlClient(GXDLMSSecureClient):
             frame_ = 0
             while reply.position != len(reply):
                 if self.settings.interfaceType == InterfaceType.WRAPPER:
-                    messages.append(GXDLMS.getWrapperFrame(self.settings, pdu.command, reply))
-                elif self.settings.interfaceType == InterfaceType.HDLC or self.settings.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
+                    messages.append(
+                        GXDLMS.getWrapperFrame(self.settings, pdu.command, reply)
+                    )
+                elif self.settings.interfaceType in (
+                    InterfaceType.HDLC,
+                    InterfaceType.HDLC_WITH_MODE_E,
+                ):
                     if pdu.command == Command.AARQ:
                         frame_ = 0x10
                     elif pdu.command == Command.AARE:

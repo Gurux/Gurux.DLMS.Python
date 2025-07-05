@@ -48,6 +48,9 @@ from .GXDLMSCertificateInfo import GXDLMSCertificateInfo
 from ..enums.Security import Security
 from .enums.GlobalKeyType import GlobalKeyType
 from ..internal._GXLocalizer import _GXLocalizer
+from ..asn.GXAsn1Converter import GXAsn1Converter
+from ..asn.GXAsn1Integer import GXAsn1Integer
+
 
 # pylint: disable=too-many-public-methods,too-many-instance-attributes
 class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
@@ -176,10 +179,22 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 5, type_, DataType.ENUM)
 
     def importCertificate(self, client, certificate):
-        # If certificate is a string.
-        if isinstance(certificate, (str)):
-            certificate = certificate.getEncoded()
-        return client.method(self, 6, certificate, DataType.OCTET_STRING)
+        return client.method(self, 6, certificate.encoded, DataType.OCTET_STRING)
+
+    @classmethod
+    def verifyIssuer(cls, issuer):
+        """
+        Verify that issuer is in ASN1 format.
+
+        :param issuer: Certificate issuer as bytes.
+        :raises ValueError: If the issuer is invalid or not in ASN1 format.
+        """
+        try:
+            if not issuer:
+                raise ValueError("Issuer is empty.")
+            GXAsn1Converter.fromByteArray(issuer)
+        except Exception:
+            raise ValueError("Invalid issuer. Issuer must be in ASN1 format.")
 
     def exportCertificateByEntity(self, client, entity, type_, systemTitle):
         if not systemTitle:
@@ -199,6 +214,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 7, bb.array(), DataType.STRUCTURE)
 
     def exportCertificateBySerial(self, client, serialNumber, issuer):
+        self.verifyIssuer(issuer)
         bb = GXByteBuffer()
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
@@ -206,8 +222,9 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         bb.setUInt8(1)
         bb.setUInt8(DataType.STRUCTURE)
         bb.setUInt8(2)
-        _GXCommon.setData(None, bb, DataType.OCTET_STRING, serialNumber.encode())
-        _GXCommon.setData(None, bb, DataType.OCTET_STRING, issuer.encode())
+        sn = GXAsn1Converter.toByteArray(GXAsn1Integer(serialNumber))
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, sn)
+        _GXCommon.setData(None, bb, DataType.OCTET_STRING, issuer)
         return client.method(self, 7, bb.array(), DataType.STRUCTURE)
 
     def removeCertificateByEntity(self, client, entity, type_, systemTitle):
@@ -348,20 +365,24 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         return 8
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Security policy"),\
-            _GXLocalizer.gettext("Security suite"),\
-            _GXLocalizer.gettext("Client system title"),\
-            _GXLocalizer.gettext("Server system title"),\
-            _GXLocalizer.gettext("Certificates"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Security policy"),
+            _GXLocalizer.gettext("Security suite"),
+            _GXLocalizer.gettext("Client system title"),
+            _GXLocalizer.gettext("Server system title"),
+            _GXLocalizer.gettext("Certificates"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Adjust to quarter"),\
-            _GXLocalizer.gettext("Adjust to measuring period"),\
-            _GXLocalizer.gettext("Adjust to minute"),\
-            _GXLocalizer.gettext("Adjust to preset time"),\
-            _GXLocalizer.gettext("Preset adjusting time"),\
-            _GXLocalizer.gettext("Shift time"))
+        return (
+            _GXLocalizer.gettext("Adjust to quarter"),
+            _GXLocalizer.gettext("Adjust to measuring period"),
+            _GXLocalizer.gettext("Adjust to minute"),
+            _GXLocalizer.gettext("Adjust to preset time"),
+            _GXLocalizer.gettext("Preset adjusting time"),
+            _GXLocalizer.gettext("Shift time"),
+        )
 
     def getDataType(self, index):
         if index == 1:

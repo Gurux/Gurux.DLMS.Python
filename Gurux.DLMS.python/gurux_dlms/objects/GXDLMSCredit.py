@@ -207,7 +207,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         elif e.index == 6:
             ret = self.limit
         elif e.index == 7:
-            ret = GXBitString.toBitString(self.creditConfiguration, 5)
+            ret = GXBitString(self.creditConfiguration, 5)
         elif e.index == 8:
             ret = self.status
         elif e.index == 9:

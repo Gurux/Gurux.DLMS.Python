@@ -52,7 +52,7 @@ from ..enums.MethodAccessMode3 import MethodAccessMode3
 from ..GXBitString import GXBitString
 from ..internal._GXLocalizer import _GXLocalizer
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes,too-many-public-methods
 class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
@@ -468,7 +468,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 settings,
                 data,
                 DataType.BITSTRING,
-                GXBitString.toBitString(self.xDLMSContextInfo.conformance, 24),
+                GXBitString(self.xDLMSContextInfo.conformance, 24),
             )
             _GXCommon.setData(
                 settings, data, DataType.UINT16, self.xDLMSContextInfo.maxReceivePduSize
