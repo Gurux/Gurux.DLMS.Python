@@ -293,6 +293,8 @@ class GXSettings:
                         self.client.authentication = Authentication.HIGH_GMAC
                     elif it.value.lower() == "HighSha256".lower():
                         self.client.authentication = Authentication.HIGH_SHA256
+                    elif it.value.lower() == "HighEcdsa".lower():
+                        self.client.authentication = Authentication.HIGH_ECDSA
                     else:
                         raise ValueError(
                             "Invalid Ciphering option: '"

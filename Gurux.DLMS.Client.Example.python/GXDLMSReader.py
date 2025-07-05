@@ -38,18 +38,58 @@ import traceback
 from gurux_common.enums import TraceLevel
 from gurux_common.io import Parity, StopBits
 from gurux_common import ReceiveParameters, GXCommon, TimeoutException
-from gurux_dlms import GXByteBuffer, GXReplyData, GXDLMSTranslator, GXDLMSException, GXDLMSAccessItem
-from gurux_dlms.enums import InterfaceType, ObjectType, Authentication, Conformance, DataType,\
-    Security, AssociationResult, SourceDiagnostic, AccessServiceCommandType
-from gurux_dlms.objects import GXDLMSObject, GXDLMSObjectCollection, GXDLMSData, GXDLMSRegister,\
-    GXDLMSDemandRegister, GXDLMSProfileGeneric, GXDLMSExtendedRegister
+from gurux_dlms import (
+    GXByteBuffer,
+    GXReplyData,
+    GXDLMSTranslator,
+    GXDLMSException,
+    GXDLMSAccessItem,
+)
+from gurux_dlms.enums import (
+    InterfaceType,
+    ObjectType,
+    Authentication,
+    Conformance,
+    DataType,
+    Security,
+    AssociationResult,
+    SourceDiagnostic,
+    AccessServiceCommandType,
+)
+from gurux_dlms.objects import (
+    GXDLMSObject,
+    GXDLMSObjectCollection,
+    GXDLMSData,
+    GXDLMSRegister,
+    GXDLMSDemandRegister,
+    GXDLMSProfileGeneric,
+    GXDLMSExtendedRegister,
+    GXDLMSSecuritySetup,
+)
+from gurux_dlms import GXDateTime
+from gurux_dlms.enums import DateTimeSkips
+
 from gurux_net import GXNet
 from gurux_serial import GXSerial
+from gurux_dlms.ecdsa.enums.Ecc import Ecc
+from gurux_dlms.objects.enums.CertificateType import CertificateType
+from gurux_dlms.objects.enums.SecuritySuite import SecuritySuite
+from gurux_dlms.asn.GXAsn1Converter import GXAsn1Converter
+from gurux_dlms.ecdsa.GXEcdsa import GXEcdsa
+from gurux_dlms.asn.GXPkcs8 import GXPkcs8
+from gurux_dlms.asn.GXPkcs10 import GXPkcs10
+from gurux_dlms.asn.GXx509Certificate import GXx509Certificate
+from gurux_dlms.asn.GXCertificateRequest import GXCertificateRequest
+from gurux_dlms.objects.enums.CertificateEntity import CertificateEntity
+from gurux_dlms.GXDLMSConverter import GXDLMSConverter
+
+from gurux_dlms.objects import *
+
 
 class GXDLMSReader:
-    #pylint: disable=too-many-public-methods, too-many-instance-attributes
+    # pylint: disable=too-many-public-methods, too-many-instance-attributes
     def __init__(self, client, media, trace, invocationCounter):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         self.replyBuff = bytearray(8 + 1024)
         self.waitTime = 5000
         self.logFile = open("logFile.txt", "w")
@@ -63,37 +103,43 @@ class GXDLMSReader:
             print("ServerAddress: " + hex(self.client.serverAddress))
 
     def disconnect(self):
-        #pylint: disable=broad-except
+        # pylint: disable=broad-except
         if self.media and self.media.isOpen():
             print("DisconnectRequest")
             reply = GXReplyData()
             self.readDLMSPacket(self.client.disconnectRequest(), reply)
 
     def release(self):
-        #pylint: disable=broad-except
+        # pylint: disable=broad-except
         if self.media and self.media.isOpen():
             print("DisconnectRequest")
             reply = GXReplyData()
             try:
-                #Release is call only for secured connections.
-                #All meters are not supporting Release and it's causing
-                #problems.
-                if self.client.interfaceType == InterfaceType.WRAPPER or self.client.ciphering.security != Security.NONE:
+                # Release is call only for secured connections.
+                # All meters are not supporting Release and it's causing
+                # problems.
+                if (
+                    self.client.interfaceType == InterfaceType.WRAPPER
+                    or self.client.ciphering.security != Security.NONE
+                ):
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception:
                 pass
                 #  All meters don't support release.
 
     def close(self):
-        #pylint: disable=broad-except
+        # pylint: disable=broad-except
         if self.media and self.media.isOpen():
             print("DisconnectRequest")
             reply = GXReplyData()
             try:
-                #Release is call only for secured connections.
-                #All meters are not supporting Release and it's causing
-                #problems.
-                if self.client.interfaceType == InterfaceType.WRAPPER or self.client.ciphering.security != Security.NONE:
+                # Release is call only for secured connections.
+                # All meters are not supporting Release and it's causing
+                # problems.
+                if (
+                    self.client.interfaceType == InterfaceType.WRAPPER
+                    or self.client.ciphering.security != Security.NONE
+                ):
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception:
                 pass
@@ -127,8 +173,10 @@ class GXDLMSReader:
         notify = GXReplyData()
         reply.error = 0
         eop = 0x7E
-        #In network connection terminator is not used.
-        if self.client.interfaceType == InterfaceType.WRAPPER and isinstance(self.media, GXNet):
+        # In network connection terminator is not used.
+        if self.client.interfaceType == InterfaceType.WRAPPER and isinstance(
+            self.media, GXNet
+        ):
             eop = None
         p = ReceiveParameters()
         p.eop = eop
@@ -142,7 +190,10 @@ class GXDLMSReader:
         rd = GXByteBuffer()
         with self.media.getSynchronous():
             if not reply.isStreaming():
-                self.writeTrace("TX: " + self.now() + "\t" + GXByteBuffer.hex(data), TraceLevel.VERBOSE)
+                self.writeTrace(
+                    "TX: " + self.now() + "\t" + GXByteBuffer.hex(data),
+                    TraceLevel.VERBOSE,
+                )
                 self.media.send(data)
             pos = 0
             try:
@@ -159,7 +210,9 @@ class GXDLMSReader:
                     while not self.media.receive(p):
                         pos += 1
                         if pos == 3:
-                            raise TimeoutException("Failed to receive reply from the device in given time.")
+                            raise TimeoutException(
+                                "Failed to receive reply from the device in given time."
+                            )
                         print("Data send failed.  Try to resend " + str(pos) + "/3")
                         self.media.send(data, None)
                     rd.set(p.reply)
@@ -191,7 +244,7 @@ class GXDLMSReader:
         if self.client.interfaceType == InterfaceType.HDLC_WITH_MODE_E:
             p = ReceiveParameters()
             p.allData = True
-            p.eop = '\n'
+            p.eop = "\n"
             p.waitTime = self.waitTime
             with self.media.getSynchronous():
                 data = "/?!\r\n"
@@ -200,62 +253,76 @@ class GXDLMSReader:
                 if not self.media.receive(p):
                     raise Exception("Failed to received reply from the media.")
 
-                self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
-                #If echo is used.
+                self.writeTrace(
+                    "RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE
+                )
+                # If echo is used.
                 if data.encode() == p.reply:
                     p.reply = None
                     if not self.media.receive(p):
                         raise Exception("Failed to received reply from the media.")
-                    self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
+                    self.writeTrace(
+                        "RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE
+                    )
 
-            if not p.reply or p.reply[0] != ord('/'):
+            if not p.reply or p.reply[0] != ord("/"):
                 raise Exception("Invalid responce : " + str(p.reply))
             baudrate = chr(p.reply[4])
-            if baudrate == '0':
+            if baudrate == "0":
                 bitrate = 300
-            elif baudrate == '1':
+            elif baudrate == "1":
                 bitrate = 600
-            elif baudrate == '2':
+            elif baudrate == "2":
                 bitrate = 1200
-            elif baudrate == '3':
+            elif baudrate == "3":
                 bitrate = 2400
-            elif baudrate == '4':
+            elif baudrate == "4":
                 bitrate = 4800
-            elif baudrate == '5':
+            elif baudrate == "5":
                 bitrate = 9600
-            elif baudrate == '6':
+            elif baudrate == "6":
                 bitrate = 19200
             else:
                 raise Exception("Unknown baud rate.")
 
             print("Bitrate is : " + str(bitrate))
-            #Send ACK
-            #Send Protocol control character
-            controlCharacter = ord('2')
-            #"2" HDLC protocol procedure (Mode E)
-            #Mode control character
-            #"2" //(HDLC protocol procedure) (Binary mode)
-            modeControlCharacter = ord('2')
-            #Set mode E.
-            tmp = bytearray([0x06, controlCharacter, ord(baudrate), modeControlCharacter, 13, 10])
+            # Send ACK
+            # Send Protocol control character
+            controlCharacter = ord("2")
+            # "2" HDLC protocol procedure (Mode E)
+            # Mode control character
+            # "2" //(HDLC protocol procedure) (Binary mode)
+            modeControlCharacter = ord("2")
+            # Set mode E.
+            tmp = bytearray(
+                [0x06, controlCharacter, ord(baudrate), modeControlCharacter, 13, 10]
+            )
             p.reply = None
             with self.media.getSynchronous():
                 self.media.send(tmp)
-                #This sleep make sure that all meters can be read.
+                # This sleep make sure that all meters can be read.
                 time.sleep(1)
-                self.writeTrace("TX: " + self.now() + "\t" + GXCommon.toHex(tmp), TraceLevel.VERBOSE)
+                self.writeTrace(
+                    "TX: " + self.now() + "\t" + GXCommon.toHex(tmp), TraceLevel.VERBOSE
+                )
                 p.waitTime = 200
                 if self.media.receive(p):
-                    self.writeTrace("RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE)
+                    self.writeTrace(
+                        "RX: " + self.now() + "\t" + str(p.reply), TraceLevel.VERBOSE
+                    )
                 self.media.dataBits = 8
                 self.media.parity = Parity.NONE
                 self.media.stopBits = StopBits.ONE
                 self.media.baudRate = bitrate
-                #This sleep make sure that all meters can be read.
+                # This sleep make sure that all meters can be read.
                 time.sleep(1)
 
     def updateFrameCounter(self):
-        if self.invocationCounter and self.client.ciphering is not None and self.client.ciphering.security != Security.NONE:
+        if (
+            self.invocationCounter
+            and self.client.ciphering is not None
+            and self.client.ciphering.security != Security.NONE
+        ):
             self.initializeOpticalHead()
             self.client.proposedConformance |= Conformance.GENERAL_PROTECTION
             add = self.client.clientAddress
@@ -280,9 +347,12 @@ class GXDLMSReader:
                 d = GXDLMSData(self.invocationCounter)
                 self.read(d, 2)
                 self.client.ciphering.invocationCounter = 1 + d.value
-                print("Invocation counter: " + str(self.client.ciphering.invocationCounter))
+                print(
+                    "Invocation counter: "
+                    + str(self.client.ciphering.invocationCounter)
+                )
                 self.disconnect()
-                #except Exception as ex:
+                # except Exception as ex:
             finally:
                 self.client.clientAddress = add
                 self.client.authentication = auth
@@ -292,12 +362,22 @@ class GXDLMSReader:
     def initializeConnection(self):
         print("Standard: " + str(self.client.standard))
         if self.client.ciphering.security != Security.NONE:
+            print("Security Suite: " + str(self.client.ciphering.securitySuite))
             print("Security: " + str(self.client.ciphering.security))
             print("System title: " + GXCommon.toHex(self.client.ciphering.systemTitle))
-            print("Authentication key: " + GXCommon.toHex(self.client.ciphering.authenticationKey))
-            print("Block cipher key: " + GXCommon.toHex(self.client.ciphering.blockCipherKey))
+            print(
+                "Authentication key: "
+                + GXCommon.toHex(self.client.ciphering.authenticationKey)
+            )
+            print(
+                "Block cipher key: "
+                + GXCommon.toHex(self.client.ciphering.blockCipherKey)
+            )
             if self.client.ciphering.dedicatedKey:
-                print("Dedicated key: " + GXCommon.toHex(self.client.ciphering.dedicatedKey))
+                print(
+                    "Dedicated key: "
+                    + GXCommon.toHex(self.client.ciphering.dedicatedKey)
+                )
         self.updateFrameCounter()
         self.initializeOpticalHead()
         reply = GXReplyData()
@@ -317,14 +397,17 @@ class GXDLMSReader:
                     self.readDLMSPacket(it, reply)
                 self.client.parseApplicationAssociationResponse(reply.data)
             except GXDLMSException as ex:
-                #Invalid password.
-                raise GXDLMSException(AssociationResult.PERMANENT_REJECTED, SourceDiagnostic.AUTHENTICATION_FAILURE)
+                # Invalid password.
+                raise GXDLMSException(
+                    AssociationResult.PERMANENT_REJECTED,
+                    SourceDiagnostic.AUTHENTICATION_FAILURE,
+                )
 
     def read(self, item, attributeIndex):
         data = self.client.read(item, attributeIndex)[0]
         reply = GXReplyData()
         self.readDataBlock(data, reply)
-        #Update data type on read.
+        # Update data type on read.
         if item.getDataType(attributeIndex) == DataType.NONE:
             item.setDataType(attributeIndex, reply.valueType)
         return self.client.updateValue(item, attributeIndex, reply.value)
@@ -359,7 +442,7 @@ class GXDLMSReader:
         self.readDataBlock(data, reply)
         return self.client.updateValue(pg, 2, reply.value)
 
-    #Read values using Access request.
+    # Read values using Access request.
     def readByAccess(self, list_):
         if list_:
             reply = GXReplyData()
@@ -368,18 +451,28 @@ class GXDLMSReader:
             self.client.parseAccessResponse(list_, reply.data)
 
     def readScalerAndUnits(self):
-        #pylint: disable=broad-except
-        objs = self.client.objects.getObjects([ObjectType.REGISTER, ObjectType.EXTENDED_REGISTER, ObjectType.DEMAND_REGISTER])
+        # pylint: disable=broad-except
+        objs = self.client.objects.getObjects(
+            [
+                ObjectType.REGISTER,
+                ObjectType.EXTENDED_REGISTER,
+                ObjectType.DEMAND_REGISTER,
+            ]
+        )
         list_ = list()
         try:
             if self.client.negotiatedConformance & Conformance.ACCESS != 0:
                 for it in objs:
                     if isinstance(it, (GXDLMSRegister, GXDLMSExtendedRegister)):
                         if it.canRead(3):
-                            list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3))
+                            list_.append(
+                                GXDLMSAccessItem(AccessServiceCommandType.GET, it, 3)
+                            )
                     elif isinstance(it, (GXDLMSDemandRegister)):
                         if it.canRead(4):
-                            list_.append(GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4))
+                            list_.append(
+                                GXDLMSAccessItem(AccessServiceCommandType.GET, it, 4)
+                            )
                 self.readByAccess(list_)
                 return
         except Exception:
@@ -409,10 +502,12 @@ class GXDLMSReader:
                     pass
 
     def getProfileGenericColumns(self):
-        #pylint: disable=broad-except
+        # pylint: disable=broad-except
         profileGenerics = self.client.objects.getObjects(ObjectType.PROFILE_GENERIC)
         for pg in profileGenerics:
-            self.writeTrace("Profile Generic " + str(pg.name) + "Columns:", TraceLevel.INFO)
+            self.writeTrace(
+                "Profile Generic " + str(pg.name) + "Columns:", TraceLevel.INFO
+            )
             try:
                 if pg.canRead(3):
                     self.read(pg, 3)
@@ -428,10 +523,12 @@ class GXDLMSReader:
                             sb += desc
                     self.writeTrace(sb, TraceLevel.INFO)
             except Exception as ex:
-                self.writeTrace("Err! Failed to read columns:" + str(ex), TraceLevel.ERROR)
+                self.writeTrace(
+                    "Err! Failed to read columns:" + str(ex), TraceLevel.ERROR
+                )
 
     def getReadOut(self):
-        #pylint: disable=unidiomatic-typecheck, broad-except
+        # pylint: disable=unidiomatic-typecheck, broad-except
         for it in self.client.objects:
             if type(it) == GXDLMSObject:
                 print("Unknown Interface: " + it.objectType.__str__())
@@ -439,16 +536,29 @@ class GXDLMSReader:
             if isinstance(it, GXDLMSProfileGeneric):
                 continue
 
-            self.writeTrace("-------- Reading " + str(it.objectType) + " " + str(it.name) + " " + it.description, TraceLevel.INFO)
+            self.writeTrace(
+                "-------- Reading "
+                + str(it.objectType)
+                + " "
+                + str(it.name)
+                + " "
+                + it.description,
+                TraceLevel.INFO,
+            )
             for pos in it.getAttributeIndexToRead(True):
                 try:
                     if it.canRead(pos):
                         val = self.read(it, pos)
                         self.showValue(pos, val)
                     else:
-                        self.writeTrace("Attribute" + str(pos) + " is not readable.", TraceLevel.INFO)
+                        self.writeTrace(
+                            "Attribute" + str(pos) + " is not readable.",
+                            TraceLevel.INFO,
+                        )
                 except Exception as ex:
-                    self.writeTrace("Error! Index: " + str(pos) + " " + str(ex), TraceLevel.ERROR)
+                    self.writeTrace(
+                        "Error! Index: " + str(pos) + " " + str(ex), TraceLevel.ERROR
+                    )
                     self.writeTrace(str(ex), TraceLevel.ERROR)
                     if not isinstance(ex, (GXDLMSException, TimeoutException)):
                         traceback.print_exc()
@@ -469,14 +579,24 @@ class GXDLMSReader:
         self.writeTrace("Index: " + str(pos) + " Value: " + str(val), TraceLevel.INFO)
 
     def getProfileGenerics(self):
-        #pylint: disable=broad-except,too-many-nested-blocks
+        # pylint: disable=broad-except,too-many-nested-blocks
         cells = []
         profileGenerics = self.client.objects.getObjects(ObjectType.PROFILE_GENERIC)
         for it in profileGenerics:
-            self.writeTrace("-------- Reading " + str(it.objectType) + " " + str(it.name) + " " + it.description, TraceLevel.INFO)
+            self.writeTrace(
+                "-------- Reading "
+                + str(it.objectType)
+                + " "
+                + str(it.name)
+                + " "
+                + it.description,
+                TraceLevel.INFO,
+            )
             entriesInUse = self.read(it, 7)
             entries = self.read(it, 8)
-            self.writeTrace("Entries: " + str(entriesInUse) + "/" + str(entries), TraceLevel.INFO)
+            self.writeTrace(
+                "Entries: " + str(entriesInUse) + "/" + str(entries), TraceLevel.INFO
+            )
             pg = it
             if entriesInUse == 0 or not pg.captureObjects:
                 continue
@@ -486,12 +606,16 @@ class GXDLMSReader:
                     for rows in cells:
                         for cell in rows:
                             if isinstance(cell, bytearray):
-                                self.writeTrace(GXByteBuffer.hex(cell) + " | ", TraceLevel.INFO)
+                                self.writeTrace(
+                                    GXByteBuffer.hex(cell) + " | ", TraceLevel.INFO
+                                )
                             else:
                                 self.writeTrace(str(cell) + " | ", TraceLevel.INFO)
                         self.writeTrace("", TraceLevel.INFO)
             except Exception as ex:
-                self.writeTrace("Error! Failed to read first row: " + str(ex), TraceLevel.ERROR)
+                self.writeTrace(
+                    "Error! Failed to read first row: " + str(ex), TraceLevel.ERROR
+                )
                 if not isinstance(ex, (GXDLMSException, TimeoutException)):
                     traceback.print_exc()
             try:
@@ -508,23 +632,271 @@ class GXDLMSReader:
                         if isinstance(cell, bytearray):
                             row += GXByteBuffer.hex(cell)
                         else:
-                            row += str(cell) 
+                            row += str(cell)
                     self.writeTrace(row, TraceLevel.INFO)
             except Exception as ex:
-                self.writeTrace("Error! Failed to read last day: " + str(ex), TraceLevel.ERROR)
+                self.writeTrace(
+                    "Error! Failed to read last day: " + str(ex), TraceLevel.ERROR
+                )
 
     def getAssociationView(self):
         reply = GXReplyData()
         self.readDataBlock(self.client.getObjectsRequest(), reply)
         self.client.parseObjects(reply.data, True, False)
-        #Access rights must read differently when short Name referencing is used.
+        # Access rights must read differently when short Name referencing is used.
         if not self.client.useLogicalNameReferencing:
             sn = self.client.objects.findBySN(0xFA00)
             if sn and sn.version > 0:
                 try:
                     self.read(sn, 3)
-                except (GXDLMSException):
-                    self.writeTrace("Access rights are not implemented for the meter.", TraceLevel.INFO)
+                except GXDLMSException:
+                    self.writeTrace(
+                        "Access rights are not implemented for the meter.",
+                        TraceLevel.INFO,
+                    )
+
+    @classmethod
+    def __getPath(cls, securitySuite, type_, path, systemTitle):
+        if securitySuite == SecuritySuite.Suite2:
+            path = os.path.join(path, "384")
+        if not systemTitle:
+            return path
+        if type_ == CertificateType.DigitalSignature:
+            pre = "D"
+        elif type_ == CertificateType.KeyAgreement:
+            pre = "A"
+        else:
+            raise Exception("Invalid type.")
+        return os.path.join(
+            path, pre + GXDLMSTranslator.ToHex(systemTitle, False) + ".pem"
+        )
+
+    def generateCertificates(self, logicalName):
+        """
+        Generates a new server and client public/private keys and register them and import certificates to the meter.
+
+            Parameters:
+                logicalName: Logical name of the security setup object.
+        """
+
+        if not os.path.exists("Keys"):
+            os.mkdir("Keys")
+        if not os.path.exists("Certificates"):
+            os.mkdir("Certificates")
+        if not os.path.exists("Keys384"):
+            os.mkdir("Keys384")
+        if not os.path.exists("Certificates384"):
+            os.mkdir("Certificates384")
+        address = "https://certificates.gurux.fi/api/CertificateGenerator"
+        certs = []
+        if self.client.authentication < Authentication.LOW:
+            raise Exception(
+                "High authentication must be used to change the certificate keys."
+            )
+        reply = GXReplyData()
+        self.initializeConnection()
+        ss = GXDLMSSecuritySetup(logicalName)
+        certifications = []
+        # Read used security suite.
+        self.read(ss, 3)
+        # Read client system title.
+        self.read(ss, 4)
+        # Read server system title.
+        self.read(ss, 5)
+        clientST = ss.clientSystemTitle
+        if len(clientST) != 8:
+            clientST = self.client.ciphering.systemTitle
+
+        # Get client subject.
+        subject = GXAsn1Converter.systemTitleToSubject(clientST)
+        # Generate new digital signature for the client. In this example P-256 keys are used.
+        kp = GXEcdsa.generateKeyPair(Ecc.P256)
+        # Save private key in PKCS #8 format.
+        key = GXPkcs8(kp)
+        key.save(
+            GXPkcs8.getFilePath(Ecc.P256, CertificateType.DIGITAL_SIGNATURE, clientST)
+        )
+        # Generate x509 certificates.
+        pkc10 = GXPkcs10.createCertificateSigningRequest(kp, subject)
+
+        # All certigicates are generated with one request.
+        certifications.append(
+            GXCertificateRequest(CertificateType.DIGITAL_SIGNATURE, pkc10)
+        )
+
+        # Generate new key agreement for the client. In this example P-256 keys are used.
+        kp = GXEcdsa.generateKeyPair(Ecc.P256)
+        # Save private key in PKCS #8 format.
+        key = GXPkcs8(kp)
+        key.save(GXPkcs8.getFilePath(Ecc.P256, CertificateType.KEY_AGREEMENT, clientST))
+        # Generate x509 certificates.
+        pkc10 = GXPkcs10.createCertificateSigningRequest(kp, subject)
+        # All certigicates are generated with one request.
+        certifications.append(
+            GXCertificateRequest(CertificateType.KEY_AGREEMENT, pkc10)
+        )
+
+        # Generate public/private key for digital signature.
+        if not self.readDataBlock(
+            ss.generateKeyPair(self.client, CertificateType.DIGITAL_SIGNATURE), reply
+        ):
+            raise GXDLMSException(reply.error)
+
+        reply.clear()
+        # Generate public/private key for key agreement.
+        if not self.readDataBlock(
+            ss.generateKeyPair(self.client, CertificateType.KEY_AGREEMENT), reply
+        ):
+            raise GXDLMSException(reply.error)
+        reply.clear()
+        # Generate certification request.
+        if not self.readDataBlock(
+            ss.generateCertificate(self.client, CertificateType.DIGITAL_SIGNATURE),
+            reply,
+        ):
+            raise GXDLMSException(reply.error)
+
+        # Generate server certification.
+        pkc10 = GXPkcs10(reply.value)
+        subject = GXAsn1Converter.systemTitleToSubject(ss.serverSystemTitle)
+        # Validate subject.
+        if pkc10.subject.find(subject) == -1:
+            raise Exception(
+                "Server system title '"
+                + GXDLMSTranslator.toHex(ss.serverSystemTitle)
+                + "' is not the same as in the generated certificate request '",
+                +GXAsn1Converter.hexSystemTitleFromSubject(pkc10.subject) + "'.",
+            )
+        certifications.append(
+            GXCertificateRequest(CertificateType.DIGITAL_SIGNATURE, pkc10)
+        )
+        reply.clear()
+
+        # Generate certification request for key agreement.
+        if not self.readDataBlock(
+            ss.generateCertificate(self.client, CertificateType.KEY_AGREEMENT), reply
+        ):
+            raise GXDLMSException(reply.error)
+
+        # Generate server certification.
+        pkc10 = GXPkcs10(reply.value)
+        # Validate subject.
+        if pkc10.subject.find(subject) == -1:
+            raise Exception(
+                "Server system title '"
+                + GXDLMSTranslator.toHex(ss.serverSystemTitle)
+                + "' is not the same as in the generated certificate request '",
+                +GXAsn1Converter.hexSystemTitleFromSubject(pkc10.subject) + "'.",
+            )
+        certifications.append(
+            GXCertificateRequest(CertificateType.KEY_AGREEMENT, pkc10)
+        )
+        reply.clear()
+
+        # Note! There is a limit how many request you can do in a day.
+        certs = GXPkcs10.getCertificate(address, certifications)
+        # Save server certificates.
+        for it in certs:
+            it.save(GXx509Certificate.getFilePath(it))
+        reply.clear()
+        # Import server certificates.
+        for it in certs:
+            if not self.readDataBlock(ss.importCertificate(self.client, it), reply):
+                raise GXDLMSException(reply.error)
+            reply.clear()
+
+        # Export server certificates and verify it.
+        for it in certs:
+            if (
+                it.subject.find(
+                    GXAsn1Converter.systemTitleToSubject(ss.serverSystemTitle)
+                )
+                != -1
+            ):
+                st = ss.serverSystemTitle
+                entity = CertificateEntity.SERVER
+            elif it.subject.find(GXAsn1Converter.systemTitleToSubject(clientST)) != -1:
+                st = clientST
+                entity = CertificateEntity.CLIENT
+            else:
+                # This is another certificate.
+                continue
+
+            if not self.readDataBlock(
+                ss.exportCertificateByEntity(
+                    self.client,
+                    entity,
+                    GXDLMSConverter.keyUsageToCertificateType(it.keyUsage),
+                    st,
+                ),
+                reply,
+            ):
+                raise GXDLMSException(reply.error)
+            # Verify certificate.
+            exported = GXx509Certificate(reply.value)
+            if exported != it:
+                raise Exception("Invalid server certificate.")
+            reply.clear()
+
+        # Export server certificates using serial number and verify it.
+        for it in certs:
+            if not self.readDataBlock(
+                ss.exportCertificateBySerial(
+                    self.client, it.serialNumber, it.issuerRaw
+                ),
+                reply,
+            ):
+                raise GXDLMSException(reply.error)
+            # Verify certificate.
+            exported = GXx509Certificate(reply.value)
+            if exported != it:
+                raise Exception("Invalid server certificate.")
+            reply.clear()
+
+    def exportMeterCertificates(self, logicalName):
+        """
+        Export client and server certificates from the meter.
+
+            Parameters:
+                logicalName: Logical name of the security setup object.
+        """
+        try:
+            self.initializeConnection()
+            ss = GXDLMSSecuritySetup(logicalName)
+            # Read used security suite.
+            self.read(ss, 3)
+            # Client private keys are saved to this directory.
+            # Client might be different system title for each meter.
+            if not os.path.exists("Keys"):
+                os.mkdir("Keys")
+            if not os.path.exists("Certificates"):
+                os.mkdir("Certificates")
+            if not os.path.exists("Keys384"):
+                os.mkdir("Keys384")
+            if not os.path.exists("Certificates384"):
+                os.mkdir("Certificates384")
+
+            # Read server system title.
+            self.read(ss, 5)
+            # Read certificates.
+            self.read(ss, 6)
+            # Export meter certificates and save them.
+            reply = GXReplyData()
+            for it in ss.certificates:
+                reply.clear()
+                # Export certification and verify it.
+                if not self.readDataBlock(
+                    ss.exportCertificateBySerial(
+                        self.client, it.serialNumber, it.issuerRaw
+                    ),
+                    reply,
+                ):
+                    raise GXDLMSException(reply.error)
+                cert = GXx509Certificate(reply.value)
+                path = GXx509Certificate.getFilePath(cert)
+                cert.save(path)
+        finally:
+            self.close()
 
     def readAll(self, outputFile):
         try:
@@ -547,7 +919,7 @@ class GXDLMSReader:
             if outputFile:
                 self.client.objects.save(outputFile)
         except (KeyboardInterrupt, SystemExit):
-            #Don't send anything if user is closing the app.
+            # Don't send anything if user is closing the app.
             self.media = None
             raise
         finally:
