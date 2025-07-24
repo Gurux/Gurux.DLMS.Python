@@ -1241,7 +1241,7 @@ class GXDLMS:
                 if (cf & 0x1) == 0x1:
                     data.moreData = RequestTypes.FRAME
             else:
-                if not GXDLMS.getLLCBytes(server, reply) and data.xml:
+                if not GXDLMS.getLLCBytes(server, reply):
                     GXDLMS.getLLCBytes(not server, reply)
         return cf
 
@@ -1295,6 +1295,11 @@ class GXDLMS:
                     and settings.serverAddress == target
                 ):
                     reply.position = index + 1
+                # If client wants to know used client and server address.
+                elif settings.clientAddress == 0 and (
+                    settings.serverAddress == 0x7F or settings.serverAddress == 0
+                ):
+                    return True
                 return False
             # If All-station (Broadcast).
             if (
