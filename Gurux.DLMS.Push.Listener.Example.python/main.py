@@ -34,7 +34,6 @@
 import time
 import sys
 import traceback
-import pkg_resources
 from gurux_common.GXCommon import GXCommon
 from gurux_common.IGXMediaListener import IGXMediaListener
 from gurux_common.enums.TraceLevel import TraceLevel
@@ -45,18 +44,40 @@ from gurux_dlms.GXDLMSTranslator import GXDLMSTranslator
 from gurux_dlms.GXReplyData import GXReplyData
 from gurux_dlms.GXByteBuffer import GXByteBuffer
 
+from gurux_dlms.GXDLMSConverter import GXDLMSConverter
+
+if sys.version_info >= (3, 7):
+    from importlib.metadata import version
+else:
+    import pkg_resources
+
+
 # ---------------------------------------------------------------------------
 # This example wait push notifications from the serial port or TCP/IP port.
 # ---------------------------------------------------------------------------
-#pylint: disable=no-self-argument
+# pylint: disable=no-self-argument
 class sampleclient(IGXMediaListener):
     def __init__(self, args):
         try:
-            print("gurux_dlms version: " + pkg_resources.get_distribution("gurux_dlms").version)
-            print("gurux_net version: " + pkg_resources.get_distribution("gurux_net").version)
-            print("gurux_serial version: " + pkg_resources.get_distribution("gurux_serial").version)
+            if sys.version_info >= (3, 7):
+                print("gurux_dlms version: " + version("gurux_dlms"))
+                print("gurux_net version: " + version("gurux_net"))
+                print("gurux_serial version: " + version("gurux_serial"))
+            else:
+                print(
+                    "gurux_dlms version: "
+                    + pkg_resources.get_distribution("gurux_dlms").version
+                )
+                print(
+                    "gurux_net version: "
+                    + pkg_resources.get_distribution("gurux_net").version
+                )
+                print(
+                    "gurux_serial version: "
+                    + pkg_resources.get_distribution("gurux_serial").version
+                )
         except Exception:
-            #It's OK if this fails.
+            # It's OK if this fails.
             print("pkg_resources not found")
         settings = GXSettings()
         ret = settings.getParameters(args)
@@ -71,16 +92,16 @@ class sampleclient(IGXMediaListener):
         settings.media.trace = settings.trace
         print(settings.media)
 
-        #Start to listen events from the media.
+        # Start to listen events from the media.
         settings.media.addListener(self)
-        #Set EOP for the media.
+        # Set EOP for the media.
         if settings.client.interfaceType == InterfaceType.HDLC:
-            settings.media.eop = 0x7e
+            settings.media.eop = 0x7E
         try:
             print("Press any key to close the application.")
-            #Open the connection.
+            # Open the connection.
             settings.media.open()
-            #Wait input.
+            # Wait input.
             input()
             print("Closing")
         except (KeyboardInterrupt, SystemExit, Exception) as ex:
@@ -100,20 +121,20 @@ class sampleclient(IGXMediaListener):
 
     @classmethod
     def printData(cls, value, offset):
-        sb = ' ' * 2 * offset
+        sb = " " * 2 * offset
         if isinstance(value, list):
             print(sb + "{")
             offset = offset + 1
-            #Print received data.
+            # Print received data.
             for it in value:
                 cls.printData(it, offset)
             print(sb + "}")
             offset = offset - 1
         elif isinstance(value, bytearray):
-            #Print value.
+            # Print value.
             print(sb + GXCommon.toHex(value))
         else:
-            #Print value.
+            # Print value.
             print(sb + str(value))
 
     def onReceived(self, sender, e):
@@ -124,33 +145,50 @@ class sampleclient(IGXMediaListener):
         """
         if sender.trace == TraceLevel.VERBOSE:
             print("New data is received. " + GXCommon.toHex(e.data))
-        #Data might come in fragments.
+        # Data might come in fragments.
         self.reply.set(e.data)
         data = GXReplyData()
         try:
             if not self.client.getData(self.reply, data, self.notify):
-                #If all data is received.
+                # If all data is received.
                 if self.notify.complete:
                     if not self.notify.isMoreData():
-                        #Show received data as XML.
+                        # Show received data as XML.
                         try:
                             xml = self.translator.dataToXml(self.notify.data)
                             print(xml)
-                            #Print received data.
+                            # Print received data.
                             self.printData(self.notify.value, 0)
 
-                            #Example is sending list of push messages in first parameter.
+                            # Example is sending list of push messages in first parameter.
                             if isinstance(self.notify.value, list):
-                                objects = self.client.parsePushObjects(self.notify.value[0])
-                                #Remove first item because it's not needed anymore.
+                                objects = self.client.parsePushObjects(
+                                    self.notify.value[0]
+                                )
+                                # Remove first item because it's not needed anymore.
                                 objects.pop(0)
                                 Valueindex = 1
                                 for obj, index in objects:
-                                    self.client.updateValue(obj, index, self.notify.value[Valueindex])
+                                    self.client.updateValue(
+                                        obj, index, self.notify.value[Valueindex]
+                                    )
                                     Valueindex += 1
-                                    #Print value
-                                    print(str(obj.objectType) + " " + obj.logicalName + " " + str(index) + ": " + str(obj.getValues()[index - 1]))
-                            print("Server address:" + str(self.notify.serverAddress) + " Client Address:" + str(self.notify.clientAddress))
+                                    # Print value
+                                    print(
+                                        str(obj.objectType)
+                                        + " "
+                                        + obj.logicalName
+                                        + " "
+                                        + str(index)
+                                        + ": "
+                                        + str(obj.getValues()[index - 1])
+                                    )
+                            print(
+                                "Server address:"
+                                + str(self.notify.serverAddress)
+                                + " Client Address:"
+                                + str(self.notify.clientAddress)
+                            )
                         except Exception:
                             self.reply.position = 0
                             xml = self.translator.messageToXml(self.reply)
@@ -186,5 +224,6 @@ class sampleclient(IGXMediaListener):
         """
         print("Property {!r} has hanged.".format(str(e)))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sampleclient(sys.argv)
