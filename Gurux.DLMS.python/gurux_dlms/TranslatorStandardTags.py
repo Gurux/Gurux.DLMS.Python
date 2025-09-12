@@ -72,9 +72,9 @@ class TranslatorStandardTags:
         list_[TranslatorGeneralTags.CALLING_AE_INVOCATION_ID] = "calling-AE-invocation-id"
         list_[TranslatorGeneralTags.CALLED_AE_INVOCATION_ID] = "called-AE-invocation-id"
         list_[TranslatorGeneralTags.RESPONDING_AE_INVOCATION_ID] = "responding-AE-invocation-id"
+        list_[TranslatorGeneralTags.CALLING_AE_QUALIFIER] = "calling-Ae-qualifier"
         list_[Command.EXCEPTION_RESPONSE] = "exception-response"
         list_[TranslatorTags.STATE_ERROR] = "state-error"
-        list_[TranslatorTags.SERVICE_ERROR] = "service-error"
 
     #
     # Get SN tags.

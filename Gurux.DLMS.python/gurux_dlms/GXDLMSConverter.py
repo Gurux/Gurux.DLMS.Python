@@ -31,8 +31,16 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from __future__ import print_function
-import pkg_resources
+
+import sys
+
+if sys.version_info > (3, 8):
+    from importlib.resources import files
+elif sys.version_info >= (3, 7) and sys.version_info <= (3, 8):
+    import importlib_resources
+else:
+    import pkg_resources
+
 from .enums import Standard, ObjectType, DataType
 from .GXStandardObisCodeCollection import GXStandardObisCodeCollection
 from .GXStandardObisCode import GXStandardObisCode
@@ -219,18 +227,28 @@ class GXDLMSConverter:
             self.__updateOBISCodeInfo(self.codes, objects, self.standard)
 
     @classmethod
+    def __load(cls, name):
+        if sys.version_info > (3, 8):
+            str_ = (files(__package__) / name).read_text("utf-8")
+        elif sys.version_info >= (3, 7) and sys.version_info <= (3, 8):
+            str_ = (
+                importlib_resources.files(__package__).joinpath(name).read_text("utf-8")
+            )
+        else:
+            str_ = pkg_resources.resource_string(__name__, name).decode("utf-8")
+        return str_
+
+    @classmethod
     def __getObjects(cls, standard):
         codes = []
         if standard == Standard.ITALY:
-            str_ = pkg_resources.resource_string(__name__, "Italy.txt").decode("utf-8")
+            str_ = cls.__load("Italy.txt")
         elif standard == Standard.INDIA:
-            str_ = pkg_resources.resource_string(__name__, "India.txt").decode("utf-8")
+            str_ = cls.__load("India.txt")
         elif standard == Standard.SAUDI_ARABIA:
-            str_ = pkg_resources.resource_string(__name__, "SaudiArabia.txt").decode(
-                "utf-8"
-            )
+            str_ = cls.__load("SaudiArabia.txt")
         elif standard == Standard.SPAIN:
-            str_ = pkg_resources.resource_string(__name__, "Spain.txt").decode("utf-8")
+            str_ = cls.__load("Spain.txt")
         if not str_:
             return None
         str_ = str_.replace("\n", "\r")
@@ -260,7 +278,7 @@ class GXDLMSConverter:
                 tmp.uiDataType = it.uiDataType
                 codes.append(tmp)
 
-        str_ = pkg_resources.resource_string(__name__, "OBISCodes.txt").decode("utf-8")
+        str_ = cls.__load("OBISCodes.txt")
         str_ = str_.replace("\n", "\r")
         rows = str_.split("\r")
         for it in rows:

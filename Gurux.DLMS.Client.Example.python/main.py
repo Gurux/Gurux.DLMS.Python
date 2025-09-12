@@ -49,8 +49,10 @@ from gurux_dlms import (
 )
 
 try:
-    import pkg_resources
-
+    if sys.version_info >= (3, 7):
+        from importlib.metadata import version
+    else:
+        import pkg_resources
     # pylint: disable=broad-except
 except Exception:
     # It's OK if this fails.
@@ -62,18 +64,23 @@ class sampleclient:
     @classmethod
     def main(cls, args):
         try:
-            print(
-                "gurux_dlms version: "
-                + pkg_resources.get_distribution("gurux_dlms").version
-            )
-            print(
-                "gurux_net version: "
-                + pkg_resources.get_distribution("gurux_net").version
-            )
-            print(
-                "gurux_serial version: "
-                + pkg_resources.get_distribution("gurux_serial").version
-            )
+            if sys.version_info >= (3, 7):
+                print("gurux_dlms version: " + version("gurux_dlms"))
+                print("gurux_net version: " + version("gurux_net"))
+                print("gurux_serial version: " + version("gurux_serial"))
+            else:
+                print(
+                    "gurux_dlms version: "
+                    + pkg_resources.get_distribution("gurux_dlms").version
+                )
+                print(
+                    "gurux_net version: "
+                    + pkg_resources.get_distribution("gurux_net").version
+                )
+                print(
+                    "gurux_serial version: "
+                    + pkg_resources.get_distribution("gurux_serial").version
+                )
         except Exception:
             # It's OK if this fails.
             print("pkg_resources not found")

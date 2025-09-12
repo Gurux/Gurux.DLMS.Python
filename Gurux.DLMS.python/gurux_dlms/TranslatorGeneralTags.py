@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 from gurux_dlms.GXIntEnum import GXIntEnum
 
+
 class TranslatorGeneralTags(GXIntEnum):
     APPLICATION_CONTEXT_NAME = 0xA1
     NEGOTIATED_QUALITY_OF_SERVICE = 0xBE00
@@ -62,3 +63,10 @@ class TranslatorGeneralTags(GXIntEnum):
     RESPONDING_AE_INVOCATION_ID = 0xA7
     CHAR_STRING = 0xAA
     USER_INFORMATION = 0xAB
+    RESPONDING_AE_INVOCATION_ID = 0xAD
+    PRIME_NEW_DEVICE_NOTIFICATION = 0xAE
+    PRIME_REMOVE_DEVICE_NOTIFICATION = 0xAF
+    PRIME_START_REPORTING_METERS = 0xB0
+    PRIME_DELETE_METERS = 0xB1
+    PRIME_ENABLE_AUTO_CLOSE = 0xB2
+    PRIME_DISABLE_AUTO_CLOSE = 0xB3

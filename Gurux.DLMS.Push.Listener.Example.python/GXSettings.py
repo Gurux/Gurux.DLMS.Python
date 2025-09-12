@@ -177,6 +177,7 @@ class GXSettings:
                 self.client.ciphering.authenticationKey = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == 'b':
                 self.client.ciphering.broadcastBlockCipherKey = GXByteBuffer.hexToBytes(it.value)
+                self.client.ciphering.blockCipherKey = GXByteBuffer.hexToBytes(it.value)
             elif it.tag == '?':
                 if it.tag == 'p':
                     raise ValueError("Missing mandatory port option.")
