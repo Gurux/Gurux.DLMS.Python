@@ -20,4 +20,7 @@ Credits
 
   - Readme improved.
     * [mfilippo](https://github.com/mfilippo)
+
+  - TranslatorGeneralTags: issue fixed.
+    * [Gabriel Lira](https://gurux.fi/user/183235)
   
