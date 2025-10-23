@@ -153,9 +153,10 @@ class sampleclient:
                         settings.trace,
                         settings.invocationCounter,
                     )
+                    reader.initializeOpticalHead()
                     reply = GXReplyData()
                     # Send SNRM if not in xml.
-                    if settings.client.interfaceType == InterfaceType.HDLC:
+                    if settings.client.interfaceType in (InterfaceType.HDLC, InterfaceType.HDLC_WITH_MODE_E):
                         if not sampleclient.___containsCommand(actions, Command.SNRM):
                             reader.snrmRequest()
 
