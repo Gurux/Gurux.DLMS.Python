@@ -318,8 +318,7 @@ class GXDLMSReader:
                 time.sleep(1)
 
     def updateFrameCounter(self):
-        if (
-            self.invocationCounter
+        if (self.invocationCounter
             and self.client.ciphering is not None
             and self.client.ciphering.security != Security.NONE
         ):

@@ -982,6 +982,9 @@ class GXDLMSClient(object):
         return items
 
     def updateValue(self, target, attributeIndex, value, parameters=None):
+        if value and target.getDataType(attributeIndex) == DataType.NONE:
+            target.setDataType(attributeIndex, _GXCommon.getDLMSDataType(value))
+
         if isinstance(value, (bytes, bytearray)):
             type_ = target.getUIDataType(attributeIndex)
             if type_ == DataType.DATETIME and len(value) == 5:

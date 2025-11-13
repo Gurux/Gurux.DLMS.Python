@@ -36,7 +36,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="gurux_dlms",
-    version="1.0.191",
+    version="1.0.192",
     author="Gurux Ltd",
     author_email="gurux@gurux.fi",
     description="Gurux DLMS library for Python.",
