@@ -1163,7 +1163,7 @@ class GXDLMSTranslator:
                             )
                         if p.blockCipherKey:
                             data2 = GXByteBuffer(
-                                GXCiphering.decrypt(settings.cipher, p, value)
+                                GXCiphering.decrypt(settings, p, value)
                             )
                             xml.startComment("Decrypt data: " + str(data2))
                             self._pduToXml2(
@@ -1201,7 +1201,7 @@ class GXDLMSTranslator:
                         settings.cipher.authenticationKey,
                     )
                     p.xml = xml
-                    tmp = GXByteBuffer(GXCiphering.decrypt(settings.cipher, p, tmp))
+                    tmp = GXByteBuffer(GXCiphering.decrypt(settings, p, tmp))
                     len_ = xml.getXmlLength()
                     xml.startComment("Decrypt data: " + str(tmp))
                     self._pduToXml2(xml, tmp, omitDeclaration, omitNameSpace, False)

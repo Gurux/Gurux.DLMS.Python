@@ -34,6 +34,8 @@
 #
 from ..GXDLMSNotify import GXDLMSNotify
 from ..GXCiphering import GXCiphering
+
+
 #  This class is used to send data notify and push messages to the clients.
 #
 class GXDLMSSecureNotify(GXDLMSNotify):
@@ -49,13 +51,17 @@ class GXDLMSSecureNotify(GXDLMSNotify):
     #      * @param interfaceType
     #      *            Object type.
     #
-    def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
-        #pylint:disable=super-with-arguments
-        super(GXDLMSSecureNotify, self).__init__(useLogicalNameReferencing, clientAddress, serverAddress, interfaceType)
+    def __init__(
+        self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType
+    ):
+        # pylint:disable=super-with-arguments
+        super(GXDLMSSecureNotify, self).__init__(
+            useLogicalNameReferencing, clientAddress, serverAddress, interfaceType
+        )
         self.settings.cipher = GXCiphering("ABCDEFGH".encode())
 
-    #
-    #      * @return Ciphering settings.
-    #
-    def getCiphering(self):
+    def __getCiphering(self):
         return self.settings.cipher
+
+    # Ciphering.
+    ciphering = property(__getCiphering)

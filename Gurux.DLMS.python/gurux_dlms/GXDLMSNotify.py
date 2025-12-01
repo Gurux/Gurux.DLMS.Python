@@ -44,7 +44,8 @@ from .VariableAccessSpecification import VariableAccessSpecification
 from .enums.DataType import DataType
 from .enums.Conformance import Conformance
 
-#pylint: disable=bad-option-value,useless-object-inheritance,too-many-public-methods
+
+# pylint: disable=bad-option-value,useless-object-inheritance,too-many-public-methods
 class GXDLMSNotify(object):
     """This class is used to send data notify and push messages to the clients."""
 
@@ -60,7 +61,9 @@ class GXDLMSNotify(object):
     # @param interfaceType
     #            Object type.
     #
-    def __init__(self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType):
+    def __init__(
+        self, useLogicalNameReferencing, clientAddress, serverAddress, interfaceType
+    ):
         # DLMS settings.
         self.settings = GXDLMSSettings(True, None)
         self.useLogicalNameReferencing = useLogicalNameReferencing
@@ -142,7 +145,9 @@ class GXDLMSNotify(object):
     #
     # Is Logical Name referencing used.
     #
-    useLogicalNameReferencing = property(getUseLogicalNameReferencing, setUseLogicalNameReferencing)
+    useLogicalNameReferencing = property(
+        getUseLogicalNameReferencing, setUseLogicalNameReferencing
+    )
 
     def getPriority(self):
         return self.settings.priority
@@ -225,16 +230,24 @@ class GXDLMSNotify(object):
     def generateDataNotificationMessages(self, time, data):
         reply = None
         if self.useLogicalNameReferencing:
-            p = GXDLMSLNParameters(self.settings, 0, Command.DATA_NOTIFICATION, 0, None, data, 0xff)
+            p = GXDLMSLNParameters(
+                self.settings, 0, Command.DATA_NOTIFICATION, 0, None, data, 0xFF
+            )
             if time is None:
                 p.time = None
             else:
                 p.time = GXDateTime(time)
             reply = GXDLMS.getLnMessages(p)
         else:
-            p2 = GXDLMSSNParameters(self.settings, Command.DATA_NOTIFICATION, 1, 0, data, None)
+            p2 = GXDLMSSNParameters(
+                self.settings, Command.DATA_NOTIFICATION, 1, 0, data, None
+            )
             reply = GXDLMS.getSnMessages(p2)
-        if self.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER == 0 and len(reply) != 1:
+        if (
+            self.settings.negotiatedConformance & Conformance.GENERAL_BLOCK_TRANSFER
+            == 0
+            and len(reply) != 1
+        ):
             raise ValueError("Data is not fit to one PDU. Use general block transfer.")
         return reply
 
@@ -254,15 +267,24 @@ class GXDLMSNotify(object):
         buff.setUInt8(DataType.STRUCTURE)
         _GXCommon.setObjectCount(len(push.pushObjectList), buff)
         for k, v in push.pushObjectList:
-            self.addData(k, v.attributeIndex, buff)
+            if v.attributeIndex == 0:
+                buff.setUInt8(DataType.STRUCTURE)
+                count = k.getAttributeCount()
+                _GXCommon.setObjectCount(count, buff)
+                for index in range(1, count):
+                    self.addData(k, index, buff)
+            else:
+                self.addData(k, v.attributeIndex, buff)
         return self.generateDataNotificationMessages(date, buff)
 
     def generateReport(self, time, list_):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if not list_:
             raise ValueError("list")
         if self.useLogicalNameReferencing and len(list_) != 1:
-            raise ValueError("Only one object can send with Event Notification request.")
+            raise ValueError(
+                "Only one object can send with Event Notification request."
+            )
         buff = GXByteBuffer()
         reply = None
         if self.useLogicalNameReferencing:
@@ -271,11 +293,15 @@ class GXDLMSNotify(object):
                 buff.set(_GXCommon.logicalNameToBytes(k.logicalName))
                 buff.setUInt8(v)
                 self.addData(k, v, buff)
-            p = GXDLMSLNParameters(self.settings, 0, Command.EVENT_NOTIFICATION, 0, None, buff, 0xff)
+            p = GXDLMSLNParameters(
+                self.settings, 0, Command.EVENT_NOTIFICATION, 0, None, buff, 0xFF
+            )
             p.time = time
             reply = GXDLMS.getLnMessages(p)
         else:
-            p = GXDLMSSNParameters(self.settings, Command.INFORMATION_REPORT, len(list_), 0xFF, None, buff)
+            p = GXDLMSSNParameters(
+                self.settings, Command.INFORMATION_REPORT, len(list_), 0xFF, None, buff
+            )
             for k, v in list_:
                 buff.setUInt8(VariableAccessSpecification.VARIABLE_NAME)
                 sn = k.shortName

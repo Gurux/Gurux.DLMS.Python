@@ -38,10 +38,11 @@ from .objects.enums.SecuritySuite import SecuritySuite
 from .GXDLMSChipperingStream import GXDLMSChipperingStream
 from .internal._GXCommon import _GXCommon
 from .enums.Command import Command
+from .enums.CryptoKeyType import CryptoKeyType
 
-#pylint: disable=too-many-instance-attributes,too-many-public-methods
+
+# pylint: disable=too-many-instance-attributes,too-many-public-methods
 class GXDLMSChippering:
-
     #
     #      * Get nonse from frame counter and system title.
     #      * @param invocationCounter Invocation counter.
@@ -109,7 +110,11 @@ class GXDLMSChippering:
         if p.type_ == CountType.PACKET:
             tmp2 = GXByteBuffer(10 + len(data))
             tmp2.setUInt8(p.tag)
-            if p.tag in (Command.GENERAL_GLO_CIPHERING, Command.GENERAL_DED_CIPHERING, Command.DATA_NOTIFICATION):
+            if p.tag in (
+                Command.GENERAL_GLO_CIPHERING,
+                Command.GENERAL_DED_CIPHERING,
+                Command.DATA_NOTIFICATION,
+            ):
                 if not p.ignoreSystemTitle:
                     _GXCommon.setObjectCount(len(p.systemTitle), tmp2)
                     tmp2.set(p.systemTitle)
@@ -162,7 +167,9 @@ class GXDLMSChippering:
     #      * @return Encrypted data.
     #
     @classmethod
-    def decryptAesGcm(cls, p, data):
+    def decryptAesGcm(cls, settings, p, data):
+        from .GXCryptoKeyParameter import GXCryptoKeyParameter
+
         # pylint: disable=too-many-locals
         if not data or len(data) - data.position < 2:
             raise ValueError("cryptedData")
@@ -177,12 +184,35 @@ class GXDLMSChippering:
                 p.systemTitle = title
                 if p.xml and p.xml.comments:
                     p.xml.appendComment(_GXCommon.systemTitleToString(0, p.systemTitle))
-        elif cmd in (Command.GENERAL_CIPHERING, Command.GLO_INITIATE_REQUEST, Command.GLO_INITIATE_RESPONSE, Command.GLO_READ_REQUEST, Command.GLO_READ_RESPONSE, \
-            Command.GLO_WRITE_REQUEST, Command.GLO_WRITE_RESPONSE, Command.GLO_GET_REQUEST, Command.GLO_GET_RESPONSE, Command.GLO_SET_REQUEST, \
-            Command.GLO_SET_RESPONSE, Command.GLO_METHOD_REQUEST, Command.GLO_METHOD_RESPONSE, Command.GLO_EVENT_NOTIFICATION,\
-            Command.DED_GET_REQUEST, Command.DED_GET_RESPONSE, Command.DED_SET_REQUEST, Command.DED_SET_RESPONSE, Command.DED_METHOD_REQUEST,\
-            Command.DED_METHOD_RESPONSE, Command.DED_EVENT_NOTIFICATION, Command.DED_READ_REQUEST, Command.DED_READ_RESPONSE, Command.DED_WRITE_REQUEST, \
-            Command.DED_WRITE_RESPONSE, Command.GLO_CONFIRMED_SERVICE_ERROR, Command.DED_CONFIRMED_SERVICE_ERROR):
+        elif cmd in (
+            Command.GENERAL_CIPHERING,
+            Command.GLO_INITIATE_REQUEST,
+            Command.GLO_INITIATE_RESPONSE,
+            Command.GLO_READ_REQUEST,
+            Command.GLO_READ_RESPONSE,
+            Command.GLO_WRITE_REQUEST,
+            Command.GLO_WRITE_RESPONSE,
+            Command.GLO_GET_REQUEST,
+            Command.GLO_GET_RESPONSE,
+            Command.GLO_SET_REQUEST,
+            Command.GLO_SET_RESPONSE,
+            Command.GLO_METHOD_REQUEST,
+            Command.GLO_METHOD_RESPONSE,
+            Command.GLO_EVENT_NOTIFICATION,
+            Command.DED_GET_REQUEST,
+            Command.DED_GET_RESPONSE,
+            Command.DED_SET_REQUEST,
+            Command.DED_SET_RESPONSE,
+            Command.DED_METHOD_REQUEST,
+            Command.DED_METHOD_RESPONSE,
+            Command.DED_EVENT_NOTIFICATION,
+            Command.DED_READ_REQUEST,
+            Command.DED_READ_RESPONSE,
+            Command.DED_WRITE_REQUEST,
+            Command.DED_WRITE_RESPONSE,
+            Command.GLO_CONFIRMED_SERVICE_ERROR,
+            Command.DED_CONFIRMED_SERVICE_ERROR,
+        ):
             pass
         else:
             raise ValueError("cryptedData")
@@ -244,6 +274,23 @@ class GXDLMSChippering:
         p.security = security
         invocationCounter = data.getUInt32()
         p.invocationCounter = invocationCounter
+        if not p.authenticationKey or not p.blockCipherKey:
+            args = GXCryptoKeyParameter()
+            args.invocationCounter = invocationCounter
+            args.systemTitle = p.systemTitle
+            args.securitySuite = p.securitySuite
+            if not p.blockCipherKey:
+                args.keyType |= CryptoKeyType.BLOCK_CIPHER
+            if not p.authenticationKey:
+                args.keyType |= CryptoKeyType.AUTHENTICATION
+            settings.getKey2(args)
+            if len(args.blockCipherKey) != 16 and len(args.BlockCipherKey) != 32:
+                raise ValueError("Invalid Block cipher key.")
+            p.blockCipherKey = args.blockCipherKey
+            if len(args.authenticationKey) != 16 and len(args.authenticationKey) != 32:
+                raise ValueError("Invalid authentication key.")
+            p.authenticationKey = args.authenticationKey
+
         tag = bytearray(12)
         encryptedData = None
         if security == Security.AUTHENTICATION:

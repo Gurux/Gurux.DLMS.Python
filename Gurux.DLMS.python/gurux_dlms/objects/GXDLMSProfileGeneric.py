@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 from __future__ import print_function
 from datetime import timedelta
+
 from .GXDLMSObject import GXDLMSObject
 from .IGXDLMSBase import IGXDLMSBase
 from ..enums import ErrorCode
@@ -94,7 +95,12 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
     # DLMS client.
     # Action bytes.
     def capture(self, client):
-        return client.method(self, 2, 0, DataType.INT8)
+        from .. import GXDLMSClient
+        from ..secure import GXDLMSSecureClient
+
+        if isinstance(client, (GXDLMSClient, GXDLMSSecureClient)):
+            return client.method(self, 2, 0, DataType.INT8)
+        self.__capture(client)
 
     #
     # Add new capture object (column) to the profile generic.
@@ -201,6 +207,8 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         return data
 
     def getData(self, settings, e, table, columns):
+        if not columns:
+            columns = self.captureObjects
         data = GXByteBuffer()
         if settings.index == 0:
             data.setUInt8(DataType.ARRAY)
@@ -230,9 +238,11 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
                         types[pos] = tp
                     _GXCommon.setData(settings, data, tp, value)
                 pos += 1
-            settings.setIndex(settings.index + 1)
-        if e.getRowEndIndex() != 0:
-            e.setRowBeginIndex(len(table))
+            settings.index = settings.index + 1
+        if e.rowEndIndex != 0:
+            e.rowBeginIndex = len(table)
+        else:
+            settings.index = 0
         return data.array()
 
     def getColumns(self, cols):
@@ -563,19 +573,19 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         values = [None] * len(self.captureObjects)
         pos = 0
         args = [ValueEventArgs(srv, self, 2)]
-        srv.onPreGet(args)
+        # srv.onPreGet(args)
         if not args[0].handled:
             for k, v in self.captureObjects:
-                values[pos] = k.values()[v.attributeIndex - 1]
+                values[pos] = k.getValues()[v.attributeIndex - 1]
                 pos += 1
             if self.profileEntries:
                 self.entriesInUse -= 1
                 self.buffer.remove(0)
             self.buffer.append(values)
             self.entriesInUse += 1
-        srv.onPostGet(args)
-        srv.onAction(args)
-        srv.onPostAction(args)
+        # srv.onPostGet(args)
+        # srv.onAction(args)
+        # srv.onPostAction(args)
 
     def load(self, reader):
         # pylint: disable=import-outside-toplevel

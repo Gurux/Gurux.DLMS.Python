@@ -533,7 +533,7 @@ class _GXAPDU:
                         data.position = originalPos - 1
                         p = AesGcmParameter(0, st, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
                         p.xml = xml
-                        tmp = GXCiphering.decrypt(settings.cipher, p, data)
+                        tmp = GXCiphering.decrypt(settings, p, data)
                         data.clear()
                         data.set(tmp)
                         cipher.setSecurity(p.security)
@@ -550,7 +550,7 @@ class _GXAPDU:
                 return
             data.position = data.position - 1
             p = AesGcmParameter(0, settings.sourceSystemTitle, settings.cipher.blockCipherKey, settings.cipher.authenticationKey)
-            tmp = GXCiphering.decrypt(settings.cipher, p, data)
+            tmp = GXCiphering.decrypt(settings, p, data)
             data.size = 0
             data.set(tmp)
             cipher.security = p.security

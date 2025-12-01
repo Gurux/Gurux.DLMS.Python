@@ -612,7 +612,7 @@ class GXByteBuffer(__base):
         if value:
             lastValue = -1
             for ch in value:
-                if ch != " ":
+                if ch != " " and ch != "-":
                     if lastValue == -1:
                         lastValue = GXByteBuffer.___getValue(ch)
                     elif lastValue != -1:

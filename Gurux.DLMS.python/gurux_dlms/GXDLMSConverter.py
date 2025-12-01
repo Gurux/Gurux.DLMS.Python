@@ -687,6 +687,12 @@ class GXDLMSConverter:
 
     # pylint: disable=import-outside-toplevel
     @classmethod
+    def systemTitleToString(cls, standard, st, addComments):
+        """Convert system title to string."""
+        return _GXCommon.systemTitleToString(standard, st, addComments)
+
+    # pylint: disable=import-outside-toplevel
+    @classmethod
     def keyUsageToCertificateType(cls, value):
         """Convert key usage to certificate type."""
         from .asn.enums.KeyUsage import KeyUsage

@@ -32,6 +32,8 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
+
+from gurux_dlms.enums.CryptoKeyType import CryptoKeyType
 from .enums import (
     Priority,
     ServiceClass,
@@ -615,3 +617,10 @@ class GXDLMSSettings:
                     return args.privateKey
                 return args.publicKey
         return None
+
+    # pylint: disable=import-outside-toplevel, too-many-nested-blocks
+    def getKey2(self, args):
+        for it in self.__listeners:
+            if isinstance(it, IGXCryptoNotifier):
+                if it.onKey:
+                    it.onKey(it, args)

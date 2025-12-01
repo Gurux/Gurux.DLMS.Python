@@ -94,7 +94,7 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
         elif index == 2:
             # pylint: disable=super-with-arguments
             dt = super(GXDLMSData, self).getDataType(index)
-            if dt == DataType.NONE and self.value:
+            if dt == DataType.NONE:
                 dt = _GXCommon.getDLMSDataType(self.value)
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")

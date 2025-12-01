@@ -40,12 +40,14 @@ from ..GXByteBuffer import GXByteBuffer
 from ..enums import ObjectType, DataType, Unit
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegister
     """
+
     def __init__(self, ln=None, sn=0):
         """
         Constructor.
@@ -53,7 +55,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSRegister, self).__init__(ObjectType.REGISTER, ln, sn)
         self.value = None
         self.scaler = 1
@@ -64,10 +66,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         return client.method(self, 1, 0, DataType.INT8)
 
     def getValues(self):
-        return [self.logicalName,
-                self.value,
-                [self.scaler, self.unit]]
-
+        return [self.logicalName, self.value, [self.scaler, self.unit]]
 
     def invoke(self, settings, e):
         #  Resets the value to the default value.
@@ -80,7 +79,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def isRead(self, index):
         if index == 3:
             return self.unit != 0
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         return super(GXDLMSRegister, self).isRead(index)
 
     #
@@ -107,28 +106,31 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def getAttributeCount(self):
         return 3
 
-
     #
     # Returns amount of methods.
     #
     def getMethodCount(self):
         return 1
 
-
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Value"),\
-            _GXLocalizer.gettext("Scaler and unit"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Value"),
+            _GXLocalizer.gettext("Scaler and unit"),
+        )
 
     def getMethodNames(self):
         return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         if index == 1:
             return DataType.OCTET_STRING
         if index == 2:
-            return super(GXDLMSRegister, self).getDataType(index)
+            dt = super(GXDLMSRegister, self).getDataType(index)
+            if dt == DataType.NONE:
+                dt = _GXCommon.getDLMSDataType(self.value)
+            return dt
         if index == 3:
             return DataType.STRUCTURE
         raise ValueError("getDataType failed. Invalid attribute index.")
@@ -145,7 +147,9 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
             data = GXByteBuffer()
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(settings, data, DataType.INT8, math.floor(math.log(self.scaler, 10)))
+            _GXCommon.setData(
+                settings, data, DataType.INT8, math.floor(math.log(self.scaler, 10))
+            )
             _GXCommon.setData(settings, data, DataType.ENUM, int(self.unit))
             return data.array()
         e.error = ErrorCode.READ_WRITE_DENIED
@@ -154,7 +158,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     #
     # Set value of given attribute.
     #
-    #pylint: disable=broad-except
+    # pylint: disable=broad-except
     def setValue(self, settings, e):
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
@@ -189,4 +193,6 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("Unit", int(self.unit))
         writer.writeElementString("Scaler", self.scaler, 1)
-        writer.writeElementObject("Value", self.value, self.getDataType(2), self.getUIDataType(2))
+        writer.writeElementObject(
+            "Value", self.value, self.getDataType(2), self.getUIDataType(2)
+        )

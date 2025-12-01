@@ -38,6 +38,7 @@ from .GXDLMSChippering import GXDLMSChippering
 from .AesGcmParameter import AesGcmParameter
 from .GXByteBuffer import GXByteBuffer
 
+
 # pylint: disable=too-many-instance-attributes, too-many-function-args, too-many-public-methods
 class GXCiphering(GXICipher):
     """
@@ -117,11 +118,11 @@ class GXCiphering(GXICipher):
         self.sharedSecret = None
 
     @classmethod
-    def decrypt(cls, c, p, data):
+    def decrypt(cls, settings, p, data):
         tmp = []
-        p.sharedSecret = c.sharedSecret
-        tmp = GXDLMSChippering.decryptAesGcm(p, data)
-        c.sharedSecret = p.sharedSecret
+        p.sharedSecret = settings.cipher.sharedSecret
+        tmp = GXDLMSChippering.decryptAesGcm(settings, p, data)
+        settings.cipher.sharedSecret = p.sharedSecret
         return tmp
 
     #

@@ -374,9 +374,7 @@ class GXDLMS:
                     reply.setUInt8(DataType.NONE)
                 else:
                     pos = len(reply)
-                    _GXCommon.setData(
-                        p.settings, reply, DataType.OCTET_STRING, p.getTime()
-                    )
+                    _GXCommon.setData(p.settings, reply, DataType.OCTET_STRING, p.time)
                     if p.command != Command.EVENT_NOTIFICATION:
                         reply.move(pos + 1, pos, len(reply) - pos - 1)
                 GXDLMS.multipleBlocks(p, reply, ciphering)
@@ -2868,7 +2866,7 @@ class GXDLMS:
                     settings.cipher.blockCipherKey,
                     settings.cipher.authenticationKey,
                 )
-            tmp = GXCiphering.decrypt(settings.cipher, p, data.data)
+            tmp = GXCiphering.decrypt(settings, p, data.data)
             if data.isComplete and (data.moreData & RequestTypes.FRAME) == 0:
                 # pylint: disable=W0212
                 settings._onPduEventHandler(data.moreData == 0, tmp)
@@ -2911,7 +2909,7 @@ class GXDLMS:
                         settings.cipher.blockCipherKey,
                         settings.cipher.authenticationKey,
                     )
-                data.data.set(GXCiphering.decrypt(settings.cipher, p, bb))
+                data.data.set(GXCiphering.decrypt(settings, p, bb))
                 # pylint: disable=W0212
                 settings._onPduEventHandler(data.moreData == 0, data.data.array())
                 data.cipheredCommand = data.command
@@ -2932,7 +2930,7 @@ class GXDLMS:
                 settings.cipher.blockCipherKey,
                 settings.cipher.authenticationKey,
             )
-            tmp = GXCiphering.decrypt(settings.cipher, p, data.data)
+            tmp = GXCiphering.decrypt(settings, p, data.data)
             # pylint: disable=W0212
             settings._onPduEventHandler(data.moreData == 0, tmp)
             data.data.clear()
