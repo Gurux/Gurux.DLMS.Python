@@ -251,6 +251,13 @@ class GXDLMSObjectCollection(list):
                 writer.objects = []
                 writer.objects.append(node)
                 it.save(writer)
+
+        xml_bytes = ET.tostring(objects, encoding="utf-8", method="xml")
+        # Muuta merkkijonoksi ja tulosta tarkastelua varten
+        xml_str = xml_bytes.decode("utf-8")
+        print(repr(xml_str))  # repr näyttää myös piilomerkit kuten \n, \t jne.
+
+
         str_ = minidom.parseString(
             ET.tostring(objects, encoding="utf-8", method="xml")
         ).toprettyxml(indent="  ")

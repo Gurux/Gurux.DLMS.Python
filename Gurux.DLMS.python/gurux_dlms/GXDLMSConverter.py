@@ -491,8 +491,12 @@ class GXDLMSConverter:
             ret = "G3PlcMacLayerCounters"
         elif ot == ObjectType.G3_PLC6_LO_WPAN:
             ret = "G3Plc6LoWPan"
+        elif ot == ObjectType.G3_PLC6_LO_WPAN:
+            ret = "G3Plc6LoWPan"
+        elif ot == ObjectType.LTE_MONITORING:
+            ret = "GXDLMSLteMonitoring"
         else:
-            ret = "Manufacture spesific."
+            ret = "ManufactureSpesific."
         return ret
 
     @classmethod
@@ -627,6 +631,8 @@ class GXDLMSConverter:
             ot = ObjectType.G3_PLC_MAC_LAYER_COUNTERS
         elif value == "G3Plc6LoWPan":
             ot = ObjectType.G3_PLC6_LO_WPAN
+        elif value == "GXDLMSLteMonitoring":
+            ot = ObjectType.LTE_MONITORING
         else:
             ot = ObjectType.NONE
         return ot

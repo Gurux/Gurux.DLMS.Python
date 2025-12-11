@@ -284,7 +284,7 @@ class GXDLMSChippering:
             if not p.authenticationKey:
                 args.keyType |= CryptoKeyType.AUTHENTICATION
             settings.getKey2(args)
-            if len(args.blockCipherKey) != 16 and len(args.BlockCipherKey) != 32:
+            if len(args.blockCipherKey) != 16 and len(args.blockCipherKey) != 32:
                 raise ValueError("Invalid Block cipher key.")
             p.blockCipherKey = args.blockCipherKey
             if len(args.authenticationKey) != 16 and len(args.authenticationKey) != 32:

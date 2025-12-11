@@ -1904,7 +1904,9 @@ class _GXCommon:
         sn = 0
         if not isIdis:
             sn = st[3] << 8
-        sn |= st[4]
+            sn |= st[4]
+        else:
+            sn = st[4] & 0xF
         sn <<= 8
         sn |= st[5]
         sn <<= 8
@@ -1934,7 +1936,7 @@ class _GXCommon:
                 sb += "IDIS package2 IP single phase meter"
             elif st[3] == 103:
                 sb += "IDIS package2 IP polyphase meter"
-            
+
             sb += "\nFunction type: "
             ft = st[4] >> 4
             add = False
@@ -1995,7 +1997,6 @@ class _GXCommon:
             sb += GXByteBuffer.hex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
         else:
             sb += cls.decryptManufacturer(m)
-            sb += " "
             sb += GXByteBuffer.hex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
         return sb
 
@@ -2014,7 +2015,7 @@ class _GXCommon:
 
     @classmethod
     def __isT2(cls, value):
-        return (value & 0xf0) != 0
+        return (value & 0xF0) != 0
 
     @classmethod
     def systemTitleToString(cls, standard, st, addComments):
@@ -2027,7 +2028,7 @@ class _GXCommon:
             or not cls.__getChar(st[2]).isalpha()
         ):
             return cls.uniSystemTitleToString(st, addComments)
-        if (standard == Standard.IDIS or (cls.__isT1(st[3]) and cls.__isT2(st[4]))):
+        if standard == Standard.IDIS or (cls.__isT1(st[3]) and cls.__isT2(st[4])):
             return cls.idisSystemTitleToString(st, addComments)
         return cls.dlmsSystemTitleToString(st, addComments)
 

@@ -89,3 +89,4 @@ from .PushOperationMethod import PushOperationMethod
 from .ProtectionType import ProtectionType
 from .DataProtectionIdentifiedKeyType import DataProtectionIdentifiedKeyType
 from .DataProtectionWrappedKeyType import DataProtectionWrappedKeyType
+from .LteCoverageEnhancement import LteCoverageEnhancement

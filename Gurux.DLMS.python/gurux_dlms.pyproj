@@ -136,6 +136,7 @@
     <Compile Include="gurux_dlms\objects\enums\DataProtectionWrappedKeyType.py" />
     <Compile Include="gurux_dlms\objects\enums\DeviceType.py" />
     <Compile Include="gurux_dlms\objects\enums\GainResolution.py" />
+    <Compile Include="gurux_dlms\objects\enums\LteCoverageEnhancement.py" />
     <Compile Include="gurux_dlms\objects\enums\Modulation.py" />
     <Compile Include="gurux_dlms\objects\enums\NtpAuthenticationMethod.py" />
     <Compile Include="gurux_dlms\objects\enums\ChargeConfiguration.py" />
@@ -153,12 +154,15 @@
     <Compile Include="gurux_dlms\objects\GXDLMSG3Plc6LoWPan.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSG3PlcMacLayerCounters.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSG3PlcMacSetup.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSLteMonitoring.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSMacPosTable.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSNeighbourTable.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSNtpSetup.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSRestriction.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSRoutingConfiguration.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSRoutingTable.py" />
+    <Compile Include="gurux_dlms\objects\GXLteNetworkParameters.py" />
+    <Compile Include="gurux_dlms\objects\GXLteQualityOfService.py" />
     <Compile Include="gurux_dlms\objects\GXMacPhyCommunication.py" />
     <Compile Include="gurux_dlms\objects\GXMacAvailableSwitch.py" />
     <Compile Include="gurux_dlms\objects\GXMacDirectTable.py" />
