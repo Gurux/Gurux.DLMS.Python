@@ -78,7 +78,7 @@ class GXDLMSLteMonitoring(GXDLMSObject, IGXDLMSBase):
         """
         attributes = []
         # LN is static and read only once.
-        if all_ or not self.__logicalName:
+        if all_ or not self.logicalName:
             attributes.append(1)
         # NetworkParameters
         if all_ or self.canRead(2):
@@ -139,7 +139,7 @@ class GXDLMSLteMonitoring(GXDLMSObject, IGXDLMSBase):
         """
         buff = GXByteBuffer()
         if e.index == 1:
-            ret = _GXCommon.logicalNameToBytes(self.__logicalName)
+            ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
             buff.setUInt8(DataType.STRUCTURE)
             if self.__version == 0:
@@ -252,7 +252,7 @@ class GXDLMSLteMonitoring(GXDLMSObject, IGXDLMSBase):
                 e: Set parameters.
         """
         if e.index == 1:
-            self.__logicalName = _GXCommon.toLogicalName(e.value)
+            self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
             s = e.value
             if self.__version == 0:
@@ -310,7 +310,7 @@ class GXDLMSLteMonitoring(GXDLMSObject, IGXDLMSBase):
             Returns:
                 Collection of COSEM object values.
         """
-        return (self.__logicalName, self.__networkParameters, self.__qualityOfService)
+        return (self.logicalName, self.__networkParameters, self.__qualityOfService)
 
     def getDataType(self, index):
         """

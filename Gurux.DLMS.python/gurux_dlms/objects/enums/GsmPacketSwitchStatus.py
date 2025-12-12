@@ -33,11 +33,13 @@
 # ---------------------------------------------------------------------------
 from gurux_dlms.GXIntEnum import GXIntEnum
 
+
 class GsmPacketSwitchStatus(GXIntEnum):
     """
     Packet switched status of the modem.
     """
-    #pylint: disable=too-few-public-methods
+
+    # pylint: disable=too-few-public-methods
 
     #
     # Inactive
@@ -67,3 +69,15 @@ class GsmPacketSwitchStatus(GXIntEnum):
     # CDMA
     #
     CDMA = 6
+    #
+    # LTE Cat M1.
+    #
+    LTE_CAT_M1 = 7
+    #
+    # LTE Cat NB1.
+    #
+    LTE_CAT_NB1 = 8
+    #
+    # LTE Cat NB2.
+    #
+    LTE_CAT_NB2 = 9
