@@ -963,9 +963,9 @@ class GXDLMS:
                 | (((len(secondaryAddress) + len(primaryAddress) + len1) >> 8) & 0x7)
             )
         if len1 == 0:
-            bb.setUInt8(5 + len(secondaryAddress) + len(primaryAddress) + len1)
+            bb.setUInt8((5 + len(secondaryAddress) + len(primaryAddress) + len1) & 0xFF)
         else:
-            bb.setUInt8(7 + len(secondaryAddress) + len(primaryAddress) + len1)
+            bb.setUInt8((7 + len(secondaryAddress) + len(primaryAddress) + len1) & 0xFF)
         bb.set(primaryAddress)
         bb.set(secondaryAddress)
         if frame_ == 0:
