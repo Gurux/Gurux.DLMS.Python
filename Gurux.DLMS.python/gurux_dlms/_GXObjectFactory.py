@@ -101,6 +101,7 @@ from .objects.GXDLMSG3PlcMacSetup import GXDLMSG3PlcMacSetup
 from .objects.GXDLMSFunctionControl import GXDLMSFunctionControl
 from .objects.GXDLMSG3Plc6LoWPan import GXDLMSG3Plc6LoWPan
 from .objects.GXDLMSLteMonitoring import GXDLMSLteMonitoring
+from .objects.GXDLMSCommunicationPortProtection import GXDLMSCommunicationPortProtection
 
 
 class _GXObjectFactory:
@@ -241,6 +242,8 @@ class _GXObjectFactory:
             ret = GXDLMSFunctionControl()
         elif ot == ObjectType.LTE_MONITORING:
             ret = GXDLMSLteMonitoring()
+        elif ot == ObjectType.COMMUNICATION_PORT_PROTECTION:
+            ret = GXDLMSCommunicationPortProtection()
         else:
             ret = GXDLMSObject(ot)
         return ret

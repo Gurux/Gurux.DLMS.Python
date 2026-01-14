@@ -154,3 +154,4 @@ from .GXDLMSRestriction import GXDLMSRestriction
 from .GXDLMSLteMonitoring import GXDLMSLteMonitoring
 from .GXLteNetworkParameters import GXLteNetworkParameters
 from .GXLteQualityOfService import GXLteQualityOfService
+from .GXDLMSCommunicationPortProtection import GXDLMSCommunicationPortProtection

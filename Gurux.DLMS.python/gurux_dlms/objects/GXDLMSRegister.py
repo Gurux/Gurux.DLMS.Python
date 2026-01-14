@@ -1,4 +1,4 @@
-#
+﻿#
 #  --------------------------------------------------------------------------
 #   Gurux Ltd
 #
@@ -44,8 +44,14 @@ from ..internal._GXLocalizer import _GXLocalizer
 # pylint: disable=too-many-instance-attributes
 class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     """
-    Online help:
-    http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSRegister
+    Represents a COSEM Register object that holds a value with an associated scaler and unit, as defined by the
+    DLMS/COSEM standard.
+    
+    
+    The GXDLMSRegister class provides access to the value, scaler, and unit attributes of a COSEM
+    Register object. It supports reading and writing the register value, as well as resetting it to its default
+    state. This class is typically used in DLMS/COSEM client and server implementations to interact with
+    register-type data points.
     """
 
     def __init__(self, ln=None, sn=0):
@@ -69,6 +75,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         return [self.logicalName, self.value, [self.scaler, self.unit]]
 
     def invoke(self, settings, e):
+        """See IGXDLMSBase.invoke."""
         #  Resets the value to the default value.
         #  The default value is an instance specific constant.
         if e.index == 1:
@@ -77,17 +84,14 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def isRead(self, index):
+        """See IGXDLMSBase.isRead."""
         if index == 3:
             return self.unit != 0
         # pylint: disable=super-with-arguments
         return super(GXDLMSRegister, self).isRead(index)
 
-    #
-    # Returns collection of attributes to read.  If attribute is static
-    #      and
-    # already read or device is returned HW error it is not returned.
-    #
     def getAttributeIndexToRead(self, all_):
+        """See IGXDLMSBase.getAttributeIndexToRead."""
         attributes = []
         #  LN is static and read only once.
         if all_ or not self.logicalName:
@@ -100,19 +104,16 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
             attributes.append(2)
         return attributes
 
-    #
-    # Returns amount of attributes.
-    #
     def getAttributeCount(self):
+        """See IGXDLMSBase.getAttributeCount."""
         return 3
 
-    #
-    # Returns amount of methods.
-    #
     def getMethodCount(self):
+        """See IGXDLMSBase.getMethodCount."""
         return 1
 
     def getNames(self):
+        """See IGXDLMSBase.getNames."""
         return (
             _GXLocalizer.gettext("Logical name"),
             _GXLocalizer.gettext("Value"),
@@ -120,9 +121,11 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         )
 
     def getMethodNames(self):
+        """See IGXDLMSBase.getMethodNames."""
         return (_GXLocalizer.gettext("Reset"),)
 
     def getDataType(self, index):
+        """See IGXDLMSBase.getDataType."""
         # pylint: disable=super-with-arguments
         if index == 1:
             return DataType.OCTET_STRING
@@ -139,6 +142,7 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
+        """See IGXDLMSBase.getValue."""
         if e.index == 1:
             return _GXCommon.logicalNameToBytes(self.logicalName)
         if e.index == 2:
@@ -155,11 +159,9 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
         e.error = ErrorCode.READ_WRITE_DENIED
         return None
 
-    #
-    # Set value of given attribute.
-    #
     # pylint: disable=broad-except
     def setValue(self, settings, e):
+        """See IGXDLMSBase.setValue."""
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
@@ -186,11 +188,13 @@ class GXDLMSRegister(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
+        """See IGXDLMSBase.load."""
         self.unit = Unit(reader.readElementContentAsInt("Unit", 0))
         self.scaler = reader.readElementContentAsDouble("Scaler", 1)
         self.value = reader.readElementContentAsObject("Value", None, self, 2)
 
     def save(self, writer):
+        """See IGXDLMSBase.save."""
         writer.writeElementString("Unit", int(self.unit))
         writer.writeElementString("Scaler", self.scaler, 1)
         writer.writeElementObject(

@@ -1,4 +1,4 @@
-#
+﻿#
 #  --------------------------------------------------------------------------
 #   Gurux Ltd
 #
@@ -38,9 +38,19 @@ from ..internal._GXCommon import _GXCommon
 from ..enums import ObjectType, DataType
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSData(GXDLMSObject, IGXDLMSBase):
     """
+    Represents a COSEM Data object that holds a value and provides access to its logical name and data attributes.
+    
+    
+    The GXDLMSData class is used to model a COSEM Data object as defined in the DLMS/COSEM
+    specification. It allows reading and writing of the data value and supports both logical name (LN) and short
+    name (SN) referencing. This class is typically used in DLMS/COSEM server or client implementations to represent
+    simple data points, such as configuration parameters or measurement values.
+    
+    
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSData
     """
@@ -58,11 +68,8 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
     def getValues(self):
         return [self.logicalName, self.value]
 
-    #
-    # Returns collection of attributes to read.  If attribute is static and
-    # already read or device is returned HW error it is not returned.
-    #
     def getAttributeIndexToRead(self, all_):
+        """See IGXDLMSBase.getAttributeIndexToRead."""
         attributes = []
         # LN is static and read only once.
         if all_ or not self.logicalName:
@@ -72,23 +79,20 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
             attributes.append(2)
         return attributes
 
-    #
-    # Returns amount of attributes.
-    #
     def getAttributeCount(self):
+        """See IGXDLMSBase.getAttributeCount."""
         return 2
 
-    #
-    # Returns amount of methods.
-    #
     def getMethodCount(self):
+        """See IGXDLMSBase.getMethodCount."""
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Value"))
+        """See IGXDLMSBase.getNames."""
+        return (_GXLocalizer.gettext("Logical name"), _GXLocalizer.gettext("Value"))
 
     def getDataType(self, index):
+        """See IGXDLMSBase.getDataType."""
         if index == 1:
             dt = DataType.OCTET_STRING
         elif index == 2:
@@ -100,21 +104,19 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
             raise ValueError("getDataType failed. Invalid attribute index.")
         return dt
 
-    #
-    # Returns value of given attribute.
-    #
     def getValue(self, settings, e):
+        """See IGXDLMSBase.getValue."""
         if e.index == 1:
-            return _GXCommon.logicalNameToBytes(self.logicalName)
-        if e.index == 2:
-            return self.value
-        e.error = ErrorCode.READ_WRITE_DENIED
-        return None
+            ret = _GXCommon.logicalNameToBytes(self.logicalName)
+        elif e.index == 2:
+            ret = self.value
+        else:
+            e.error = ErrorCode.READ_WRITE_DENIED
+            ret = None
+        return ret
 
-    #
-    # Set value of given attribute.
-    #
     def setValue(self, settings, e):
+        """See IGXDLMSBase.setValue."""
         if e.index == 1:
             self.logicalName = _GXCommon.toLogicalName(e.value)
         elif e.index == 2:
@@ -123,9 +125,11 @@ class GXDLMSData(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
+        """See IGXDLMSBase.load."""
         self.value = reader.readElementContentAsObject("Value", None, self, 2)
 
     def save(self, writer):
+        """See IGXDLMSBase.save."""
         writer.writeElementObject(
             "Value", self.value, self.getDataType(2), self.getUIDataType(2)
         )
