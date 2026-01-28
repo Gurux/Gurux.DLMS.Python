@@ -639,57 +639,56 @@ class GXDLMSConverter:
 
     @classmethod
     def dataTypeToString(cls, ot):
-        match ot:
-            case DataType.ARRAY:
-                return "Array"
-            case DataType.BCD:
-                return "Bcd"
-            case DataType.BITSTRING:
-                return "BitString"
-            case DataType.BOOLEAN:
-                return "Boolean"
-            case DataType.COMPACT_ARRAY:
-                return "CompactArray"
-            case DataType.DATE:
-                return "Date"
-            case DataType.DATETIME:
-                return "DateTime"
-            case DataType.ENUM:
-                return "Enum"
-            case DataType.FLOAT32:
-                return "Float32"
-            case DataType.FLOAT64:
-                return "Float64"
-            case DataType.INT16:
-                return "Int16"
-            case DataType.INT32:
-                return "Int32"
-            case DataType.INT64:
-                return "Int64"
-            case DataType.INT8:
-                return "Int8"
-            case DataType.NONE:
-                return "None"
-            case DataType.OCTET_STRING:
-                return "Octet-string"
-            case DataType.STRING:
-                return "String"
-            case DataType.STRING_UTF8:
-                return "String UTF8"
-            case DataType.STRUCTURE:
-                return "Structure"
-            case DataType.TIME:
-                return "Time"
-            case DataType.UINT16:
-                return "UInt16"
-            case DataType.UINT32:
-                return "UInt32"
-            case DataType.UINT64:
-                return "UInt64"
-            case DataType.UINT8:
-                return "UInt8"
-            case _:
-                raise ValueError("Unknown DataType")
+        if ot == DataType.ARRAY:
+            return "Array"
+        elif ot == DataType.BCD:
+            return "Bcd"
+        elif ot == DataType.BITSTRING:
+            return "BitString"
+        elif ot == DataType.BOOLEAN:
+            return "Boolean"
+        elif ot == DataType.COMPACT_ARRAY:
+            return "CompactArray"
+        elif ot == DataType.DATE:
+            return "Date"
+        elif ot == DataType.DATETIME:
+            return "DateTime"
+        elif ot == DataType.ENUM:
+            return "Enum"
+        elif ot == DataType.FLOAT32:
+            return "Float32"
+        elif ot == DataType.FLOAT64:
+            return "Float64"
+        elif ot == DataType.INT16:
+            return "Int16"
+        elif ot == DataType.INT32:
+            return "Int32"
+        elif ot == DataType.INT64:
+            return "Int64"
+        elif ot == DataType.INT8:
+            return "Int8"
+        elif ot == DataType.NONE:
+            return "None"
+        elif ot == DataType.OCTET_STRING:
+            return "Octet-string"
+        elif ot == DataType.STRING:
+            return "String"
+        elif ot == DataType.STRING_UTF8:
+            return "String UTF8"
+        elif ot == DataType.STRUCTURE:
+            return "Structure"
+        elif ot == DataType.TIME:
+            return "Time"
+        elif ot == DataType.UINT16:
+            return "UInt16"
+        elif ot == DataType.UINT32:
+            return "UInt32"
+        elif ot == DataType.UINT64:
+            return "UInt64"
+        elif ot == DataType.UINT8:
+            return "UInt8"
+        else:
+            raise ValueError("Unknown DataType")
 
     # pylint: disable=import-outside-toplevel
     @classmethod
