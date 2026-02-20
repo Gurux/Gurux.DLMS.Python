@@ -125,7 +125,7 @@ class GXDLMSReader:
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception as e:
                 #  All meters don't support release.
-                self.writeTrace("Release request failed (meter may not support it): " + str(e), TraceLevel.WARNING)
+                self.writeTrace("Release request failed (meter may not support it): " + str(e), TraceLevel.INFO)
 
     def close(self):
         # pylint: disable=broad-except
@@ -143,7 +143,7 @@ class GXDLMSReader:
                     self.readDataBlock(self.client.releaseRequest(), reply)
             except Exception as e:
                 #  All meters don't support release.
-                self.writeTrace("Release request failed (meter may not support it): " + str(e), TraceLevel.WARNING)
+                self.writeTrace("Release request failed (meter may not support it): " + str(e), TraceLevel.INFO)
             reply.clear()
             self.readDLMSPacket(self.client.disconnectRequest(), reply)
             self.media.close()
@@ -499,7 +499,7 @@ class GXDLMSReader:
                         if it.canRead(4):
                             self.read(it, 4)
                 except Exception as e:
-                    self.writeTrace("Failed to read scaler/unit for " + str(it.name) + ": " + str(e), TraceLevel.WARNING)
+                    self.writeTrace("Error! Failed to read scaler/unit for " + str(it.name) + ": " + str(e), TraceLevel.ERROR)
 
     def getProfileGenericColumns(self):
         # pylint: disable=broad-except
