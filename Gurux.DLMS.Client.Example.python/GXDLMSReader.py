@@ -475,8 +475,8 @@ class GXDLMSReader:
                             )
                 self.readByAccess(list_)
                 return
-        except Exception:
-            print("Failed to read scalers and units with access.")
+        except Exception as e:
+            self.writeTrace("Error! Failed to read scalers and units with access: " + str(e), TraceLevel.ERROR)
         try:
             if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES != 0:
                 for it in objs:
