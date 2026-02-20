@@ -1,10 +1,11 @@
 import logging
-from unittest.mock import patch, MagicMock
-import sys
 import os
+import sys
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+from gurux_dlms.GXByteBuffer import GXByteBuffer
 from gurux_dlms.GXDLMSTranslator import GXDLMSTranslator
 
 
@@ -12,6 +13,7 @@ def test_decrypt_failure_for_glo_ciphering_comment_is_logged(caplog):
     """When decryption fails during GLO_CIPHERING comment generation,
     a debug log message should be emitted instead of silently swallowing
     the exception."""
+    # Command.GLO_GET_REQUEST = 0xC8 triggers the GLO ciphering branch in _pduToXml2
     translator = GXDLMSTranslator()
     translator.comments = True
 
@@ -20,15 +22,8 @@ def test_decrypt_failure_for_glo_ciphering_comment_is_logged(caplog):
         side_effect=Exception("Decryption failed: invalid key")
     ):
         with caplog.at_level(logging.DEBUG, logger='gurux_dlms.GXDLMSTranslator'):
-            mock_cipher = MagicMock()
-            mock_cipher.blockCipherKey = b'\x00' * 16
-            mock_cipher.authenticationKey = b'\x00' * 16
-            mock_cipher.systemTitle = b'\x00' * 8
-
-            from gurux_dlms.GXByteBuffer import GXByteBuffer
-
             value = GXByteBuffer()
-            value.set(bytearray([0x00, 0x01, 0x00]))
+            value.set(bytearray([0xC8, 0x01, 0x00]))
 
             try:
                 translator._pduToXml2(MagicMock(), value, True, True, False)
@@ -45,6 +40,7 @@ def test_decrypt_failure_for_glo_ciphering_comment_is_logged(caplog):
 def test_decrypt_failure_for_general_glo_ciphering_comment_is_logged(caplog):
     """When decryption fails during GENERAL_GLO_CIPHERING comment generation,
     a debug log message should be emitted."""
+    # Command.GENERAL_GLO_CIPHERING = 0xDB triggers the general GLO ciphering branch
     translator = GXDLMSTranslator()
     translator.comments = True
 
@@ -53,15 +49,8 @@ def test_decrypt_failure_for_general_glo_ciphering_comment_is_logged(caplog):
         side_effect=Exception("Decryption failed: invalid key")
     ):
         with caplog.at_level(logging.DEBUG, logger='gurux_dlms.GXDLMSTranslator'):
-            mock_cipher = MagicMock()
-            mock_cipher.blockCipherKey = b'\x00' * 16
-            mock_cipher.authenticationKey = b'\x00' * 16
-            mock_cipher.systemTitle = b'\x00' * 8
-
-            from gurux_dlms.GXByteBuffer import GXByteBuffer
-
             value = GXByteBuffer()
-            value.set(bytearray([0x00, 0x01, 0x00]))
+            value.set(bytearray([0xDB, 0x01, 0x00]))
 
             try:
                 translator._pduToXml2(MagicMock(), value, True, True, False)
