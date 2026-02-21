@@ -123,9 +123,9 @@ class GXDLMSReader:
                     or self.client.ciphering.security != Security.NONE
                 ):
                     self.readDataBlock(self.client.releaseRequest(), reply)
-            except Exception:
-                pass
+            except Exception as e:
                 #  All meters don't support release.
+                self.writeTrace("Release request failed (meter may not support it): " + str(e), TraceLevel.INFO)
 
     def close(self):
         # pylint: disable=broad-except
@@ -141,9 +141,9 @@ class GXDLMSReader:
                     or self.client.ciphering.security != Security.NONE
                 ):
                     self.readDataBlock(self.client.releaseRequest(), reply)
-            except Exception:
-                pass
+            except Exception as e:
                 #  All meters don't support release.
+                self.writeTrace("Release request failed (meter may not support it): " + str(e), TraceLevel.INFO)
             reply.clear()
             self.readDLMSPacket(self.client.disconnectRequest(), reply)
             self.media.close()
@@ -475,8 +475,8 @@ class GXDLMSReader:
                             )
                 self.readByAccess(list_)
                 return
-        except Exception:
-            print("Failed to read scalers and units with access.")
+        except Exception as e:
+            self.writeTrace("Error! Failed to read scalers and units with access: " + str(e), TraceLevel.ERROR)
         try:
             if self.client.negotiatedConformance & Conformance.MULTIPLE_REFERENCES != 0:
                 for it in objs:
@@ -498,8 +498,8 @@ class GXDLMSReader:
                     elif isinstance(it, (GXDLMSDemandRegister,)):
                         if it.canRead(4):
                             self.read(it, 4)
-                except Exception:
-                    pass
+                except Exception as e:
+                    self.writeTrace("Error! Failed to read scaler/unit for " + str(it.name) + ": " + str(e), TraceLevel.ERROR)
 
     def getProfileGenericColumns(self):
         # pylint: disable=broad-except

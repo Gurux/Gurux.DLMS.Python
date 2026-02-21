@@ -32,6 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 from __future__ import print_function
+import logging
 import xml.etree.cElementTree as ET
 from .internal._GXCommon import _GXCommon
 from .GXByteBuffer import GXByteBuffer
@@ -85,6 +86,9 @@ from .plc.enums import PlcSourceAddress, PlcDestinationAddress
 
 
 # pylint:disable=bad-option-value,too-many-instance-attributes,too-many-function-args,too-many-public-methods,too-many-public-methods,too-many-function-args,too-many-instance-attributes,old-style-class,raise-missing-from
+
+logger = logging.getLogger(__name__)
+
 class GXDLMSTranslator:
     """
     This class is used to translate DLMS frame or PDU to xml.
@@ -1172,6 +1176,7 @@ class GXDLMSTranslator:
                             xml.endComment()
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not correct.
+                    logger.debug("Failed to decrypt GLO_CIPHERING data for XML comment", exc_info=True)
                     xml.xml.setXmlLength(len_)
                 value.position = originalPosition
             cnt = _GXCommon.getObjectCount(value)
@@ -1209,6 +1214,7 @@ class GXDLMSTranslator:
                 except Exception:
                     #  It's OK if this fails.  Ciphering settings are not
                     #  correct.
+                    logger.debug("Failed to decrypt GENERAL_GLO_CIPHERING data for XML comment", exc_info=True)
                     xml.setXmlLength(len_)
                 value.position = originalPosition
             len_ = _GXCommon.getObjectCount(value)
