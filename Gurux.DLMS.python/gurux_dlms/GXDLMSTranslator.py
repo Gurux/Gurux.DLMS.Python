@@ -631,7 +631,9 @@ class GXDLMSTranslator:
                                     xml.appendEndTag(data.command)
                                     xml.setXmlLength(xml.getXmlLength() + 2)
                                 else:
-                                    xml.appendLine(self.__pduToXml(data.data, True, True))
+                                    xml.appendLine(
+                                        self.__pduToXml(data.data, True, True)
+                                    )
                             #  Remove \r\n.
                             xml.trim()
                             if not self.pduOnly:
@@ -1171,8 +1173,8 @@ class GXDLMSTranslator:
                             )
                             xml.endComment()
                 except Exception:
-                    #  It's OK if this fails.  Ciphering settings are not correct.
-                    xml.xml.setXmlLength(len_)
+                    #  It's OK if this fails. Ciphering settings are not correct.
+                    xml.setXmlLength(len_)
                 value.position = originalPosition
             cnt = _GXCommon.getObjectCount(value)
             if cnt != len(value) - value.position:
@@ -1782,7 +1784,11 @@ class GXDLMSTranslator:
                 Command.READ_RESPONSE << 8 | SingleReadResponse.DATA,
                 TranslatorTags.DATA,
             ):
-                if s.command in (Command.READ_REQUEST, Command.READ_RESPONSE, Command.GET_REQUEST):
+                if s.command in (
+                    Command.READ_REQUEST,
+                    Command.READ_RESPONSE,
+                    Command.GET_REQUEST,
+                ):
                     s.count = s.count + 1
                     s.requestType = 0
                 elif s.command in (Command.GET_RESPONSE, Command.METHOD_RESPONSE):

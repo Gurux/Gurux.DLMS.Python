@@ -39,7 +39,7 @@ from .GXDLMSChipperingStream import GXDLMSChipperingStream
 from .internal._GXCommon import _GXCommon
 from .enums.Command import Command
 from .enums.CryptoKeyType import CryptoKeyType
-
+from .enums.Standard import Standard
 
 # pylint: disable=too-many-instance-attributes,too-many-public-methods
 class GXDLMSChippering:
@@ -183,7 +183,7 @@ class GXDLMSChippering:
                 data.get(title)
                 p.systemTitle = title
                 if p.xml and p.xml.comments:
-                    p.xml.appendComment(_GXCommon.systemTitleToString(0, p.systemTitle))
+                    p.xml.appendComment(_GXCommon.systemTitleToString(Standard.DLMS, p.systemTitle, True))
         elif cmd in (
             Command.GENERAL_CIPHERING,
             Command.GLO_INITIATE_REQUEST,
