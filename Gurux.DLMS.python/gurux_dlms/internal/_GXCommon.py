@@ -1992,11 +1992,11 @@ class _GXCommon:
         if addComments:
             sb = "UNI/TS system title:\n"
             sb += "Manufacturer: "
-            sb += cls.decryptManufacturer(m)
+            sb += cls.__decryptManufacturer(m)
             sb += "\nSerial number: "
             sb += GXByteBuffer.hex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
         else:
-            sb += cls.decryptManufacturer(m)
+            sb += cls.__decryptManufacturer(m)
             sb += GXByteBuffer.hex((st[7], st[6], st[5], st[4], st[3], st[2]), False)
         return sb
 
