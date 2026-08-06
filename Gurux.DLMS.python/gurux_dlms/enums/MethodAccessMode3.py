@@ -31,10 +31,10 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-from ..GXIntEnum import GXIntEnum
+from ..GXIntFlag import GXIntFlag
 
 
-class MethodAccessMode3(GXIntEnum):
+class MethodAccessMode3(GXIntFlag):
     """Enumerated method access types for logical name association version 3."""
 
     # pylint: disable=too-few-public-methods
