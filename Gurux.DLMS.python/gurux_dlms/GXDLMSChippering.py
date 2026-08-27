@@ -187,7 +187,7 @@ class GXDLMSChippering:
                 if p.xml and p.xml.comments:
                     p.xml.appendComment(
                         _GXCommon.systemTitleToString(
-                            Standard.DLMS, p.systemTitle, True
+                            settings.standard, p.systemTitle, True
                         )
                     )
         elif cmd in (
