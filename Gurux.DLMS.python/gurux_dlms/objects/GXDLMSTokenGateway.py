@@ -180,6 +180,7 @@ class GXDLMSTokenGateway(GXDLMSObject, IGXDLMSBase):
             ret = bb
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
+            return None
         return ret
 
     #

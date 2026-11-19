@@ -38,6 +38,7 @@ from ..internal._GXCommon import _GXCommon
 from .enums import BaudRate
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -64,15 +65,17 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
         self.deviceAddress = 0
 
     def getValues(self):
-        return [self.logicalName,
-                self.communicationSpeed,
-                self.windowSizeTransmit,
-                self.windowSizeReceive,
-                self.maximumInfoLengthTransmit,
-                self.maximumInfoLengthReceive,
-                self.interCharachterTimeout,
-                self.inactivityTimeout,
-                self.deviceAddress]
+        return [
+            self.logicalName,
+            self.communicationSpeed,
+            self.windowSizeTransmit,
+            self.windowSizeReceive,
+            self.maximumInfoLengthTransmit,
+            self.maximumInfoLengthReceive,
+            self.interCharachterTimeout,
+            self.inactivityTimeout,
+            self.deviceAddress,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -121,15 +124,17 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Communication speed"),\
-            _GXLocalizer.gettext("Window size transmit"),\
-            _GXLocalizer.gettext("Window size receive"),\
-            _GXLocalizer.gettext("Maximum info length transmit"),\
-            _GXLocalizer.gettext("Maximum info length receive"),\
-            _GXLocalizer.gettext("Inter charachter timeout"),\
-            _GXLocalizer.gettext("Inactivity timeout"),\
-            _GXLocalizer.gettext("Device address"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Communication speed"),
+            _GXLocalizer.gettext("Window size transmit"),
+            _GXLocalizer.gettext("Window size receive"),
+            _GXLocalizer.gettext("Maximum info length transmit"),
+            _GXLocalizer.gettext("Maximum info length receive"),
+            _GXLocalizer.gettext("Inter charachter timeout"),
+            _GXLocalizer.gettext("Inactivity timeout"),
+            _GXLocalizer.gettext("Device address"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -159,11 +164,12 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -183,6 +189,7 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 9:
             ret = self.deviceAddress
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -215,9 +222,15 @@ class GXDLMSHdlcSetup(GXDLMSObject, IGXDLMSBase):
         self.communicationSpeed = reader.readElementContentAsInt("Speed")
         self.windowSizeTransmit = reader.readElementContentAsInt("WindowSizeTx")
         self.windowSizeReceive = reader.readElementContentAsInt("WindowSizeRx")
-        self.maximumInfoLengthTransmit = reader.readElementContentAsInt("MaximumInfoLengthTx")
-        self.maximumInfoLengthReceive = reader.readElementContentAsInt("MaximumInfoLengthRx")
-        self.interCharachterTimeout = reader.readElementContentAsInt("InterCharachterTimeout")
+        self.maximumInfoLengthTransmit = reader.readElementContentAsInt(
+            "MaximumInfoLengthTx"
+        )
+        self.maximumInfoLengthReceive = reader.readElementContentAsInt(
+            "MaximumInfoLengthRx"
+        )
+        self.interCharachterTimeout = reader.readElementContentAsInt(
+            "InterCharachterTimeout"
+        )
         self.inactivityTimeout = reader.readElementContentAsInt("InactivityTimeout")
         self.deviceAddress = reader.readElementContentAsInt("DeviceAddress")
 

@@ -233,6 +233,7 @@ class GXDLMSClock(GXDLMSObject, IGXDLMSBase):
         elif e.index == 9:
             ret = self.clockBase
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

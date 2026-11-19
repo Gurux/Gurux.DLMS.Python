@@ -39,6 +39,7 @@ from ..enums import ObjectType, DataType
 from .enums import OpticalProtocolMode, BaudRate, LocalPortResponseTime
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -65,15 +66,17 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         self.version = 1
 
     def getValues(self):
-        return [self.logicalName,
-                self.defaultMode,
-                self.defaultBaudrate,
-                self.proposedBaudrate,
-                self.responseTime,
-                self.deviceAddress,
-                self.password1,
-                self.password2,
-                self.password5]
+        return [
+            self.logicalName,
+            self.defaultMode,
+            self.defaultBaudrate,
+            self.proposedBaudrate,
+            self.responseTime,
+            self.deviceAddress,
+            self.password1,
+            self.password2,
+            self.password5,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static and
@@ -122,15 +125,17 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Default mode"),\
-            _GXLocalizer.gettext("Default baud rate"),\
-            _GXLocalizer.gettext("Proposed baud rate"),\
-            _GXLocalizer.gettext("Response time"),\
-            _GXLocalizer.gettext("Device address"),\
-            _GXLocalizer.gettext("Password 1"),\
-            _GXLocalizer.gettext("Password 2"),\
-            _GXLocalizer.gettext("Password 5"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Default mode"),
+            _GXLocalizer.gettext("Default baud rate"),
+            _GXLocalizer.gettext("Proposed baud rate"),
+            _GXLocalizer.gettext("Response time"),
+            _GXLocalizer.gettext("Device address"),
+            _GXLocalizer.gettext("Password 1"),
+            _GXLocalizer.gettext("Password 2"),
+            _GXLocalizer.gettext("Password 5"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -154,6 +159,7 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
@@ -177,6 +183,7 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 9:
             ret = _GXCommon.getBytes(self.password5)
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -192,7 +199,9 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 5:
             self.responseTime = e.value
         elif e.index == 6:
-            self.deviceAddress = _GXCommon.changeType(settings, e.value, DataType.STRING)
+            self.deviceAddress = _GXCommon.changeType(
+                settings, e.value, DataType.STRING
+            )
         elif e.index == 7:
             self.password1 = _GXCommon.changeType(settings, e.value, DataType.STRING)
         elif e.index == 8:
@@ -221,6 +230,7 @@ class GXDLMSIECLocalPortSetup(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("Password1", self.password1)
         writer.writeElementString("Password2", self.password2)
         writer.writeElementString("Password5", self.password5)
+
 
 class GXDLMSIECOpticalPortSetup(GXDLMSIECLocalPortSetup):
     """Obsolete. Use GXDLMSIECLocalPortSetup instead."""

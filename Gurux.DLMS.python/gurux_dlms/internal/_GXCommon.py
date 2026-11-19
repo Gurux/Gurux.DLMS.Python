@@ -1847,8 +1847,9 @@ class _GXCommon:
         day = int(dateString[6:8])
         hour = int(dateString[8:10])
         minute = int(dateString[10:12])
+        second = 0
         # If UTC time.
-        if dateString.endsWith("Z"):
+        if dateString.endswith("Z"):
             if len(dateString) > 13:
                 second = int(dateString[12:14])
             return datetime(

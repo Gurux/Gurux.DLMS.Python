@@ -42,6 +42,7 @@ from .GXDLMSPppSetupIPCPOption import GXDLMSPppSetupIPCPOption
 from .enums import PppSetupIPCPOptionType
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -115,11 +116,13 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("PHY reference"),\
-            _GXLocalizer.gettext("LCP options"),\
-            _GXLocalizer.gettext("IPCP options"),\
-            _GXLocalizer.gettext("PPP authentication"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("PHY reference"),
+            _GXLocalizer.gettext("LCP options"),
+            _GXLocalizer.gettext("IPCP options"),
+            _GXLocalizer.gettext("PPP authentication"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -187,6 +190,7 @@ class GXDLMSPppSetup(GXDLMSObject, IGXDLMSBase):
             else:
                 ret = None
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

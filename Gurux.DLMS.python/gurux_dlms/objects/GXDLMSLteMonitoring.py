@@ -211,6 +211,7 @@ class GXDLMSLteMonitoring(GXDLMSObject, IGXDLMSBase):
         elif e.index == 3:
             if self.__version == 0:
                 e.error = ErrorCode.READ_WRITE_DENIED
+                return None
             else:
                 buff.setUInt8(DataType.STRUCTURE)
                 _GXCommon.setObjectCount(4, buff)
@@ -240,6 +241,7 @@ class GXDLMSLteMonitoring(GXDLMSObject, IGXDLMSBase):
                 )
                 ret = buff.array()
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

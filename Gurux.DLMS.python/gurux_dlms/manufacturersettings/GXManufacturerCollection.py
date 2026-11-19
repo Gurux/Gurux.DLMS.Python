@@ -35,6 +35,7 @@ from __future__ import print_function
 import xml.etree.cElementTree as ET
 import datetime
 import sys
+import urllib.request
 from os import listdir
 from os.path import isfile, join
 import os.path
@@ -48,8 +49,6 @@ from .InactivityMode import InactivityMode
 from .StartProtocolType import StartProtocolType
 from .HDLCAddressType import HDLCAddressType
 from ..enums import Authentication, DataType, ObjectType
-if sys.version_info >= (3, 0):
-    import urllib.request
 
 #
 class GXManufacturerCollection(list):

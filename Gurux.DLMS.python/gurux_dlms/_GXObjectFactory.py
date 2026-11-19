@@ -44,6 +44,7 @@ from .objects.GXDLMSAutoAnswer import GXDLMSAutoAnswer
 from .objects.GXDLMSAutoConnect import GXDLMSAutoConnect
 from .objects.GXDLMSClock import GXDLMSClock
 from .objects.GXDLMSData import GXDLMSData
+from .objects.GXDLMSStatusMapping import GXDLMSStatusMapping
 from .objects.GXDLMSDemandRegister import GXDLMSDemandRegister
 from .objects.GXDLMSMacAddressSetup import GXDLMSMacAddressSetup
 from .objects.GXDLMSRegister import GXDLMSRegister
@@ -194,7 +195,7 @@ class _GXObjectFactory:
         elif ot == ObjectType.SPECIAL_DAYS_TABLE:
             ret = GXDLMSSpecialDaysTable()
         elif ot == ObjectType.STATUS_MAPPING:
-            ret = GXDLMSObject(ot)
+            ret = GXDLMSStatusMapping()
         elif ot == ObjectType.TCP_UDP_SETUP:
             ret = GXDLMSTcpUdpSetup()
         elif ot == ObjectType.ZIG_BEE_SAS_APS_FRAGMENTATION:

@@ -41,6 +41,7 @@ from .GXDLMSEmergencyProfile import GXDLMSEmergencyProfile
 from .GXDLMSActionItem import GXDLMSActionItem
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     """
@@ -48,6 +49,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSLimiter
 
     """
+
     def __init__(self, ln=None, sn=0):
         """
         Constructor.
@@ -55,7 +57,7 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSLimiter, self).__init__(ObjectType.LIMITER, ln, sn)
         self.monitoredValue = None
         self.monitoredAttributeIndex = 0
@@ -71,17 +73,19 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         self.actionUnderThreshold = GXDLMSActionItem()
 
     def getValues(self):
-        return [self.logicalName,
-                self.monitoredValue,
-                self.thresholdActive,
-                self.thresholdNormal,
-                self.thresholdEmergency,
-                self.minOverThresholdDuration,
-                self.minUnderThresholdDuration,
-                self.emergencyProfile,
-                self.emergencyProfileGroupIDs,
-                self.emergencyProfileActive,
-                [self.actionOverThreshold, self.actionUnderThreshold]]
+        return [
+            self.logicalName,
+            self.monitoredValue,
+            self.thresholdActive,
+            self.thresholdNormal,
+            self.thresholdEmergency,
+            self.minOverThresholdDuration,
+            self.minUnderThresholdDuration,
+            self.emergencyProfile,
+            self.emergencyProfileGroupIDs,
+            self.emergencyProfileActive,
+            [self.actionOverThreshold, self.actionUnderThreshold],
+        ]
 
     def getAttributeIndexToRead(self, all_):
         attributes = []
@@ -133,20 +137,22 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Monitored value"),\
-            _GXLocalizer.gettext("Active threshold"),\
-            _GXLocalizer.gettext("Normal threshold"),\
-            _GXLocalizer.gettext("Emergency threshold"),\
-            _GXLocalizer.gettext("Threshold duration min over"),\
-            _GXLocalizer.gettext("Threshold duration min under"),\
-            _GXLocalizer.gettext("Emergency profile"),\
-            _GXLocalizer.gettext("Emergency profile group"),\
-            _GXLocalizer.gettext("Emergency profile active"),\
-            _GXLocalizer.gettext("Actions"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Monitored value"),
+            _GXLocalizer.gettext("Active threshold"),
+            _GXLocalizer.gettext("Normal threshold"),
+            _GXLocalizer.gettext("Emergency threshold"),
+            _GXLocalizer.gettext("Threshold duration min over"),
+            _GXLocalizer.gettext("Threshold duration min under"),
+            _GXLocalizer.gettext("Emergency profile"),
+            _GXLocalizer.gettext("Emergency profile group"),
+            _GXLocalizer.gettext("Emergency profile active"),
+            _GXLocalizer.gettext("Actions"),
+        )
 
     def getDataType(self, index):
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         if index == 1:
             ret = DataType.OCTET_STRING
         elif index == 2:
@@ -172,11 +178,12 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -185,12 +192,26 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(3)
             if self.monitoredValue is None:
                 _GXCommon.setData(settings, data, DataType.UINT16, int(0))
-                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(None))
+                _GXCommon.setData(
+                    settings,
+                    data,
+                    DataType.OCTET_STRING,
+                    _GXCommon.logicalNameToBytes(None),
+                )
                 _GXCommon.setData(settings, data, DataType.INT8, 0)
             else:
-                _GXCommon.setData(settings, data, DataType.UINT16, int(self.monitoredValue.objectType))
-                _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName))
-                _GXCommon.setData(settings, data, DataType.INT8, self.monitoredAttributeIndex)
+                _GXCommon.setData(
+                    settings, data, DataType.UINT16, int(self.monitoredValue.objectType)
+                )
+                _GXCommon.setData(
+                    settings,
+                    data,
+                    DataType.OCTET_STRING,
+                    _GXCommon.logicalNameToBytes(self.monitoredValue.logicalName),
+                )
+                _GXCommon.setData(
+                    settings, data, DataType.INT8, self.monitoredAttributeIndex
+                )
             ret = data
         elif e.index == 3:
             ret = self.thresholdActive
@@ -207,8 +228,15 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(3)
             _GXCommon.setData(settings, data, DataType.UINT16, self.emergencyProfile.id)
-            _GXCommon.setData(settings, data, DataType.OCTET_STRING, self.emergencyProfile.activationTime)
-            _GXCommon.setData(settings, data, DataType.UINT32, self.emergencyProfile.duration)
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.OCTET_STRING,
+                self.emergencyProfile.activationTime,
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT32, self.emergencyProfile.duration
+            )
             ret = data
         elif e.index == 9:
             data = GXByteBuffer()
@@ -225,15 +253,33 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(2)
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionOverThreshold.logicalName))
-            _GXCommon.setData(settings, data, DataType.UINT16, self.actionOverThreshold.scriptSelector)
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.OCTET_STRING,
+                _GXCommon.logicalNameToBytes(self.actionOverThreshold.logicalName),
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT16, self.actionOverThreshold.scriptSelector
+            )
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(2)
-            _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(self.actionUnderThreshold.logicalName))
-            _GXCommon.setData(settings, data, DataType.UINT16, self.actionUnderThreshold.scriptSelector)
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.OCTET_STRING,
+                _GXCommon.logicalNameToBytes(self.actionUnderThreshold.logicalName),
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT16,
+                self.actionUnderThreshold.scriptSelector,
+            )
             ret = data
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
+            ret = None
         return ret
 
     #
@@ -259,7 +305,9 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             self.minUnderThresholdDuration = e.value
         elif e.index == 8:
             self.emergencyProfile.id = e.value[0]
-            self.emergencyProfile.activationTime = _GXCommon.changeType(settings, e.value[1], DataType.DATETIME)
+            self.emergencyProfile.activationTime = _GXCommon.changeType(
+                settings, e.value[1], DataType.DATETIME
+            )
             self.emergencyProfile.duration = e.value[2]
         elif e.index == 9:
             self.emergencyProfileGroupIDs = []
@@ -269,16 +317,21 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         elif e.index == 10:
             self.emergencyProfileActive = e.value
         elif e.index == 11:
-            self.actionOverThreshold.logicalName = _GXCommon.toLogicalName(e.value[0][0])
+            self.actionOverThreshold.logicalName = _GXCommon.toLogicalName(
+                e.value[0][0]
+            )
             self.actionOverThreshold.scriptSelector = e.value[0][1]
-            self.actionUnderThreshold.logicalName = _GXCommon.toLogicalName(e.value[1][0])
+            self.actionUnderThreshold.logicalName = _GXCommon.toLogicalName(
+                e.value[1][0]
+            )
             self.actionUnderThreshold.scriptSelector = e.value[1][1]
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        #pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
         from .._GXObjectFactory import _GXObjectFactory
+
         if reader.isStartElement("MonitoredValue", True):
             ot = reader.readElementContentAsInt("ObjectType")
             ln = reader.readElementContentAsString("LN")
@@ -289,29 +342,51 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
                     self.monitoredValue = _GXObjectFactory.createObject(ot)
                     self.monitoredValue.logicalName = ln
             reader.readEndElement("MonitoredValue")
-        self.thresholdActive = reader.readElementContentAsObject("ThresholdActive", None, self, 3)
-        self.thresholdNormal = reader.readElementContentAsObject("ThresholdNormal", None, self, 4)
-        self.thresholdEmergency = reader.readElementContentAsObject("ThresholdEmergency", None, self, 5)
-        self.minOverThresholdDuration = reader.readElementContentAsInt("MinOverThresholdDuration")
-        self.minUnderThresholdDuration = reader.readElementContentAsInt("MinUnderThresholdDuration")
+        self.thresholdActive = reader.readElementContentAsObject(
+            "ThresholdActive", None, self, 3
+        )
+        self.thresholdNormal = reader.readElementContentAsObject(
+            "ThresholdNormal", None, self, 4
+        )
+        self.thresholdEmergency = reader.readElementContentAsObject(
+            "ThresholdEmergency", None, self, 5
+        )
+        self.minOverThresholdDuration = reader.readElementContentAsInt(
+            "MinOverThresholdDuration"
+        )
+        self.minUnderThresholdDuration = reader.readElementContentAsInt(
+            "MinUnderThresholdDuration"
+        )
         if reader.isStartElement("EmergencyProfile", True):
             self.emergencyProfile.id = reader.readElementContentAsInt("ID")
-            self.emergencyProfile.activationTime = reader.readElementContentAsDateTime("Time")
+            self.emergencyProfile.activationTime = reader.readElementContentAsDateTime(
+                "Time"
+            )
             self.emergencyProfile.duration = reader.readElementContentAsInt("Duration")
             reader.readEndElement("EmergencyProfile")
         self.emergencyProfileGroupIDs = []
         if reader.isStartElement("EmergencyProfileGroupIDs", True):
             while reader.isStartElement("Value", False):
-                self.emergencyProfileGroupIDs.append(reader.readElementContentAsInt("Value"))
+                self.emergencyProfileGroupIDs.append(
+                    reader.readElementContentAsInt("Value")
+                )
             reader.readEndElement("EmergencyProfileGroupIDs")
         self.emergencyProfileActive = reader.readElementContentAsInt("Active") != 0
         if reader.isStartElement("ActionOverThreshold", True):
-            self.actionOverThreshold.logicalName = reader.readElementContentAsString("LN")
-            self.actionOverThreshold.scriptSelector = reader.readElementContentAsInt("ScriptSelector")
+            self.actionOverThreshold.logicalName = reader.readElementContentAsString(
+                "LN"
+            )
+            self.actionOverThreshold.scriptSelector = reader.readElementContentAsInt(
+                "ScriptSelector"
+            )
             reader.readEndElement("ActionOverThreshold")
         if reader.isStartElement("ActionUnderThreshold", True):
-            self.actionUnderThreshold.logicalName = reader.readElementContentAsString("LN")
-            self.actionUnderThreshold.scriptSelector = reader.readElementContentAsInt("ScriptSelector")
+            self.actionUnderThreshold.logicalName = reader.readElementContentAsString(
+                "LN"
+            )
+            self.actionUnderThreshold.scriptSelector = reader.readElementContentAsInt(
+                "ScriptSelector"
+            )
             reader.readEndElement("ActionUnderThreshold")
 
     def save(self, writer):
@@ -320,11 +395,30 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("ObjectType", int(self.monitoredValue.objectType))
             writer.writeElementString("LN", self.monitoredValue.logicalName)
             writer.writeEndElement()
-        writer.writeElementObject("ThresholdActive", self.thresholdActive, self.getDataType(3), self.getUIDataType(3))
-        writer.writeElementObject("ThresholdNormal", self.thresholdNormal, self.getDataType(4), self.getUIDataType(4))
-        writer.writeElementObject("ThresholdEmergency", self.thresholdEmergency, self.getDataType(5), self.getUIDataType(5))
-        writer.writeElementString("MinOverThresholdDuration", self.minOverThresholdDuration)
-        writer.writeElementString("MinUnderThresholdDuration", self.minUnderThresholdDuration)
+        writer.writeElementObject(
+            "ThresholdActive",
+            self.thresholdActive,
+            self.getDataType(3),
+            self.getUIDataType(3),
+        )
+        writer.writeElementObject(
+            "ThresholdNormal",
+            self.thresholdNormal,
+            self.getDataType(4),
+            self.getUIDataType(4),
+        )
+        writer.writeElementObject(
+            "ThresholdEmergency",
+            self.thresholdEmergency,
+            self.getDataType(5),
+            self.getUIDataType(5),
+        )
+        writer.writeElementString(
+            "MinOverThresholdDuration", self.minOverThresholdDuration
+        )
+        writer.writeElementString(
+            "MinUnderThresholdDuration", self.minUnderThresholdDuration
+        )
         if self.emergencyProfile:
             writer.writeStartElement("EmergencyProfile")
             writer.writeElementString("ID", self.emergencyProfile.id)
@@ -340,17 +434,23 @@ class GXDLMSLimiter(GXDLMSObject, IGXDLMSBase):
         if self.actionOverThreshold:
             writer.writeStartElement("ActionOverThreshold")
             writer.writeElementString("LN", self.actionOverThreshold.logicalName)
-            writer.writeElementString("ScriptSelector", self.actionOverThreshold.scriptSelector)
+            writer.writeElementString(
+                "ScriptSelector", self.actionOverThreshold.scriptSelector
+            )
             writer.writeEndElement()
         if self.actionUnderThreshold:
             writer.writeStartElement("ActionUnderThreshold")
             writer.writeElementString("LN", self.actionUnderThreshold.logicalName)
-            writer.writeElementString("ScriptSelector", self.actionUnderThreshold.scriptSelector)
+            writer.writeElementString(
+                "ScriptSelector", self.actionUnderThreshold.scriptSelector
+            )
             writer.writeEndElement()
 
     def postLoad(self, reader):
         #  Upload Monitored Value after load.
         if self.monitoredValue:
-            target = reader.objects.findByLN(self.monitoredValue.objectType, self.monitoredValue.logicalName)
+            target = reader.objects.findByLN(
+                self.monitoredValue.objectType, self.monitoredValue.logicalName
+            )
             if target != self.monitoredValue:
                 self.monitoredValue = target

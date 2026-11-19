@@ -42,12 +42,14 @@ from ..enums import ObjectType, DataType
 from .GXDLMSIp4SetupIpOption import GXDLMSIp4SetupIpOption
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSIp4Setup
     """
+
     def __init__(self, ln="0.0.25.1.0.255", sn=0):
         """
         Constructor.
@@ -55,7 +57,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSIp4Setup, self).__init__(ObjectType.IP4_SETUP, ln, sn)
         self.dataLinkLayerReference = None
         self.ipAddress = None
@@ -68,16 +70,18 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         self.secondaryDNSAddress = ""
 
     def getValues(self):
-        return [self.logicalName,
-                self.dataLinkLayerReference,
-                self.ipAddress,
-                self.multicastIPAddress,
-                self.ipOptions,
-                self.subnetMask,
-                self.gatewayIPAddress,
-                self.useDHCP,
-                self.primaryDNSAddress,
-                self.secondaryDNSAddress]
+        return [
+            self.logicalName,
+            self.dataLinkLayerReference,
+            self.ipAddress,
+            self.multicastIPAddress,
+            self.ipOptions,
+            self.subnetMask,
+            self.gatewayIPAddress,
+            self.useDHCP,
+            self.primaryDNSAddress,
+            self.secondaryDNSAddress,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -131,21 +135,25 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         return 3
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Data link layer reference"),\
-            _GXLocalizer.gettext("IP address"),\
-            _GXLocalizer.gettext("Multicast ip address"),\
-            _GXLocalizer.gettext("IP options"),\
-            _GXLocalizer.gettext("Subnet mask"),\
-            _GXLocalizer.gettext("Gateway ip address"),\
-            _GXLocalizer.gettext("Use dhcp"),\
-            _GXLocalizer.gettext("Primary dns address"),\
-            _GXLocalizer.gettext("Secondary dns address"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Data link layer reference"),
+            _GXLocalizer.gettext("IP address"),
+            _GXLocalizer.gettext("Multicast ip address"),
+            _GXLocalizer.gettext("IP options"),
+            _GXLocalizer.gettext("Subnet mask"),
+            _GXLocalizer.gettext("Gateway ip address"),
+            _GXLocalizer.gettext("Use dhcp"),
+            _GXLocalizer.gettext("Primary dns address"),
+            _GXLocalizer.gettext("Secondary dns address"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Add mc ip address"),\
-            _GXLocalizer.gettext("Delete mc ip address"),\
-            _GXLocalizer.gettext("Get nbof mc ip addresses"))
+        return (
+            _GXLocalizer.gettext("Add mc ip address"),
+            _GXLocalizer.gettext("Delete mc ip address"),
+            _GXLocalizer.gettext("Get nbof mc ip addresses"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -171,11 +179,12 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -190,7 +199,12 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             else:
                 _GXCommon.setObjectCount(len(self.multicastIPAddress), data)
                 for it in self.multicastIPAddress:
-                    _GXCommon.setData(settings, data, DataType.UINT16, struct.unpack("!I", socket.inet_aton(it))[0])
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.UINT16,
+                        struct.unpack("!I", socket.inet_aton(it))[0],
+                    )
             ret = data
         elif e.index == 5:
             data = GXByteBuffer()
@@ -217,6 +231,7 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 10:
             ret = struct.unpack("!I", socket.inet_aton(self.secondaryDNSAddress))[0]
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -237,7 +252,9 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             self.multicastIPAddress = []
             if e.value:
                 for it in e.value:
-                    self.multicastIPAddress.append(socket.inet_ntoa(struct.pack("!I", it)))
+                    self.multicastIPAddress.append(
+                        socket.inet_ntoa(struct.pack("!I", it))
+                    )
         elif e.index == 5:
             self.ipOptions = []
             if e.value:
@@ -261,12 +278,16 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
             e.error = ErrorCode.READ_WRITE_DENIED
 
     def load(self, reader):
-        self.dataLinkLayerReference = reader.readElementContentAsString("DataLinkLayerReference")
+        self.dataLinkLayerReference = reader.readElementContentAsString(
+            "DataLinkLayerReference"
+        )
         self.ipAddress = reader.readElementContentAsString("IPAddress")
         self.multicastIPAddress = []
         if reader.isStartElement("MulticastIPAddress", True):
             while reader.isStartElement("Value", False):
-                self.multicastIPAddress.append(reader.readElementContentAsString("Value"))
+                self.multicastIPAddress.append(
+                    reader.readElementContentAsString("Value")
+                )
             reader.readEndElement("MulticastIPAddress")
         self.ipOptions = []
         if reader.isStartElement("IPOptions", True):
@@ -274,21 +295,27 @@ class GXDLMSIp4Setup(GXDLMSObject, IGXDLMSBase):
                 it = GXDLMSIp4SetupIpOption()
                 it.type_ = reader.readElementContentAsInt("Type")
                 it.length = reader.readElementContentAsInt("Length")
-                it.data = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Data"))
+                it.data = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Data")
+                )
                 self.ipOptions.append(it)
-            #Old. This can be removed in some point.
+            # Old. This can be removed in some point.
             while reader.isStartElement("IPOptions", True):
                 it = GXDLMSIp4SetupIpOption()
                 it.type_ = reader.readElementContentAsInt("Type")
                 it.length = reader.readElementContentAsInt("Length")
-                it.data = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Data"))
+                it.data = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Data")
+                )
                 self.ipOptions.append(it)
             reader.readEndElement("IPOptions")
         self.subnetMask = reader.readElementContentAsString("SubnetMask")
         self.gatewayIPAddress = reader.readElementContentAsString("GatewayIPAddress")
         self.useDHCP = reader.readElementContentAsInt("UseDHCP") != 0
         self.primaryDNSAddress = reader.readElementContentAsString("PrimaryDNSAddress")
-        self.secondaryDNSAddress = reader.readElementContentAsString("SecondaryDNSAddress")
+        self.secondaryDNSAddress = reader.readElementContentAsString(
+            "SecondaryDNSAddress"
+        )
 
     def save(self, writer):
         writer.writeElementString("DataLinkLayerReference", self.dataLinkLayerReference)

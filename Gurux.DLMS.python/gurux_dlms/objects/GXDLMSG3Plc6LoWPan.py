@@ -43,6 +43,7 @@ from .GXDLMSContextInformationTable import GXDLMSContextInformationTable
 from .GXDLMSBroadcastLogTable import GXDLMSBroadcastLogTable
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes, too-many-public-methods
 class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
     """
@@ -587,6 +588,7 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
         elif e.index == 23:
             ret = self.__highLQI
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -729,29 +731,31 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
         )
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Max hops"),\
-            _GXLocalizer.gettext("Weak lqi value"),\
-            _GXLocalizer.gettext("Security level"),\
-            _GXLocalizer.gettext("Prefix table"),\
-            _GXLocalizer.gettext("Routing configuration"),\
-            _GXLocalizer.gettext("Broadcast log table entry ttl"),\
-            _GXLocalizer.gettext("Routing table"),\
-            _GXLocalizer.gettext("Context information table"),\
-            _GXLocalizer.gettext("Blacklist table"),\
-            _GXLocalizer.gettext("Broadcast log table"),\
-            _GXLocalizer.gettext("Group table"),\
-            _GXLocalizer.gettext("Max join wait time"),\
-            _GXLocalizer.gettext("Path discovery time"),\
-            _GXLocalizer.gettext("Active key index"),\
-            _GXLocalizer.gettext("Metric type"),\
-            _GXLocalizer.gettext("Coord short address"),\
-            _GXLocalizer.gettext("Disable default routing"),\
-            _GXLocalizer.gettext("Device type"),\
-            _GXLocalizer.gettext("Default coord route enabled"),\
-            _GXLocalizer.gettext("Destination address"),\
-            _GXLocalizer.gettext("Low lqi"),\
-            _GXLocalizer.gettext("High lqi"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Max hops"),
+            _GXLocalizer.gettext("Weak lqi value"),
+            _GXLocalizer.gettext("Security level"),
+            _GXLocalizer.gettext("Prefix table"),
+            _GXLocalizer.gettext("Routing configuration"),
+            _GXLocalizer.gettext("Broadcast log table entry ttl"),
+            _GXLocalizer.gettext("Routing table"),
+            _GXLocalizer.gettext("Context information table"),
+            _GXLocalizer.gettext("Blacklist table"),
+            _GXLocalizer.gettext("Broadcast log table"),
+            _GXLocalizer.gettext("Group table"),
+            _GXLocalizer.gettext("Max join wait time"),
+            _GXLocalizer.gettext("Path discovery time"),
+            _GXLocalizer.gettext("Active key index"),
+            _GXLocalizer.gettext("Metric type"),
+            _GXLocalizer.gettext("Coord short address"),
+            _GXLocalizer.gettext("Disable default routing"),
+            _GXLocalizer.gettext("Device type"),
+            _GXLocalizer.gettext("Default coord route enabled"),
+            _GXLocalizer.gettext("Destination address"),
+            _GXLocalizer.gettext("Low lqi"),
+            _GXLocalizer.gettext("High lqi"),
+        )
 
     def getDataType(self, index):
         """
@@ -894,7 +898,9 @@ class GXDLMSG3Plc6LoWPan(GXDLMSObject, IGXDLMSBase):
                 it = GXDLMSContextInformationTable()
                 self.__contextInformationTable.Add(it)
                 it.cid = reader.readElementContentAsString("CID")
-                it.context = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Context"))
+                it.context = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Context")
+                )
                 it.compression = reader.readElementContentAsInt("Compression") != 0
                 it.validLifetime = reader.readElementContentAsInt("ValidLifetime")
             reader.readEndElement("ContextInformationTable")

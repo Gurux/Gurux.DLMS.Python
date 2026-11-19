@@ -41,6 +41,7 @@ from .enums import ImageTransferStatus
 from .GXDLMSImageActivateInfo import GXDLMSImageActivateInfo
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
     """
@@ -66,13 +67,15 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         self.imageData = None
 
     def getValues(self):
-        return [self.logicalName,
-                self.imageBlockSize,
-                self.imageTransferredBlocksStatus,
-                self.imageFirstNotTransferredBlockNumber,
-                self.imageTransferEnabled,
-                self.imageTransferStatus,
-                self.imageActivateInfo]
+        return [
+            self.logicalName,
+            self.imageBlockSize,
+            self.imageTransferredBlocksStatus,
+            self.imageFirstNotTransferredBlockNumber,
+            self.imageTransferEnabled,
+            self.imageTransferStatus,
+            self.imageActivateInfo,
+        ]
 
     def getAttributeIndexToRead(self, all_):
         attributes = []
@@ -133,7 +136,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             sb = ""
             pos = 0
             while pos < cnt:
-                sb += '0'
+                sb += "0"
                 pos += 1
             self.imageTransferredBlocksStatus = sb
             return None
@@ -142,7 +145,7 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             value = e.parameters
             imageIndex = (value[0]).longValue()
             tmp = self.imageTransferredBlocksStatus.encode()
-            tmp[int(imageIndex)] = '1'
+            tmp[int(imageIndex)] = "1"
             self.imageTransferredBlocksStatus = str(tmp)
             self.imageFirstNotTransferredBlockNumber = imageIndex + 1
             self.imageData.put(imageIndex, value[1])
@@ -157,19 +160,23 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         return None
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Image block size"),\
-            _GXLocalizer.gettext("Image transferred blocks status"),\
-            _GXLocalizer.gettext("Image first not transferred block number"),\
-            _GXLocalizer.gettext("Image transfer enabled"),\
-            _GXLocalizer.gettext("Image transfer status"),\
-            _GXLocalizer.gettext("Image activate info"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Image block size"),
+            _GXLocalizer.gettext("Image transferred blocks status"),
+            _GXLocalizer.gettext("Image first not transferred block number"),
+            _GXLocalizer.gettext("Image transfer enabled"),
+            _GXLocalizer.gettext("Image transfer status"),
+            _GXLocalizer.gettext("Image activate info"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Image transfer initiate"),\
-            _GXLocalizer.gettext("Image block transfer"),\
-            _GXLocalizer.gettext("Image verify"),\
-            _GXLocalizer.gettext("Image activate"))
+        return (
+            _GXLocalizer.gettext("Image transfer initiate"),
+            _GXLocalizer.gettext("Image block transfer"),
+            _GXLocalizer.gettext("Image verify"),
+            _GXLocalizer.gettext("Image activate"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -189,11 +196,12 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -216,10 +224,13 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
                 #  Item count.
                 data.setUInt8(int(3))
                 _GXCommon.setData(settings, data, DataType.UINT32, it.size)
-                _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.identification)
+                _GXCommon.setData(
+                    settings, data, DataType.OCTET_STRING, it.identification
+                )
                 _GXCommon.setData(settings, data, DataType.OCTET_STRING, it.signature)
             ret = data
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -247,9 +258,11 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             else:
                 self.imageTransferEnabled = e.value
         elif e.index == 6:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             if e.value is None:
-                self.imageTransferStatus = ImageTransferStatus.IMAGE_TRANSFER_NOT_INITIATED
+                self.imageTransferStatus = (
+                    ImageTransferStatus.IMAGE_TRANSFER_NOT_INITIATED
+                )
             else:
                 self.imageTransferStatus = e.value
         elif e.index == 7:
@@ -272,7 +285,9 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
         data = GXByteBuffer()
         data.setUInt8(DataType.STRUCTURE)
         data.setUInt8(2)
-        _GXCommon.setData(None, data, DataType.OCTET_STRING, _GXCommon.getBytes(imageIdentifier))
+        _GXCommon.setData(
+            None, data, DataType.OCTET_STRING, _GXCommon.getBytes(imageIdentifier)
+        )
         _GXCommon.setData(None, data, DataType.UINT32, imageSize)
         return client.method(self, 1, data, DataType.ARRAY)
 
@@ -293,9 +308,12 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             len_ = len(imageBlockValue) - ((pos + 1) * self.imageBlockSize)
             #  If last packet
             if len_ < 0:
-                tmp = imageBlockValue[pos * self.imageBlockSize:]
+                tmp = imageBlockValue[pos * self.imageBlockSize :]
             else:
-                tmp = imageBlockValue[pos * self.imageBlockSize: pos * self.imageBlockSize + self.imageBlockSize]
+                tmp = imageBlockValue[
+                    pos * self.imageBlockSize : pos * self.imageBlockSize
+                    + self.imageBlockSize
+                ]
             _GXCommon.setData(None, data, DataType.OCTET_STRING, tmp)
             packets.append(client.method(self, 2, data, DataType.ARRAY))
             pos += 1
@@ -309,24 +327,39 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
 
     def load(self, reader):
         self.imageBlockSize = reader.readElementContentAsInt("ImageBlockSize")
-        self.imageTransferredBlocksStatus = reader.readElementContentAsString("ImageTransferredBlocksStatus")
-        self.imageFirstNotTransferredBlockNumber = reader.readElementContentAsLong("ImageFirstNotTransferredBlockNumber")
-        self.imageTransferEnabled = reader.readElementContentAsInt("ImageTransferEnabled") != 0
+        self.imageTransferredBlocksStatus = reader.readElementContentAsString(
+            "ImageTransferredBlocksStatus"
+        )
+        self.imageFirstNotTransferredBlockNumber = reader.readElementContentAsLong(
+            "ImageFirstNotTransferredBlockNumber"
+        )
+        self.imageTransferEnabled = (
+            reader.readElementContentAsInt("ImageTransferEnabled") != 0
+        )
         self.imageTransferStatus = reader.readElementContentAsInt("ImageTransferStatus")
         self.imageActivateInfo = []
         if reader.isStartElement("ImageActivateInfo", True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSImageActivateInfo()
                 it.size = reader.readElementContentAsULong("Size")
-                it.identification = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Identification"))
-                it.signature = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Signature"))
+                it.identification = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Identification")
+                )
+                it.signature = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Signature")
+                )
                 self.imageActivateInfo.append(it)
             reader.readEndElement("ImageActivateInfo")
 
     def save(self, writer):
         writer.writeElementString("ImageBlockSize", self.imageBlockSize)
-        writer.writeElementString("ImageTransferredBlocksStatus", self.imageTransferredBlocksStatus)
-        writer.writeElementString("ImageFirstNotTransferredBlockNumber", self.imageFirstNotTransferredBlockNumber)
+        writer.writeElementString(
+            "ImageTransferredBlocksStatus", self.imageTransferredBlocksStatus
+        )
+        writer.writeElementString(
+            "ImageFirstNotTransferredBlockNumber",
+            self.imageFirstNotTransferredBlockNumber,
+        )
         writer.writeElementString("ImageTransferEnabled", self.imageTransferEnabled)
         writer.writeElementString("ImageTransferStatus", int(self.imageTransferStatus))
         writer.writeStartElement("ImageActivateInfo")
@@ -334,7 +367,11 @@ class GXDLMSImageTransfer(GXDLMSObject, IGXDLMSBase):
             for it in self.imageActivateInfo:
                 writer.writeStartElement("Item")
                 writer.writeElementString("Size", it.size)
-                writer.writeElementString("Identification", GXByteBuffer.hex(it.identification, False))
-                writer.writeElementString("Signature", GXByteBuffer.hex(it.signature, False))
+                writer.writeElementString(
+                    "Identification", GXByteBuffer.hex(it.identification, False)
+                )
+                writer.writeElementString(
+                    "Signature", GXByteBuffer.hex(it.signature, False)
+                )
                 writer.writeEndElement()
         writer.writeEndElement()

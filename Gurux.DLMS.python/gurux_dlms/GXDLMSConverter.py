@@ -32,14 +32,7 @@
 #  Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
 
-import sys
-
-if sys.version_info > (3, 8):
-    from importlib.resources import files
-elif sys.version_info >= (3, 7) and sys.version_info <= (3, 8):
-    import importlib_resources
-else:
-    import pkg_resources
+from pkgutil import get_data
 
 from .enums import Standard, ObjectType, DataType
 from .GXStandardObisCodeCollection import GXStandardObisCodeCollection
@@ -228,19 +221,12 @@ class GXDLMSConverter:
 
     @classmethod
     def __load(cls, name):
-        if sys.version_info > (3, 8):
-            str_ = (files(__package__) / name).read_text("utf-8")
-        elif sys.version_info >= (3, 7) and sys.version_info <= (3, 8):
-            str_ = (
-                importlib_resources.files(__package__).joinpath(name).read_text("utf-8")
-            )
-        else:
-            str_ = pkg_resources.resource_string(__name__, name).decode("utf-8")
-        return str_
+        return get_data(__package__, name).decode("utf-8")
 
     @classmethod
     def __getObjects(cls, standard):
         codes = []
+        str_ = ""
         if standard == Standard.ITALY:
             str_ = cls.__load("Italy.txt")
         elif standard == Standard.INDIA:

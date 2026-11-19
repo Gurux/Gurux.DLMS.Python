@@ -41,6 +41,7 @@ from .enums import CreditConfiguration, CreditType, CreditStatus
 from ..GXBitString import GXBitString
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
     """
@@ -68,17 +69,19 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         self.period = None
 
     def getValues(self):
-        return [self.logicalName,
-                self.currentCreditAmount,
-                self.type_,
-                self.priority,
-                self.warningThreshold,
-                self.limit,
-                self.creditConfiguration,
-                self.status,
-                self.presetCreditAmount,
-                self.creditAvailableThreshold,
-                self.period]
+        return [
+            self.logicalName,
+            self.currentCreditAmount,
+            self.type_,
+            self.priority,
+            self.warningThreshold,
+            self.limit,
+            self.creditConfiguration,
+            self.status,
+            self.presetCreditAmount,
+            self.creditAvailableThreshold,
+            self.period,
+        ]
 
     def updateAmount(self, client, value):
         """Adjusts the value of the current credit amount attribute."""
@@ -146,22 +149,26 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         return 3
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Current credit amount"),\
-            _GXLocalizer.gettext("Type"),\
-            _GXLocalizer.gettext("Priority"),\
-            _GXLocalizer.gettext("Warning threshold"),\
-            _GXLocalizer.gettext("Limit"),\
-            _GXLocalizer.gettext("Credit configuration"),\
-            _GXLocalizer.gettext("Status"),\
-            _GXLocalizer.gettext("Preset credit amount"),\
-            _GXLocalizer.gettext("Credit available threshold"),\
-            _GXLocalizer.gettext("Period"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Current credit amount"),
+            _GXLocalizer.gettext("Type"),
+            _GXLocalizer.gettext("Priority"),
+            _GXLocalizer.gettext("Warning threshold"),
+            _GXLocalizer.gettext("Limit"),
+            _GXLocalizer.gettext("Credit configuration"),
+            _GXLocalizer.gettext("Status"),
+            _GXLocalizer.gettext("Preset credit amount"),
+            _GXLocalizer.gettext("Credit available threshold"),
+            _GXLocalizer.gettext("Period"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Update amount"),\
-            _GXLocalizer.gettext("Set amount to value"),\
-            _GXLocalizer.gettext("Invoke credit"))
+        return (
+            _GXLocalizer.gettext("Update amount"),
+            _GXLocalizer.gettext("Set amount to value"),
+            _GXLocalizer.gettext("Invoke credit"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -189,11 +196,12 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -218,6 +226,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
             ret = self.period
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
+            ret = None
         return ret
 
     #
@@ -263,10 +272,14 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         self.priority = reader.readElementContentAsInt("Priority")
         self.warningThreshold = reader.readElementContentAsInt("WarningThreshold")
         self.limit = reader.readElementContentAsInt("Limit")
-        self.creditConfiguration = CreditConfiguration(reader.readElementContentAsInt("CreditConfiguration"))
+        self.creditConfiguration = CreditConfiguration(
+            reader.readElementContentAsInt("CreditConfiguration")
+        )
         self.status = reader.readElementContentAsInt("Status")
         self.presetCreditAmount = reader.readElementContentAsInt("PresetCreditAmount")
-        self.creditAvailableThreshold = reader.readElementContentAsInt("CreditAvailableThreshold")
+        self.creditAvailableThreshold = reader.readElementContentAsInt(
+            "CreditAvailableThreshold"
+        )
         self.period = reader.readElementContentAsDateTime("Period")
 
     def save(self, writer):
@@ -278,5 +291,7 @@ class GXDLMSCredit(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("CreditConfiguration", int(self.creditConfiguration))
         writer.writeElementString("Status", int(self.status))
         writer.writeElementString("PresetCreditAmount", self.presetCreditAmount)
-        writer.writeElementString("CreditAvailableThreshold", self.creditAvailableThreshold)
+        writer.writeElementString(
+            "CreditAvailableThreshold", self.creditAvailableThreshold
+        )
         writer.writeElementString("Period", self.period)

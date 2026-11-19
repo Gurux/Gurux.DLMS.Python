@@ -175,6 +175,7 @@ class GXDLMSAutoAnswer(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setData(settings, buff, DataType.UINT8, self.numberOfRingsOutListeningWindow)
             ret = buff.array()
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

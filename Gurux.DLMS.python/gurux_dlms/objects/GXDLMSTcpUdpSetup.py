@@ -148,6 +148,7 @@ class GXDLMSTcpUdpSetup(GXDLMSObject, IGXDLMSBase):
             ret = self.inactivityTimeout
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
+            ret = None
         return ret
 
     #

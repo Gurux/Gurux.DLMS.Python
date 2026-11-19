@@ -664,13 +664,13 @@ class GXDLMS:
 
     @classmethod
     def __decompress(cls, settings, tmp):
-        if settings._onCompression:
+        if settings._onCompression: # pylint: disable=protected-access
             args = GXCompressionArgs(
                 CompressionOperation.DECOMPRESS,
                 settings.compressionOptions,
                 tmp,
             )
-            settings._onCompression(args)
+            settings._onCompression(args) # pylint: disable=protected-access
             if args.operation != CompressionOperation.DECOMPRESS:
                 raise Exception("Decompression was not successful.")
             return args.outputData
@@ -678,13 +678,13 @@ class GXDLMS:
 
     @classmethod
     def __compress(cls, settings, tmp):
-        if settings._onCompression:
+        if settings._onCompression: # pylint: disable=protected-access
             args = GXCompressionArgs(
                 CompressionOperation.COMPRESS,
                 settings.compressionOptions,
                 tmp,
             )
-            settings._onCompression(args)
+            settings._onCompression(args) # pylint: disable=protected-access
             if args.operation != CompressionOperation.COMPRESS:
                 # Id data is not compressed.
                 return None

@@ -295,14 +295,6 @@ class GXDLMSChippering:
             print("Encryption is applied.")
         if sc & 0x10 != 0:
             print("Authentication is applied.")
-        if value != 0 and p.vml != None and kp.Key == None:
-            return p.cipheredContent
-            if cmd == Command.GENERAL_SIGNING and p.security != Security.NONE:
-                if not (p.xml != None and (kp.value == None or kp.Key == None)):
-                    if kp.value != None:
-                        print("Private signing key: " + kp.value.ToHex())
-                    if kp.key != None:
-                        print("Public signing key: " + kp.key.ToHex())
         invocationCounter = data.getUInt32()
         p.invocationCounter = invocationCounter
         if not p.authenticationKey or not p.blockCipherKey:

@@ -31,8 +31,8 @@
 #  This code is licensed under the GNU General Public License v2.
 #  Full text may be retrieved at http:#www.gnu.org/licenses/gpl-2.0.txt
 # ---------------------------------------------------------------------------
-import sys
 import re
+import urllib.request
 from .enums.CertificateVersion import CertificateVersion
 from .enums.HashAlgorithm import HashAlgorithm
 from .enums.PkcsObjectIdentifier import PkcsObjectIdentifier
@@ -60,8 +60,6 @@ from .enums.ExtendedKeyUsage import ExtendedKeyUsage
 from .GXx509Certificate import GXx509Certificate
 from ..GXArray import GXArray
 
-if sys.version_info >= (3, 0):
-    import urllib.request
 
 
 # pylint: disable=too-many-instance-attributes

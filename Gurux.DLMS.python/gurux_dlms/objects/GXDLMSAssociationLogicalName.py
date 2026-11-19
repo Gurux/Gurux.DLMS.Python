@@ -52,6 +52,7 @@ from ..enums.MethodAccessMode3 import MethodAccessMode3
 from ..GXBitString import GXBitString
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes,too-many-public-methods
 class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
     """
@@ -368,22 +369,26 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
         return data
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Object list"),\
-            _GXLocalizer.gettext("Associated partners id"),\
-            _GXLocalizer.gettext("Application context name"),\
-            _GXLocalizer.gettext("x dlms context info"),\
-            _GXLocalizer.gettext("Authentication mechanism name"),\
-            _GXLocalizer.gettext("Secret"),\
-            _GXLocalizer.gettext("Association status"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Object list"),
+            _GXLocalizer.gettext("Associated partners id"),
+            _GXLocalizer.gettext("Application context name"),
+            _GXLocalizer.gettext("x dlms context info"),
+            _GXLocalizer.gettext("Authentication mechanism name"),
+            _GXLocalizer.gettext("Secret"),
+            _GXLocalizer.gettext("Association status"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Reply to hls authentication"),\
-            _GXLocalizer.gettext("Change hls secret"),\
-            _GXLocalizer.gettext("Add object"),\
-            _GXLocalizer.gettext("Remove object"),\
-            _GXLocalizer.gettext("Add user"),\
-            _GXLocalizer.gettext("Remove user"))
+        return (
+            _GXLocalizer.gettext("Reply to hls authentication"),
+            _GXLocalizer.gettext("Change hls secret"),
+            _GXLocalizer.gettext("Add object"),
+            _GXLocalizer.gettext("Remove object"),
+            _GXLocalizer.gettext("Add user"),
+            _GXLocalizer.gettext("Remove user"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -404,11 +409,10 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
             ret = DataType.ENUM
         elif self.version > 0 and index == 9:
             ret = DataType.OCTET_STRING
-        elif self.version > 1:
-            if index == 10:
-                ret = DataType.ARRAY
-            if index == 11:
-                ret = DataType.STRUCTURE
+        elif self.version > 1 and index == 10:
+            ret = DataType.ARRAY
+        elif self.version > 1 and index == 11:
+            ret = DataType.STRUCTURE
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
@@ -550,6 +554,7 @@ class GXDLMSAssociationLogicalName(GXDLMSObject, IGXDLMSBase):
                 _GXCommon.setData(settings, data, DataType.STRING, self.currentUser[1])
             ret = data
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

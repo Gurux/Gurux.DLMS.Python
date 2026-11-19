@@ -329,6 +329,8 @@
     <Compile Include="gurux_dlms\objects\GXDLMSClock.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSCredit.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSData.py" />
+    <Compile Include="gurux_dlms\objects\GXDLMSStatusMapping.py" />
+    <Compile Include="gurux_dlms\objects\GXMappingTable.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSDayProfile.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSDayProfileAction.py" />
     <Compile Include="gurux_dlms\objects\GXDLMSDemandRegister.py" />

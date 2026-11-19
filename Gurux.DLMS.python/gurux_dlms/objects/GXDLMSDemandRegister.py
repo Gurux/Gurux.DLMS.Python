@@ -220,6 +220,7 @@ class GXDLMSDemandRegister(GXDLMSObject, IGXDLMSBase):
             ret = self.numberOfPeriods
         else:
             e.error = ErrorCode.READ_WRITE_DENIED
+            ret = None
         return ret
 
     #

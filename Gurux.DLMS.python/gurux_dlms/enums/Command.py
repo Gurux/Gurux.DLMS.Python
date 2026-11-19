@@ -33,6 +33,7 @@
 # ---------------------------------------------------------------------------
 from ..GXIntEnum import GXIntEnum
 
+
 class Command(GXIntEnum):
     """DLMS commands."""
 
@@ -262,6 +263,11 @@ class Command(GXIntEnum):
     GENERAL_CIPHERING = 0xDD
 
     #
+    # General signing
+    #
+    GENERAL_SIGNING = 0xDF
+
+    #
     # Information Report request.
     #
     INFORMATION_REPORT = 0x18
@@ -376,7 +382,7 @@ class Command(GXIntEnum):
     # PLC ping response.
     PING_RESPONSE = 0x1A
 
-    #PLC repeat call request.
+    # PLC repeat call request.
     REPEAT_CALL_REQUEST = 0x1F
 
     @classmethod

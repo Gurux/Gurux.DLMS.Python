@@ -38,20 +38,26 @@ from ..enums import ObjectType, DataType
 from ..internal._GXCommon import _GXCommon
 from ..GXByteBuffer import GXByteBuffer
 from ..GXDateTime import GXDateTime
-from .enums import PaymentMode, AccountStatus, AccountCreditStatus, CreditCollectionConfiguration
+from .enums import (
+    PaymentMode,
+    AccountStatus,
+    AccountCreditStatus,
+    CreditCollectionConfiguration,
+)
 from .GXCurrency import GXCurrency
 from .GXTokenGatewayConfiguration import GXTokenGatewayConfiguration
 from .GXCreditChargeConfiguration import GXCreditChargeConfiguration
 from ..GXBitString import GXBitString
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
-
     """
     Online help:
     http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSAccount
     """
+
     def __init__(self, ln="0.0.19.0.0.255", sn=0):
         """
         Constructor.
@@ -81,25 +87,27 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         self.maxProvisionPeriod = 0
 
     def getValues(self):
-        return [self.logicalName,
-                [self.paymentMode, self.accountStatus],
-                self.currentCreditInUse,
-                self.currentCreditStatus,
-                self.availableCredit,
-                self.amountToClear,
-                self.clearanceThreshold,
-                self.aggregatedDebt,
-                self.creditReferences,
-                self.chargeReferences,
-                self.creditChargeConfigurations,
-                self.tokenGatewayConfigurations,
-                self.accountActivationTime,
-                self.accountClosureTime,
-                self.currency,
-                self.lowCreditThreshold,
-                self.nextCreditAvailableThreshold,
-                self.maxProvision,
-                self.maxProvisionPeriod]
+        return [
+            self.logicalName,
+            [self.paymentMode, self.accountStatus],
+            self.currentCreditInUse,
+            self.currentCreditStatus,
+            self.availableCredit,
+            self.amountToClear,
+            self.clearanceThreshold,
+            self.aggregatedDebt,
+            self.creditReferences,
+            self.chargeReferences,
+            self.creditChargeConfigurations,
+            self.tokenGatewayConfigurations,
+            self.accountActivationTime,
+            self.accountClosureTime,
+            self.currency,
+            self.lowCreditThreshold,
+            self.nextCreditAvailableThreshold,
+            self.maxProvision,
+            self.maxProvisionPeriod,
+        ]
 
     def activate(self, client):
         """Activate account."""
@@ -195,33 +203,37 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
     # Returns names of attribute indexes.
     #
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical Name"),
-                _GXLocalizer.gettext("Payment mode"),
-                _GXLocalizer.gettext("Current credit in use"),
-                _GXLocalizer.gettext("Current credit status"),
-                _GXLocalizer.gettext("Available credit"),
-                _GXLocalizer.gettext("Amount to clear"),
-                _GXLocalizer.gettext("Clearance threshold"),
-                _GXLocalizer.gettext("Aggregated debt"),
-                _GXLocalizer.gettext("Credit references"),
-                _GXLocalizer.gettext("Charge references"),
-                _GXLocalizer.gettext("Credit charge configurations"),
-                _GXLocalizer.gettext("Tokengateway configurations"),
-                _GXLocalizer.gettext("Account activation time"),
-                _GXLocalizer.gettext("Account closure time"),
-                _GXLocalizer.gettext("Currency"),
-                _GXLocalizer.gettext("Low credit threshold"),
-                _GXLocalizer.gettext("Next credit available threshold"),
-                _GXLocalizer.gettext("Max provision"),
-                _GXLocalizer.gettext("Max provisionPeriod"))
+        return (
+            _GXLocalizer.gettext("Logical Name"),
+            _GXLocalizer.gettext("Payment mode"),
+            _GXLocalizer.gettext("Current credit in use"),
+            _GXLocalizer.gettext("Current credit status"),
+            _GXLocalizer.gettext("Available credit"),
+            _GXLocalizer.gettext("Amount to clear"),
+            _GXLocalizer.gettext("Clearance threshold"),
+            _GXLocalizer.gettext("Aggregated debt"),
+            _GXLocalizer.gettext("Credit references"),
+            _GXLocalizer.gettext("Charge references"),
+            _GXLocalizer.gettext("Credit charge configurations"),
+            _GXLocalizer.gettext("Tokengateway configurations"),
+            _GXLocalizer.gettext("Account activation time"),
+            _GXLocalizer.gettext("Account closure time"),
+            _GXLocalizer.gettext("Currency"),
+            _GXLocalizer.gettext("Low credit threshold"),
+            _GXLocalizer.gettext("Next credit available threshold"),
+            _GXLocalizer.gettext("Max provision"),
+            _GXLocalizer.gettext("Max provisionPeriod"),
+        )
 
     #
     # Returns method names.
     #
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Activate account"),
-                _GXLocalizer.gettext("Close account"),
-                _GXLocalizer.gettext("Reset account"))
+        return (
+            _GXLocalizer.gettext("Activate account"),
+            _GXLocalizer.gettext("Close account"),
+            _GXLocalizer.gettext("Reset account"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -270,7 +282,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -334,7 +346,12 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                     bb.setUInt8(DataType.OCTET_STRING)
                     bb.setUInt8(6)
                     bb.set(_GXCommon.logicalNameToBytes(it.chargeReference))
-                    _GXCommon.setData(settings, bb, DataType.BITSTRING, GXBitString(it.collectionConfiguration, 3))
+                    _GXCommon.setData(
+                        settings,
+                        bb,
+                        DataType.BITSTRING,
+                        GXBitString(it.collectionConfiguration, 3),
+                    )
             ret = bb.array()
         elif e.index == 12:
             bb = GXByteBuffer()
@@ -373,6 +390,7 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         elif e.index == 19:
             ret = self.maxProvisionPeriod
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -408,17 +426,19 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 for it in e.value:
                     self.chargeReferences.append(_GXCommon.toLogicalName(it))
         elif e.index == 11:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             self.creditChargeConfigurations = []
             if e.value:
                 for it in e.value:
                     item = GXCreditChargeConfiguration()
                     item.creditReference = _GXCommon.toLogicalName(it[0])
                     item.chargeReference = _GXCommon.toLogicalName(it[1])
-                    item.collectionConfiguration = CreditCollectionConfiguration(it[2].toInteger())
+                    item.collectionConfiguration = CreditCollectionConfiguration(
+                        it[2].toInteger()
+                    )
                     self.creditChargeConfigurations.append(item)
         elif e.index == 12:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             self.tokenGatewayConfigurations = []
             if e.value:
                 for it in e.value:
@@ -478,7 +498,9 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 it = GXCreditChargeConfiguration()
                 it.creditReference = reader.readElementContentAsString("Credit")
                 it.chargeReference = reader.readElementContentAsString("Charge")
-                it.collectionConfiguration = CreditCollectionConfiguration(reader.readElementContentAsInt("Configuration"))
+                it.collectionConfiguration = CreditCollectionConfiguration(
+                    reader.readElementContentAsInt("Configuration")
+                )
                 list_.append(it)
             reader.readEndElement("CreditChargeConfigurations")
 
@@ -497,7 +519,9 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         self.paymentMode = reader.readElementContentAsInt("PaymentMode")
         self.accountStatus = reader.readElementContentAsInt("AccountStatus")
         self.currentCreditInUse = reader.readElementContentAsInt("CurrentCreditInUse")
-        self.currentCreditStatus = AccountCreditStatus(reader.readElementContentAsInt("CurrentCreditStatus"))
+        self.currentCreditStatus = AccountCreditStatus(
+            reader.readElementContentAsInt("CurrentCreditStatus")
+        )
         self.availableCredit = reader.readElementContentAsInt("AvailableCredit")
         self.amountToClear = reader.readElementContentAsInt("AmountToClear")
         self.clearanceThreshold = reader.readElementContentAsInt("ClearanceThreshold")
@@ -506,13 +530,19 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         self.loadReferences(reader, "ChargeReferences", self.chargeReferences)
         self.loadCreditChargeConfigurations(reader, self.creditChargeConfigurations)
         self.loadTokenGatewayConfigurations(reader, self.tokenGatewayConfigurations)
-        self.accountActivationTime = reader.readElementContentAsDateTime("AccountActivationTime")
-        self.accountClosureTime = reader.readElementContentAsDateTime("AccountClosureTime")
+        self.accountActivationTime = reader.readElementContentAsDateTime(
+            "AccountActivationTime"
+        )
+        self.accountClosureTime = reader.readElementContentAsDateTime(
+            "AccountClosureTime"
+        )
         self.currency.name = reader.readElementContentAsString("CurrencyName")
         self.currency.scale = reader.readElementContentAsInt("CurrencyScale")
         self.currency.unit = reader.readElementContentAsInt("CurrencyUnit")
         self.lowCreditThreshold = reader.readElementContentAsInt("LowCreditThreshold")
-        self.nextCreditAvailableThreshold = reader.readElementContentAsInt("NextCreditAvailableThreshold")
+        self.nextCreditAvailableThreshold = reader.readElementContentAsInt(
+            "NextCreditAvailableThreshold"
+        )
         self.maxProvision = reader.readElementContentAsInt("MaxProvision")
         self.maxProvisionPeriod = reader.readElementContentAsInt("MaxProvisionPeriod")
 
@@ -534,7 +564,9 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
                 writer.writeStartElement("Item")
                 writer.writeElementString("Credit", it.creditReference)
                 writer.writeElementString("Charge", it.chargeReference)
-                writer.writeElementString("Configuration", int(it.collectionConfiguration))
+                writer.writeElementString(
+                    "Configuration", int(it.collectionConfiguration)
+                )
                 writer.writeEndElement()
             writer.writeEndElement()
 
@@ -568,6 +600,8 @@ class GXDLMSAccount(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("CurrencyScale", self.currency.scale)
         writer.writeElementString("CurrencyUnit", int(self.currency.unit))
         writer.writeElementString("LowCreditThreshold", self.lowCreditThreshold)
-        writer.writeElementString("NextCreditAvailableThreshold", self.nextCreditAvailableThreshold)
+        writer.writeElementString(
+            "NextCreditAvailableThreshold", self.nextCreditAvailableThreshold
+        )
         writer.writeElementString("MaxProvision", self.maxProvision)
         writer.writeElementString("MaxProvisionPeriod", self.maxProvisionPeriod)

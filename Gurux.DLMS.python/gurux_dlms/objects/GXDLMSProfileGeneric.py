@@ -417,6 +417,7 @@ class GXDLMSProfileGeneric(GXDLMSObject, IGXDLMSBase):
         elif e.index == 8:
             ret = self.profileEntries
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

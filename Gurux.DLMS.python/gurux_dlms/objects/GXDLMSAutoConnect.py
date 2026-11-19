@@ -190,6 +190,7 @@ class GXDLMSAutoConnect(GXDLMSObject, IGXDLMSBase):
                     _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.getBytes(it))
             ret = data.array()
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

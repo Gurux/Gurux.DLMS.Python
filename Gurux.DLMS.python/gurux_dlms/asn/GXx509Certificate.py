@@ -880,11 +880,12 @@ class GXx509Certificate:
         return GXAsn1Converter.toByteArray(self.getDataList())
 
     def __str__(self):
+        bb = ""
         if self.extendedKeyUsage == ExtendedKeyUsage.SERVER_AUTH:
             bb = "Server certificate" + os.linesep
-        elif ExtendedKeyUsage == ExtendedKeyUsage.CLIENT_AUTH:
+        elif self.extendedKeyUsage == ExtendedKeyUsage.CLIENT_AUTH:
             bb = "Client certificate" + os.linesep
-        elif ExtendedKeyUsage == (
+        elif self.extendedKeyUsage == (
             ExtendedKeyUsage.SERVER_AUTH | ExtendedKeyUsage.CLIENT_AUTH
         ):
             bb = "TLS certificate" + os.linesep

@@ -158,3 +158,5 @@ from .GXDLMSCommunicationPortProtection import GXDLMSCommunicationPortProtection
 from .GXDLMSTargetObject import GXDLMSTargetObject
 from .GXDLMSArrayManagerItem import GXDLMSArrayManagerItem
 from .GXDLMSArrayManager import GXDLMSArrayManager
+from .GXMappingTable import GXMappingTable
+from .GXDLMSStatusMapping import GXDLMSStatusMapping

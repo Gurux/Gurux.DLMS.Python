@@ -40,6 +40,7 @@ from ..enums import ObjectType, DataType
 from .GXDLMSQualityOfService import GXDLMSQualityOfService
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -61,11 +62,13 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
         self.requestedQualityOfService = GXDLMSQualityOfService()
 
     def getValues(self):
-        return [self.logicalName,
-                self.apn,
-                self.pinCode,
-                self.defaultQualityOfService,
-                self.requestedQualityOfService]
+        return [
+            self.logicalName,
+            self.apn,
+            self.pinCode,
+            self.defaultQualityOfService,
+            self.requestedQualityOfService,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -101,10 +104,14 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("APN"),\
-            _GXLocalizer.gettext("PIN code"),\
-            _GXLocalizer.gettext("Default quality of service and requested quality of service"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("APN"),
+            _GXLocalizer.gettext("PIN code"),
+            _GXLocalizer.gettext(
+                "Default quality of service and requested quality of service"
+            ),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -123,7 +130,7 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -139,20 +146,59 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
             data.setUInt8(2)
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(5)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.precedence)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.delay)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.reliability)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.peakThroughput)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.defaultQualityOfService.meanThroughput)
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.defaultQualityOfService.precedence
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.defaultQualityOfService.delay
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.defaultQualityOfService.reliability
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.defaultQualityOfService.peakThroughput,
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.defaultQualityOfService.meanThroughput,
+            )
             data.setUInt8(DataType.STRUCTURE)
             data.setUInt8(5)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.precedence)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.delay)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.reliability)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.peakThroughput)
-            _GXCommon.setData(settings, data, DataType.UINT8, self.requestedQualityOfService.meanThroughput)
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.requestedQualityOfService.precedence,
+            )
+            _GXCommon.setData(
+                settings, data, DataType.UINT8, self.requestedQualityOfService.delay
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.requestedQualityOfService.reliability,
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.requestedQualityOfService.peakThroughput,
+            )
+            _GXCommon.setData(
+                settings,
+                data,
+                DataType.UINT8,
+                self.requestedQualityOfService.meanThroughput,
+            )
             ret = data.array()
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -189,18 +235,36 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
         self.apn = reader.readElementContentAsString("APN")
         self.pinCode = reader.readElementContentAsInt("PINCode")
         if reader.isStartElement("DefaultQualityOfService", True):
-            self.defaultQualityOfService.precedence = reader.readElementContentAsInt("Precedence")
+            self.defaultQualityOfService.precedence = reader.readElementContentAsInt(
+                "Precedence"
+            )
             self.defaultQualityOfService.delay = reader.readElementContentAsInt("Delay")
-            self.defaultQualityOfService.reliability = reader.readElementContentAsInt("Reliability")
-            self.defaultQualityOfService.peakThroughput = reader.readElementContentAsInt("PeakThroughput")
-            self.defaultQualityOfService.meanThroughput = reader.readElementContentAsInt("MeanThroughput")
+            self.defaultQualityOfService.reliability = reader.readElementContentAsInt(
+                "Reliability"
+            )
+            self.defaultQualityOfService.peakThroughput = (
+                reader.readElementContentAsInt("PeakThroughput")
+            )
+            self.defaultQualityOfService.meanThroughput = (
+                reader.readElementContentAsInt("MeanThroughput")
+            )
             reader.readEndElement("DefaultQualityOfService")
         if reader.isStartElement("RequestedQualityOfService", True):
-            self.requestedQualityOfService.precedence = reader.readElementContentAsInt("Precedence")
-            self.requestedQualityOfService.delay = reader.readElementContentAsInt("Delay")
-            self.requestedQualityOfService.reliability = reader.readElementContentAsInt("Reliability")
-            self.requestedQualityOfService.peakThroughput = reader.readElementContentAsInt("PeakThroughput")
-            self.requestedQualityOfService.meanThroughput = reader.readElementContentAsInt("MeanThroughput")
+            self.requestedQualityOfService.precedence = reader.readElementContentAsInt(
+                "Precedence"
+            )
+            self.requestedQualityOfService.delay = reader.readElementContentAsInt(
+                "Delay"
+            )
+            self.requestedQualityOfService.reliability = reader.readElementContentAsInt(
+                "Reliability"
+            )
+            self.requestedQualityOfService.peakThroughput = (
+                reader.readElementContentAsInt("PeakThroughput")
+            )
+            self.requestedQualityOfService.meanThroughput = (
+                reader.readElementContentAsInt("MeanThroughput")
+            )
             reader.readEndElement("DefaultQualityOfService")
 
     def save(self, writer):
@@ -208,17 +272,33 @@ class GXDLMSGprsSetup(GXDLMSObject, IGXDLMSBase):
         writer.writeElementString("PINCode", self.pinCode)
         if self.defaultQualityOfService:
             writer.writeStartElement("DefaultQualityOfService")
-            writer.writeElementString("Precedence", self.defaultQualityOfService.precedence)
+            writer.writeElementString(
+                "Precedence", self.defaultQualityOfService.precedence
+            )
             writer.writeElementString("Delay", self.defaultQualityOfService.delay)
-            writer.writeElementString("Reliability", self.defaultQualityOfService.reliability)
-            writer.writeElementString("PeakThroughput", self.defaultQualityOfService.peakThroughput)
-            writer.writeElementString("MeanThroughput", self.defaultQualityOfService.meanThroughput)
+            writer.writeElementString(
+                "Reliability", self.defaultQualityOfService.reliability
+            )
+            writer.writeElementString(
+                "PeakThroughput", self.defaultQualityOfService.peakThroughput
+            )
+            writer.writeElementString(
+                "MeanThroughput", self.defaultQualityOfService.meanThroughput
+            )
             writer.writeEndElement()
         if self.requestedQualityOfService:
             writer.writeStartElement("RequestedQualityOfService")
-            writer.writeElementString("Precedence", self.requestedQualityOfService.precedence)
+            writer.writeElementString(
+                "Precedence", self.requestedQualityOfService.precedence
+            )
             writer.writeElementString("Delay", self.requestedQualityOfService.delay)
-            writer.writeElementString("Reliability", self.requestedQualityOfService.reliability)
-            writer.writeElementString("PeakThroughput", self.requestedQualityOfService.peakThroughput)
-            writer.writeElementString("MeanThroughput", self.requestedQualityOfService.meanThroughput)
+            writer.writeElementString(
+                "Reliability", self.requestedQualityOfService.reliability
+            )
+            writer.writeElementString(
+                "PeakThroughput", self.requestedQualityOfService.peakThroughput
+            )
+            writer.writeElementString(
+                "MeanThroughput", self.requestedQualityOfService.meanThroughput
+            )
             writer.writeEndElement()

@@ -503,6 +503,7 @@ class GXDLMSPushSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 13:
             ret = self.lastConfirmationDateTime
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

@@ -40,6 +40,7 @@ from ..enums import ObjectType, DataType
 from .enums import MBusEncryptionKeyStatus
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
     """
@@ -54,7 +55,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         ln : Logical Name of the object.
         sn : Short Name of the object.
         """
-        #pylint: disable=super-with-arguments
+        # pylint: disable=super-with-arguments
         super(GXDLMSMBusClient, self).__init__(ObjectType.MBUS_CLIENT, ln, sn)
         self.captureDefinition = []
         self.mBusPortReference = None
@@ -133,19 +134,8 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
 
     def getValues(self):
         if self.version == 0:
-            return [self.logicalName,
-                    self.mBusPortReference,
-                    self.captureDefinition,
-                    self.capturePeriod,
-                    self.primaryAddress,
-                    self.identificationNumber,
-                    self.manufacturerID,
-                    self.dataHeaderVersion,
-                    self.deviceType,
-                    self.accessNumber,
-                    self.status,
-                    self.alarm]
-        return [self.logicalName,
+            return [
+                self.logicalName,
                 self.mBusPortReference,
                 self.captureDefinition,
                 self.capturePeriod,
@@ -157,8 +147,23 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
                 self.accessNumber,
                 self.status,
                 self.alarm,
-                self.configuration,
-                self.encryptionKeyStatus]
+            ]
+        return [
+            self.logicalName,
+            self.mBusPortReference,
+            self.captureDefinition,
+            self.capturePeriod,
+            self.primaryAddress,
+            self.identificationNumber,
+            self.manufacturerID,
+            self.dataHeaderVersion,
+            self.deviceType,
+            self.accessNumber,
+            self.status,
+            self.alarm,
+            self.configuration,
+            self.encryptionKeyStatus,
+        ]
 
     # Returns collection of attributes to read.  If attribute is static
     #      and
@@ -225,28 +230,32 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         return 8
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("MBus port reference"),\
-            _GXLocalizer.gettext("Capture definition"),\
-            _GXLocalizer.gettext("Capture period"),\
-            _GXLocalizer.gettext("Primary address"),\
-            _GXLocalizer.gettext("Identification number"),\
-            _GXLocalizer.gettext("Manufacturer id"),\
-            _GXLocalizer.gettext("Version"),\
-            _GXLocalizer.gettext("Device type"),\
-            _GXLocalizer.gettext("Access number"),\
-            _GXLocalizer.gettext("Status"),\
-            _GXLocalizer.gettext("Alarm"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("MBus port reference"),
+            _GXLocalizer.gettext("Capture definition"),
+            _GXLocalizer.gettext("Capture period"),
+            _GXLocalizer.gettext("Primary address"),
+            _GXLocalizer.gettext("Identification number"),
+            _GXLocalizer.gettext("Manufacturer id"),
+            _GXLocalizer.gettext("Version"),
+            _GXLocalizer.gettext("Device type"),
+            _GXLocalizer.gettext("Access number"),
+            _GXLocalizer.gettext("Status"),
+            _GXLocalizer.gettext("Alarm"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Slave install"),\
-            _GXLocalizer.gettext("Slave deinstall"),\
-            _GXLocalizer.gettext("Capture"),\
-            _GXLocalizer.gettext("Reset alarm"),\
-            _GXLocalizer.gettext("Synchronize clock"),\
-            _GXLocalizer.gettext("Data send"),\
-            _GXLocalizer.gettext("Set encryption key"),\
-            _GXLocalizer.gettext("Transfer key"))
+        return (
+            _GXLocalizer.gettext("Slave install"),
+            _GXLocalizer.gettext("Slave deinstall"),
+            _GXLocalizer.gettext("Capture"),
+            _GXLocalizer.gettext("Reset alarm"),
+            _GXLocalizer.gettext("Synchronize clock"),
+            _GXLocalizer.gettext("Data send"),
+            _GXLocalizer.gettext("Set encryption key"),
+            _GXLocalizer.gettext("Transfer key"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -280,11 +289,12 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
     def getValue(self, settings, e):
-        #pylint: disable=bad-option-value,redefined-variable-type
+        # pylint: disable=bad-option-value,redefined-variable-type
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
@@ -325,6 +335,7 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         elif e.index == 14:
             ret = self.encryptionKeyStatus
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -340,7 +351,16 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             self.captureDefinition = []
             if e.value:
                 for it in e.value:
-                    self.captureDefinition.append((_GXCommon.changeType(settings, it[0], DataType.OCTET_STRING), _GXCommon.changeType(settings, it[1], DataType.OCTET_STRING)))
+                    self.captureDefinition.append(
+                        (
+                            _GXCommon.changeType(
+                                settings, it[0], DataType.OCTET_STRING
+                            ),
+                            _GXCommon.changeType(
+                                settings, it[1], DataType.OCTET_STRING
+                            ),
+                        )
+                    )
         elif e.index == 4:
             self.capturePeriod = e.value
         elif e.index == 5:
@@ -377,7 +397,9 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
             reader.readEndElement("CaptureDefinition")
         self.capturePeriod = reader.readElementContentAsInt("CapturePeriod")
         self.primaryAddress = reader.readElementContentAsInt("PrimaryAddress")
-        self.identificationNumber = reader.readElementContentAsInt("IdentificationNumber")
+        self.identificationNumber = reader.readElementContentAsInt(
+            "IdentificationNumber"
+        )
         self.manufacturerID = reader.readElementContentAsInt("ManufacturerID")
         self.dataHeaderVersion = reader.readElementContentAsInt("DataHeaderVersion")
         self.deviceType = reader.readElementContentAsInt("DeviceType")
@@ -386,7 +408,9 @@ class GXDLMSMBusClient(GXDLMSObject, IGXDLMSBase):
         self.alarm = reader.readElementContentAsInt("Alarm")
         if self.version != 0:
             self.configuration = reader.readElementContentAsInt("Configuration")
-            self.encryptionKeyStatus = MBusEncryptionKeyStatus(reader.readElementContentAsInt("EncryptionKeyStatus"))
+            self.encryptionKeyStatus = MBusEncryptionKeyStatus(
+                reader.readElementContentAsInt("EncryptionKeyStatus")
+            )
 
     def save(self, writer):
         writer.writeElementString("MBusPortReference", self.mBusPortReference)

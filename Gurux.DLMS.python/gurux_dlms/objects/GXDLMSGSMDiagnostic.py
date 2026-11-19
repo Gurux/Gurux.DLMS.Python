@@ -42,6 +42,7 @@ from .GXDLMSGSMCellInfo import GXDLMSGSMCellInfo
 from .GXAdjacentCell import GXAdjacentCell
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
     """
@@ -99,14 +100,16 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         return attributes
 
     def getValues(self):
-        return [self.logicalName,
-                self.operator,
-                self.status,
-                self.circuitSwitchStatus,
-                self.packetSwitchStatus,
-                self.cellInfo,
-                self.adjacentCells,
-                self.captureTime]
+        return [
+            self.logicalName,
+            self.operator,
+            self.status,
+            self.circuitSwitchStatus,
+            self.packetSwitchStatus,
+            self.cellInfo,
+            self.adjacentCells,
+            self.captureTime,
+        ]
 
     #
     # Returns amount of attributes.
@@ -121,14 +124,16 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         return 0
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Operator"),\
-            _GXLocalizer.gettext("Status"),\
-            _GXLocalizer.gettext("Circuit switch status"),\
-            _GXLocalizer.gettext("Packet switch status"),\
-            _GXLocalizer.gettext("Cell info"),\
-            _GXLocalizer.gettext("Adjacent cells"),\
-            _GXLocalizer.gettext("Capture time"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Operator"),
+            _GXLocalizer.gettext("Status"),
+            _GXLocalizer.gettext("Circuit switch status"),
+            _GXLocalizer.gettext("Packet switch status"),
+            _GXLocalizer.gettext("Cell info"),
+            _GXLocalizer.gettext("Adjacent cells"),
+            _GXLocalizer.gettext("Capture time"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -150,6 +155,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         else:
             raise ValueError("getDataType failed. Invalid attribute index.")
         return ret
+
     #
     # Returns value of given attribute.
     #
@@ -158,7 +164,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             if self.operator is None:
                 ret = None
             else:
@@ -185,9 +191,15 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
             _GXCommon.setData(settings, bb, DataType.UINT8, self.cellInfo.signalQuality)
             _GXCommon.setData(settings, bb, DataType.UINT8, self.cellInfo.ber)
             if self.version > 0:
-                _GXCommon.setData(settings, bb, DataType.UINT16, self.cellInfo.mobileCountryCode)
-                _GXCommon.setData(settings, bb, DataType.UINT16, self.cellInfo.mobileNetworkCode)
-                _GXCommon.setData(settings, bb, DataType.UINT32, self.cellInfo.channelNumber)
+                _GXCommon.setData(
+                    settings, bb, DataType.UINT16, self.cellInfo.mobileCountryCode
+                )
+                _GXCommon.setData(
+                    settings, bb, DataType.UINT16, self.cellInfo.mobileNetworkCode
+                )
+                _GXCommon.setData(
+                    settings, bb, DataType.UINT32, self.cellInfo.channelNumber
+                )
             ret = bb
         elif e.index == 7:
             bb = GXByteBuffer()
@@ -208,6 +220,7 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         elif e.index == 8:
             ret = self.captureTime
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -252,7 +265,9 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
                     self.adjacentCells.append(ac)
         elif e.index == 8:
             if isinstance(e.value, bytearray):
-                self.captureTime = _GXCommon.changeType(settings, e.value, DataType.DATETIME)
+                self.captureTime = _GXCommon.changeType(
+                    settings, e.value, DataType.DATETIME
+                )
             else:
                 self.captureTime = e.value
         else:
@@ -266,7 +281,9 @@ class GXDLMSGSMDiagnostic(GXDLMSObject, IGXDLMSBase):
         if reader.isStartElement("CellInfo", True):
             self.cellInfo.cellId = reader.readElementContentAsLong("CellId")
             self.cellInfo.locationId = reader.readElementContentAsInt("LocationId")
-            self.cellInfo.signalQuality = reader.readElementContentAsInt("SignalQuality")
+            self.cellInfo.signalQuality = reader.readElementContentAsInt(
+                "SignalQuality"
+            )
             self.cellInfo.ber = reader.readElementContentAsInt("Ber")
             reader.readEndElement("CellInfo")
         self.adjacentCells = []

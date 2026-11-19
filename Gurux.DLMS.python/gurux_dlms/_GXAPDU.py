@@ -708,7 +708,7 @@ class _GXAPDU:
                     if xml:
                         #  RespondingAPTitle
                         if xml.comments:
-                            xml.appendComment(_GXCommon.systemTitleToString(settings.standard, settings.sourceSystemTitle))
+                            xml.appendComment(_GXCommon.systemTitleToString(settings.standard, settings.sourceSystemTitle, True))
                         xml.appendLine(TranslatorTags.CALLED_AP_TITLE, "Value", GXByteBuffer.hex(tmp, False))
                 else:
                     #  Choice for result (INTEGER, universal)

@@ -440,6 +440,7 @@ class GXDLMSSecuritySetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 6:
             ret = self.getCertificatesByteArray(settings)
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 

@@ -44,6 +44,7 @@ from .GXDLMSDayProfile import GXDLMSDayProfile
 from .GXDLMSDayProfileAction import GXDLMSDayProfileAction
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-public-methods, too-many-instance-attributes
 class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     """
@@ -71,16 +72,18 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         self.isSec = False
 
     def getValues(self):
-        return [self.logicalName,
-                self.calendarNameActive,
-                self.seasonProfileActive,
-                self.weekProfileTableActive,
-                self.dayProfileTableActive,
-                self.calendarNamePassive,
-                self.seasonProfilePassive,
-                self.weekProfileTablePassive,
-                self.dayProfileTablePassive,
-                self.time]
+        return [
+            self.logicalName,
+            self.calendarNameActive,
+            self.seasonProfileActive,
+            self.weekProfileTableActive,
+            self.dayProfileTableActive,
+            self.calendarNamePassive,
+            self.seasonProfilePassive,
+            self.weekProfileTablePassive,
+            self.dayProfileTablePassive,
+            self.time,
+        ]
 
     #
     # Returns collection of attributes to read.  If attribute is static
@@ -140,16 +143,18 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         return 1
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Active calendar name"),\
-            _GXLocalizer.gettext("Active season profile"),\
-            _GXLocalizer.gettext("Active week profile table"),\
-            _GXLocalizer.gettext("Active day profile table"),\
-            _GXLocalizer.gettext("Passive calendar name"),\
-            _GXLocalizer.gettext("Passive season profile"),\
-            _GXLocalizer.gettext("Passive week profile table"),\
-            _GXLocalizer.gettext("Passive day profile table"),\
-            _GXLocalizer.gettext("Time"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Active calendar name"),
+            _GXLocalizer.gettext("Active season profile"),
+            _GXLocalizer.gettext("Active week profile table"),
+            _GXLocalizer.gettext("Active day profile table"),
+            _GXLocalizer.gettext("Passive calendar name"),
+            _GXLocalizer.gettext("Passive season profile"),
+            _GXLocalizer.gettext("Passive week profile table"),
+            _GXLocalizer.gettext("Passive day profile table"),
+            _GXLocalizer.gettext("Time"),
+        )
 
     def getMethodNames(self):
         return (_GXLocalizer.gettext("Activate passive calendar"),)
@@ -243,9 +248,18 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
                 for action in it.daySchedules:
                     data.setUInt8(DataType.STRUCTURE)
                     data.setUInt8(3)
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, action.startTime)
-                    _GXCommon.setData(settings, data, DataType.OCTET_STRING, _GXCommon.logicalNameToBytes(action.scriptLogicalName))
-                    _GXCommon.setData(settings, data, DataType.UINT16, int(action.scriptSelector))
+                    _GXCommon.setData(
+                        settings, data, DataType.OCTET_STRING, action.startTime
+                    )
+                    _GXCommon.setData(
+                        settings,
+                        data,
+                        DataType.OCTET_STRING,
+                        _GXCommon.logicalNameToBytes(action.scriptLogicalName),
+                    )
+                    _GXCommon.setData(
+                        settings, data, DataType.UINT16, int(action.scriptSelector)
+                    )
         return data.array()
 
     #
@@ -255,7 +269,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         if e.index == 1:
             ret = _GXCommon.logicalNameToBytes(self.logicalName)
         elif e.index == 2:
-            #pylint: disable=bad-option-value,redefined-variable-type
+            # pylint: disable=bad-option-value,redefined-variable-type
             if not self.calendarNameActive:
                 ret = None
             elif self.isSec:
@@ -284,6 +298,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         elif e.index == 10:
             ret = self.time
         else:
+            ret = None
             e.error = ErrorCode.READ_WRITE_DENIED
         return ret
 
@@ -343,7 +358,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             if self.isSec or not GXByteBuffer.isAsciiString(e.value):
                 self.calendarNameActive = GXByteBuffer.hex(e.value)
             else:
-                self.calendarNameActive = e.value.decode("utf-8").strip('\x00')
+                self.calendarNameActive = e.value.decode("utf-8").strip("\x00")
         elif e.index == 3:
             self.seasonProfileActive = self.__setSeasonProfile(settings, e.value)
         elif e.index == 4:
@@ -354,7 +369,7 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
             if self.isSec or not GXByteBuffer.isAsciiString(e.value):
                 self.calendarNamePassive = GXByteBuffer.hex(e.value)
             else:
-                self.calendarNamePassive = e.value.decode("utf-8").strip('\x00')
+                self.calendarNamePassive = e.value.decode("utf-8").strip("\x00")
         elif e.index == 7:
             self.seasonProfilePassive = self.__setSeasonProfile(settings, e.value)
         elif e.index == 8:
@@ -375,9 +390,13 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSSeasonProfile()
-                it.name = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Name"))
+                it.name = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Name")
+                )
                 it.start = reader.readElementContentAsDateTime("Start")
-                it.weekName = GXByteBuffer.hexToBytes(reader.readElementContentAsString("WeekName"))
+                it.weekName = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("WeekName")
+                )
                 list_.append(it)
             reader.readEndElement(name)
         return list_
@@ -388,7 +407,9 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         if reader.isStartElement(name, True):
             while reader.isStartElement("Item", True):
                 it = GXDLMSWeekProfile()
-                it.name = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Name"))
+                it.name = GXByteBuffer.hexToBytes(
+                    reader.readElementContentAsString("Name")
+                )
                 it.monday = reader.readElementContentAsInt("Monday")
                 it.tuesday = reader.readElementContentAsInt("Tuesday")
                 it.wednesday = reader.readElementContentAsInt("Wednesday")
@@ -421,14 +442,28 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
         return list_
 
     def load(self, reader):
-        self.calendarNameActive = reader.readElementContentAsString("CalendarNameActive")
+        self.calendarNameActive = reader.readElementContentAsString(
+            "CalendarNameActive"
+        )
         self.seasonProfileActive = self.loadSeasonProfile(reader, "SeasonProfileActive")
-        self.weekProfileTableActive = self.loadWeekProfileTable(reader, "WeekProfileTableActive")
-        self.dayProfileTableActive = self.loadDayProfileTable(reader, "DayProfileTableActive")
-        self.calendarNamePassive = reader.readElementContentAsString("CalendarNamePassive")
-        self.seasonProfilePassive = self.loadSeasonProfile(reader, "SeasonProfilePassive")
-        self.weekProfileTablePassive = self.loadWeekProfileTable(reader, "WeekProfileTablePassive")
-        self.dayProfileTablePassive = self.loadDayProfileTable(reader, "DayProfileTablePassive")
+        self.weekProfileTableActive = self.loadWeekProfileTable(
+            reader, "WeekProfileTableActive"
+        )
+        self.dayProfileTableActive = self.loadDayProfileTable(
+            reader, "DayProfileTableActive"
+        )
+        self.calendarNamePassive = reader.readElementContentAsString(
+            "CalendarNamePassive"
+        )
+        self.seasonProfilePassive = self.loadSeasonProfile(
+            reader, "SeasonProfilePassive"
+        )
+        self.weekProfileTablePassive = self.loadWeekProfileTable(
+            reader, "WeekProfileTablePassive"
+        )
+        self.dayProfileTablePassive = self.loadDayProfileTable(
+            reader, "DayProfileTablePassive"
+        )
         self.time = reader.readElementContentAsDateTime("Time")
 
     @classmethod
@@ -484,10 +519,20 @@ class GXDLMSActivityCalendar(GXDLMSObject, IGXDLMSBase):
     def save(self, writer):
         writer.writeElementString("CalendarNameActive", self.calendarNameActive)
         self.saveSeasonProfile(writer, self.seasonProfileActive, "SeasonProfileActive")
-        self.saveWeekProfileTable(writer, self.weekProfileTableActive, "WeekProfileTableActive")
-        self.saveDayProfileTable(writer, self.dayProfileTableActive, "DayProfileTableActive")
+        self.saveWeekProfileTable(
+            writer, self.weekProfileTableActive, "WeekProfileTableActive"
+        )
+        self.saveDayProfileTable(
+            writer, self.dayProfileTableActive, "DayProfileTableActive"
+        )
         writer.writeElementString("CalendarNamePassive", self.calendarNamePassive)
-        self.saveSeasonProfile(writer, self.seasonProfilePassive, "SeasonProfilePassive")
-        self.saveWeekProfileTable(writer, self.weekProfileTablePassive, "WeekProfileTablePassive")
-        self.saveDayProfileTable(writer, self.dayProfileTablePassive, "DayProfileTablePassive")
+        self.saveSeasonProfile(
+            writer, self.seasonProfilePassive, "SeasonProfilePassive"
+        )
+        self.saveWeekProfileTable(
+            writer, self.weekProfileTablePassive, "WeekProfileTablePassive"
+        )
+        self.saveDayProfileTable(
+            writer, self.dayProfileTablePassive, "DayProfileTablePassive"
+        )
         writer.writeElementString("Time", self.time)

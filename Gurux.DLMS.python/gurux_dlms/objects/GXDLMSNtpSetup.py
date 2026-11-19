@@ -40,6 +40,7 @@ from .enums.NtpAuthenticationMethod import NtpAuthenticationMethod
 from ..GXByteBuffer import GXByteBuffer
 from ..internal._GXLocalizer import _GXLocalizer
 
+
 # pylint: disable=too-many-instance-attributes
 class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
     """
@@ -56,23 +57,29 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
         """
         GXDLMSObject.__init__(self, ObjectType.NTP_SETUP, ln, sn)
         self.value = None
-        #Is NTP time synchronisation active.
+        # Is NTP time synchronisation active.
         self.activated = False
         # NTP server address.
         self.serverAddress = None
         # UDP port related to this protocol.
         self.port = 123
-         # Authentication method.
+        # Authentication method.
         self.authentication = NtpAuthenticationMethod.NO_SECURITY
-         # Symmetric keys for authentication.
+        # Symmetric keys for authentication.
         self.keys = {}
-         #Client key (NTP server public key).
+        # Client key (NTP server public key).
         self.clientKey = None
 
     def getValues(self):
-        return [self.logicalName,
-                self.activated, self.serverAddress, self.port,
-                self.authentication, self.keys, self.clientKey]
+        return [
+            self.logicalName,
+            self.activated,
+            self.serverAddress,
+            self.port,
+            self.authentication,
+            self.keys,
+            self.clientKey,
+        ]
 
     # Synchronizes the time of the DLMS server with the NTP server.
     # client: DLMS client.
@@ -147,22 +154,26 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
     def getUIDataType(self, index):
         if index == 3:
             return DataType.STRING
-        #pylint:disable=super-with-arguments
+        # pylint:disable=super-with-arguments
         return super(GXDLMSNtpSetup, self).getUIDataType(index)
 
     def getNames(self):
-        return (_GXLocalizer.gettext("Logical name"),\
-            _GXLocalizer.gettext("Activated"),\
-            _GXLocalizer.gettext("Server address"),\
-            _GXLocalizer.gettext("Port"),\
-            _GXLocalizer.gettext("Authentication"),\
-            _GXLocalizer.gettext("Keys"),\
-            _GXLocalizer.gettext("Client key"))
+        return (
+            _GXLocalizer.gettext("Logical name"),
+            _GXLocalizer.gettext("Activated"),
+            _GXLocalizer.gettext("Server address"),
+            _GXLocalizer.gettext("Port"),
+            _GXLocalizer.gettext("Authentication"),
+            _GXLocalizer.gettext("Keys"),
+            _GXLocalizer.gettext("Client key"),
+        )
 
     def getMethodNames(self):
-        return (_GXLocalizer.gettext("Synchronize"),\
-            _GXLocalizer.gettext("Add authentication key"),\
-            _GXLocalizer.gettext("Delete authentication key"))
+        return (
+            _GXLocalizer.gettext("Synchronize"),
+            _GXLocalizer.gettext("Add authentication key"),
+            _GXLocalizer.gettext("Delete authentication key"),
+        )
 
     def getDataType(self, index):
         if index == 1:
@@ -183,7 +194,6 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
             raise ValueError("getDataType failed. Invalid attribute index.")
         return dt
 
-
     #
     # Returns value of given attribute.
     #
@@ -201,11 +211,11 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
         elif e.index == 6:
             bb = GXByteBuffer()
             bb.setUInt8(DataType.ARRAY)
-            #Add count
+            # Add count
             _GXCommon.setObjectCount(len(self.keys), bb)
             for it in self.keys:
                 bb.setUInt8(DataType.STRUCTURE)
-                #Count
+                # Count
                 bb.setUInt8(2)
                 bb.setUInt8(DataType.UINT32)
                 bb.setUInt32(it.key)
@@ -253,14 +263,18 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
         self.activated = reader.readElementContentAsInt("Activated", 1) != 0
         self.serverAddress = reader.readElementContentAsString("ServerAddress", None)
         self.port = reader.readElementContentAsInt("Port", 0)
-        self.authentication = NtpAuthenticationMethod(reader.readElementContentAsInt("Authentication", 0))
+        self.authentication = NtpAuthenticationMethod(
+            reader.readElementContentAsInt("Authentication", 0)
+        )
         self.keys.clear()
         if reader.isStartElement("Keys", True):
             while reader.isStartElement("Item", True):
                 id_ = reader.readElementContentAsLong("ID")
                 key = GXByteBuffer.hexToBytes(reader.readElementContentAsString("Key"))
                 self.keys[id_] = key
-        self.clientKey = GXByteBuffer.hexToBytes(reader.readElementContentAsString("ClientKey", None))
+        self.clientKey = GXByteBuffer.hexToBytes(
+            reader.readElementContentAsString("ClientKey", None)
+        )
 
     def save(self, writer):
         writer.writeElementString("Activated", self.activated)
@@ -274,5 +288,5 @@ class GXDLMSNtpSetup(GXDLMSObject, IGXDLMSBase):
             writer.writeElementString("Key", GXByteBuffer.hex(it.value, False))
             writer.writeEndElement()
         writer.writeEndElement()
-        #Keys
+        # Keys
         writer.writeElementString("ClientKey", GXByteBuffer.hex(self.clientKey, False))
