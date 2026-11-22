@@ -1339,32 +1339,46 @@ class GXDLMSClient(object):
             _GXCommon.setData(self.settings, buff, DataType.UINT32, count)
         else:
             _GXCommon.setData(self.settings, buff, DataType.UINT32, index + count - 1)
+
         columnIndex = 1
         columnCount = 0
-        pos = 0
+
         if columns:
             if not pg.captureObjects:
                 raise ValueError("Read capture objects first.")
+
             columnIndex = len(pg.captureObjects)
             columnCount = 1
+
             for c in columns:
-                pos = 0
                 found = False
-                for k, v in pg.captureObjects:
-                    pos += 1
-                    if (
-                        k.objectType == k.objectType
-                        and k.logicalName == c[0].logicalName
-                        and v.attributeIndex == c[1].attributeIndex
-                        and v.dataIndex == c[1].dataIndex
-                    ):
+
+                # Preserve the exact capture-object position when c originates
+                # directly from pg.captureObjects. This handles duplicates.
+                for pos, (k, v) in enumerate(pg.captureObjects, start=1):
+                    if k is c[0] and v is c[1]:
                         found = True
-                        if pos < columnIndex:
-                            columnIndex = pos
-                        columnCount = pos - columnIndex + 1
                         break
+
+                # Compatibility fallback for externally constructed tuples.
                 if not found:
-                    raise ValueError("Invalid column: " + c.logicalName)
+                    for pos, (k, v) in enumerate(pg.captureObjects, start=1):
+                        if (
+                            k.objectType == c[0].objectType
+                            and k.logicalName == c[0].logicalName
+                            and v.attributeIndex == c[1].attributeIndex
+                            and v.dataIndex == c[1].dataIndex
+                        ):
+                            found = True
+                            break
+
+                if not found:
+                    raise ValueError("Invalid column: " + c[0].logicalName)
+
+                if pos < columnIndex:
+                    columnIndex = pos
+                columnCount = pos - columnIndex + 1
+
         _GXCommon.setData(self.settings, buff, DataType.UINT16, columnIndex)
         _GXCommon.setData(self.settings, buff, DataType.UINT16, columnCount)
         return self._read(pg.name, ObjectType.PROFILE_GENERIC, 2, buff)
