@@ -1036,7 +1036,7 @@ class GXDLMSClient(object):
             name = "0.0.40.0.0.255"
         else:
             name = int(0xFA00)
-        return self._read(name, ObjectType.ASSOCIATION_LOGICAL_NAME, 2)[0]
+        return self._read(name, ObjectType.ASSOCIATION_LOGICAL_NAME, 2)
 
     def method(self, item, index, data, type_):
         return self.__method(item.name, item.objectType, index, data, type_)

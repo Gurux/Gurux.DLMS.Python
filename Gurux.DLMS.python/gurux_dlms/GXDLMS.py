@@ -183,7 +183,9 @@ class GXDLMS:
                     None,
                 )
                 reply = GXDLMS.getSnMessages(p)
-        return reply[0]
+        # Protected next-block requests can span multiple HDLC frames.
+        # Return the full frame list so the caller can transmit every frame.
+        return reply
 
     #
     # Reserved for internal use.

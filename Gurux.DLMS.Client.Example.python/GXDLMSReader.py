@@ -164,7 +164,6 @@ class GXDLMSReader:
             self.readDLMSPacket2(data, reply)
         elif data:
             for it in data:
-                reply.clear()
                 self.readDLMSPacket2(it, reply)
 
     def readDLMSPacket2(self, data, reply):
@@ -228,7 +227,6 @@ class GXDLMSReader:
         if data:
             if isinstance(data, (list)):
                 for it in data:
-                    reply.clear()
                     self.readDataBlock(it, reply)
                 return reply.error == 0
             else:
