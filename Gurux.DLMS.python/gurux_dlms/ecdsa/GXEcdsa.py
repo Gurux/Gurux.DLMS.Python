@@ -98,7 +98,7 @@ class GXEcdsa:
             raise ValueError("Invalid private key.")
         if self.__privateKey.scheme == Ecc.P256:
             h = hashlib.sha256()
-        elif self.__privateKey.scheme == Ecc.P256:
+        elif self.__privateKey.scheme == Ecc.P384:
             h = hashlib.sha384()
         else:
             raise ValueError("Invalid private key scheme.")
@@ -184,7 +184,7 @@ class GXEcdsa:
 
         if self.__publicKey.scheme == Ecc.P256:
             h = hashlib.sha256()
-        elif self.__publicKey.scheme == Ecc.P256:
+        elif self.__publicKey.scheme == Ecc.P384:
             h = hashlib.sha384()
         else:
             raise ValueError("Invalid private key scheme.")
